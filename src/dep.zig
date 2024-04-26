@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
-// /* Structure used in chains of names, for parsing and globbing.  */
-
-// #define NAMESEQ(_t)     \
-//     _t *next;           \
-//     const char *name
+/// パースとグロビングのために、名前のチェーンで使用される構造体。
+fn NAMESEQ(_t) type {
+    return struct {
+        next: *_t,
+        name: *const char,
+    };
+}
 
 // struct nameseq
 //   {
@@ -35,41 +37,43 @@
 // #define RM_DONTCARE             (1 << 2) /* No error if it doesn't exist.  */
 // #define RM_NO_TILDE             (1 << 3) /* Don't expand ~ in file name.  */
 
-// /* Structure representing one dependency of a file.
-//    Each struct file's 'deps' points to a chain of these, through 'next'.
-//    'stem' is the stem for this dep line of static pattern rule or NULL.
-//    explicit is set when implicit rule search is performed and the prerequisite
-//    does not contain %. When explicit is set the file is not intermediate.  */
-
-// #define DEP(_t)                                 \
-//     NAMESEQ (_t);                               \
-//     struct file *file;                          \
-//     _t *shuf;                                   \
-//     const char *stem;                           \
-//     unsigned int flags : 8;                     \
-//     unsigned int changed : 1;                   \
-//     unsigned int ignore_mtime : 1;              \
-//     unsigned int staticpattern : 1;             \
-//     unsigned int need_2nd_expansion : 1;        \
-//     unsigned int ignore_automatic_vars : 1;     \
-//     unsigned int is_explicit : 1;               \
-//     unsigned int wait_here : 1
+/// ファイルの依存関係を表す構造体。
+/// 各構造体ファイルの'deps'は、'next'を介して、これらの連鎖を指す。
+/// 'stem' は、静的パターン規則のこの dep 行のステム、または NULL である。
+/// explicit は、暗黙的ルール検索が実行され、前提条件
+/// が含まれていない場合に設定される。explicit が設定されている場合、ファイルは中間ではありません。
+fn DEP(_t) type {
+    return struct {
+        nameseq: NAMESEQ(_t),
+        file: *file,
+        shuf: *_t,
+        stem: *const char,
+        packed_struct: packed struct {
+            flags: unsigned_int_8,
+            changed: unsigned_int_1,
+            ignore_mtime: unsigned_int_1,
+            staticpattern: unsigned_int_1,
+            need_2nd_expansion: unsigned_int_1,
+            ignore_automatic_vars: unsigned_int_1,
+            is_explicit: unsigned_int_1,
+            wait_here: unsigned_int_1,
+        },
+    };
+}
 
 // struct dep
 //   {
 //     DEP (struct dep);
 //   };
 
-// /* Structure representing one goal.
-//    The goals to be built constitute a chain of these, chained through 'next'.
-//    'stem' is not used, but it's simpler to include and ignore it.  */
-
-// struct goaldep
-//   {
-//     DEP (struct goaldep);
-//     int error;
-//     floc floc;
-//   };
+/// 一つのゴールを表す構造。
+/// 構築されるゴールは、'next'を介して連鎖する、この連鎖を構成する。
+/// 'stem'は使われないが、これを含めて無視する方が単純である。
+const goaldep = struct {
+    dep: DEP(goaldep),
+    error_: c_int,
+    floc: floc,
+};
 
 // /* Options for parsing lists of filenames.  */
 
