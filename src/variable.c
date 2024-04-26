@@ -138,7 +138,7 @@ lookup_pattern_var (struct pattern_var *start, const char *target,
 
   return p;
 }
-
+/* 0xff replaced */
 /* Hash table of all global variable definitions.  */
 
 static unsigned long
@@ -180,7 +180,7 @@ static struct variable_set global_variable_set;
 static struct variable_set_list global_setlist
   = { 0, &global_variable_set, 0 };
 struct variable_set_list *current_variable_set_list = &global_setlist;
-
+/* 0xff replaced */
 /* Implement variables.  */
 
 void
@@ -305,7 +305,7 @@ define_variable_in_set (const char *name, size_t length,
 
   return v;
 }
-
+/* 0xff replaced */
 
 /* Undefine variable named NAME in SET. LENGTH is the length of NAME, which
    does not need to be null-terminated. ORIGIN specifies the origin of the
@@ -450,7 +450,7 @@ lookup_special_var (struct variable *var)
   return var;
 }
 
-
+/* 0xff replaced */
 /* Lookup a variable whose name is a string starting at NAME
    and with LENGTH chars.  NAME need not be null-terminated.
    Returns address of the 'struct variable' containing all info
@@ -561,7 +561,7 @@ lookup_variable_for_file (const char *name, size_t length, struct file *file)
 
   return var;
 }
-
+/* 0xff replaced */
 /* Lookup a variable whose name is a string starting at NAME
    and with LENGTH chars in set SET.  NAME need not be null-terminated.
    Returns address of the 'struct variable' containing all info
@@ -578,7 +578,7 @@ lookup_variable_in_set (const char *name, size_t length,
 
   return hash_find_item ((struct hash_table *) &set->table, &var_key);
 }
-
+/* 0xff replaced */
 /* Initialize FILE's variable set list.  If FILE already has a variable set
    list, the topmost variable set is left intact, but the the rest of the
    chain is replaced with FILE->parent's setlist.  If FILE is a double-colon
@@ -688,7 +688,7 @@ initialize_file_variables (struct file *file, int reading)
       l->next_is_parent = 0;
     }
 }
-
+/* 0xff replaced */
 /* Pop the top set off the current variable set list,
    and free all its storage.  */
 
@@ -770,7 +770,7 @@ pop_variable_scope (void)
   hash_free (&set->table, 1);
   free (set);
 }
-
+/* 0xff replaced */
 /* Merge FROM_SET into TO_SET, freeing unused storage in FROM_SET.  */
 
 static void
@@ -849,7 +849,7 @@ merge_variable_set_lists (struct variable_set_list **setlist0,
         last0->next = setlist1;
     }
 }
-
+/* 0xff replaced */
 /* Define the automatic variables, and record the addresses
    of their structures so we can change their values quickly.  */
 
@@ -1004,7 +1004,7 @@ define_automatic_variables (void)
   define_variable_cname ("^F", "$(notdir $^)", o_automatic, 1);
   define_variable_cname ("+F", "$(notdir $+)", o_automatic, 1);
 }
-
+/* 0xff replaced */
 int export_all_variables;
 
 static int
@@ -1244,7 +1244,7 @@ target_environment (struct file *file, int recursive)
 
   return result_0;
 }
-
+/* 0xff replaced */
 static struct variable *
 set_special_var (struct variable *var, enum variable_origin origin)
 {
@@ -1261,7 +1261,7 @@ set_special_var (struct variable *var, enum variable_origin origin)
 
   return var;
 }
-
+/* 0xff replaced */
 /* Given a string, shell-execute it and return a malloc'ed string of the
  * result. This removes only ONE newline (if any) at the end, for maximum
  * compatibility with the *BSD makes.  If it fails, returns NULL. */
@@ -1284,7 +1284,7 @@ shell_result (const char *p)
   restore_variable_buffer (buf, len);
   return result;
 }
-
+/* 0xff replaced */
 /* Given a variable, a value, and a flavor, define the variable.
    See the try_variable_definition() function for details on the parameters. */
 
@@ -1591,7 +1591,7 @@ do_variable_definition (const floc *flocp, const char *varname,
   free (alloc_value);
   return v->special ? set_special_var (v, origin) : v;
 }
-
+/* 0xff replaced */
 /* Parse P (a null-terminated string) as a variable definition.
 
    If it is not a variable definition, return NULL and the contents of *VAR
@@ -1751,7 +1751,7 @@ parse_variable_definition (const char *str, struct variable *var)
   var->value = next_token (p);
   return (char *)p;
 }
-
+/* 0xff replaced */
 /* Try to interpret LINE (a null-terminated string) as a variable definition.
 
    If LINE was recognized as a variable definition, a pointer to its 'struct
@@ -1777,7 +1777,7 @@ assign_variable_definition (struct variable *v, const char *line)
 
   return v;
 }
-
+/* 0xff replaced */
 /* Try to interpret LINE (a null-terminated string) as a variable definition.
 
    ORIGIN may be o_file, o_override, o_env, o_env_override,
@@ -1851,7 +1851,7 @@ warn_undefined (const char *name, size_t len)
              (int)len, name);
     }
 }
-
+/* 0xff replaced */
 /* Print information for variable V, prefixing it with PREFIX.  */
 
 static void

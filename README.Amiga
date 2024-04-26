@@ -62,7 +62,7 @@ If you plan to use recursive makes, install make resident:
 
     Resident make Add
 
-
+/* 0xff replaced */
 -------------------------------------------------------------------------------
 Copyright (C) 1995-2023 Free Software Foundation, Inc.
 This file is part of GNU Make.

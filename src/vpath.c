@@ -45,7 +45,7 @@ static struct vpath *general_vpath;
 /* Structure for GPATH given in the variable.  */
 
 static struct vpath *gpaths;
-
+/* 0xff replaced */
 
 /* Reverse the chain of selective VPATH lists so they will be searched in the
    order given in the makefiles and construct the list from the VPATH
@@ -116,7 +116,7 @@ build_vpath_lists (void)
       vpaths = save_vpaths;
     }
 }
-
+/* 0xff replaced */
 /* Construct the VPATH listing for the PATTERN and DIRPATH given.
 
    This function is called to generate selective VPATH lists and also for
@@ -280,7 +280,7 @@ construct_vpath_list (char *pattern, char *dirpath)
     /* MSVC erroneously warns without a cast here.  */
     free ((void *)vpath);
 }
-
+/* 0xff replaced */
 /* Search the GPATH list for a pathname string that matches the one passed
    in.  If it is found, return 1.  Otherwise we return 0.  */
 
@@ -297,7 +297,7 @@ gpath_search (const char *file, size_t len)
 
   return 0;
 }
-
+/* 0xff replaced */
 
 /* Search the given VPATH list for a directory where the name pointed to by
    FILE exists.  If it is found, we return a cached name of the existing file
@@ -570,7 +570,7 @@ vpath_search (const char *file, FILE_TIMESTAMP *mtime_ptr,
 
 
 
-
+/* 0xff replaced */
 /* Print the data base of VPATH search paths.  */
 
 void

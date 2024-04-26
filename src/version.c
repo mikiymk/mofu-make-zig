@@ -25,7 +25,7 @@ this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 const char *version_string = PACKAGE_VERSION;
 const char *make_host = MAKE_HOST;
-
+/* 0xff replaced */
 /*
   Local variables:
   version-control: never

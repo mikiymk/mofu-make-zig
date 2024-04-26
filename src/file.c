@@ -199,7 +199,7 @@ enter_file (const char *name)
 
   return new;
 }
-
+/* 0xff replaced */
 /* Rehash FILE to NAME.  This is not as simple as resetting
    the 'hname' member, since it must be put in a new hash bucket,
    and possibly merged with an existing file called NAME.  */
@@ -351,7 +351,7 @@ rename_file (struct file *from_file, const char *to_hname)
       from_file = from_file->prev;
     }
 }
-
+/* 0xff replaced */
 /* Remove all nonprecious intermediate files.
    If SIG is nonzero, this was caused by a fatal signal,
    meaning that a different message will be printed, and
@@ -435,7 +435,7 @@ remove_intermediates (int sig)
       fflush (stdout);
     }
 }
-
+/* 0xff replaced */
 /* Given a string containing prerequisites (fully expanded), break it up into
    a struct dep list.  Enter each of these prereqs into the file database.
  */
@@ -905,7 +905,7 @@ snap_deps (void)
   */
 #endif
 }
-
+/* 0xff replaced */
 /* Set the 'command_state' member of FILE and all its 'also_make's.
    Don't decrease the state of also_make's (e.g., don't downgrade a 'running'
    also_make to a 'deps_running' also_make).  */
@@ -921,7 +921,7 @@ set_command_state (struct file *file, enum cmd_state state)
     if (state > d->file->command_state)
       d->file->command_state = state;
 }
-
+/* 0xff replaced */
 /* Convert an external file timestamp to internal form.  */
 
 FILE_TIMESTAMP
@@ -945,7 +945,7 @@ file_timestamp_cons (const char *fname, time_t stamp, long int ns)
 
   return ts;
 }
-
+/* 0xff replaced */
 /* Return the current time as a file timestamp, setting *RESOLUTION to
    its resolution.  */
 FILE_TIMESTAMP
@@ -1029,7 +1029,7 @@ file_timestamp_sprintf (char *p, FILE_TIMESTAMP ts)
 
   *p = '\0';
 }
-
+/* 0xff replaced */
 /* Print the data base of files.  */
 
 void
@@ -1183,7 +1183,7 @@ print_file_data_base (void)
   fputs (_("\n# files hash-table stats:\n# "), stdout);
   hash_print_stats (&files, stdout);
 }
-
+/* 0xff replaced */
 /* Verify the integrity of the data base of files.  */
 
 #define VERIFY_CACHED(_p,_n) \

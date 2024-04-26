@@ -9,7 +9,7 @@ which is contained in this distribution as the file doc/make.texi.
 See the README file and the GNU Make manual for instructions for
 reporting bugs.
 
-
+/* 0xff replaced */
 Version 4.4.1 (26 Feb 2023)
 
 This release is primarily a bug-fix release.
@@ -48,7 +48,7 @@ https://sv.gnu.org/bugs/index.php?group=make&report_id=111&fix_release_id=110&se
   Thanks to Igor Todorovski <itodorov@ca.ibm.com> for the patches and testing
   assistance.
 
-
+/* 0xff replaced */
 Version 4.4 (31 Oct 2022)
 
 A complete list of bugs fixed in this version is available here:
@@ -240,7 +240,7 @@ https://sv.gnu.org/bugs/index.php?group=make&report_id=111&fix_release_id=109&se
 * GNU Make can now be built for MS-Windows using the Tiny C tcc compiler.
   Port provided by Christian Jullien <eligis@orange.fr>
 
-
+/* 0xff replaced */
 Version 4.3 (19 Jan 2020)
 
 A complete list of bugs fixed in this version is available here:
@@ -342,7 +342,7 @@ GNU Make Developer News
   problem with Gnulib support for getloadavg, this forces a requirement on
   Automake 1.16 or above in order to build from Git.  See README.git.
 
-
+/* 0xff replaced */
 Version 4.2.1 (10 Jun 2016)
 
 A complete list of bugs fixed in this version is available here:
@@ -351,7 +351,7 @@ https://sv.gnu.org/bugs/index.php?group=make&report_id=111&fix_release_id=107&se
 
 This release is a bug-fix release.
 
-
+/* 0xff replaced */
 Version 4.2 (22 May 2016)
 
 A complete list of bugs fixed in this version is available here:
@@ -390,7 +390,7 @@ https://sv.gnu.org/bugs/index.php?group=make&report_id=111&fix_release_id=106&se
     code is now the encoded Unix exit status that Make usually generates, not
     the VMS exit status of the child.
 
-
+/* 0xff replaced */
 Version 4.1 (05 Oct 2014)
 
 A complete list of bugs fixed in this version is available here:
@@ -438,7 +438,7 @@ https://sv.gnu.org/bugs/index.php?group=make&report_id=111&fix_release_id=105&se
     exposed that there are significant differences in behavior when running
     with the command file mode.  It is unknown if this will be noticed by most
     existing VMS makefiles.
-
+/* 0xff replaced */
 Version 4.0 (09 Oct 2013)
 
 A complete list of bugs fixed in this version is available here:
@@ -542,7 +542,7 @@ https://sv.gnu.org/bugs/index.php?group=make&report_id=111&fix_release_id=101&se
   This change could potentially mean some minor incompatibilities in
   behavior when the recipe uses quoted string on shell command lines.
 
-
+/* 0xff replaced */
 Version 3.82 (28 Jul 2010)
 
 A complete list of bugs fixed in this version is available here:
@@ -697,7 +697,7 @@ https://sv.gnu.org/bugs/index.php?group=make&report_id=111&fix_release_id=104&se
     effect, after the current action is terminated. If that doesn't happen
     or takes too long, Ctrl+Y should be used instead.
 
-
+/* 0xff replaced */
 Version 3.81 (01 Apr 2006)
 
 * GNU Make is ported to OS/2.
@@ -838,7 +838,7 @@ A complete list of bugs fixed in this version is available here:
 
   https://savannah.gnu.org/bugs/index.php?group=make&report_id=111&fix_release_id=103
 
-
+/* 0xff replaced */
 Version 3.80 (03 Oct 2002)
 
 * A new feature exists: order-only prerequisites.  These prerequisites
@@ -925,7 +925,7 @@ Version 3.80 (03 Oct 2002)
   * This is the VMS port of GNU Make done by Hartmut.Becker@compaq.com.
 
     It is based on the specific version 3.77k and on 3.78.1. 3.77k was done
-    by Klaus Kämpf <kkaempf@rmi.de>, the code was based on the VMS port of
+    by Klaus Kï¿½mpf <kkaempf@rmi.de>, the code was based on the VMS port of
     GNU Make 3.60 by Mike Moretti.
 
     It was ported on OpenVMS/Alpha V7.1, DECC V5.7-006. It was re-build and
@@ -956,7 +956,7 @@ A complete list of bugs fixed in this version is available here:
 
   https://savannah.gnu.org/bugs/index.php?group=make&report_id=111&fix_release_id=102
 
-
+/* 0xff replaced */
 Version 3.79.1 (23 Jun 2000)
 
 * .SECONDARY with no prerequisites now prevents any target from being
@@ -965,7 +965,7 @@ Version 3.79.1 (23 Jun 2000)
 
 * New configure option --disable-nsec-timestamps, but this was
   superseded in later versions by the .LOW_RESOLUTION_TIME pseudo-target.
-
+/* 0xff replaced */
 Version 3.79 (04 Apr 2000)
 
 * GNU Make optionally supports internationalization and locales via the
@@ -1058,7 +1058,7 @@ Version 3.79 (04 Apr 2000)
     name and run it.
 
   * Made some minor modifications to the bootstrap build makefile.com.
-
+/* 0xff replaced */
 Version 3.78 (22 Sep 1999)
 
 * Two new functions, $(error ...) and $(warning ...) are available.  The
@@ -1114,7 +1114,7 @@ Version 3.78 (22 Sep 1999)
   the table", has been integrated into the release.  You can invoke it
   by running "make check" in the distribution.  Note that it requires
   Perl (either Perl 4 or Perl 5) to run.
-
+/* 0xff replaced */
 Version 3.77 (28 Jul 1998)
 
 * Implement BSD make's "?=" variable assignment operator.  The variable
@@ -1165,7 +1165,7 @@ Version 3.77 (28 Jul 1998)
 
   * This is the VMS port of GNU Make.
     It is based on the VMS port of GNU Make 3.60 by Mike Moretti.
-    This port was done by Klaus Kämpf <kkaempf@rmi.de>
+    This port was done by Klaus Kï¿½mpf <kkaempf@rmi.de>
 
   * There is first-level support available from proGIS Software, Germany.
     Visit their web-site at https://www.progis.de to get information
@@ -1199,11 +1199,11 @@ Version 3.77 (28 Jul 1998)
     lengths of commands (and no need for .opt files :-) any more.
 
   * Empty commands are handled correctly and don't end in a new DCL process.
-
+/* 0xff replaced */
 Version 3.76.1 (19 Sep 1997)
 
 * Small (but serious) bug fix.  Quick rollout to get into the GNU source CD.
-
+/* 0xff replaced */
 Version 3.76 (16 Sep 1997)
 
 * GNU Make now uses automake to control Makefile.in generation.  This
@@ -1323,7 +1323,7 @@ Version 3.75 (27 Aug 1996)
   * Long command lines are now converted to command files.
 
   * Comma (',') as a separator is now allowed. See makefile.vms for an example.
-
+/* 0xff replaced */
 Version 3.73 (05 Apr 1995)
 
 * Converted to use Autoconf version 2, so `configure' has some new options.
@@ -1331,7 +1331,7 @@ Version 3.73 (05 Apr 1995)
 
 * You can now send a SIGUSR1 signal to Make to toggle printing of debugging
   output enabled by -d, at any time during the run.
-
+/* 0xff replaced */
 Version 3.72 (04 Nov 1994)
 
 * DJ Delorie has ported Make to MS-DOS using the GO32 extender.
@@ -1365,7 +1365,7 @@ Version 3.72 (04 Nov 1994)
   recipe to update that file.  Likewise if a file appears as a dependency
   of `.SILENT', then the recipe to update that file will not be printed
   before it is run.  (This change was made to conform to POSIX.2.)
-
+/* 0xff replaced */
 Version 3.71 (21 May 1994)
 
 * The automatic variables `$(@D)', `$(%D)', `$(*D)', `$(<D)', `$(?D)', and
@@ -1387,7 +1387,7 @@ Version 3.71 (21 May 1994)
 * The exit status of Make when it runs into errors is now 2 instead of 1.
   The exit status is 1 only when using -q and some target is not up to date.
   (This change was made to comply with POSIX.2.)
-
+/* 0xff replaced */
 Version 3.70 (03 Jan 1994)
 
 * It is no longer a fatal error to have a NUL character in a makefile.
@@ -1398,7 +1398,7 @@ Version 3.70 (03 Jan 1994)
 * The error messages for nonexistent included makefiles now refer to the
   makefile name and line number where the `include' appeared, so Emacs's
   C-x ` command takes you there (in case it's a typo you need to fix).
-
+/* 0xff replaced */
 Version 3.69 (07 Nov 1993)
 
 * Implicit rule search for archive member references is now done in the
@@ -1428,7 +1428,7 @@ Version 3.69 (07 Nov 1993)
 
 * The recipe given for `.DEFAULT' is now used for phony targets with no
   recipe.
-
+/* 0xff replaced */
 Version 3.68 (28 Jul 1993)
 
 * You can list several archive member names inside parenthesis:
@@ -1454,16 +1454,16 @@ Version 3.68 (28 Jul 1993)
   modified environment like recipes are, so you can use `export' et al
   to set up variables for them.  They used to run with the environment
   that `make' started with.
-
+/* 0xff replaced */
 Version 3.66 (21 May 1993)
 
 * `make --version' (or `make -v') now exits immediately after printing
   the version number.
-
+/* 0xff replaced */
 Version 3.65 (09 May 1993)
 
 * Make now supports long-named members in `ar' archive files.
-
+/* 0xff replaced */
 Version 3.64 (21 Apr 1993)
 
 * Make now supports the `+=' syntax for a variable definition which appends
@@ -1477,7 +1477,7 @@ Version 3.64 (21 Apr 1993)
 
 * The built-in implicit rules now support the alternative extension
   `.txinfo' for Texinfo files, just like `.texinfo' and `.texi'.
-
+/* 0xff replaced */
 Version 3.63 (22 Jan 1993)
 
 * Make now uses a standard GNU `configure' script.  See the new file
@@ -1571,7 +1571,7 @@ Version 3.63 (22 Jan 1993)
 
 * The `-I' switch can now be used in MAKEFLAGS, and are put there
   automatically just like other switches.
-
+/* 0xff replaced */
 Version 3.61
 
 * Built-in rules for C++ source files with the `.C' suffix.
@@ -1585,7 +1585,7 @@ Version 3.61
 
 * Dependencies of pattern rules which contain no % need not actually exist
   if they can be created (just like dependencies which do have a %).
-
+/* 0xff replaced */
 Version 3.60
 
 * A message is always printed when Make decides there is nothing to be done.
@@ -1598,7 +1598,7 @@ Version 3.60
 * When the recipes specified for .DEFAULT are used to update a target,
   the $< automatic variable is given the same value as $@ for that target.
   This is how Unix make behaves, and this behavior is mandated by POSIX.2.
-
+/* 0xff replaced */
 Version 3.59
 
 * The -n, -q, and -t options are not put in the `MAKEFLAGS' and `MFLAG'
@@ -1608,16 +1608,16 @@ Version 3.59
 * If the special target `.NOEXPORT' is specified in a makefile,
   only variables that came from the environment and variables
   defined on the command line are exported.
-
+/* 0xff replaced */
 Version 3.58
 
 * Suffix rules may have dependencies (which are ignored).
-
+/* 0xff replaced */
 Version 3.57
 
 * Dependencies of the form `-lLIB' are searched for as /usr/local/lib/libLIB.a
   as well as libLIB.a in /usr/lib, /lib, the current directory, and VPATH.
-
+/* 0xff replaced */
 Version 3.55
 
 * There is now a Unix man page for GNU Make.  It is certainly not a
@@ -1639,7 +1639,7 @@ Version 3.55
 
 * There is no longer a warning for using the `vpath' directive with an explicit
 pathname (instead of a `%' pattern).
-
+/* 0xff replaced */
 Version 3.51
 
 * When removing intermediate files, only one `rm' command line is printed,
@@ -1659,7 +1659,7 @@ Version 3.51
 * For recipe lines containing `$(MAKE)', `${MAKE}', or leading `+' characters,
   only those lines are executed, not the entire recipe.
   (This is how Unix make behaves for lines containing `$(MAKE)' or `${MAKE}'.)
-
+/* 0xff replaced */
 Version 3.50
 
 * Filenames in rules will now have ~ and ~USER expanded.
@@ -1667,7 +1667,7 @@ Version 3.50
 * The `-p' output has been changed so it can be used as a makefile.
   (All information that isn't specified by makefiles is prefaced with comment
   characters.)
-
+/* 0xff replaced */
 Version 3.49
 
 * The % character can be quoted with backslash in implicit pattern rules,
@@ -1682,9 +1682,9 @@ Version 3.49
 
 * The `-p' output format has been changed somewhat to look more like
   makefile rules and to give all information that Make has about files.
-
+/* 0xff replaced */
 Version 3.48
-
+/* 0xff replaced */
 Version 3.47
 
 * The `-l' switch with no argument removes any previous load-average limit.
@@ -1693,12 +1693,12 @@ Version 3.47
   it will write a `Leaving directory' message before re-executing itself.
   This makes the `directory change tracking' changes to Emacs's compilation
   commands work properly.
-
+/* 0xff replaced */
 Version 3.46
 
 * The automatic variable `$*' is now defined for explicit rules,
   as it is in Unix make.
-
+/* 0xff replaced */
 Version 3.45
 
 * The `-j' switch is now put in the MAKEFLAGS and MFLAGS variables when
@@ -1707,20 +1707,20 @@ Version 3.45
 
 * Make no longer checks hashed directories after running recipes.
   The behavior implemented in 3.41 caused too much slowdown.
-
+/* 0xff replaced */
 Version 3.44
 
 * A dependency is NOT considered newer than its dependent if
   they have the same modification time.  The behavior implemented
   in 3.43 conflicts with RCS.
-
+/* 0xff replaced */
 Version 3.43
 
 * Dependency loops are no longer fatal errors.
 
 * A dependency is considered newer than its dependent if
   they have the same modification time.
-
+/* 0xff replaced */
 Version 3.42
 
 * The variables F77 and F77FLAGS are now set by default to $(FC) and
@@ -1728,21 +1728,21 @@ Version 3.42
   explicit rules and expect them to be set.  Unfortunately, there is no way to
   make setting these affect the Fortran implicit rules unless FC and FFLAGS
   are not used (and these are used by BSD make).
-
+/* 0xff replaced */
 Version 3.41
 
 * Make now checks to see if its hashed directories are changed by recipes.
   Other makes that hash directories (Sun, 4.3 BSD) don't do this.
-
+/* 0xff replaced */
 Version 3.39
 
 * The `shell' function no longer captures standard error output.
-
+/* 0xff replaced */
 Version 3.32
 
 * A file beginning with a dot can be the default target if it also contains
   a slash (e.g., `../bin/foo').  (Unix make allows this as well.)
-
+/* 0xff replaced */
 Version 3.31
 
 * Archive member names are truncated to 15 characters.
@@ -1756,7 +1756,7 @@ Version 3.31
 * Revamped default implicit rules (not much visible change).
 
 * The -d and -p options can come from the environment.
-
+/* 0xff replaced */
 Version 3.30
 
 * Improved support for USG and HPUX (hopefully).
@@ -1769,11 +1769,11 @@ Version 3.30
 * New default implicit rules for .S (cpp, then as), and .sh (copy and
   make executable).  All default implicit rules that use cpp (even
   indirectly), use $(CPPFLAGS).
-
+/* 0xff replaced */
 Version 3.29
 
 * Giving the -j option with no arguments gives you infinite jobs.
-
+/* 0xff replaced */
 Version 3.28
 
 * New option: "-l LOAD" says not to start any new jobs while others are
@@ -1781,34 +1781,34 @@ Version 3.28
 
 * There is support in place for implementations of remote command execution
   in Make.  See the file remote.c.
-
+/* 0xff replaced */
 Version 3.26
 
 * No more than 10 directories will be kept open at once.
   (This number can be changed by redefining MAX_OPEN_DIRECTORIES in dir.c.)
-
+/* 0xff replaced */
 Version 3.25
 
 * Archive files will have their modification times recorded before doing
   anything that might change their modification times by updating an archive
   member.
-
+/* 0xff replaced */
 Version 3.20
 
 * The `MAKELEVEL' variable is defined for use by makefiles.
-
+/* 0xff replaced */
 Version 3.19
 
 * The recursion level indications in error messages are much shorter than
   they were in version 3.14.
-
+/* 0xff replaced */
 Version 3.18
 
 * Leading spaces before directives are ignored (as documented).
 
 * Included makefiles can determine the default goal target.
   (System V Make does it this way, so we are being compatible).
-
+/* 0xff replaced */
 Version 3.14.
 
 * Variables that are defaults built into Make will not be put in the
@@ -1823,12 +1823,12 @@ Version 3.14.
 * One child will always get a standard input that is usable.
 
 * Default makefiles that don't exist will be remade and read in.
-
+/* 0xff replaced */
 Version 3.13.
 
 * Count parentheses inside expansion function calls so you can
   have nested calls: `$(sort $(foreach x,a b,$(x)))'.
-
+/* 0xff replaced */
 Version 3.12.
 
 * Several bug fixes, including USG and Sun386i support.
@@ -1852,11 +1852,11 @@ Version 3.12.
 
 * A double-colon rule with no dependencies will always have its recipe run.
   (This is how both the BSD and System V versions of Make do it.)
-
+/* 0xff replaced */
 Version 3.05
 
 (Changes from versions 1 through 3.05 were never recorded.  Sorry.)
-
+/* 0xff replaced */
 -------------------------------------------------------------------------------
 Copyright (C) 1988-2023 Free Software Foundation, Inc.
 This file is part of GNU Make.

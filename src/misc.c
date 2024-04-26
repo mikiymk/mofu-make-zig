@@ -118,7 +118,7 @@ alpha_compare (const void *v1, const void *v2)
     return *s1 - *s2;
   return strcmp (s1, s2);
 }
-
+/* 0xff replaced */
 /* Discard each backslash-newline combination from LINE.
    Backslash-backslash-newline combinations become backslash-newlines.
    This is done by copying the text at LINE into itself.  */
@@ -186,7 +186,7 @@ collapse_continuations (char *line)
 
   memmove(out, in, strlen(in) + 1);
 }
-
+/* 0xff replaced */
 /* Print N spaces (used in debug for target-depth).  */
 
 void
@@ -196,7 +196,7 @@ print_spaces (unsigned int n)
     putchar (' ');
 }
 
-
+/* 0xff replaced */
 /* Return a string whose contents concatenate the NUM strings provided
    This string lives in static, re-used memory.  */
 
@@ -242,7 +242,7 @@ concat (unsigned int num, ...)
 
   return result;
 }
-
+/* 0xff replaced */
 
 #ifndef HAVE_UNISTD_H
 pid_t getpid ();
@@ -365,7 +365,7 @@ memrchr(const void* str, int ch, size_t len)
 }
 #endif
 
-
+/* 0xff replaced */
 
 /* Limited INDEX:
    Search through the string STRING, which ends at LIMIT, for the character C.
@@ -382,7 +382,7 @@ lindex (const char *s, const char *limit, int c)
 
   return 0;
 }
-
+/* 0xff replaced */
 /* Return the address of the first whitespace or null in the string S.  */
 
 char *
@@ -420,7 +420,7 @@ find_next_token (const char **ptr, size_t *lengthptr)
 
   return (char *)p;
 }
-
+/* 0xff replaced */
 /* Write a BUFFER of size LEN to file descriptor FD.
    Retry short writes from EINTR.  Return LEN, or -1 on error.  */
 ssize_t
@@ -466,7 +466,7 @@ readbuf (int fd, void *buffer, size_t len)
 
   return (ssize_t)(msg - (char*)buffer);
 }
-
+/* 0xff replaced */
 
 /* Copy a chain of 'struct dep'.  For 2nd expansion deps, dup the name.  */
 
@@ -509,7 +509,7 @@ free_ns_chain (struct nameseq *ns)
       free_ns (t);
     }
 }
-
+/* 0xff replaced */
 
 #ifdef MAKE_MAINTAINER_MODE
 
@@ -552,7 +552,7 @@ dbg (const char *fmt, ...)
 
 #endif
 
-
+/* 0xff replaced */
 
 /* Provide support for temporary files.  */
 
@@ -784,7 +784,7 @@ get_tmpfile (char **name)
 
   return file;
 }
-
+/* 0xff replaced */
 
 #if HAVE_TTYNAME && defined(__EMX__)
 /* OS/2 kLIBC has a declaration for ttyname(), so configure finds it.
@@ -818,7 +818,7 @@ char *ttyname (int fd)
   return NULL;
 }
 #endif
-
+/* 0xff replaced */
 
 #if !HAVE_STRCASECMP && !HAVE_STRICMP && !HAVE_STRCMPI
 /* If we don't have strcasecmp() (from POSIX), or anything that can substitute
@@ -871,7 +871,7 @@ strncasecmp (const char *s1, const char *s2, size_t n)
   return 0;
 }
 #endif
-
+/* 0xff replaced */
 
 #ifdef NEED_GET_PATH_MAX
 unsigned int

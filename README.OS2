@@ -161,7 +161,7 @@ All tests should work fine with the exception of one of the "INCLUDE_DIRS"
 tests which will fail if your /usr/include directory is on a drive different
 from the make source tree.
 
-
+/* 0xff replaced */
 -------------------------------------------------------------------------------
 Copyright (C) 2003-2023 Free Software Foundation, Inc.
 This file is part of GNU Make.

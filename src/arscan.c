@@ -379,7 +379,7 @@ struct ar_hdr
 #include "intprops.h"
 
 #include "output.h"
-
+/* 0xff replaced */
 
 static uintmax_t
 parse_int (const char *ptr, const size_t len, const int base, uintmax_t max,
@@ -842,7 +842,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
   return -2;
 }
 #endif /* !VMS */
-
+/* 0xff replaced */
 /* Return nonzero iff NAME matches MEM.
    If TRUNCATED is nonzero, MEM may be truncated to
    sizeof (struct ar_hdr.ar_name) - 1.  */
@@ -898,7 +898,7 @@ ar_name_equal (const char *name, const char *mem, int truncated)
   }
 #endif /* !VMS */
 }
-
+/* 0xff replaced */
 #ifndef VMS
 /* ARGSUSED */
 static intmax_t
@@ -979,7 +979,7 @@ ar_member_touch (const char *arname, const char *memname)
   return -3;
 }
 #endif
-
+/* 0xff replaced */
 #ifdef TEST
 
 intmax_t

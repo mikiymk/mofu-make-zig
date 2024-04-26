@@ -168,7 +168,7 @@ static char *unescape_char (char *string, int c);
    P must point to the word to be tested, and WLEN must be the length.  */
 #define word1eq(s)  (wlen == CSTRLEN (s) && memcmp (s, p, CSTRLEN (s)) == 0)
 
-
+/* 0xff replaced */
 /* Read in all the makefiles and return a chain of targets to rebuild.  */
 
 struct goaldep *
@@ -273,7 +273,7 @@ read_all_makefiles (const char **makefiles)
 
   return read_files;
 }
-
+/* 0xff replaced */
 /* Install a new conditional and return the previous one.  */
 
 static struct conditionals *
@@ -299,7 +299,7 @@ restore_conditionals (struct conditionals *saved)
   /* Restore state.  */
   conditionals = saved;
 }
-
+/* 0xff replaced */
 static struct goaldep *
 eval_makefile (const char *filename, unsigned short flags)
 {
@@ -484,7 +484,7 @@ eval_buffer (char *buffer, const floc *flocp)
 
   free_alloca ();
 }
-
+/* 0xff replaced */
 /* Check LINE to see if it's a variable assignment or undefine.
 
    It might use one of the modifiers "export", "override", "private", or it
@@ -560,7 +560,7 @@ parse_var_assignment (const char *line, int targvar, struct vmodifiers *vmod)
   vmod->assign_v = 1;
   return (char *)p;
 }
-
+/* 0xff replaced */
 
 /* Read file FILENAME as a makefile and add its contents to the data base.
 
@@ -1357,7 +1357,7 @@ eval (struct ebuffer *ebuf, int set_default)
   free (collapsed);
   free (commands);
 }
-
+/* 0xff replaced */
 
 /* Remove comments from LINE.
    This will also remove backslashes that escape things.
@@ -1509,7 +1509,7 @@ do_define (char *name, enum variable_origin origin, struct ebuffer *ebuf)
   free (n);
   return (v);
 }
-
+/* 0xff replaced */
 /* Interpret conditional commands "ifdef", "ifndef", "ifeq",
    "ifneq", "else" and "endif".
    LINE is the input line, with the command as its first word.
@@ -1781,7 +1781,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
       return 1;
   return 0;
 }
-
+/* 0xff replaced */
 
 /* Record target-specific variable values for files FILENAMES.
    TWO_COLON is nonzero if a double colon was used.
@@ -1883,7 +1883,7 @@ record_target_var (struct nameseq *filenames, char *defn,
         }
     }
 }
-
+/* 0xff replaced */
 
 /* Check for special targets.  We used to do this in record_files() but that's
    too late: by the time we get there we'll have already parsed the next line
@@ -2008,7 +2008,7 @@ check_special_file (struct file *file, const floc *flocp)
       return;
     }
 }
-
+/* 0xff replaced */
 /* Record a description line for files FILENAMES,
    with dependencies DEPS, commands to execute described
    by COMMANDS and COMMANDS_IDX, coming from FILENAME:COMMANDS_STARTED.
@@ -2334,7 +2334,7 @@ record_files (struct nameseq *filenames, int are_also_makes,
       }
     }
 }
-
+/* 0xff replaced */
 /* Search STRING for an unquoted STOPMAP.
    Backslashes quote elements from STOPMAP and backslash.
    Quoting backslashes are removed from STRING by compacting it into itself.
@@ -2590,7 +2590,7 @@ find_percent_cached (const char **string)
   /* If we didn't find a %, return NULL.  Otherwise return a ptr to it.  */
   return np ? *string + (np - new) : NULL;
 }
-
+/* 0xff replaced */
 /* Find the next line of text in an eval buffer, combining continuation lines
    into one line.
    Return the number of actual lines read (> 1 if continuation lines).
@@ -2751,7 +2751,7 @@ readline (struct ebuffer *ebuf)
 
   return nlines ? nlines : p == ebuf->bufstart ? -1 : 1;
 }
-
+/* 0xff replaced */
 /* Parse the next "makefile word" from the input buffer, and return info
    about it.
 
@@ -2955,7 +2955,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
     *length = p - beg;
   return wtype;
 }
-
+/* 0xff replaced */
 /* Construct the list of include directories
    from the arguments and the default list.  */
 
@@ -3079,7 +3079,7 @@ construct_include_path (const char **arg_dirs)
   free ((void *) include_directories);
   include_directories = dirs;
 }
-
+/* 0xff replaced */
 /* Expand ~ or ~USER at the beginning of NAME.
    Return a newly malloc'd string or 0.  */
 
@@ -3152,7 +3152,7 @@ tilde_expand (const char *name)
 #endif /* !VMS */
   return 0;
 }
-
+/* 0xff replaced */
 /* Parse a string into a sequence of filenames represented as a chain of
    struct nameseq's and return that chain.  Optionally expand the strings via
    glob().

@@ -88,7 +88,7 @@ initialize_variable_output ()
 
   return variable_buffer;
 }
-
+/* 0xff replaced */
 /* Recursively expand V.  The returned string is malloc'd.  */
 
 static char *allocated_variable_append (const struct variable *v);
@@ -204,7 +204,7 @@ reference_variable (char *o, const char *name, size_t length)
 
   return o;
 }
-
+/* 0xff replaced */
 /* Scan STRING for variable references and expansion-function calls.  Only
    LENGTH bytes of STRING are actually scanned.  If LENGTH is -1, scan until
    a null byte is found.
@@ -429,7 +429,7 @@ variable_expand_string (char *line, const char *string, size_t length)
   variable_buffer_output (o, "", 1);
   return (variable_buffer + line_offset);
 }
-
+/* 0xff replaced */
 /* Scan LINE for variable references and expansion-function calls.
    Build in 'variable_buffer' the result of expanding the references and calls.
    Return the address of the resulting string, which is null-terminated
@@ -440,7 +440,7 @@ variable_expand (const char *line)
 {
   return variable_expand_string (NULL, line, SIZE_MAX);
 }
-
+/* 0xff replaced */
 /* Expand an argument for an expansion function.
    The text starting at STR and ending at END is variable-expanded
    into a null-terminated string that is returned as the value.
@@ -473,7 +473,7 @@ expand_argument (const char *str, const char *end)
 
   return r;
 }
-
+/* 0xff replaced */
 /* Expand LINE for FILE.  Error messages refer to the file and line where
    FILE's commands were found.  Expansion uses FILE's variable set list.  */
 
@@ -503,7 +503,7 @@ variable_expand_for_file (const char *line, struct file *file)
 
   return result;
 }
-
+/* 0xff replaced */
 /* Like allocated_variable_expand, but for += target-specific variables.
    First recursively construct the variable value from its appended parts in
    any upper variable sets.  Then expand the resulting value.  */

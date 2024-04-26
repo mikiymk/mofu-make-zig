@@ -57,7 +57,7 @@ void
 remote_cleanup (void)
 {
 }
-
+/* 0xff replaced */
 /* Return nonzero if the next job should be done remotely.  */
 
 int
@@ -122,7 +122,7 @@ start_remote_job_p (int first_p)
 
   return !CUSTOMS_FAIL (&permit.addr);
 }
-
+/* 0xff replaced */
 /* Start a remote job running the command in ARGV, with environment from
    ENVP.  It gets standard input from STDIN_FD.  On failure, return
    nonzero.  On success, return zero, and set *USED_STDIN to nonzero if it
@@ -257,7 +257,7 @@ start_remote_job (char **argv, char **envp, int stdin_fd,
   *used_stdin = 1;
   return 0;
 }
-
+/* 0xff replaced */
 /* Get the status of a dead remote child.  Block waiting for one to die
    if BLOCK is nonzero.  Set *EXIT_CODE_PTR to the exit status, *SIGNAL_PTR
    to the termination signal or zero if it exited normally, and *COREDUMP_PTR

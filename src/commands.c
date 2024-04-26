@@ -31,7 +31,7 @@ this program.  If not, see <https://www.gnu.org/licenses/>.  */
 #else
 # define FILE_LIST_SEPARATOR ' '
 #endif
-
+/* 0xff replaced */
 
 static unsigned long
 dep_hash_1 (const void *key)
@@ -315,7 +315,7 @@ set_file_variables (struct file *file, const char *stem)
 
 #undef  DEFINE_VARIABLE
 }
-
+/* 0xff replaced */
 /* Chop CMDS up into individual command lines if necessary.
    Also set the 'lines_flags' and 'any_recurse' members.  */
 
@@ -428,7 +428,7 @@ chop_commands (struct commands *cmds)
       cmds->any_recurse |= ANY_SET (flags, COMMANDS_RECURSE) ? 1 : 0;
     }
 }
-
+/* 0xff replaced */
 /* Execute the commands to remake FILE.  If they are currently executing,
    return or have already finished executing, just return.  Otherwise,
    fork off a child process to run the first command line in the sequence.  */
@@ -472,7 +472,7 @@ execute_file_commands (struct file *file)
   /* Start the commands running.  */
   new_job (file);
 }
-
+/* 0xff replaced */
 /* This is set while we are inside fatal_error_signal,
    so things can avoid nonreentrant operations.  */
 
@@ -603,7 +603,7 @@ fatal_error_signal (int sig)
 #endif /* not Amiga */
 #endif /* not __MSDOS__  */
 }
-
+/* 0xff replaced */
 /* Delete FILE unless it's precious or not actually a file (phony),
    and it has changed on disk since we last stat'd it.  */
 
@@ -674,7 +674,7 @@ delete_child_targets (struct child *child)
 
   child->deleted = 1;
 }
-
+/* 0xff replaced */
 /* Print out the commands in CMDS.  */
 
 void

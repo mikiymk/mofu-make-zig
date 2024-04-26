@@ -28,7 +28,7 @@ this program.  If not, see <https://www.gnu.org/licenses/>.  */
 static int pattern_search (struct file *file, int archive,
                            unsigned int depth, unsigned int recursions,
                            int allow_compat_rules);
-
+/* 0xff replaced */
 /* For a FILE which has no commands specified, try to figure out some
    from the implicit pattern rules.
    Returns 1 if a suitable implicit rule was found,
@@ -65,7 +65,7 @@ try_implicit_rule (struct file *file, unsigned int depth)
 
   return 0;
 }
-
+/* 0xff replaced */
 
 /* Scans the BUFFER for the next word with whitespace as a separator.
    Returns the pointer to the beginning of the word. LENGTH hold the

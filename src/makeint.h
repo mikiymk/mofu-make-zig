@@ -17,7 +17,7 @@ this program.  If not, see <https://www.gnu.org/licenses/>.  */
 /* We use <config.h> instead of "config.h" so that a compilation
    using -I. -I$srcdir will use ./config.h rather than $srcdir/config.h
    (which it would do because makeint.h was found in $srcdir).  */
-#include <config.h>
+#include "config.h"
 
 /* Some versions of GCC (e.g., 10.x) set the warn_unused_result attribute on
    __builtin_alloca.  This causes alloca(0) to fail and is not easily worked
@@ -525,7 +525,7 @@ extern struct rlimit stack_limit;
 #endif
 
 
-
+/* 0xff replaced */
 
 struct file;
 

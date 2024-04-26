@@ -230,7 +230,7 @@ static void start_job_command (struct child *child);
 static int load_too_high (void);
 static int job_next_command (struct child *);
 static int start_waiting_job (struct child *);
-
+/* 0xff replaced */
 /* Chain of all live (or recently deceased) children.  */
 
 struct child *children = 0;
@@ -258,7 +258,7 @@ unsigned long job_counter = 0;
 /* Number of jobserver tokens this instance is currently using.  */
 
 unsigned int jobserver_tokens = 0;
-
+/* 0xff replaced */
 
 #ifdef WINDOWS32
 /*
@@ -524,7 +524,7 @@ unblock_all_sigs ()
 }
 
 #endif
-
+/* 0xff replaced */
 /* Write an error message describing the exit status given in
    EXIT_CODE, EXIT_SIG, and COREDUMP, for the target TARGET_NAME.
    Append "(ignored)" if IGNORED is nonzero.  */
@@ -592,7 +592,7 @@ child_error (struct child *child,
 
   OUTPUT_UNSET ();
 }
-
+/* 0xff replaced */
 
 /* Handle a dead child.  This handler may or may not ever be installed.
 
@@ -1108,7 +1108,7 @@ reap_children (int block, int err)
 
   return;
 }
-
+/* 0xff replaced */
 /* Free the storage allocated for CHILD.  */
 
 void
@@ -1161,7 +1161,7 @@ free_child (struct child *child)
 
   free (child);
 }
-
+/* 0xff replaced */
 
 /* Start a job to run the commands specified in CHILD.
    CHILD is updated to reflect the commands and ID of the child process.
@@ -1968,7 +1968,7 @@ new_job (struct file *file)
   OUTPUT_UNSET ();
   return;
 }
-
+/* 0xff replaced */
 /* Move CHILD's pointers to the next command for it to execute.
    Returns nonzero if there is another command.  */
 
@@ -2202,7 +2202,7 @@ start_waiting_jobs (void)
 
   return;
 }
-
+/* 0xff replaced */
 #ifndef WINDOWS32
 
 /* EMX: Start a child process. This function returns the new pid.  */
@@ -2504,7 +2504,7 @@ child_execute_job (struct childbase *child, int good_stdin, char **argv)
 }
 #endif /* !AMIGA && !__MSDOS__ && !VMS */
 #endif /* !WINDOWS32 */
-
+/* 0xff replaced */
 #ifndef _AMIGA
 /* Replace the current process with one running the command in ARGV,
    with environment ENVP.  This function does not return.  */
@@ -2704,7 +2704,7 @@ void clean_tmp (void)
 }
 
 #endif /* On Amiga */
-
+/* 0xff replaced */
 #ifndef VMS
 /* Figure out the argument list necessary to run LINE as a command.  Try to
    avoid using a shell.  This routine handles only ' quoting, and " quoting
@@ -3801,7 +3801,7 @@ construct_command_argv (char *line, char **restp, struct file *file,
 
   return argv;
 }
-
+/* 0xff replaced */
 #if !defined(HAVE_DUP2) && !defined(_AMIGA)
 int
 dup2 (int old, int new)

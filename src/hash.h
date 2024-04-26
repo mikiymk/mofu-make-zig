@@ -79,7 +79,7 @@ extern unsigned jhash_string(unsigned char const *key);
 extern void *hash_deleted_item;
 #define HASH_VACANT(item) ((item) == 0 || (void *) (item) == hash_deleted_item)
 
-
+/* 0xff replaced */
 /* hash and comparison macros for case-sensitive string keys. */
 
 /* Due to the strcache, it's not uncommon for the string pointers to

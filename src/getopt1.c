@@ -15,7 +15,7 @@ A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 this program.  If not, see <https://www.gnu.org/licenses/>.  */
-
+/* 0xff replaced */
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -82,7 +82,7 @@ getopt_long_only (int argc, char *const *argv, const char *options,
 
 
 #endif	/* Not ELIDE_CODE.  */
-
+/* 0xff replaced */
 #ifdef TEST
 
 #include <stdio.h>

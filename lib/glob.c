@@ -197,7 +197,7 @@ extern int getlogin_r (char *, size_t);
 #else
 extern char *getlogin (void);
 #endif
-
+/* 0xff replaced */
 static
 #if __GNUC__ - 0 >= 2
 inline

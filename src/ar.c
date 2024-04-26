@@ -68,7 +68,7 @@ ar_parse_name (const char *name, char **arname_p, char **memname_p)
   p[strlen (p) - 1] = '\0';
   *memname_p = p;
 }
-
+/* 0xff replaced */
 
 /* This function is called by 'ar_scan' to find which member to look at.  */
 
@@ -117,7 +117,7 @@ ar_member_date (const char *name)
 
   return 0 < val && val <= TYPE_MAXIMUM (time_t) ? val : -1;
 }
-
+/* 0xff replaced */
 /* Set the archive-member NAME's modtime to now.  */
 
 #ifdef VMS
@@ -173,7 +173,7 @@ ar_touch (const char *name)
   return val;
 }
 #endif /* !VMS */
-
+/* 0xff replaced */
 /* State of an 'ar_glob' run, passed to 'ar_glob_match'.  */
 
 /* On VMS, (object) modules in libraries do not have suffixes. That is, to

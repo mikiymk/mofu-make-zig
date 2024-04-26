@@ -110,7 +110,7 @@ https://mail.gnu.org/archive/html/bug-autoconf/2003-10/msg00190.html
   Cygwin プロジェクトは GNU Make の独自の移植版を保守しています。その移植版には、このバージョンにはないパッチがあるかもしれません。Cygwin を使っているのであれば、そのバージョンの GNU Make を使うべきですし、それについて質問があるのであれば、それらのメーリングリストやフォーラムで質問することから始めるべきです。
   Microsoft システム用の GNU Make には 2 つの*分離した*移植版があることに注意してください:(たとえば)MSVC や Cygwin で構築されたネイティブな Windows ツールと、DJGPP で構築された DOS ベースのツールです。正しい README を見ていることを確認してください！
 
-## 
+## /* 0xff replaced */
 
 著作権 (C) 1988-2023 Free Software Foundation, Inc.
 このファイルは GNU Make の一部です。

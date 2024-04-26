@@ -59,7 +59,7 @@ const char *vmsify (const char *name, int type);
 # define REAL_DIR_ENTRY(dp) (dp->d_ino != 0)
 # define FAKE_DIR_ENTRY(dp) (dp->d_ino = 1)
 #endif /* POSIX */
-
+/* 0xff replaced */
 #ifdef __MSDOS__
 #include <ctype.h>
 #include <fcntl.h>
@@ -232,7 +232,7 @@ vmsstat_dir (const char *name, struct stat *st)
 
 #endif /* _USE_STD_STAT */
 #endif /* VMS */
-
+/* 0xff replaced */
 /* Never have more than this many directories open at once.  */
 
 #define MAX_OPEN_DIRECTORIES 10
@@ -456,7 +456,7 @@ dirfile_hash_cmp (const void *xv, const void *yv)
 #ifndef DIRFILE_BUCKETS
 #define DIRFILE_BUCKETS 107
 #endif
-
+/* 0xff replaced */
 static int dir_contents_file_exists_p (struct directory *dir,
                                        const char *filename);
 static struct directory *find_directory (const char *name);
@@ -629,7 +629,7 @@ find_directory (const char *name)
 
   return dir;
 }
-
+/* 0xff replaced */
 /* Return 1 if the name FILENAME is entered in DIR's hash table.
    FILENAME must contain no slashes.  */
 
@@ -808,7 +808,7 @@ dir_file_exists_p (const char *dirname, const char *filename)
   return dir_contents_file_exists_p (find_directory (dirname),
                                      filename);
 }
-
+/* 0xff replaced */
 /* Return 1 if the file named NAME exists.  */
 
 int
@@ -884,7 +884,7 @@ file_exists_p (const char *name)
 #endif
   return dir_file_exists_p (dirname, slash);
 }
-
+/* 0xff replaced */
 /* Mark FILENAME as 'impossible' for 'file_impossible_p'.
    This means an attempt has been made to search for FILENAME
    as an intermediate file, and it has failed.  */
@@ -985,7 +985,7 @@ file_impossible (const char *filename)
   new->impossible = 1;
   hash_insert (&dir->contents->dirfiles, new);
 }
-
+/* 0xff replaced */
 /* Return nonzero if FILENAME has been marked impossible.  */
 
 int
@@ -1082,7 +1082,7 @@ file_impossible_p (const char *filename)
 
   return 0;
 }
-
+/* 0xff replaced */
 /* Return the already allocated name in the
    directory hash table that matches DIR.  */
 
@@ -1091,7 +1091,7 @@ dir_name (const char *dir)
 {
   return find_directory (dir)->name;
 }
-
+/* 0xff replaced */
 /* Print the data base of directories.  */
 
 void
@@ -1197,7 +1197,7 @@ print_dir_data_base (void)
     printf ("%u", impossible);
   printf (_(" impossibilities in %lu directories.\n"), directories.ht_fill);
 }
-
+/* 0xff replaced */
 /* Hooks for globbing.  */
 
 /* Structure describing state of iterating through a directory hash table.  */

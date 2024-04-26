@@ -69,7 +69,7 @@ function_table_entry_hash_cmp (const void *xv, const void *yv)
 }
 
 static struct hash_table function_table;
-
+/* 0xff replaced */
 
 /* Store into VARIABLE_BUFFER at O the result of scanning TEXT and replacing
    each occurrence of SUBST with REPLACE. TEXT is null-terminated.  SLEN is
@@ -132,7 +132,7 @@ subst_expand (char *o, const char *text, const char *subst, const char *replace,
 
   return o;
 }
-
+/* 0xff replaced */
 
 /* Store into VARIABLE_BUFFER at O the result of scanning TEXT
    and replacing strings matching PATTERN with REPLACE.
@@ -264,7 +264,7 @@ patsubst_expand (char *o, const char *text, char *pattern, char *replace)
   return patsubst_expand_pat (o, text, pattern, replace,
                               pattern_percent, replace_percent);
 }
-
+/* 0xff replaced */
 
 /* Look up a function by name.  */
 
@@ -285,7 +285,7 @@ lookup_function (const char *s)
 
   return hash_find_item (&function_table, &function_table_entry_key);
 }
-
+/* 0xff replaced */
 
 /* Return 1 if PATTERN matches STR, 0 if not.  */
 
@@ -314,7 +314,7 @@ pattern_matches (const char *pattern, const char *percent, const char *str)
 
   return !strcmp (percent + 1, str + (strlength - sfxlen));
 }
-
+/* 0xff replaced */
 
 /* Find the next comma or ENDPAREN (counting nested STARTPAREN and
    ENDPARENtheses), starting at PTR before END.  Return a pointer to
@@ -349,7 +349,7 @@ find_next_argument (char startparen, char endparen,
   /* We didn't find anything.  */
   return NULL;
 }
-
+/* 0xff replaced */
 
 /* Glob-expand LINE.  The returned pointer is
    only good until the next call to string_glob.  */
@@ -403,7 +403,7 @@ string_glob (char *line)
 
   return result;
 }
-
+/* 0xff replaced */
 /*
   Builtin functions
  */
@@ -2131,7 +2131,7 @@ func_not (char *o, char **argv, char *funcname UNUSED)
   return o;
 }
 #endif
-
+/* 0xff replaced */
 
 #ifdef HAVE_DOS_PATHS
 # ifdef __CYGWIN__
@@ -2537,7 +2537,7 @@ static struct function_table_entry function_table_init[] =
 };
 
 #define FUNCTION_TABLE_ENTRIES (sizeof (function_table_init) / sizeof (struct function_table_entry))
-
+/* 0xff replaced */
 
 /* These must come after the definition of function_table.  */
 
@@ -2701,7 +2701,7 @@ handle_function (char **op, const char **stringp)
 
   return 1;
 }
-
+/* 0xff replaced */
 
 /* User-defined functions.  Expand the first argument as either a builtin
    function or a make variable, in the context of the rest of the arguments

@@ -109,7 +109,7 @@ static void decode_env_switches (const char *envar, size_t len,
 static char *quote_for_env (char *out, const char *in);
 static void initialize_global_hash_tables (void);
 
-
+/* 0xff replaced */
 /* True if C is a switch value that corresponds to a short option.  */
 
 #define short_option(c) ((c) <= CHAR_MAX)
@@ -310,7 +310,7 @@ unsigned long command_count = 1;
 
 static int stdin_offset = -1;
 
-
+/* 0xff replaced */
 /* The usage output.  We write it this way to make life easier for the
    translators, especially those trying to translate to right-to-left
    languages like Hebrew.  */
@@ -532,7 +532,7 @@ struct command_variable
     struct variable *variable;
   };
 static struct command_variable *command_variables;
-
+/* 0xff replaced */
 /* The name we were invoked with.  */
 
 const char *program;
@@ -607,7 +607,7 @@ unsigned short stopchar_map[UCHAR_MAX + 1] = {0};
 
 struct output make_sync;
 
-
+/* 0xff replaced */
 /* Mask of signals that are being caught with fatal_error_signal.  */
 
 #if defined(POSIX)
@@ -2945,7 +2945,7 @@ main (int argc, char **argv, char **envp)
   /* NOTREACHED */
   exit (MAKE_SUCCESS);
 }
-
+/* 0xff replaced */
 /* Parsing of arguments, decoding of switches.  */
 
 static char options[1 + sizeof (switches) / sizeof (switches[0]) * 3];
@@ -3441,7 +3441,7 @@ decode_env_switches (const char *envar, size_t len, enum variable_origin origin)
   /* Parse those words.  */
   decode_switches (argc, argv, origin);
 }
-
+/* 0xff replaced */
 /* Quote the string IN so that it will be interpreted as a single word with
    no magic by decode_env_switches; also double dollar signs to avoid
    variable expansion in make itself.  Write the result into OUT, returning
@@ -3701,7 +3701,7 @@ should_print_dir (void)
        default setting: disable under -s / print in sub-makes and under -C.  */
     return !silent_flag && (makelevel > 0 || directories != NULL);
 }
-
+/* 0xff replaced */
 /* Print version information.  */
 
 static void
@@ -3797,7 +3797,7 @@ clean_jobserver (int status)
       reset_jobserver ();
     }
 }
-
+/* 0xff replaced */
 /* Exit with STATUS, cleaning up as necessary.  */
 
 void

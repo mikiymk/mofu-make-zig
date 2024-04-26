@@ -70,7 +70,7 @@ _outputs (struct output *out, int is_err, const char *msg)
   fputs (msg, f);
   fflush (f);
 }
-
+/* 0xff replaced */
 /* Write a message indicating that we've just entered or
    left (according to ENTERING) the current directory.  */
 
@@ -141,7 +141,7 @@ log_working_directory (int entering)
 
   return 1;
 }
-
+/* 0xff replaced */
 
 #ifndef NO_OUTPUT_SYNC
 
@@ -316,7 +316,7 @@ output_dump (struct output *out)
     }
 }
 #endif /* NO_OUTPUT_SYNC */
-
+/* 0xff replaced */
 
 void
 output_init (struct output *out)
@@ -384,7 +384,7 @@ outputs (int is_err, const char *msg)
 
   _outputs (output_context, is_err, msg);
 }
-
+/* 0xff replaced */
 
 static struct fmtstring
   {

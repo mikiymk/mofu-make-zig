@@ -78,7 +78,7 @@ static void remake_file (struct file *file);
 static FILE_TIMESTAMP name_mtime (const char *name);
 static const char *library_search (const char *lib, FILE_TIMESTAMP *mtime_ptr);
 
-
+/* 0xff replaced */
 static void
 check_also_make (const struct file *file)
 {
@@ -294,7 +294,7 @@ update_goal_chain (struct goaldep *goaldeps)
 
   return status;
 }
-
+/* 0xff replaced */
 /* If we're rebuilding an included makefile that failed, and we care
    about errors, show an error message the first time.  */
 
@@ -318,7 +318,7 @@ show_goal_error (void)
         return;
       }
 }
-
+/* 0xff replaced */
 /* If FILE is not up to date, execute the commands for it.
    Return 0 if successful, non-0 if unsuccessful;
    but with some flag settings, just call 'exit' if unsuccessful.
@@ -386,7 +386,7 @@ update_file (struct file *file, unsigned int depth)
 
   return status;
 }
-
+/* 0xff replaced */
 /* Show a message stating the target failed to build.  */
 
 static void
@@ -928,7 +928,7 @@ update_file_1 (struct file *file, unsigned int depth)
   file->updated = 1;
   return file->update_status;
 }
-
+/* 0xff replaced */
 /* Set FILE's 'updated' flag and re-check its mtime and the mtime's of all
    files listed in its 'also_make' member.  Under -t, this function also
    touches FILE.
@@ -1071,7 +1071,7 @@ notice_finished_file (struct file *file)
        So mark it now as "succeeded".  */
     file->update_status = us_success;
 }
-
+/* 0xff replaced */
 /* Check whether another file (whose mtime is THIS_MTIME) needs updating on
    account of a dependency which is file FILE.  If it does, store 1 in
    *MUST_MAKE_PTR.  In the process, update any non-intermediate files that
@@ -1214,7 +1214,7 @@ check_dep (struct file *file, unsigned int depth,
 
   return dep_status;
 }
-
+/* 0xff replaced */
 /* Touch FILE.  Return us_success if successful, us_failed if not.  */
 
 #define TOUCH_ERROR(call) do{ perror_with_name ((call), file->name);    \
@@ -1278,7 +1278,7 @@ touch_file (struct file *file)
 
   return us_success;
 }
-
+/* 0xff replaced */
 /* Having checked and updated the dependencies of FILE,
    do whatever is appropriate to remake FILE itself.
    Return the status from executing FILE's commands.  */
@@ -1321,7 +1321,7 @@ remake_file (struct file *file)
   /* This does the touching under -t.  */
   notice_finished_file (file);
 }
-
+/* 0xff replaced */
 /* Return the mtime of a file, given a 'struct file'.
    Caches the time in the struct file to avoid excess stat calls.
 

@@ -345,7 +345,7 @@ Bug reports:
 
         Please submit bugs via the normal bug reporting mechanism which
         is described in the GNU Make manual and the base README.
-
+/* 0xff replaced */
 -------------------------------------------------------------------------------
 Copyright (C) 1996-2023 Free Software Foundation, Inc.
 This file is part of GNU Make.
