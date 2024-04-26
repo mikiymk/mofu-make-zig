@@ -1,28 +1,30 @@
-This directory contains the 4.4.1 release of GNU Make.
+このディレクトリにはGNU Makeの4.4.1リリースが含まれます。
 
-See the file NEWS for the user-visible changes from previous releases. In addition, there have been bugs fixed.
+以前のリリースからのユーザーから見える変更点については、ファイル NEWS をご覧ください。さらに、バグが修正されています。
 
-Please check the system-specific notes below for any caveats related to your operating system.
+あなたのオペレーティングシステムに関連する注意事項については、以下のシステム固有の注意事項を確認してください。
 
-If you are trying to build GNU Make from a Git clone rather than a downloaded source distribution, see the README.git file for instructions.
+ダウンロードしたソースディストリビューションではなく、GitクローンからGNU Makeをビルドしようとしている場合、その手順についてはREADME.gitファイルをご覧ください。
 
-For source distribution building and installation instructions, see the file INSTALL.
+ソースディストリビューションのビルドとインストールの手順については、INSTALLファイルをご覧ください。
 
-If you need to build GNU Make and have no other 'make' program to use, you can use the shell script 'build.sh' instead. To do this, first run 'configure' as described in INSTALL. Then, instead of typing 'make' to build the program, type 'sh build.sh'. This will compile the program in the current directory. Then you will have a 'make' program that you can use for './make install', or whatever else.
+GNU Makeをビルドする必要があり、他に使用する「make」プログラムがない場合、代わりにシェルスクリプト「build.sh」を使用することができます。これを行うには、まずINSTALLで説明したように'configure'を実行する。次に、「make」と入力してプログラムをビルドする代わりに、「sh build.sh」と入力する。これで、カレント・ディレクトリーにあるプログラムがコンパイルされる。これで、「./make install」などに使用できる「make」プログラムができあがる。
 
-Some systems' 'make' programs cannot process the Makefile for GNU Make. If you get errors from your system's 'make' when building GNU Make, try using 'build.sh' instead.
+システムの'make'プログラムによっては、GNU MakeのMakefileを処理できないものがあります。GNU Makeをビルドするときにシステムの'make'からエラーが出る場合、代わりに'build.sh'を使ってみてください。
 
-GNU Make is free software. See the file COPYING for copying conditions. GNU Make is copyright by the Free Software Foundation. Copyright notices condense sequential years into a range; e.g. "1987-1994" means all years from 1987 to 1994 inclusive.
+GNU Makeはフリーソフトウェアです。コピーの条件についてはCOPYINGファイルをご覧ください。GNU Makeの著作権はフリーソフトウェアファウンデーションにあります。たとえば、"1987-1994 "は1987年から1994年までのすべての年を意味します。
+
+DeepL.com（無料版）で翻訳しました。
 
 ## Downloading
 
-GNU Make can be obtained in many different ways. See a description here:
+GNU Makeはさまざまな方法で入手できます。こちらの説明をご覧ください：
 
 https://www.gnu.org/software/software.html
 
 ## Documentation
 
-GNU Make is fully documented in the GNU Make manual, which is contained in this distribution as the file make.texi. You can also find on-line and preformatted (PostScript and DVI) versions at the FSF's web site. There is information there about ordering hardcopy documentation.
+GNU MakeはGNU Makeマニュアルで完全に文書化されており、このディストリビューションにはmake.texiというファイルとして含まれています。また、FSFのウェブサイトで、オンライン版とフォーマット済み(PostScriptとDVI)を見つけることができます。ハードコピー文書の注文に関する情報もあります。
 
 https://www.gnu.org/
 https://www.gnu.org/doc/doc.html
@@ -30,99 +32,90 @@ https://www.gnu.org/manual/manual.html
 
 ## Development
 
-GNU Make development is hosted by Savannah, the FSF's online development management tool. Savannah is here:
+GNU Makeの開発はFSFのオンライン開発管理ツールSavannahによってホストされています。Savannahはこちらです：
 
 https://savannah.gnu.org
 
-And the GNU Make development page is here:
+そして、GNU Makeの開発ページはこちらです：
 
 https://savannah.gnu.org/projects/make/
 
-You can find most information concerning the development of GNU Make at this site.
+GNU Makeの開発に関するほとんどの情報はこのサイトで見つけることができます。
 
-## Regression Tests
+## 回帰テスト
 
-GNU Make contains a suite of regression tests. To run them use "make check" after building GNU Make. If they fail a tar package will be created containing useful information, which can be emailed (as an attachment) to the <bug-make@gnu.org> mailing list.
+GNU Makeには一連のリグレッションテストが含まれています。これらを実行するには、GNU Makeのビルド後に "make check "を使ってください。失敗した場合、有用な情報を含む tar パッケージが作成され、<bug-make@gnu.org> メーリングリストに (添付ファイルとして) 電子メールで送ることができます。
 
-Please note that since these tests rely on known-good-output comparisons, they can show spurious failures on some systems (particularly non-POSIX systems such as Windows).
+これらのテストは既知の良い出力の比較に依存しているため、システムによっては (特に Windows のような非 POSIX システムでは) 偽の失敗を示すことがあることに注意してください。
 
-## Bug Reporting
+## バグ報告
 
-If you need help using GNU Make, try asking on <help-make@gnu.org>.
+GNU Makeを使うのに助けが必要なら、<help-make@gnu.org>で尋ねてみてください。
 
-If you found a bug, you can send a bug reports to <bug-make@gnu.org>. Please see the section of the GNU Make manual entitled 'Problems and Bugs' for information on submitting useful and complete bug reports.
+バグを見つけたら、<bug-make@gnu.org> にバグレポートを送ってください。有用で完全なバグ報告を提出するための情報については、GNU Makeマニュアルの「問題とバグ」のセクションをご覧ください。
 
-You do not need to subscribe to these lists first.
+最初にこれらのメーリングリストを購読する必要はありません。
 
-You can also use the online bug tracking system in the Savannah GNU Make project to submit new problem reports or search for existing ones:
+Savannah GNU Makeプロジェクトのオンラインバグトラッキングシステムを使って、新しい問題報告を提出したり、既存の問題報告を検索したりすることもできます：
 
 https://savannah.gnu.org/bugs/?group=make
 
-We prefer to use the bug tracking system ONLY for bugs or enhancements, not for help requests: please use the mailing lists to get help.
+バグ追跡システムはバグや機能強化のためだけに使うのが望ましいです。
 
-## Submitting Patches
+## パッチの提出
 
-If you'd like to propose a change to GNU Make, you can provide a patch with your changes. If you are making your changes in a Git workspace you can run "git format-patch" to create a patch file. If not, you can use the diff(1) utility to create a patch file; please use "diff -u".
+GNU Makeに変更を提案したい場合、あなたの変更と一緒にパッチを提供することができます。Gitワークスペースで変更を行っている場合は、"git format-patch "を実行してパッチファイルを作成できます。そうでない場合は、diff(1) ユーティリティを使ってパッチファイルを作成することができます。
 
-Once you have a patch you can submit it in any of these ways:
+パッチができたら、以下のいずれかの方法でパッチを提出できます：
 
-- Create a bug on Savannah and add the patch as an attachment:
+- Savannahでバグを作成し、パッチを添付ファイルとして追加する：
   https://savannah.gnu.org/bugs/?group=make&func=additem
 
-- Send the patch via email to <bug-make@gnu.org>: be sure to add it as an attachment to avoid interference by email processors.
+- 電子メールで<bug-make@gnu.org>にパッチを送る: 電子メールプロセッサによる妨害を避けるため、必ず添付ファイルとして追加してください。
 
-All non-trivial changes require FSF copyright paperwork to be completed before they can be accepted. Contact <bug-make@gnu.org> for help.
+自明でない変更はすべて、受理される前にFSFの著作権に関する書類手続きが必要です。<bug-make@gnu.org>までご連絡ください。
 
-## Git Access
+## Gitへのアクセス
 
-The GNU Make source repository is available via Git from the GNU Savannah Git server; look here for details:
+GNU MakeのソースリポジトリはGNU Savannah GitサーバーからGitで入手できます：
 
 https://savannah.gnu.org/git/?group=make
 
-Please note: you won't be able to build GNU Make from Git without installing appropriate maintainer's tools, such as GNU m4, automake, autoconf, Perl, GNU make, and GCC.
+注意: GNU m4、automake、autoconf、Perl、GNU make、GCCのような適切なメンテナのツールをインストールしなければ、GitからGNU Makeをビルドすることはできません。
 
-See the README.git file for instructions on how to build GNU Make once these tools are available. We make no guarantees about the contents or quality of the latest code in the Git repository: it is not unheard of for code that is known to be broken to be checked in. Use at your own risk.
+これらのツールが利用可能になったら、GNU Makeをビルドする方法についてはREADME.gitファイルをご覧ください。Gitリポジトリにある最新のコードの内容や品質について、わたしたちは保証しません。壊れていることが知られているコードがチェックインされることは、前代未聞ではありません。利用は自己責任でお願いします。
 
-## System-specific Notes
+## システム固有の注意事項
 
-It has been reported that the XLC 1.2 compiler on AIX 3.2 is buggy such that if you compile make with 'cc -O' on AIX 3.2, it will not work correctly. It is said that using 'cc' without '-O' does work.
+AIX 3.2上のXLC 1.2コンパイラにはバグがあり、AIX 3.2上で 'cc -O' を使ってmakeをコンパイルすると正しく動作しないという報告があります。なお、'-O' なしで 'cc' を使うと動作するらしい。
 
-The standard /bin/sh on SunOS 4.1.3_U1 and 4.1.4 is broken and cannot be used to configure GNU Make. Please install a different shell such as bash or pdksh in order to run "configure". See this message for more information:
+SunOS 4.1.3_U1および4.1.4の標準の/bin/shは壊れており、GNU Makeの設定に使用できません。configure "を実行するには、bashやpdkshなどの別のシェルをインストールしてください。詳しくはこのメッセージをご覧ください：
 https://mail.gnu.org/archive/html/bug-autoconf/2003-10/msg00190.html
 
-One area that is often a problem in configuration and porting is the code to check the system's current load average. To make it easier to test and debug this code, you can do 'make check-loadavg' to see if it works properly on your system. (You must run 'configure' beforehand, but you need not build 'make' itself to run this test.)
+コンフィギュレーションや移植でしばしば問題になる分野のひとつに、システムの現在の負荷平均をチェックするコードがあります。このコードのテストとデバッグを簡単にするために、'make check-loadavg'を実行して、あなたのシステムで正しく動作するかどうかを確認することができます。(事前に 'configure' を実行する必要があるが、このテストを実行するために 'make' 自体をビルドする必要はない)。
 
-Another potential source of porting problems is the support for large files (LFS) in configure for those operating systems that provide it. Please report any bugs that you find in this area. If you run into difficulties, then as a workaround you should be able to disable LFS by adding the '--disable-largefile' option to the 'configure' script.
+もうひとつの移植問題の原因となりうるのは、configure でラージファイル (LFS) をサポートしているオペレーティングシステムです。この分野でバグを発見した場合は報告してください。問題が発生した場合、回避策として、'configure' スクリプトに '--disable-largefile' オプションを追加することで、LFS を無効にすることができるはずです。
 
-On systems that support micro- and nano-second timestamp values and where stat(2) provides this information, GNU Make will use it when comparing timestamps to get the most accurate possible result. However, note that many current implementations of tools that _set_ timestamps do not preserve micro- or nano-second granularity. This means that "cp -p" and other similar tools (tar, etc.) may not exactly duplicate timestamps with micro- and nano-second granularity on some systems. If your build system contains rules that depend on proper behavior of tools like "cp -p", you should consider using the .LOW_RESOLUTION_TIME pseudo-target to force make to treat them properly. See the manual for details.
+マイクロ秒やナノ秒のタイムスタンプ値をサポートし、stat(2) がこの情報を提供するシステムでは、GNU Make はタイムスタンプを比較する際にこれを使用して、可能な限り正確な結果を得ます。しかし、タイムスタンプを_設定するツールの現在の実装の多くは、マイクロ秒やナノ秒の粒度を保持しないことに注意してください。これは、"cp -p "や他の同様のツール（tarなど）が、システムによっては、マイクロ秒やナノ秒の粒度でタイムスタンプを正確に複製しない可能性があることを意味する。あなたのビルド・システムに、"cp -p "のようなツールの適切な動作に依存するルールが含まれている場合、.LOW_RESOLUTION_TIME擬似ターゲットを使用して、makeにそれらを適切に扱うように強制することを検討すべきである。詳細はマニュアルを参照のこと。
 
-## Ports
-
-- See README.customs for details on integrating GNU Make with the Customs distributed build environment from the Pmake distribution.
-
-- See README.VMS for details about GNU Make on OpenVMS.
-
-- See README.Amiga for details about GNU Make on AmigaDOS.
-
-- See README.zOS for details about GNU Make on z/OS.
-
-- See README.W32 for details about GNU Make on Windows NT, 95, or 98.
-
-- See README.DOS for compilation instructions on MS-DOS and MS-Windows using DJGPP tools.
-
-  A precompiled binary of the MSDOS port of GNU Make is available as part of DJGPP; see the WWW page https://www.delorie.com/djgpp/ for more information.
-
-  The Cygwin project maintains its own port of GNU Make. That port may have patches which are not present in this version. If you are using Cygwin you should use their version of GNU Make, and if you have questions about it you should start by asking on those mailing lists and forums.
-
-Please note there are two _separate_ ports of GNU Make for Microsoft systems: a native Windows tool built with (for example) MSVC or Cygwin, and a DOS-based tool built with DJGPP. Please be sure you are looking at the right README!
+## ポート
+- Pmake ディストリビューションの Customs 分散ビルド環境と GNU Make の統合の詳細については README.customs をご覧ください。
+- OpenVMS 上の GNU Make についての詳細は README.VMS をご覧ください。
+- AmigaDOS上のGNU Makeの詳細についてはREADME.Amigaをご覧ください。
+- z/OS の GNU Make については README.zOS をご覧ください。
+- Windows NT、95、98上のGNU Makeの詳細についてはREADME.W32を参照してください。
+- DJGPPツールを使用したMS-DOSおよびMS-Windowsでのコンパイル手順については、README.DOSを参照してください。
+  GNU MakeのMSDOS移植版のコンパイル済みバイナリがDJGPPの一部として利用できます。詳細はWWWページhttps://www.delorie.com/djgpp/。
+  CygwinプロジェクトはGNU Makeの独自の移植版を保守しています。その移植版には、このバージョンにはないパッチがあるかもしれません。Cygwinを使っているのであれば、そのバージョンのGNU Makeを使うべきですし、それについて質問があるのであれば、それらのメーリングリストやフォーラムで質問することから始めるべきです。
+Microsoftシステム用のGNU Makeには2つの_分離した_移植版があることに注意してください:(たとえば)MSVCやCygwinで構築されたネイティブなWindowsツールと、DJGPPで構築されたDOSベースのツールです。正しいREADMEを見ていることを確認してください！
 
 ## 
 
-Copyright (C) 1988-2023 Free Software Foundation, Inc.
-This file is part of GNU Make.
+著作権 (C) 1988-2023 Free Software Foundation, Inc.
+このファイルはGNU Makeの一部です。
 
-GNU Make is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+GNU Makeはフリーソフトウェアです。あなたは、Free Software Foundationが発行したGNU一般公衆利用許諾契約書(GNU General Public License)のバージョン3、または(あなたの選択により)それ以降のバージョンのいずれかに従って、それを再配布したり、あるいは変更したりすることができます。
 
-GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+GNU Makeは有用であることを願って配布されていますが、商品性や特定の目的への適合性についての暗黙の保証もなく、いかなる保証もありません。詳細はGNU一般公衆利用許諾書をご覧ください。
 
-You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+あなたはこのプログラムとともにGNU一般公衆利用許諾書のコピーを受け取っているはずです。そうでない場合は、<https://www.gnu.org/licenses/>をご覧ください。
