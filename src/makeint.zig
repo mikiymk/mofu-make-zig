@@ -146,12 +146,14 @@
 // /* Some systems (HURD) have fully dynamic pathnames with no maximum.
 //    Ideally we'd support this but it will take some work.  */
 // #  define PATH_MAX      4096
+pub const PATH_MAX = 4096;
 // # endif
 // #endif
 
 // #ifdef  PATH_MAX
 // # define GET_PATH_MAX   PATH_MAX
 // # define PATH_VAR(var)  char var[PATH_MAX+1]
+pub const PATH_VAR = [PATH_MAX + 1]c_char;
 // #else
 // # define NEED_GET_PATH_MAX 1
 // # define GET_PATH_MAX   (get_path_max ())

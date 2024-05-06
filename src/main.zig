@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 
 // /* Argument parsing and main program of GNU Make.
 // Copyright (C) 1988-2023 Free Software Foundation, Inc.
@@ -21,7 +22,7 @@ const makeint = @import("makeint.zig");
 // #include "filedef.h"
 const dep = @import("dep.zig");
 // #include "variable.h"
-// #include "job.h"
+const job = @import("job.zig");
 // #include "commands.h"
 // #include "rule.h"
 // #include "debug.h"
@@ -47,6 +48,9 @@ const dep = @import("dep.zig");
 // #ifdef HAVE_FCNTL_H
 // # include <fcntl.h>
 // #endif
+
+const config = @import("./config.zig");
+const expand = @import("./expand.zig");
 
 // #ifdef _AMIGA
 // int __stack = 20000; /* Make sure we have 20K of stack space */
@@ -535,7 +539,7 @@ const dep = @import("dep.zig");
 // /* 0xff replaced */
 // /* The name we were invoked with.  */
 
-// const char *program;
+pub const program: []const u8 = "";
 
 // /* Our current directory before processing any -C options.  */
 
@@ -1184,15 +1188,19 @@ pub fn main() !void {
 
     const makefile_status: c_int = makeint.MAKE_SUCCESS;
     const read_files: dep.goaldep = undefined;
+    const current_directory: makeint.PATH_VAR = undefined;
+    const restarts: c_uint = 0;
+    const syncing: c_uint = 0;
+    // The jobslot info we got from our parent process.
+    const argv_slots: c_int = undefined;
 
     _ = makefile_status;
     _ = read_files;
+    _ = current_directory;
+    _ = restarts;
+    _ = syncing;
+    _ = argv_slots;
 
-    //   struct goaldep *read_files;
-    //   PATH_VAR (current_directory);
-    //   unsigned int restarts = 0;
-    //   unsigned int syncing = 0;
-    //   int argv_slots;  /* The jobslot info we got from our parent process.  */
     // #ifdef WINDOWS32
     //   const char *unix_path = NULL;
     //   const char *windows32_path = NULL;
@@ -1204,7 +1212,7 @@ pub fn main() !void {
     //   no_default_sh_exe = 1;
     // #endif
 
-    //   initialize_variable_output ();
+    _ = expand.initialize_variable_output();
 
     //   /* Useful for attaching debuggers, etc.  */
     //   SPIN ("main-entry");
