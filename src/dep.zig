@@ -64,10 +64,9 @@ fn DEP(_t: type) type {
     };
 }
 
-// struct dep
-//   {
-//     DEP (struct dep);
-//   };
+pub const dep = struct {
+    dep: DEP(dep),
+};
 
 /// 一つのゴールを表す構造。
 /// 構築されるゴールは、'next'を介して連鎖する、この連鎖を構成する。

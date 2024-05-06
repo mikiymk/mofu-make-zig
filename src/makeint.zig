@@ -300,7 +300,7 @@
 // #ifndef SCNdMAX
 // # define SCNdMAX PRIdMAX
 // #endif
-// #define FILE_TIMESTAMP uintmax_t
+pub const FILE_TIMESTAMP = c_ulonglong;
 
 // #if !defined(HAVE_STRSIGNAL)
 // char *strsignal (int signum);

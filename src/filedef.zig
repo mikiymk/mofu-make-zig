@@ -19,101 +19,135 @@
 //    All of these are chained together through 'next'.  */
 
 // #include "hash.h"
+const dep = @import("./dep.zig");
+const commands = @import("./commands.zig");
+const variable = @import("./variable.zig");
+const makeint = @import("./makeint.zig");
 
 // struct commands;
 // struct dep;
 // struct variable;
 // struct variable_set_list;
 
-pub const file = struct {};
-// struct file
-//   {
-//     const char *name;
-//     const char *hname;          /* Hashed filename */
-//     const char *vpath;          /* VPATH/vpath pathname */
-//     struct dep *deps;           /* all dependencies, including duplicates */
-//     struct commands *cmds;      /* Commands to execute for this target.  */
-//     const char *stem;           /* Implicit stem, if an implicit
-//                                    rule has been used */
-//     struct dep *also_make;      /* Targets that are made by making this.  */
-//     struct file *prev;          /* Previous entry for same file name;
-//                                    used when there are multiple double-colon
-//                                    entries for the same file.  */
-//     struct file *last;          /* Last entry for the same file name.  */
+pub const file = struct {
+    /// Status of the last attempt to update.
+    const update_status = enum(u2) {
+        /// Successfully updated.  Must be 0!
+        us_success = 0,
+        /// No attempt to update has been made.
+        us_none,
+        /// Needs to be updated (-q is is set).
+        us_question,
+        ///Update failed.
+        us_failed,
+    };
 
-//     /* File that this file was renamed to.  After any time that a
-//        file could be renamed, call 'check_renamed' (below).  */
-//     struct file *renamed;
+    /// State of commands.  ORDER IS IMPORTANT!
+    const cmd_state = enum(u2) {
+        /// Not yet started.  Must be 0!
+        cs_not_started = 0,
+        /// Dep commands running.
+        cs_deps_running,
+        /// Commands running.
+        cs_running,
+        /// Commands finished.
+        cs_finished,
+    };
 
-//     /* List of variable sets used for this file.  */
-//     struct variable_set_list *variables;
+    name: *const c_char,
+    /// Hashed filename
+    hname: *const c_char,
+    /// VPATH/vpath pathname
+    vpath: *const c_char,
+    /// all dependencies, including duplicates
+    deps: *dep.dep,
+    /// Commands to execute for this target.
+    cmds: *commands.commands,
+    /// Implicit stem, if an implicit rule has been used
+    stem: *const c_char,
+    /// Targets that are made by making this.
+    also_make: *dep.dep,
+    /// Previous entry for same file name; used when there are multiple double-colon entries for the same file.
+    prev: *file,
+    /// Last entry for the same file name.
+    last: *file,
 
-//     /* Pattern-specific variable reference for this target, or null if there
-//        isn't one.  Also see the pat_searched flag, below.  */
-//     struct variable_set_list *pat_variables;
+    /// File that this file was renamed to.
+    /// After any time that a file could be renamed, call 'check_renamed' (below).
+    renamed: *file,
 
-//     /* Immediate dependent that caused this target to be remade,
-//        or nil if there isn't one.  */
-//     struct file *parent;
+    /// List of variable sets used for this file.
+    variables: *variable.variable_set_list,
 
-//     /* For a double-colon entry, this is the first double-colon entry for
-//        the same file.  Otherwise this is null.  */
-//     struct file *double_colon;
+    /// Pattern-specific variable reference for this target, or null if there isn't one.
+    /// Also see the pat_searched flag, below.
+    pat_variables: *variable.variable_set_list,
 
-//     FILE_TIMESTAMP last_mtime;  /* File's modtime, if already known.  */
-//     FILE_TIMESTAMP mtime_before_update; /* File's modtime before any updating
-//                                            has been performed.  */
-//     unsigned int considered;    /* equal to 'considered' if file has been
-//                                    considered on current scan of goal chain */
-//     int command_flags;          /* Flags OR'd in for cmds; see commands.h.  */
-//     enum update_status          /* Status of the last attempt to update.  */
-//       {
-//         us_success = 0,         /* Successfully updated.  Must be 0!  */
-//         us_none,                /* No attempt to update has been made.  */
-//         us_question,            /* Needs to be updated (-q is is set).  */
-//         us_failed               /* Update failed.  */
-//       } update_status ENUM_BITFIELD (2);
-//     enum cmd_state              /* State of commands.  ORDER IS IMPORTANT!  */
-//       {
-//         cs_not_started = 0,     /* Not yet started.  Must be 0!  */
-//         cs_deps_running,        /* Dep commands running.  */
-//         cs_running,             /* Commands running.  */
-//         cs_finished             /* Commands finished.  */
-//       } command_state ENUM_BITFIELD (2);
+    /// Immediate dependent that caused this target to be remade, or nil if there isn't one.
+    parent: *file,
 
-//     unsigned int builtin:1;     /* True if the file is a builtin rule. */
-//     unsigned int precious:1;    /* Non-0 means don't delete file on quit */
-//     unsigned int loaded:1;      /* True if the file is a loaded object. */
-//     unsigned int unloaded:1;    /* True if this loaded object was unloaded. */
-//     unsigned int low_resolution_time:1; /* Nonzero if this file's time stamp
-//                                            has only one-second resolution.  */
-//     unsigned int tried_implicit:1; /* Nonzero if have searched
-//                                       for implicit rule for making
-//                                       this file; don't search again.  */
-//     unsigned int updating:1;    /* Nonzero while updating deps of this file */
-//     unsigned int updated:1;     /* Nonzero if this file has been remade.  */
-//     unsigned int is_target:1;   /* Nonzero if file is described as target.  */
-//     unsigned int cmd_target:1;  /* Nonzero if file was given on cmd line.  */
-//     unsigned int phony:1;       /* Nonzero if this is a phony file
-//                                    i.e., a prerequisite of .PHONY.  */
-//     unsigned int intermediate:1;/* Nonzero if this is an intermediate file.  */
-//     unsigned int is_explicit:1; /* Nonzero if explicitly mentioned. */
-//     unsigned int secondary:1;   /* Nonzero means remove_intermediates should
-//                                    not delete it.  */
-//     unsigned int notintermediate:1; /* Nonzero means a file is a prereq to
-//                                        .NOTINTERMEDIATE.  */
-//     unsigned int dontcare:1;    /* Nonzero if no complaint is to be made if
-//                                    this target cannot be remade.  */
-//     unsigned int ignore_vpath:1;/* Nonzero if we threw out VPATH name.  */
-//     unsigned int pat_searched:1;/* Nonzero if we already searched for
-//                                    pattern-specific variables.  */
-//     unsigned int no_diag:1;     /* True if the file failed to update and no
-//                                    diagnostics has been issued (dontcare). */
-//     unsigned int was_shuffled:1; /* Did we already shuffle 'deps'? used when
-//                                     --shuffle passes through the graph.  */
-//     unsigned int snapped:1;     /* True if the deps of this file have been
-//                                    secondary expanded.  */
-//   };
+    /// For a double-colon entry, this is the first double-colon entry for the same file.
+    /// Otherwise this is null.
+    double_colon: *file,
+
+    /// File's modtime, if already known.
+    last_mtime: makeint.FILE_TIMESTAMP,
+    /// File's modtime before any updating has been performed.
+    mtime_before_update: makeint.FILE_TIMESTAMP,
+    /// equal to 'considered' if file has been considered on current scan of goal chain
+    considered: c_uint,
+    /// Flags OR'd in for cmds; see commands.h.
+    command_flags: c_int,
+
+    packed_struct: packed struct {
+        update_status: update_status,
+
+        command_state: cmd_state,
+
+        /// True if the file is a builtin rule.
+        builtin: u1,
+        /// Non-0 means don't delete file on quit
+        precious: u1,
+        /// True if the file is a loaded object.
+        loaded: u1,
+        /// True if this loaded object was unloaded.
+        unloaded: u1,
+        /// Nonzero if this file's time stamp has only one-second resolution.
+        low_resolution_time: u1,
+        /// Nonzero if have searched for implicit rule for making this file; don't search again.
+        tried_implicit: u1,
+        /// Nonzero while updating deps of this file
+        updating: u1,
+        /// Nonzero if this file has been remade.
+        updated: u1,
+        /// Nonzero if file is described as target.
+        is_target: u1,
+        /// Nonzero if file was given on cmd line.
+        cmd_target: u1,
+        /// Nonzero if this is a phony file i.e., a prerequisite of .PHONY.
+        phony: u1,
+        /// Nonzero if this is an intermediate file.
+        intermediate: u1,
+        /// Nonzero if explicitly mentioned.
+        is_explicit: u1,
+        /// Nonzero means remove_intermediates should not delete it.
+        secondary: u1,
+        /// Nonzero means a file is a prereq to .NOTINTERMEDIATE.
+        notintermediate: u1,
+        /// Nonzero if no complaint is to be made if this target cannot be remade.
+        dontcare: u1,
+        /// Nonzero if we threw out VPATH name.
+        ignore_vpath: u1,
+        /// Nonzero if we already searched for pattern-specific variables.
+        pat_searched: u1,
+        /// True if the file failed to update and no diagnostics has been issued (dontcare).
+        no_diag: u1,
+        /// Did we already shuffle 'deps'? used when --shuffle passes through the graph.
+        was_shuffled: u1,
+        /// True if the deps of this file have been secondary expanded.
+        snapped: u1,
+    },
+};
 
 // extern struct file *default_file;
 
