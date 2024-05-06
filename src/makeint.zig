@@ -528,13 +528,12 @@
 
 // struct file;
 
-// /* Specify the location of elements read from makefiles.  */
-// typedef struct
-//   {
-//     const char *filenm;
-//     unsigned long lineno;
-//     unsigned long offset;
-//   } floc;
+// makefileから読み込んだ要素の場所を指定する。
+pub const floc = struct {
+    filenm: *const c_char,
+    lineno: c_ulong,
+    offset: c_ulong,
+};
 
 // const char *concat (unsigned int, ...);
 // void message (int prefix, size_t length, const char *fmt, ...)

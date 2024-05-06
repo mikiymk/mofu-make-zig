@@ -14,11 +14,14 @@
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
+const makeint = @import("makeint.zig");
+const filedef = @import("filedef.zig");
+
 /// パースとグロビングのために、名前のチェーンで使用される構造体。
-fn NAMESEQ(_t) type {
+fn NAMESEQ(_t: type) type {
     return struct {
         next: *_t,
-        name: *const char,
+        name: *const c_char,
     };
 }
 
@@ -42,21 +45,21 @@ fn NAMESEQ(_t) type {
 /// 'stem' は、静的パターン規則のこの dep 行のステム、または NULL である。
 /// explicit は、暗黙的ルール検索が実行され、前提条件
 /// が含まれていない場合に設定される。explicit が設定されている場合、ファイルは中間ではありません。
-fn DEP(_t) type {
+fn DEP(_t: type) type {
     return struct {
         nameseq: NAMESEQ(_t),
-        file: *file,
+        file: *filedef.file,
         shuf: *_t,
-        stem: *const char,
+        stem: *const c_char,
         packed_struct: packed struct {
-            flags: unsigned_int_8,
-            changed: unsigned_int_1,
-            ignore_mtime: unsigned_int_1,
-            staticpattern: unsigned_int_1,
-            need_2nd_expansion: unsigned_int_1,
-            ignore_automatic_vars: unsigned_int_1,
-            is_explicit: unsigned_int_1,
-            wait_here: unsigned_int_1,
+            flags: u8,
+            changed: u1,
+            ignore_mtime: u1,
+            staticpattern: u1,
+            need_2nd_expansion: u1,
+            ignore_automatic_vars: u1,
+            is_explicit: u1,
+            wait_here: u1,
         },
     };
 }
@@ -69,10 +72,10 @@ fn DEP(_t) type {
 /// 一つのゴールを表す構造。
 /// 構築されるゴールは、'next'を介して連鎖する、この連鎖を構成する。
 /// 'stem'は使われないが、これを含めて無視する方が単純である。
-const goaldep = struct {
+pub const goaldep = struct {
     dep: DEP(goaldep),
     error_: c_int,
-    floc: floc,
+    floc: makeint.floc,
 };
 
 // /* Options for parsing lists of filenames.  */
