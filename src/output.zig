@@ -4,6 +4,7 @@ const builtin = @import("builtin");
 const main = @import("./main.zig");
 const misc = @import("./misc.zig");
 const makeint = @import("./makeint.zig");
+const posixos = @import("./posixos.zig");
 
 const c_stdlib = @cImport({
     @cInclude("stdlib.h");
@@ -33,12 +34,12 @@ const c_string = @cImport({
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
-// struct output
-//   {
-//     int out;
-//     int err;
-//     unsigned int syncout:1;     /* True if we want to synchronize output.  */
-//  };
+pub const output = struct {
+    out: c_int,
+    err: c_int,
+    syncout: bool, // True if we want to synchronize output.
+
+};
 
 // extern struct output *output_context;
 // extern unsigned int stdio_traced;
@@ -125,7 +126,7 @@ pub fn FD_STDOUT() c_int {
 // struct output *output_context = NULL;
 // unsigned int stdio_traced = 0;
 
-// #define OUTPUT_NONE (-1)
+pub const OUTPUT_NONE = -1;
 
 // #define OUTPUT_ISSET(_out) ((_out)->out >= 0 || (_out)->err >= 0)
 
@@ -400,21 +401,21 @@ pub fn FD_STDOUT() c_int {
 // #endif /* NO_OUTPUT_SYNC */
 // /* 0xff replaced */
 
-// void
-// output_init (struct output *out)
-// {
-//   if (out)
-//     {
-//       out->out = out->err = OUTPUT_NONE;
-//       out->syncout = !!output_sync;
-//       return;
-//     }
+/// Initialize and close a child output structure:
+/// if NULL do this program's output (this should only be done once).
+/// 子出力構造体の初期化とクローズ：もしNULLなら、このプログラムの出力を行う（これは一度だけ行うべきである）。
+pub fn output_init(out: ?*output) void {
+    if (out) |o| {
+        o.out = OUTPUT_NONE;
+        o.err = OUTPUT_NONE;
+        o.syncout = main.output_sync != 0;
+        return;
+    }
 
-//   /* Force stdout/stderr into append mode (if they are files) to ensure
-//      parallel jobs won't lose output due to overlapping writes.  */
-//   fd_set_append (fileno (stdout));
-//   fd_set_append (fileno (stderr));
-// }
+    // Force stdout/stderr into append mode (if they are files) to ensure parallel jobs won't lose output due to overlapping writes.
+    posixos.fd_set_append(std.io.getStdOut());
+    posixos.fd_set_append(std.io.getStdErr());
+}
 
 // void
 // output_close (struct output *out)

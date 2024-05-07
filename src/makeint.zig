@@ -1,3 +1,5 @@
+const misc = @import("misc.zig");
+
 // /* Miscellaneous global declarations and portability cruft for GNU Make.
 // Copyright (C) 1988-2023 Free Software Foundation, Inc.
 // This file is part of GNU Make.
@@ -404,9 +406,13 @@ pub const FILE_TIMESTAMP = c_ulonglong;
 // #endif  /* WINDOWS32 */
 
 // /* ALL_SET() evaluates the second argument twice.  */
-// #define ANY_SET(_v,_m)  (((_v)&(_m)) != 0)
+pub fn ANY_SET(_v: anytype, _m: @TypeOf(_v)) bool {
+    return (_v & _m) != 0;
+}
 // #define NONE_SET(_v,_m) (! ANY_SET ((_v),(_m)))
-// #define ALL_SET(_v,_m)  (((_v)&(_m)) == (_m))
+pub fn ALL_SET(_v: anytype, _m: @TypeOf(_v)) bool {
+    return (_v & _m) == _m;
+}
 
 // /* Bitmasks for the STOPCHAR array.  */
 // #define MAP_NUL         0x0001
@@ -677,6 +683,10 @@ pub const floc = struct {
 // # define DBG(_f) compile-error
 // #endif
 
+pub fn SPIN(suffix: []const u8) void {
+    misc.spin(suffix);
+}
+
 // /* We omit these declarations on non-POSIX systems which define _POSIX_VERSION,
 //    because such systems often declare them in header files anyway.  */
 
@@ -713,10 +723,10 @@ pub const floc = struct {
 // # endif
 // #endif
 
-// #define OUTPUT_SYNC_NONE    0
-// #define OUTPUT_SYNC_LINE    1
-// #define OUTPUT_SYNC_TARGET  2
-// #define OUTPUT_SYNC_RECURSE 3
+pub const OUTPUT_SYNC_NONE = 0;
+pub const OUTPUT_SYNC_LINE = 1;
+pub const OUTPUT_SYNC_TARGET = 2;
+pub const OUTPUT_SYNC_RECURSE = 3;
 
 // /* Non-GNU systems may not declare this in unistd.h.  */
 // extern char **environ;

@@ -144,7 +144,7 @@ const builtin = @import("builtin");
 // #define HAVE_ALLOCA_H 1
 
 // /* Define to 1 if you have the `atexit' function. */
-// #define HAVE_ATEXIT 1
+pub const HAVE_ATEXIT = true;
 
 // /* Use case insensitive file names */
 // /* #undef HAVE_CASE_INSENSITIVE_FS */

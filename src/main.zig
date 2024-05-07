@@ -18,7 +18,7 @@ const builtin = @import("builtin");
 // this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 const makeint = @import("makeint.zig");
-// #include "os.h"
+const os = @import("os.zig");
 // #include "filedef.h"
 const dep = @import("dep.zig");
 // #include "variable.h"
@@ -51,6 +51,8 @@ const job = @import("job.zig");
 
 const config = @import("./config.zig");
 const expand = @import("./expand.zig");
+const posixos = @import("./posixos.zig");
+const output = @import("./output.zig");
 
 // #ifdef _AMIGA
 // int __stack = 20000; /* Make sure we have 20K of stack space */
@@ -587,7 +589,7 @@ pub const program: []const u8 = "";
 //    attempts to synchronize the output of parallel jobs such that the results
 //    of each job stay together.  */
 
-// int output_sync = OUTPUT_SYNC_NONE;
+pub var output_sync: c_int = makeint.OUTPUT_SYNC_NONE;
 
 // /* Nonzero if we have seen the '.NOTPARALLEL' target.
 //    This turns off parallel builds for this invocation of make.  */
@@ -609,7 +611,7 @@ pub const program: []const u8 = "";
 // /* If output-sync is enabled we'll collect all the output generated due to
 //    options, while reading makefiles, etc.  */
 
-// struct output make_sync;
+pub var make_sync: output.output = undefined;
 
 // /* 0xff replaced */
 // /* Mask of signals that are being caught with fatal_error_signal.  */
@@ -1214,15 +1216,15 @@ pub fn main() !void {
 
     _ = expand.initialize_variable_output();
 
-    //   /* Useful for attaching debuggers, etc.  */
-    //   SPIN ("main-entry");
+    // Useful for attaching debuggers, etc.
+    makeint.SPIN("main-entry");
 
     // #ifdef HAVE_ATEXIT
     //   if (ANY_SET (check_io_state (), IO_STDOUT_OK))
     //     atexit (close_stdout);
     // #endif
 
-    //   output_init (&make_sync);
+    output.output_init(&make_sync);
 
     //   initialize_stopchar_map();
 

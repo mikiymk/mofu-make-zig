@@ -1,6 +1,8 @@
 const std = @import("std");
 const builtin = @import("builtin");
 
+const config = @import("config.zig");
+
 const size_t = c_ulonglong;
 const ssize_t = c_ulong;
 
@@ -533,26 +535,23 @@ pub fn writebuf(fd: c_int, buffer: []const u8, len: size_t) ssize_t {
 
 // #ifdef MAKE_MAINTAINER_MODE
 
-// void
-// spin (const char* type)
-// {
-//   char filenm[256];
-//   struct stat dummy;
+fn panic(err: anyerror) noreturn {
+    @panic(@errorName(err));
+}
 
-//   sprintf (filenm, ".make-spin-%s", type);
+pub fn spin(type_: []const u8) void {
+    var filenm_buf: [256]u8 = .{0} ** 256;
+    const filenm = std.fmt.bufPrint(&filenm_buf, ".make-spin-{s}", .{type_}) catch |e| panic(e);
 
-//   if (stat (filenm, &dummy) == 0)
-//     {
-//       fprintf (stderr, "SPIN on %s\n", filenm);
-//       do
-// #ifdef WINDOWS32
-//         Sleep (1000);
-// #else
-//         sleep (1);
-// #endif
-//       while (stat (filenm, &dummy) == 0);
-//     }
-// }
+    _ = std.fs.cwd().statFile(filenm) catch return;
+
+    std.io.getStdErr().writer().print("SPIN on {s}\n", .{filenm}) catch |e| panic(e);
+    while (true) {
+        std.time.sleep(1000);
+
+        _ = std.fs.cwd().statFile(filenm) catch break;
+    }
+}
 
 // void
 // dbg (const char *fmt, ...)
