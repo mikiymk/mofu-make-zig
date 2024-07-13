@@ -32,7 +32,6 @@
 // esac
 // fi
 
-
 // as_nl='
 // '
 // export as_nl
@@ -79,7 +78,6 @@
 //       PATH_SEPARATOR=';'
 //   }
 // fi
-
 
 // # IFS
 // # We need space, tab and new line, in precisely that order.  Quoting is
@@ -236,7 +234,6 @@
 // fi; }
 // IFS=$as_save_IFS
 
-
 //       if test "x$CONFIG_SHELL" != x; then :
 //   export CONFIG_SHELL
 //              # We cannot yet assume a decent shell, so we have to provide a
@@ -357,7 +354,6 @@
 //     test -z "$as_dirs" || eval "mkdir $as_dirs"
 //   } || test -d "$as_dir" || as_fn_error $? "cannot create directory $as_dir"
 
-
 // } # as_fn_mkdir_p
 
 // # as_fn_executable_p FILE
@@ -401,7 +397,6 @@
 //     as_val=`expr "$@" || test $? -eq 1`
 //   }
 // fi # as_fn_arith
-
 
 // # as_fn_error STATUS ERROR [LINENO LOG_FD]
 // # ----------------------------------------
@@ -463,7 +458,6 @@
 // as_cr_Letters=$as_cr_letters$as_cr_LETTERS
 // as_cr_digits='0123456789'
 // as_cr_alnum=$as_cr_Letters$as_cr_digits
-
 
 //   as_lineno_1=$LINENO as_lineno_1a=$LINENO
 //   as_lineno_2=$LINENO as_lineno_2a=$LINENO
@@ -555,7 +549,6 @@
 
 // # Sed expression to map a string onto a valid variable name.
 // as_tr_sh="eval sed 'y%*+%pp%;s%[^_$as_cr_alnum]%_%g'"
-
 
 // test -n "$DJDIR" || exec 7<&0 </dev/null
 // exec 6>&1
@@ -838,7 +831,6 @@
 // PKG_CONFIG_LIBDIR
 // GUILE_CFLAGS
 // GUILE_LIBS'
-
 
 // # Initialize some variables set by options.
 // ac_init_help=
@@ -1313,14 +1305,12 @@
 
 // test "$silent" = yes && exec 6>/dev/null
 
-
 // ac_pwd=`pwd` && test -n "$ac_pwd" &&
 // ac_ls_di=`ls -di .` &&
 // ac_pwd_ls_di=`cd "$ac_pwd" && ls -di .` ||
 //   as_fn_error $? "working directory cannot be determined"
 // test "X$ac_ls_di" = "X$ac_pwd_ls_di" ||
 //   as_fn_error $? "pwd does not report name of working directory"
-
 
 // # Find the source files, if location was not specified.
 // if test -z "$srcdir"; then
@@ -2199,13 +2189,11 @@
 
 // cat >&5 <<_ACEOF
 
-
 // ## ----------- ##
 // ## Core tests. ##
 // ## ----------- ##
 
 // _ACEOF
-
 
 // # Keep a trace of the command line.
 // # Strip out --no-create and --no-recursion so they do not pile up.
@@ -2383,7 +2371,6 @@
 // #define PACKAGE_URL "$PACKAGE_URL"
 // _ACEOF
 
-
 // # Let the site file select an alternate cache file if it wants to.
 // # Prefer an explicitly selected file to automatically selected ones.
 // ac_site_file1=NONE
@@ -2507,10 +2494,6 @@
 // ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 // ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-
-
-
-
 // # Autoconf setup
 // ac_aux_dir=
 // for ac_dir in build-aux "$srcdir"/build-aux; do
@@ -2540,12 +2523,7 @@
 // ac_config_sub="$SHELL $ac_aux_dir/config.sub"  # Please don't use this var.
 // ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
-
-
 // ac_config_headers="$ac_config_headers src/config.h"
-
-
-
 
 // # Automake setup
 // # We have to enable "foreign" because ChangeLog is auto-generated
@@ -2790,7 +2768,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 // fi
 // if test -z "$ac_cv_prog_STRIP"; then
 //   ac_ct_STRIP=$STRIP
@@ -2928,7 +2905,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 //   test -n "$AWK" && break
 // done
 
@@ -3030,16 +3006,13 @@
 //   fi
 // fi
 
-
 // # Define the identity of the package.
 //  PACKAGE='make'
 //  VERSION='4.4.1'
 
-
 // cat >>confdefs.h <<_ACEOF
 // #define PACKAGE "$PACKAGE"
 // _ACEOF
-
 
 // cat >>confdefs.h <<_ACEOF
 // #define VERSION "$VERSION"
@@ -3049,15 +3022,11 @@
 
 // ACLOCAL=${ACLOCAL-"${am_missing_run}aclocal-${am__api_version}"}
 
-
 // AUTOCONF=${AUTOCONF-"${am_missing_run}autoconf"}
-
 
 // AUTOMAKE=${AUTOMAKE-"${am_missing_run}automake-${am__api_version}"}
 
-
 // AUTOHEADER=${AUTOHEADER-"${am_missing_run}autoheader"}
-
 
 // MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 
@@ -3073,15 +3042,10 @@
 // # in the wild :-(  We should find a proper way to deprecate it ...
 // AMTAR='$${TAR-tar}'
 
-
 // # We'll loop over all known methods to create a tar archive until one works.
 // _am_tools='gnutar  pax cpio none'
 
 // am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
-
-
-
-
 
 // # Variables for tags utilities; see am/tags.am
 // if test -z "$CTAGS"; then
@@ -3095,8 +3059,6 @@
 // if test -z "$CSCOPE"; then
 //   CSCOPE=cscope
 // fi
-
-
 
 // # POSIX will say in a future version that running "rm -f" with no argument
 // # is OK; and we want to be able to make that assumption in our Makefile
@@ -3139,7 +3101,6 @@
 //     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
 //   fi
 // fi
-
 
 // # Checks for programs.
 
@@ -3205,7 +3166,6 @@
 //   AMDEP_FALSE=
 // fi
 
-
 // ac_ext=c
 // ac_cpp='$CPP $CPPFLAGS'
 // ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -3247,7 +3207,6 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
 // fi
-
 
 // fi
 // if test -z "$ac_cv_prog_CC"; then
@@ -3341,7 +3300,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 //   fi
 // fi
 // if test -z "$CC"; then
@@ -3398,7 +3356,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 // fi
 // if test -z "$CC"; then
 //   if test -n "$ac_tool_prefix"; then
@@ -3439,7 +3396,6 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
 // fi
-
 
 //     test -n "$CC" && break
 //   done
@@ -3484,7 +3440,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 //   test -n "$ac_ct_CC" && break
 // done
 
@@ -3502,7 +3457,6 @@
 // fi
 
 // fi
-
 
 // test -z "$CC" && { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 // $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -4053,8 +4007,6 @@
 // ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 // ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-
-
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler is clang" >&5
 // $as_echo_n "checking whether the compiler is clang... " >&6; }
 // if ${gl_cv_compiler_clang+:} false; then :
@@ -4086,7 +4038,6 @@
 // fi
 // { $as_echo "$as_me:${as_lineno-$LINENO}: result: $gl_cv_compiler_clang" >&5
 // $as_echo "$gl_cv_compiler_clang" >&6; }
-
 
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for compiler option needed when checking for declarations" >&5
 // $as_echo_n "checking for compiler option needed when checking for declarations... " >&6; }
@@ -4126,7 +4077,6 @@
 //   else
 //     ac_compile_for_check_decl="$ac_compile"
 //   fi
-
 
 // depcc="$CC"   am_compiler_list=
 
@@ -4254,8 +4204,6 @@
 //   am__fastdepCC_TRUE='#'
 //   am__fastdepCC_FALSE=
 // fi
-
-
 
 // ac_ext=c
 // ac_cpp='$CPP $CPPFLAGS'
@@ -4394,7 +4342,6 @@
 // ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 // ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for grep that handles long lines and -e" >&5
 // $as_echo_n "checking for grep that handles long lines and -e... " >&6; }
 // if ${ac_cv_path_GREP+:} false; then :
@@ -4456,7 +4403,6 @@
 // { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_GREP" >&5
 // $as_echo "$ac_cv_path_GREP" >&6; }
 //  GREP="$ac_cv_path_GREP"
-
 
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for egrep" >&5
 // $as_echo_n "checking for egrep... " >&6; }
@@ -4523,7 +4469,6 @@
 // { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP" >&5
 // $as_echo "$ac_cv_path_EGREP" >&6; }
 //  EGREP="$ac_cv_path_EGREP"
-
 
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ANSI C header files" >&5
 // $as_echo_n "checking for ANSI C header files... " >&6; }
@@ -4653,10 +4598,6 @@
 
 // done
 
-
-
-
-
 //   for ac_header in $ac_header_list
 // do :
 //   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
@@ -4670,14 +4611,6 @@
 // fi
 
 // done
-
-
-
-
-
-
-
-
 
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether it is safe to define __EXTENSIONS__" >&5
 // $as_echo_n "checking whether it is safe to define __EXTENSIONS__... " >&6; }
@@ -4849,7 +4782,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 // fi
 // if test -z "$ac_cv_prog_CC"; then
 //   ac_ct_CC=$CC
@@ -4942,7 +4874,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 //   fi
 // fi
 // if test -z "$CC"; then
@@ -4999,7 +4930,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 // fi
 // if test -z "$CC"; then
 //   if test -n "$ac_tool_prefix"; then
@@ -5040,7 +4970,6 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
 // fi
-
 
 //     test -n "$CC" && break
 //   done
@@ -5085,7 +5014,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 //   test -n "$ac_ct_CC" && break
 // done
 
@@ -5103,7 +5031,6 @@
 // fi
 
 // fi
-
 
 // test -z "$CC" && { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 // $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -5404,8 +5331,6 @@
 // ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 // ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-
-
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler is clang" >&5
 // $as_echo_n "checking whether the compiler is clang... " >&6; }
 // if ${gl_cv_compiler_clang+:} false; then :
@@ -5437,7 +5362,6 @@
 // fi
 // { $as_echo "$as_me:${as_lineno-$LINENO}: result: $gl_cv_compiler_clang" >&5
 // $as_echo "$gl_cv_compiler_clang" >&6; }
-
 
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for compiler option needed when checking for declarations" >&5
 // $as_echo_n "checking for compiler option needed when checking for declarations... " >&6; }
@@ -5477,7 +5401,6 @@
 //   else
 //     ac_compile_for_check_decl="$ac_compile"
 //   fi
-
 
 // depcc="$CC"   am_compiler_list=
 
@@ -5606,7 +5529,6 @@
 //   am__fastdepCC_FALSE=
 // fi
 
-
 // ac_ext=cpp
 // ac_cpp='$CXXCPP $CPPFLAGS'
 // ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -5655,7 +5577,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 //     test -n "$CXX" && break
 //   done
 // fi
@@ -5698,7 +5619,6 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
 // fi
-
 
 //   test -n "$ac_ct_CXX" && break
 // done
@@ -5991,12 +5911,9 @@
 //   am__fastdepCXX_FALSE=
 // fi
 
-
-
 // cat >>confdefs.h <<_ACEOF
 // #define MAKE_CXX "$CXX"
 // _ACEOF
-
 
 // # Configure gnulib
 // # Make sure we can run config.sub.
@@ -6036,7 +5953,6 @@
 // IFS=$ac_save_IFS
 // case $build_os in *\ *) build_os=`echo "$build_os" | sed 's/ /-/g'`;; esac
 
-
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking host system type" >&5
 // $as_echo_n "checking host system type... " >&6; }
 // if ${ac_cv_host+:} false; then :
@@ -6069,11 +5985,6 @@
 // IFS=$ac_save_IFS
 // case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
-
-
-
-
-
 //   case "$host_os" in
 //     openbsd*)
 
@@ -6081,9 +5992,6 @@
 
 //       ;;
 //   esac
-
-
-
 
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Minix Amsterdam compiler" >&5
 // $as_echo_n "checking for Minix Amsterdam compiler... " >&6; }
@@ -6106,7 +6014,6 @@
 //   gl_cv_c_amsterdam_compiler=no
 // fi
 // rm -f conftest*
-
 
 // fi
 // { $as_echo "$as_me:${as_lineno-$LINENO}: result: $gl_cv_c_amsterdam_compiler" >&5
@@ -6159,7 +6066,6 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
 // fi
-
 
 // fi
 // if test -z "$ac_cv_prog_AR"; then
@@ -6219,8 +6125,6 @@
 //     ARFLAGS='cr'
 //   fi
 
-
-
 //   if test -z "$RANLIB"; then
 //     if test $gl_cv_c_amsterdam_compiler = yes; then
 //       RANLIB=':'
@@ -6261,7 +6165,6 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
 // fi
-
 
 // fi
 // if test -z "$ac_cv_prog_RANLIB"; then
@@ -6319,7 +6222,6 @@
 
 //     fi
 //   fi
-
 
 //   if test "$enable_largefile" != no; then :
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $CC option to enable large file support" >&5
@@ -6486,16 +6388,9 @@
 
 // fi
 
-
-
 // fi
 
-
-
-
 //   # Pre-early section.
-
-
 
 //   # Code from module alloca:
 //   # Code from module alloca-opt:
@@ -6516,14 +6411,6 @@
 //   # Code from module snippet/warn-on-use:
 //   # Code from module std-gnu11:
 //   # Code from module stdbool:
-
-
-
-
-
-
-
-
 
 //                         # Check whether --enable-cross-guesses was given.
 // if test "${enable_cross_guesses+set}" = set; then :
@@ -6546,7 +6433,6 @@
 //   fi
 //           LIBC_FATAL_STDERR_=1
 //   export LIBC_FATAL_STDERR_
-
 
 // ac_fn_c_check_type "$LINENO" "size_t" "ac_cv_type_size_t" "$ac_includes_default"
 // if test "x$ac_cv_type_size_t" = xyes; then :
@@ -6652,14 +6538,9 @@
 // # contain a buggy version.  If you still want to use their alloca,
 // # use ar to extract alloca.o from them instead of compiling alloca.c.
 
-
-
-
-
 // ALLOCA=\${LIBOBJDIR}alloca.$ac_objext
 
 // $as_echo "#define C_ALLOCA 1" >>confdefs.h
-
 
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking stack direction for C alloca" >&5
 // $as_echo_n "checking stack direction for C alloca... " >&6; }
@@ -6705,9 +6586,7 @@
 // #define STACK_DIRECTION $ac_cv_c_stack_direction
 // _ACEOF
 
-
 // fi
-
 
 //   ac_fn_c_check_func "$LINENO" "eaccess" "ac_cv_func_eaccess"
 // if test "x$ac_cv_func_eaccess" = xyes; then :
@@ -6718,27 +6597,9 @@
 
 // fi
 
-
-
 //     HAVE_DECL_GETLOADAVG=1;
 
-
-
-
-
-
-
-
-
-
 //   GL_GNULIB_GETLOADAVG=0
-
-
-
-
-
-
-
 
 //   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 // /* end confdefs.h.  */
@@ -6773,10 +6634,6 @@
 
 // fi
 // rm -f conftest*
-
-
-
-
 
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking host CPU and C ABI" >&5
 // $as_echo_n "checking host CPU and C ABI... " >&6; }
@@ -7145,8 +7002,6 @@
 //     HOST_CPU=`echo "$gl_cv_host_cpu_c_abi" | sed -e 's/-.*//'`
 //   HOST_CPU_C_ABI="$gl_cv_host_cpu_c_abi"
 
-
-
 //   # This was
 //   #   AC_DEFINE_UNQUOTED([__${HOST_CPU}__])
 //   #   AC_DEFINE_UNQUOTED([__${HOST_CPU_C_ABI}__])
@@ -7159,10 +7014,6 @@
 // #define __${HOST_CPU_C_ABI}__ 1
 // #endif
 // EOF
-
-
-
-
 
 //   case "$host_os" in
 //     mingw*)
@@ -7240,10 +7091,6 @@
 //       ;;
 //   esac
 
-
-
-
-
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for C compiler option to allow warnings" >&5
 // $as_echo_n "checking for C compiler option to allow warnings... " >&6; }
 // if ${gl_cv_cc_wallow+:} false; then :
@@ -7277,9 +7124,6 @@
 //     none) GL_CFLAG_ALLOW_WARNINGS='' ;;
 //     *)    GL_CFLAG_ALLOW_WARNINGS="$gl_cv_cc_wallow" ;;
 //   esac
-
-
-
 
 //       GL_CFLAG_GNULIB_WARNINGS=''
 //   if test -n "$GL_CFLAG_ALLOW_WARNINGS"; then
@@ -7324,9 +7168,6 @@
 //     rm -f conftest.c conftest.out
 //   fi
 
-
-
-
 //    if false; then
 //   GL_COND_LIBTOOL_TRUE=
 //   GL_COND_LIBTOOL_FALSE='#'
@@ -7340,20 +7181,8 @@
 //   gl_ltlibdeps=
 //   gl_m4_base='m4'
 
-
-
-
-
-
-
-
-
-
-
-
 //   gl_source_base='lib'
 //   gl_source_base_prefix=
-
 
 //   if test $ac_cv_func_alloca_works = no; then
 //     :
@@ -7383,7 +7212,6 @@
 // fi
 // rm -f conftest*
 
-
 // fi
 // { $as_echo "$as_me:${as_lineno-$LINENO}: result: $gl_cv_rpl_alloca" >&5
 // $as_echo "$gl_cv_rpl_alloca" >&6; }
@@ -7405,11 +7233,6 @@
 //     HAVE_ALLOCA_H=0
 //   fi
 
-
-
-
-
-
 //   case "$GL_GENERATE_ALLOCA_H" in
 //     false) ALLOCA_H='' ;;
 //     true)
@@ -7419,7 +7242,6 @@
 //       ;;
 //     *) echo "*** GL_GENERATE_ALLOCA_H is not set correctly" 1>&2; exit 1 ;;
 //   esac
-
 
 //      if $GL_GENERATE_ALLOCA_H; then
 //   GL_GENERATE_ALLOCA_H_TRUE=
@@ -7434,25 +7256,7 @@
 //     GL_GENERATE_ALLOCA_H_FALSE='#'
 //   fi
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // # Persuade glibc <stdlib.h> to declare getloadavg().
-
 
 // gl_save_LIBS=$LIBS
 
@@ -7801,11 +7605,9 @@
 
 // fi
 
-
 //      fi
 //    fi
 // fi
-
 
 // if test "x$gl_save_LIBS" = x; then
 //   GETLOADAVG_LIBS=$LIBS
@@ -7813,7 +7615,6 @@
 //   GETLOADAVG_LIBS=`echo "$LIBS" | sed "s!$gl_save_LIBS!!"`
 // fi
 // LIBS=$gl_save_LIBS
-
 
 // # Test whether the system declares getloadavg. Solaris has the function
 // # but declares it in <sys/loadavg.h>, not <stdlib.h>.
@@ -7848,8 +7649,6 @@
 //   HAVE_DECL_GETLOADAVG=0
 // fi
 
-
-
 //      if test $HAVE_GETLOADAVG = 0; then
 //   GL_COND_OBJ_GETLOADAVG_TRUE=
 //   GL_COND_OBJ_GETLOADAVG_FALSE='#'
@@ -7865,10 +7664,7 @@
 
 //   if test -z "$GL_COND_OBJ_GETLOADAVG_TRUE"; then :
 
-
 // # Figure out what our getloadavg.c needs.
-
-
 
 // # On HPUX9, an unprivileged user can get load averages this way.
 // if test $gl_func_getloadavg_done = no; then
@@ -7903,11 +7699,9 @@
 
 // $as_echo "#define UMAX 1" >>confdefs.h
 
-
 // $as_echo "#define UMAX4_3 1" >>confdefs.h
 
 // fi
-
 
 // fi
 
@@ -7917,7 +7711,6 @@
 //   gl_func_getloadavg_done=yes; $as_echo "#define UMAX 1" >>confdefs.h
 
 // fi
-
 
 // fi
 
@@ -7951,7 +7744,6 @@
 // #define HAVE_STRUCT_NLIST_N_UN_N_NAME 1
 // _ACEOF
 
-
 // fi
 
 //  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -7982,28 +7774,11 @@
 
 // done
 
-
 // fi
-
-
-
-
-
-
-
-
 
 //           GL_GNULIB_GETLOADAVG=1
 
-
-
-
-
 // $as_echo "#define GNULIB_TEST_GETLOADAVG 1" >>confdefs.h
-
-
-
-
 
 //   # Check the system to see if it provides GNU glob.  If not, use our
 //   # local version.  Also avoid versions of glibc which have symlink bug
@@ -8146,7 +7921,6 @@
 
 // fi
 
-
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for bool, true, false" >&5
 // $as_echo_n "checking for bool, true, false... " >&6; }
 // if ${gl_cv_c_bool+:} false; then :
@@ -8176,33 +7950,10 @@
 
 //   fi
 
-
-
-
-
 //   # End of code from modules
-
-
-
-
-
-
-
-
 
 //   gltests_libdeps=
 //   gltests_ltlibdeps=
-
-
-
-
-
-
-
-
-
-
-
 
 //   gl_source_base='tests'
 //   gl_source_base_prefix=
@@ -8210,23 +7961,9 @@
 
 //   gl_module_indicator_condition=$gltests_WITNESS
 
-
-
-
-
-
-
-
-
-
-
-
 //   LIBGNU_LIBDEPS="$gl_libdeps"
 
 //   LIBGNU_LTLIBDEPS="$gl_ltlibdeps"
-
-
-
 
 // if test -n "$ac_tool_prefix"; then
 //   # Extract the first word of "${ac_tool_prefix}ranlib", so it can be a program name with args.
@@ -8264,7 +8001,6 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
 // fi
-
 
 // fi
 // if test -z "$ac_cv_prog_RANLIB"; then
@@ -8494,7 +8230,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 // # Perl is needed for the test suite (only)
 // # Extract the first word of "perl", so it can be a program name with args.
 // set dummy perl; ac_word=$2
@@ -8532,8 +8267,6 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
 // fi
-
-
 
 // # Specialized system macros
 
@@ -8761,7 +8494,6 @@
 //  presetting ac_cv_c_bigendian=no (or yes) will help" "$LINENO" 5 ;;
 //  esac
 
-
 // # Enable gettext, in "external" mode.
 
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for a sed that does not truncate output" >&5
@@ -8833,7 +8565,6 @@
 //  SED="$ac_cv_path_SED"
 //   rm -f conftest.sed
 
-
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether NLS is requested" >&5
 // $as_echo_n "checking whether NLS is requested... " >&6; }
 //     # Check whether --enable-nls was given.
@@ -8846,13 +8577,7 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_NLS" >&5
 // $as_echo "$USE_NLS" >&6; }
 
-
-
-
 //       GETTEXT_MACRO_VERSION=0.19
-
-
-
 
 // # Prepare PATH_SEPARATOR.
 // # The user is always right.
@@ -8962,8 +8687,6 @@
 // $as_echo "no" >&6; }
 // fi
 
-
-
 //     case `$MSGFMT --version | sed 1q | sed -e 's,^[^0-9]*,,'` in
 //     '' | 0.[0-9] | 0.[0-9].* | 0.1[0-4] | 0.1[0-4].*) MSGFMT_015=: ;;
 //     *) MSGFMT_015=$MSGFMT ;;
@@ -8973,8 +8696,6 @@
 //     '' | 0.[0-9] | 0.[0-9].* | 0.1[0-4] | 0.1[0-4].*) GMSGFMT_015=: ;;
 //     *) GMSGFMT_015=$GMSGFMT ;;
 //   esac
-
-
 
 // # Prepare PATH_SEPARATOR.
 // # The user is always right.
@@ -9051,8 +8772,6 @@
 //     *) XGETTEXT_015=$XGETTEXT ;;
 //   esac
 
-
-
 // # Prepare PATH_SEPARATOR.
 // # The user is always right.
 // if test "${PATH_SEPARATOR+set}" != set; then
@@ -9120,16 +8839,11 @@
 // $as_echo "no" >&6; }
 // fi
 
-
 //         test -n "$localedir" || localedir='${datadir}/locale'
-
 
 //     test -n "${XGETTEXT_EXTRA_OPTIONS+set}" || XGETTEXT_EXTRA_OPTIONS=
 
-
 //   ac_config_commands="$ac_config_commands po-directories"
-
-
 
 //       if test "X$prefix" = "XNONE"; then
 //     acl_final_prefix="$ac_default_prefix"
@@ -9145,8 +8859,6 @@
 //   prefix="$acl_final_prefix"
 //   eval acl_final_exec_prefix=\"$acl_final_exec_prefix\"
 //   prefix="$acl_save_prefix"
-
-
 
 // # Check whether --with-gnu-ld was given.
 // if test "${with_gnu_ld+set}" = set; then :
@@ -9264,9 +8976,6 @@
 // $as_echo "$acl_cv_prog_gnu_ld" >&6; }
 // with_gnu_ld=$acl_cv_prog_gnu_ld
 
-
-
-
 //                                                 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for shared library run path origin" >&5
 // $as_echo_n "checking for shared library run path origin... " >&6; }
 // if ${acl_cv_rpath+:} false; then :
@@ -9298,9 +9007,6 @@
 //   enable_rpath=yes
 // fi
 
-
-
-
 //   acl_libdirstem=lib
 //   acl_libdirstem2=
 //   case "$host_os" in
@@ -9325,7 +9031,6 @@
 //   gl_cv_solaris_64bit=no
 // fi
 // rm -f conftest*
-
 
 // fi
 // { $as_echo "$as_me:${as_lineno-$LINENO}: result: $gl_cv_solaris_64bit" >&5
@@ -9362,17 +9067,6 @@
 //   esac
 //   test -n "$acl_libdirstem2" || acl_libdirstem2="$acl_libdirstem"
 
-
-
-
-
-
-
-
-
-
-
-
 //     use_additional=yes
 
 //   acl_save_prefix="$prefix"
@@ -9385,7 +9079,6 @@
 
 //   exec_prefix="$acl_save_exec_prefix"
 //   prefix="$acl_save_prefix"
-
 
 // # Check whether --with-libiconv-prefix was given.
 // if test "${with_libiconv_prefix+set}" = set; then :
@@ -9822,36 +9515,6 @@
 //     done
 //   fi
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CFPreferencesCopyAppValue" >&5
 // $as_echo_n "checking for CFPreferencesCopyAppValue... " >&6; }
 // if ${gt_cv_func_CFPreferencesCopyAppValue+:} false; then :
@@ -9925,11 +9588,6 @@
 //     INTL_MACOSX_LIBS="-Wl,-framework -Wl,CoreFoundation"
 //   fi
 
-
-
-
-
-
 //   LIBINTL=
 //   LTLIBINTL=
 //   POSUB=
@@ -9944,7 +9602,6 @@
 
 //     if test "$USE_NLS" = "yes"; then
 //     gt_use_preinstalled_gnugettext=no
-
 
 //         if test $gt_api_version -ge 3; then
 //           gt_revision_test_code='
@@ -10000,10 +9657,6 @@
 
 //         if { eval "gt_val=\$$gt_func_gnugettext_libc"; test "$gt_val" != "yes"; }; then
 
-
-
-
-
 //           am_save_CPPFLAGS="$CPPFLAGS"
 
 //   for element in $INCICONV; do
@@ -10027,7 +9680,6 @@
 //       CPPFLAGS="${CPPFLAGS}${CPPFLAGS:+ }$element"
 //     fi
 //   done
-
 
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for iconv" >&5
 // $as_echo_n "checking for iconv... " >&6; }
@@ -10256,16 +9908,6 @@
 //     LTLIBICONV=
 //   fi
 
-
-
-
-
-
-
-
-
-
-
 //     use_additional=yes
 
 //   acl_save_prefix="$prefix"
@@ -10278,7 +9920,6 @@
 
 //   exec_prefix="$acl_save_exec_prefix"
 //   prefix="$acl_save_prefix"
-
 
 // # Check whether --with-libintl-prefix was given.
 // if test "${with_libintl_prefix+set}" = set; then :
@@ -10715,11 +10356,6 @@
 //     done
 //   fi
 
-
-
-
-
-
 //           { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GNU gettext in libintl" >&5
 // $as_echo_n "checking for GNU gettext in libintl... " >&6; }
 // if eval \${$gt_func_gnugettext_libintl+:} false; then :
@@ -10812,8 +10448,6 @@
 //           INCINTL=
 //         fi
 
-
-
 //     if test -n "$INTL_MACOSX_LIBS"; then
 //       if test "$gt_use_preinstalled_gnugettext" = "yes" \
 //          || test "$nls_cv_use_gnu_gettext" = "yes"; then
@@ -10885,9 +10519,7 @@
 
 //       fi
 
-
 // $as_echo "#define HAVE_GETTEXT 1" >>confdefs.h
-
 
 // $as_echo "#define HAVE_DCGETTEXT 1" >>confdefs.h
 
@@ -10896,15 +10528,7 @@
 //         POSUB=po
 //   fi
 
-
-
 //     INTLLIBS="$LIBINTL"
-
-
-
-
-
-
 
 // # Checks for libraries.
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing strerror" >&5
@@ -11018,7 +10642,6 @@
 //   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
 
 // fi
-
 
 // ac_header_dirent=no
 // for ac_hdr in dirent.h sys/ndir.h sys/dir.h ndir.h; do
@@ -11220,7 +10843,6 @@
 
 // fi
 
-
 // for ac_header in stdlib.h string.h strings.h locale.h unistd.h limits.h \
 //                   memory.h sys/param.h sys/resource.h sys/timeb.h sys/time.h \
 //                   sys/select.h sys/file.h fcntl.h spawn.h
@@ -11235,8 +10857,6 @@
 // fi
 
 // done
-
-
 
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for an ANSI C-conforming const" >&5
 // $as_echo_n "checking for an ANSI C-conforming const... " >&6; }
@@ -11344,7 +10964,6 @@
 
 // $as_echo "#define uid_t int" >>confdefs.h
 
-
 // $as_echo "#define gid_t int" >>confdefs.h
 
 // fi
@@ -11392,7 +11011,6 @@
 // _ACEOF
 
 // fi
-
 
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unsigned long long int" >&5
 // $as_echo_n "checking for unsigned long long int... " >&6; }
@@ -11449,8 +11067,6 @@
 // $as_echo "#define HAVE_UNSIGNED_LONG_LONG_INT 1" >>confdefs.h
 
 //   fi
-
-
 
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for long long int" >&5
 // $as_echo_n "checking for long long int... " >&6; }
@@ -11510,8 +11126,6 @@
 
 //   fi
 
-
-
 //   ac_fn_c_check_type "$LINENO" "intmax_t" "ac_cv_type_intmax_t" "$ac_includes_default"
 // if test "x$ac_cv_type_intmax_t" = xyes; then :
 
@@ -11527,9 +11141,6 @@
 // _ACEOF
 
 // fi
-
-
-
 
 //   ac_fn_c_check_type "$LINENO" "uintmax_t" "ac_cv_type_uintmax_t" "$ac_includes_default"
 // if test "x$ac_cv_type_uintmax_t" = xyes; then :
@@ -11547,8 +11158,6 @@
 
 // fi
 
-
-
 // # Check for sig_atomic_t
 
 //   ac_fn_c_check_type "$LINENO" "sig_atomic_t" "ac_cv_type_sig_atomic_t" "#include <signal.h>
@@ -11559,14 +11168,11 @@
 // #define HAVE_SIG_ATOMIC_T 1
 // _ACEOF
 
-
 // else
 
 // $as_echo "#define sig_atomic_t int" >>confdefs.h
 
 // fi
-
-
 
 // # Find out whether our struct stat returns nanosecond resolution timestamps.
 
@@ -11618,7 +11224,6 @@
 
 //   fi
 
-
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to use high resolution file timestamps" >&5
 // $as_echo_n "checking whether to use high resolution file timestamps... " >&6; }
 // if ${make_cv_file_timestamp_hi_res+:} false; then :
@@ -11658,7 +11263,6 @@
 // cat >>confdefs.h <<_ACEOF
 // #define FILE_TIMESTAMP_HI_RES $val
 // _ACEOF
-
 
 // if test "$make_cv_file_timestamp_hi_res" = yes; then :
 //    # Solaris 2.5.1 needs -lposix4 to get the clock_gettime function.
@@ -11723,7 +11327,6 @@
 
 // $as_echo "#define HAVE_CLOCK_GETTIME 1" >>confdefs.h
 
-
 // fi
 
 // fi
@@ -11766,7 +11369,6 @@
 
 // $as_echo "#define HAVE_GETTIMEOFDAY 1" >>confdefs.h
 
-
 // fi
 
 // for ac_func in strtoll strdup strndup stpcpy memrchr mempcpy umask mkstemp \
@@ -11786,7 +11388,6 @@
 // fi
 // done
 
-
 // # We need to check declarations, not just existence, because on Tru64 this
 // # function is not declared without special flags, which themselves cause
 // # other problems.  We'll just use our own.
@@ -11802,7 +11403,6 @@
 // cat >>confdefs.h <<_ACEOF
 // #define HAVE_DECL_BSD_SIGNAL $ac_have_decl
 // _ACEOF
-
 
 // for ac_header in vfork.h
 // do :
@@ -12017,7 +11617,6 @@
 
 // fi
 
-
 // # Rumor has it that strcasecmp lives in -lresolv on some odd systems.
 // # It doesn't hurt much to use our own if we can't find it so I don't
 // # make the effort here.
@@ -12032,7 +11631,6 @@
 
 // fi
 // done
-
 
 // # strcoll() is used by the GNU glob library
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working strcoll" >&5
@@ -12116,9 +11714,7 @@
 
 // fi
 
-
 // # dir.c and our glob.c use dirent.d_type if available
-
 
 //   ac_fn_c_check_member "$LINENO" "struct dirent" "d_type" "ac_cv_member_struct_dirent_d_type" "
 // #include <sys/types.h>
@@ -12144,10 +11740,7 @@
 // #define HAVE_STRUCT_DIRENT_D_TYPE 1
 // _ACEOF
 
-
 // fi
-
-
 
 // # See if the user wants to add (or not) GNU Guile support
 
@@ -12156,15 +11749,8 @@
 //   withval=$with_guile;
 // fi
 
-
 // # Annoyingly, each version of Guile comes with it's own PC file so we have to
 // # specify them as individual packages.  Ugh.
-
-
-
-
-
-
 
 // if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
 // 	if test -n "$ac_tool_prefix"; then
@@ -12206,7 +11792,6 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
 // fi
-
 
 // fi
 // if test -z "$ac_cv_path_PKG_CONFIG"; then
@@ -12339,8 +11924,6 @@
 //     pkg_failed=untried
 // fi
 
-
-
 // if test $pkg_failed = yes; then
 //         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 // $as_echo "no" >&6; }
@@ -12405,7 +11988,6 @@
 //   have_guile=no
 // fi
 
-
 //     if test "$have_guile" = yes; then :
 //    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether we can link GNU Guile" >&5
 // $as_echo_n "checking whether we can link GNU Guile... " >&6; }
@@ -12460,7 +12042,6 @@
 //   HAVE_GUILE_FALSE=
 // fi
 
-
 // ac_fn_c_check_decl "$LINENO" "sys_siglist" "ac_cv_have_decl_sys_siglist" "$ac_includes_default
 // #include <signal.h>
 // /* NetBSD declares sys_siglist in unistd.h.  */
@@ -12512,8 +12093,6 @@
 // cat >>confdefs.h <<_ACEOF
 // #define HAVE_DECL___SYS_SIGLIST $ac_have_decl
 // _ACEOF
-
-
 
 // # Check out the wait reality.
 // for ac_header in sys/wait.h
@@ -12588,15 +12167,12 @@
 
 // $as_echo "#define HAVE_UNION_WAIT 1" >>confdefs.h
 
-
 // fi
-
 
 // # If we're building on Windows/DOS/OS/2, add some support for DOS drive specs.
 // if test "$PATH_SEPARATOR" = ';'; then :
 
 // $as_echo "#define HAVE_DOS_PATHS 1" >>confdefs.h
-
 
 // fi
 
@@ -12640,7 +12216,6 @@
 
 // else
 
-
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gethostname in -lnsl" >&5
 // $as_echo_n "checking for gethostname in -lnsl... " >&6; }
 // if ${ac_cv_lib_nsl_gethostname+:} false; then :
@@ -12679,9 +12254,7 @@
 // $as_echo "$ac_cv_lib_nsl_gethostname" >&6; }
 // if test "x$ac_cv_lib_nsl_gethostname" = xyes; then :
 
-
 // cf_tr_func=`echo gethostname | tr '[a-z]' '[A-Z]'`
-
 
 // cat >>confdefs.h <<_ACEOF
 // #define HAVE_$cf_tr_func 1
@@ -12693,7 +12266,6 @@
 
 //         ac_cv_func_gethostname=unknown
 //         unset ac_cv_func_gethostname 2>/dev/null
-
 
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gethostname in -lsocket" >&5
 // $as_echo_n "checking for gethostname in -lsocket... " >&6; }
@@ -12733,9 +12305,7 @@
 // $as_echo "$ac_cv_lib_socket_gethostname" >&6; }
 // if test "x$ac_cv_lib_socket_gethostname" = xyes; then :
 
-
 // cf_tr_func=`echo gethostname | tr '[a-z]' '[A-Z]'`
-
 
 // cat >>confdefs.h <<_ACEOF
 // #define HAVE_$cf_tr_func 1
@@ -12750,9 +12320,7 @@
 
 // fi
 
-
 // fi
-
 
 // fi
 // done
@@ -12769,7 +12337,6 @@
 // LIBS="-linet  $LIBS"
 // cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 // /* end confdefs.h.  */
-
 
 // int
 // main ()
@@ -12805,7 +12372,6 @@
 // _ACEOF
 
 // else
-
 
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
 // $as_echo_n "checking for socket in -lsocket... " >&6; }
@@ -12845,9 +12411,7 @@
 // $as_echo "$ac_cv_lib_socket_socket" >&6; }
 // if test "x$ac_cv_lib_socket_socket" = xyes; then :
 
-
 // cf_tr_func=`echo socket | tr '[a-z]' '[A-Z]'`
-
 
 // cat >>confdefs.h <<_ACEOF
 // #define HAVE_$cf_tr_func 1
@@ -12859,7 +12423,6 @@
 
 //         ac_cv_func_socket=unknown
 //         unset ac_cv_func_socket 2>/dev/null
-
 
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lbsd" >&5
 // $as_echo_n "checking for socket in -lbsd... " >&6; }
@@ -12899,9 +12462,7 @@
 // $as_echo "$ac_cv_lib_bsd_socket" >&6; }
 // if test "x$ac_cv_lib_bsd_socket" = xyes; then :
 
-
 // cf_tr_func=`echo socket | tr '[a-z]' '[A-Z]'`
-
 
 // cat >>confdefs.h <<_ACEOF
 // #define HAVE_$cf_tr_func 1
@@ -12916,9 +12477,7 @@
 
 // fi
 
-
 // fi
-
 
 // fi
 // done
@@ -12934,7 +12493,6 @@
 // _ACEOF
 
 // else
-
 
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gethostbyname in -lnsl" >&5
 // $as_echo_n "checking for gethostbyname in -lnsl... " >&6; }
@@ -12974,9 +12532,7 @@
 // $as_echo "$ac_cv_lib_nsl_gethostbyname" >&6; }
 // if test "x$ac_cv_lib_nsl_gethostbyname" = xyes; then :
 
-
 // cf_tr_func=`echo gethostbyname | tr '[a-z]' '[A-Z]'`
-
 
 // cat >>confdefs.h <<_ACEOF
 // #define HAVE_$cf_tr_func 1
@@ -12991,10 +12547,8 @@
 
 // fi
 
-
 // fi
 // done
-
 
 // fi
 
@@ -13011,12 +12565,10 @@
 //                       CPPFLAGS="$make_cppflags" make_badcust=yes
 // fi
 
-
 //      ;;
 // esac
 
 // fi
-
 
 // # Tell automake about this, so it can include the right .c files.
 //  if test "$use_customs" = true; then
@@ -13026,7 +12578,6 @@
 //   USE_CUSTOMS_TRUE='#'
 //   USE_CUSTOMS_FALSE=
 // fi
-
 
 // # See if the user asked to handle case insensitive file systems.
 
@@ -13038,7 +12589,6 @@
 // fi
 // fi
 
-
 // # See if we can handle the job server feature, and if the user wants it.
 // # Check whether --enable-job-server was given.
 // if test "${enable_job_server+set}" = set; then :
@@ -13046,7 +12596,6 @@
 // else
 //   make_cv_job_server="yes"
 // fi
-
 
 // if test "$ac_cv_func_waitpid" = no && test "$ac_cv_func_wait3" = no; then :
 //   has_wait_nohang=no
@@ -13084,7 +12633,6 @@
 // if test "$make_cv_sa_restart" != no; then :
 
 // $as_echo "#define HAVE_SA_RESTART 1" >>confdefs.h
-
 
 // fi
 
@@ -13150,14 +12698,12 @@
 // #define HAVE_DECL_DLERROR $ac_have_decl
 // _ACEOF
 
-
 // # Check whether --enable-load was given.
 // if test "${enable_load+set}" = set; then :
 //   enableval=$enable_load; make_cv_load="$enableval" user_load="$enableval"
 // else
 //   make_cv_load="yes"
 // fi
-
 
 // case /$ac_cv_have_decl_dlopen/$ac_cv_have_decl_dlsym/$ac_cv_have_decl_dlerror/ in #(
 //   */no/*) :
@@ -13227,7 +12773,6 @@
 //   make_cv_load=
 // fi
 
-
 // fi
 
 // case /$make_cv_load/$user_load/ in #(
@@ -13294,7 +12839,6 @@
 
 // $as_echo "#define MAKE_SYMLINKS 1" >>confdefs.h
 
-
 // fi
 
 // # Use posix_spawn if we have support and the user didn't disable it
@@ -13305,7 +12849,6 @@
 // else
 //   make_cv_posix_spawn="yes"
 // fi
-
 
 // case /$ac_cv_header_spawn/$ac_cv_func_posix_spawn/ in #(
 //   */no/*) :
@@ -13382,7 +12925,6 @@
 // #define SCCS_GET "$make_cv_path_sccs_get"
 // _ACEOF
 
-
 // ac_clean_files="$ac_clean_files s.conftest conftoast" # Remove these later.
 // if (/usr/sccs/admin -n s.conftest || admin -n s.conftest) >/dev/null 2>&1 &&
 //    test -f s.conftest; then :
@@ -13406,7 +12948,6 @@
 
 // $as_echo "#define SCCS_GET_MINUS_G 1" >>confdefs.h
 
-
 // fi
 
 // fi
@@ -13414,13 +12955,11 @@
 
 // # Let the makefile know what our build host is
 
-
 // cat >>confdefs.h <<_ACEOF
 // #define MAKE_HOST "$host"
 // _ACEOF
 
 // MAKE_HOST="$host"
-
 
 // w32_target_env=no
 //  if false; then
@@ -13430,7 +12969,6 @@
 //   WINDOWSENV_TRUE='#'
 //   WINDOWSENV_FALSE=
 // fi
-
 
 // case $host in #(
 //   *-*-mingw32) :
@@ -13446,7 +12984,6 @@
 
 // $as_echo "#define WINDOWS32 1" >>confdefs.h
 
-
 // $as_echo "#define HAVE_DOS_PATHS 1" >>confdefs.h
 
 //    ;; #(
@@ -13454,23 +12991,17 @@
 //      ;;
 // esac
 
-
 // cat >>confdefs.h <<_ACEOF
 // #define PATH_SEPARATOR_CHAR '$PATH_SEPARATOR'
 // _ACEOF
-
-
 
 // cat >>confdefs.h <<_ACEOF
 // #define HAVE_DECL_GETLOADAVG $HAVE_DECL_GETLOADAVG
 // _ACEOF
 
-
 // # Remember that we ran configure to generate config.h
 
-
 // $as_echo "#define MK_CONFIGURE 1" >>confdefs.h
-
 
 // # Include the Maintainer's Makefile section, if it's here.
 
@@ -13479,7 +13010,6 @@
 //    MAINT_MAKEFILE="$srcdir/maintMakefile"
 
 // fi
-
 
 // # Allow building with dmalloc
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking if malloc debugging is wanted" >&5
@@ -13504,10 +13034,7 @@
 // $as_echo "no" >&6; }
 // fi
 
-
-
 // # Add custom header to config.h
-
 
 // # Forcibly disable SET_MAKE.  If it's set it breaks things like the test
 // # scripts, etc.
@@ -13588,7 +13115,6 @@
 //   KNOWN_PREFIX_FALSE=
 // fi
 
-
 // # Specify what files are to be created.
 // ac_config_files="$ac_config_files build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in"
 
@@ -13597,7 +13123,6 @@
 
 // # Put build.sh in the build directory so it's easy to find
 // ac_config_links="$ac_config_links build.sh:build.sh"
-
 
 // # OK, do it!
 
@@ -13709,7 +13234,6 @@
 
 // LTLIBOBJS=$ac_ltlibobjs
 
-
 // { $as_echo "$as_me:${as_lineno-$LINENO}: checking that generated files are newer than configure" >&5
 // $as_echo_n "checking that generated files are newer than configure... " >&6; }
 //    if test -n "$am_sleep_pid"; then
@@ -13786,8 +13310,6 @@
 
 //     gl_LIBOBJDEPS=$gl_libobjdeps
 
-
-
 //     gltests_libobjs=
 //     gltests_ltlibobjs=
 //     gltests_libobjdeps=
@@ -13812,8 +13334,6 @@
 //     gltests_LTLIBOBJS=$gltests_ltlibobjs
 
 //     gltests_LIBOBJDEPS=$gltests_libobjdeps
-
-
 
 // if test -z "${HAVE_GUILE_TRUE}" && test -z "${HAVE_GUILE_FALSE}"; then
 //   as_fn_error $? "conditional \"HAVE_GUILE\" was never defined.
@@ -13880,7 +13400,6 @@
 // esac
 // fi
 
-
 // as_nl='
 // '
 // export as_nl
@@ -13927,7 +13446,6 @@
 //       PATH_SEPARATOR=';'
 //   }
 // fi
-
 
 // # IFS
 // # We need space, tab and new line, in precisely that order.  Quoting is
@@ -13982,7 +13500,6 @@
 // # CDPATH.
 // (unset CDPATH) >/dev/null 2>&1 && unset CDPATH
 
-
 // # as_fn_error STATUS ERROR [LINENO LOG_FD]
 // # ----------------------------------------
 // # Output "`basename $0`: error: ERROR" to stderr. If LINENO and LOG_FD are
@@ -13998,7 +13515,6 @@
 //   $as_echo "$as_me: error: $2" >&2
 //   as_fn_exit $as_status
 // } # as_fn_error
-
 
 // # as_fn_set_status STATUS
 // # -----------------------
@@ -14060,7 +13576,6 @@
 //     as_val=`expr "$@" || test $? -eq 1`
 //   }
 // fi # as_fn_arith
-
 
 // if expr a : '\(a\)' >/dev/null 2>&1 &&
 //    test "X`expr 00001 : '.*\(...\)'`" = X001; then
@@ -14147,7 +13662,6 @@
 // rm -f conf$$ conf$$.exe conf$$.dir/conf$$.file conf$$.file
 // rmdir conf$$.dir 2>/dev/null
 
-
 // # as_fn_mkdir_p
 // # -------------
 // # Create "$as_dir" as a directory, including parents if necessary.
@@ -14193,7 +13707,6 @@
 //     test -z "$as_dirs" || eval "mkdir $as_dirs"
 //   } || test -d "$as_dir" || as_fn_error $? "cannot create directory $as_dir"
 
-
 // } # as_fn_mkdir_p
 // if mkdir -p . 2>/dev/null; then
 //   as_mkdir_p='mkdir -p "$as_dir"'
@@ -14201,7 +13714,6 @@
 //   test -d ./-p && rmdir ./-p
 //   as_mkdir_p=false
 // fi
-
 
 // # as_fn_executable_p FILE
 // # -----------------------
@@ -14218,7 +13730,6 @@
 
 // # Sed expression to map a string onto a valid variable name.
 // as_tr_sh="eval sed 'y%*+%pp%;s%[^_$as_cr_alnum]%_%g'"
-
 
 // exec 6>&1
 // ## ----------------------------------- ##
@@ -14253,7 +13764,6 @@
 // case $ac_config_headers in *"
 // "*) set x $ac_config_headers; shift; ac_config_headers=$*;;
 // esac
-
 
 // cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
 // # Files that config.status was made for.
@@ -14431,7 +13941,6 @@
 //     # Capture the value of LINGUAS because we need it to compute CATALOGS.
 //     LINGUAS="${LINGUAS-%UNSET%}"
 
-
 // _ACEOF
 
 // cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
@@ -14454,7 +13963,6 @@
 //   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
 //   esac
 // done
-
 
 // # If the user did not use the arguments to specify the items to instantiate,
 // # then the envvar interface is used.  Set only those that are not.
@@ -14620,7 +14128,7 @@
 // _ACAWK
 // cat >>"\$ac_tmp/subs1.awk" <<_ACAWK &&
 //   for (key in S) S_is_set[key] = 1
-//   FS = ""
+//   FS = "\x07"
 //   \$ac_cs_awk_pipe_init
 // }
 // {
@@ -14758,7 +14266,7 @@
 
 // cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
 //   for (key in D) D_is_set[key] = 1
-//   FS = ""
+//   FS = "\x07"
 // }
 // /^[\t ]*#[\t ]*(define|undef)[\t ]+$ac_word_re([\t (]|\$)/ {
 //   line = \$ 0
@@ -14793,7 +14301,6 @@
 // cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 //   as_fn_error $? "could not setup config headers machinery" "$LINENO" 5
 // fi # test -n "$CONFIG_HEADERS"
-
 
 // eval set X "  :F $CONFIG_FILES  :H $CONFIG_HEADERS  :L $CONFIG_LINKS  :C $CONFIG_COMMANDS"
 // shift
@@ -14921,7 +14428,6 @@
 //     ac_abs_top_srcdir=$ac_pwd/$srcdir ;;
 // esac
 // ac_abs_srcdir=$ac_abs_top_srcdir$ac_dir_suffix
-
 
 //   case $ac_mode in
 //   :F)
@@ -15113,7 +14619,6 @@
 // $as_echo "$as_me: executing $ac_file commands" >&6;}
 //  ;;
 //   esac
-
 
 //   case $ac_file$ac_mode in
 //     "depfiles":C) test x"$AMDEP_TRUE" != x"" || {
@@ -15330,14 +14835,12 @@
 //   esac
 // done # for ac_tag
 
-
 // as_fn_exit 0
 // _ACEOF
 // ac_clean_files=$ac_clean_files_save
 
 // test $ac_write_fail = 0 ||
 //   as_fn_error $? "write failure creating $CONFIG_STATUS" "$LINENO" 5
-
 
 // # configure is writing to config.log, and then calls config.status.
 // # config.status does its own redirection, appending to config.log.
@@ -15363,5 +14866,3 @@
 //   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
 // $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 // fi
-
-
