@@ -1,0 +1,296 @@
++ fail=
++ target_option=k
++ has_opt=no
++ sane_makeflags= -- SHELL=sh\ -x
++ test -z 0
++ test -n x86_64-pc-linux-gnu
++ true
++ sane_makeflags=
++ skip_next=no
++ test no = yes
++ failcom=exit 1
++ dot_seen=no
++ sed s/-recursive//
++ echo all-recursive
++ target=all
++ list=lib po doc
++ echo Making all in lib
++ test lib = .
++ local_target=all
++ CDPATH=:
++ cd lib
++ make all
++ sed -e 1h -e 1s,.*,/* DO NOT EDIT! GENERATED AUTOMATICALLY! */, -e 1G -e s|@HAVE_ALLOCA_H@|1|g ./alloca.in.h
++ mv alloca.h-t alloca.h
++ make all-recursive
++ fail=
++ target_option=k
++ has_opt=no
++ sane_makeflags=w -- SHELL=sh\ -x
++ test -z 2
++ test -n x86_64-pc-linux-gnu
++ true
++ sane_makeflags=-w
++ skip_next=no
++ test no = yes
++ test no = yes
++ failcom=exit 1
++ dot_seen=no
++ sed s/-recursive//
++ echo all-recursive
++ target=all
++ list=
++ test no = no
++ make all-am
++ test -f concat-filename.c
++ gcc -DHAVE_CONFIG_H -I. -I../src -Wno-cast-qual -Wno-conversion -Wno-float-equal -Wno-sign-compare -Wno-undef -Wno-unused-function -Wno-unused-parameter -Wno-float-conversion -Wimplicit-fallthrough -Wno-pedantic -Wno-sign-conversion -Wno-type-limits -Wno-unsuffixed-float-constants -g -O2 -MT libgnu_a-concat-filename.o -MD -MP -MF .deps/libgnu_a-concat-filename.Tpo -c -o libgnu_a-concat-filename.o concat-filename.c
++ mv -f .deps/libgnu_a-concat-filename.Tpo .deps/libgnu_a-concat-filename.Po
++ test -f findprog-in.c
++ gcc -DHAVE_CONFIG_H -I. -I../src -Wno-cast-qual -Wno-conversion -Wno-float-equal -Wno-sign-compare -Wno-undef -Wno-unused-function -Wno-unused-parameter -Wno-float-conversion -Wimplicit-fallthrough -Wno-pedantic -Wno-sign-conversion -Wno-type-limits -Wno-unsuffixed-float-constants -g -O2 -MT libgnu_a-findprog-in.o -MD -MP -MF .deps/libgnu_a-findprog-in.Tpo -c -o libgnu_a-findprog-in.o findprog-in.c
++ mv -f .deps/libgnu_a-findprog-in.Tpo .deps/libgnu_a-findprog-in.Po
++ rm -f libgnu.a
++ ar cr libgnu.a libgnu_a-concat-filename.o libgnu_a-findprog-in.o
++ ranlib libgnu.a
++ test -z 
++ echo Making all in po
++ test po = .
++ local_target=all
++ CDPATH=:
++ cd po
++ make all
++ echo Making all in doc
++ test doc = .
++ local_target=all
++ CDPATH=:
++ cd doc
++ make all
++ dir=.
++ test -f ./make.texi
++ sh -x ../build-aux/mdate-sh ./make.texi
++ scriptversion=2018-03-07.03
++ test -n 
++ LANG=C
++ export LANG
++ LC_ALL=C
++ export LC_ALL
++ LC_TIME=C
++ export LC_TIME
++ TZ=UTC0
++ export TZ
++ test  = set
++ save_arg1=./make.texi
++ ls -L /dev/null
++ ls_command=ls -L -l -d
++ ls -n /dev/null
++ ls_command=ls -L -l -d -n
++ ls -L -l -d -n /
++ set xdrwxr-xr-x 19 0 0 4096 Jun 15 2022 /
++ month=
++ command=
++ test
++ test 9 -gt 0
++ shift
++ command= shift;
++ test
++ test 8 -gt 0
++ shift
++ command= shift; shift;
++ test
++ test 7 -gt 0
++ shift
++ command= shift; shift; shift;
++ test
++ test 6 -gt 0
++ shift
++ command= shift; shift; shift; shift;
++ test
++ test 5 -gt 0
++ shift
++ command= shift; shift; shift; shift; shift;
++ month=June
++ nummonth=6
++ test June
++ test -n June
++ eval ls -L -l -d -n "$save_arg1"
++ ls -L -l -d -n ./make.texi
++ set dummy x-rw-rw-r-- 1 1000 1000 525891 Apr 26 13:15 ./make.texi
++ eval shift; shift; shift; shift; shift;
++ shift
++ shift
++ shift
++ shift
++ shift
++ month=April
++ nummonth=4
++ day=26
++ shift
++ date
++ set Sun Jul 14 06:31:16 UTC 2024
++ eval year=$6
++ year=2024
++ nummonthtod=7
++ expr 4 > 7
++ echo 26 April 2024
++ set 26 April 2024
++ echo @set UPDATED 26 April 2024
++ echo @set UPDATED-MONTH April 2024
++ echo @set EDITION 4.4.1
++ echo @set VERSION 4.4.1
++ cmp -s vti.tmp77614 ./version.texi
++ rm -f vti.tmp77614 ./version.texi.77614
++ cp ./version.texi stamp-vti
++ test no = no
++ make all-am
++ + sed s|[^/]*$|.deps/&|;s|\.o$||
+echo src/ar.o
++ depbase=src/.deps/ar
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/ar.o -MD -MP -MF src/.deps/ar.Tpo -c -o src/ar.o src/ar.c
++ mv -f src/.deps/ar.Tpo src/.deps/ar.Po
++ echo src/arscan.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/arscan
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/arscan.o -MD -MP -MF src/.deps/arscan.Tpo -c -o src/arscan.o src/arscan.c
++ mv -f src/.deps/arscan.Tpo src/.deps/arscan.Po
++ echo src/commands.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/commands
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/commands.o -MD -MP -MF src/.deps/commands.Tpo -c -o src/commands.o src/commands.c
++ mv -f src/.deps/commands.Tpo src/.deps/commands.Po
++ echo src/default.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/default
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/default.o -MD -MP -MF src/.deps/default.Tpo -c -o src/default.o src/default.c
++ mv -f src/.deps/default.Tpo src/.deps/default.Po
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ echo src/dir.o
++ depbase=src/.deps/dir
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/dir.o -MD -MP -MF src/.deps/dir.Tpo -c -o src/dir.o src/dir.c
++ mv -f src/.deps/dir.Tpo src/.deps/dir.Po
++ echo src/expand.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/expand
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/expand.o -MD -MP -MF src/.deps/expand.Tpo -c -o src/expand.o src/expand.c
++ mv -f src/.deps/expand.Tpo src/.deps/expand.Po
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ echo src/file.o
++ depbase=src/.deps/file
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/file.o -MD -MP -MF src/.deps/file.Tpo -c -o src/file.o src/file.c
++ mv -f src/.deps/file.Tpo src/.deps/file.Po
++ echo src/function.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/function
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/function.o -MD -MP -MF src/.deps/function.Tpo -c -o src/function.o src/function.c
++ mv -f src/.deps/function.Tpo src/.deps/function.Po
++ echo src/getopt.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/getopt
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/getopt.o -MD -MP -MF src/.deps/getopt.Tpo -c -o src/getopt.o src/getopt.c
++ mv -f src/.deps/getopt.Tpo src/.deps/getopt.Po
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ echo src/getopt1.o
++ depbase=src/.deps/getopt1
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/getopt1.o -MD -MP -MF src/.deps/getopt1.Tpo -c -o src/getopt1.o src/getopt1.c
++ mv -f src/.deps/getopt1.Tpo src/.deps/getopt1.Po
++ echo src/guile.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/guile
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/guile.o -MD -MP -MF src/.deps/guile.Tpo -c -o src/guile.o src/guile.c
++ mv -f src/.deps/guile.Tpo src/.deps/guile.Po
++ echo src/hash.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/hash
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/hash.o -MD -MP -MF src/.deps/hash.Tpo -c -o src/hash.o src/hash.c
++ mv -f src/.deps/hash.Tpo src/.deps/hash.Po
++ echo src/implicit.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/implicit
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/implicit.o -MD -MP -MF src/.deps/implicit.Tpo -c -o src/implicit.o src/implicit.c
++ mv -f src/.deps/implicit.Tpo src/.deps/implicit.Po
++ echo src/job.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/job
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/job.o -MD -MP -MF src/.deps/job.Tpo -c -o src/job.o src/job.c
++ mv -f src/.deps/job.Tpo src/.deps/job.Po
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ echo src/load.o
++ depbase=src/.deps/load
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/load.o -MD -MP -MF src/.deps/load.Tpo -c -o src/load.o src/load.c
++ mv -f src/.deps/load.Tpo src/.deps/load.Po
++ echo src/loadapi.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/loadapi
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/loadapi.o -MD -MP -MF src/.deps/loadapi.Tpo -c -o src/loadapi.o src/loadapi.c
++ mv -f src/.deps/loadapi.Tpo src/.deps/loadapi.Po
++ echo src/main.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/main
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/main.o -MD -MP -MF src/.deps/main.Tpo -c -o src/main.o src/main.c
++ mv -f src/.deps/main.Tpo src/.deps/main.Po
++ echo src/misc.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/misc
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/misc.o -MD -MP -MF src/.deps/misc.Tpo -c -o src/misc.o src/misc.c
++ mv -f src/.deps/misc.Tpo src/.deps/misc.Po
++ echo src/output.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/output
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/output.o -MD -MP -MF src/.deps/output.Tpo -c -o src/output.o src/output.c
++ mv -f src/.deps/output.Tpo src/.deps/output.Po
++ echo src/read.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/read
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/read.o -MD -MP -MF src/.deps/read.Tpo -c -o src/read.o src/read.c
++ mv -f src/.deps/read.Tpo src/.deps/read.Po
++ echo src/remake.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/remake
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/remake.o -MD -MP -MF src/.deps/remake.Tpo -c -o src/remake.o src/remake.c
++ mv -f src/.deps/remake.Tpo src/.deps/remake.Po
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ echo src/rule.o
++ depbase=src/.deps/rule
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/rule.o -MD -MP -MF src/.deps/rule.Tpo -c -o src/rule.o src/rule.c
++ mv -f src/.deps/rule.Tpo src/.deps/rule.Po
++ + echo src/shuffle.osed
+ s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/shuffle
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/shuffle.o -MD -MP -MF src/.deps/shuffle.Tpo -c -o src/shuffle.o src/shuffle.c
++ mv -f src/.deps/shuffle.Tpo src/.deps/shuffle.Po
++ echo src/signame.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/signame
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/signame.o -MD -MP -MF src/.deps/signame.Tpo -c -o src/signame.o src/signame.c
++ mv -f src/.deps/signame.Tpo src/.deps/signame.Po
++ echo src/strcache.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/strcache
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/strcache.o -MD -MP -MF src/.deps/strcache.Tpo -c -o src/strcache.o src/strcache.c
++ mv -f src/.deps/strcache.Tpo src/.deps/strcache.Po
++ echo src/variable.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/variable
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/variable.o -MD -MP -MF src/.deps/variable.Tpo -c -o src/variable.o src/variable.c
++ mv -f src/.deps/variable.Tpo src/.deps/variable.Po
++ echo src/version.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/version
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/version.o -MD -MP -MF src/.deps/version.Tpo -c -o src/version.o src/version.c
++ mv -f src/.deps/version.Tpo src/.deps/version.Po
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ echo src/vpath.o
++ depbase=src/.deps/vpath
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/vpath.o -MD -MP -MF src/.deps/vpath.Tpo -c -o src/vpath.o src/vpath.c
++ mv -f src/.deps/vpath.Tpo src/.deps/vpath.Po
++ echo src/posixos.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/posixos
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/posixos.o -MD -MP -MF src/.deps/posixos.Tpo -c -o src/posixos.o src/posixos.c
++ mv -f src/.deps/posixos.Tpo src/.deps/posixos.Po
++ echo src/remote-stub.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/remote-stub
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/remote-stub.o -MD -MP -MF src/.deps/remote-stub.Tpo -c -o src/remote-stub.o src/remote-stub.c
++ mv -f src/.deps/remote-stub.Tpo src/.deps/remote-stub.Po
++ rm -f make
++ gcc -g -O2 -Wl,--export-dynamic -o make src/ar.o src/arscan.o src/commands.o src/default.o src/dir.o src/expand.o src/file.o src/function.o src/getopt.o src/getopt1.o src/guile.o src/hash.o src/implicit.o src/job.o src/load.o src/loadapi.o src/main.o src/misc.o src/output.o src/read.o src/remake.o src/rule.o src/shuffle.o src/signame.o src/strcache.o src/variable.o src/version.o src/vpath.o src/posixos.o src/remote-stub.o lib/libgnu.a -ldl
++ test -z 

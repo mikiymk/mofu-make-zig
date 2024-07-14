@@ -763,9 +763,6 @@ S["AM_BACKSLASH"]="\\"
 S["AM_DEFAULT_VERBOSITY"]="1"
 S["AM_DEFAULT_V"]="$(AM_DEFAULT_VERBOSITY)"
 S["AM_V"]="$(V)"
-S["CSCOPE"]="cscope"
-S["ETAGS"]="etags"
-S["CTAGS"]="ctags"
 S["am__untar"]="$${TAR-tar} xf -"
 S["am__tar"]="$${TAR-tar} chof - \"$$tardir\""
 S["AMTAR"]="$${TAR-tar}"
@@ -777,11 +774,11 @@ S["MKDIR_P"]="/usr/bin/mkdir -p"
 S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"
 S["STRIP"]=""
 S["install_sh"]="${SHELL} /home/miki/vscode/mofu-make-zig/build-aux/install-sh"
-S["MAKEINFO"]="${SHELL} '/home/miki/vscode/mofu-make-zig/build-aux/missing' makeinfo"
-S["AUTOHEADER"]="${SHELL} '/home/miki/vscode/mofu-make-zig/build-aux/missing' autoheader"
-S["AUTOMAKE"]="${SHELL} '/home/miki/vscode/mofu-make-zig/build-aux/missing' automake-1.16"
-S["AUTOCONF"]="${SHELL} '/home/miki/vscode/mofu-make-zig/build-aux/missing' autoconf"
-S["ACLOCAL"]="${SHELL} '/home/miki/vscode/mofu-make-zig/build-aux/missing' aclocal-1.16"
+S["MAKEINFO"]="${SHELL} /home/miki/vscode/mofu-make-zig/build-aux/missing makeinfo"
+S["AUTOHEADER"]="${SHELL} /home/miki/vscode/mofu-make-zig/build-aux/missing autoheader"
+S["AUTOMAKE"]="${SHELL} /home/miki/vscode/mofu-make-zig/build-aux/missing automake-1.16"
+S["AUTOCONF"]="${SHELL} /home/miki/vscode/mofu-make-zig/build-aux/missing autoconf"
+S["ACLOCAL"]="${SHELL} /home/miki/vscode/mofu-make-zig/build-aux/missing aclocal-1.16"
 S["VERSION"]="4.4.1"
 S["PACKAGE"]="make"
 S["CYGPATH_W"]="echo"
@@ -1456,9 +1453,7 @@ $as_echo X/"$am_mf" |
     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "Something went wrong bootstrapping makefile fragments
-    for automatic dependency tracking.  If GNU make was not used, consider
-    re-running the configure script with MAKE=\"gmake\" (or whatever is
-    necessary).  You can also try re-running configure with the
+    for automatic dependency tracking.  Try re-running configure with the
     '--disable-dependency-tracking' option to at least be able to build
     the package (albeit without support for automatic dependency tracking).
 See \`config.log' for more details" "$LINENO" 5; }
