@@ -1,0 +1,32 @@
+zig translate-c -DHAVE_CONFIG_H -I. -I../src -lc concat-filename.c
+zig translate-c -DHAVE_CONFIG_H -I. -I../src -lc findprog-in.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/ar.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/arscan.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/commands.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/default.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/dir.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/expand.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/file.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/function.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/getopt.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/getopt1.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/guile.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/hash.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/implicit.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/job.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/load.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/loadapi.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/main.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/misc.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/output.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/read.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/remake.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/rule.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/shuffle.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/signame.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/strcache.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/variable.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/version.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/vpath.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/posixos.c
+zig translate-c -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -lc src/remote-stub.c
