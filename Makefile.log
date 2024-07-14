@@ -1,0 +1,3494 @@
+sh -x ./config.status --recheck
++ sh -x ./config.status --recheck
++ debug=false
++ ac_cs_recheck=false
++ ac_cs_silent=false
++ SHELL=/bin/bash
++ export SHELL
++ DUALCASE=1
++ export DUALCASE
++ test -n 
++ :
++ as_nl=
+
++ export as_nl
++ as_echo=\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
++ as_echo=\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
++ as_echo=\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
++ test -z 
++ as_echo=printf %s\n
++ as_echo_n=printf %s
++ test  != set
++ PATH_SEPARATOR=:
++ IFS= 	
+
++ as_myself=
++ as_myself=./config.status
++ test x./config.status = x
++ test ! -f ./config.status
++ eval test x${BASH_ENV+set} = xset
++ test x = xset
++ :
++ eval test x${ENV+set} = xset
++ test x = xset
++ :
++ eval test x${MAIL+set} = xset
++ test x = xset
++ :
++ eval test x${MAILPATH+set} = xset
++ test x = xset
++ :
++ PS1=$ 
++ PS2=> 
++ PS4=+ 
++ LC_ALL=C
++ export LC_ALL
++ LANGUAGE=C
++ export LANGUAGE
++ unset CDPATH
++ as_unset=as_fn_unset
++ :
++ eval as_fn_arith ()
+  {
+    as_val=$(( $* ))
+  }
++ expr a : \(a\)
++ expr 00001 : .*\(...\)
++ test X001 = X001
++ as_expr=expr
++ basename -- /
++ test X/ = X/
++ as_basename=basename
++ as_dirname=dirname
++ basename -- ./config.status
++ as_me=config.status
++ as_cr_letters=abcdefghijklmnopqrstuvwxyz
++ as_cr_LETTERS=ABCDEFGHIJKLMNOPQRSTUVWXYZ
++ as_cr_Letters=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
++ as_cr_digits=0123456789
++ as_cr_alnum=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
++ ECHO_C= ECHO_N= ECHO_T=
++ echo -n x
++ ECHO_N=-n
++ rm -f conf92461 conf92461.exe conf92461.file
++ test -d conf92461.dir
++ rm -f conf92461.dir
++ mkdir conf92461.dir
++ ln -s conf92461.file conf92461
++ as_ln_s=ln -s
++ ln -s conf92461.file conf92461.dir
++ test ! -f conf92461.exe
++ rm -f conf92461 conf92461.exe conf92461.dir/conf92461.file conf92461.file
++ rmdir conf92461.dir
++ mkdir -p .
++ as_mkdir_p=mkdir -p "$as_dir"
++ as_test_x=test -x
++ as_executable_p=as_fn_executable_p
++ as_tr_cpp=eval sed 'y%*abcdefghijklmnopqrstuvwxyz%PABCDEFGHIJKLMNOPQRSTUVWXYZ%;s%[^_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]%_%g'
++ as_tr_sh=eval sed 'y%*+%pp%;s%[^_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]%_%g'
++ exec
++ sed 1q
++ ac_log=
+This file was extended by GNU Make config.status 4.4.1, which was
+generated by GNU Autoconf 2.69.  Invocation command line was
+
+  CONFIG_FILES    = 
+  CONFIG_HEADERS  = 
+  CONFIG_LINKS    = 
+  CONFIG_COMMANDS = 
+  $ ./config.status --recheck
+
+on miki-PC-NS150GAW
+
++ config_files= build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in
++ config_headers= src/config.h
++ config_links= build.sh:build.sh
++ config_commands= depfiles po-directories
++ ac_cs_usage=`config.status' instantiates files and other configuration actions
+from templates according to the current configuration.  Unless the files
+and actions are specified as TAGs, all are instantiated by default.
+
+Usage: ./config.status [OPTION]... [TAG]...
+
+  -h, --help       print this help, then exit
+  -V, --version    print version number and configuration settings, then exit
+      --config     print configuration, then exit
+  -q, --quiet, --silent
+                   do not print progress messages
+  -d, --debug      don't remove temporary files
+      --recheck    update config.status by reconfiguring in the same conditions
+      --file=FILE[:TEMPLATE]
+                   instantiate the configuration file FILE
+      --header=FILE[:TEMPLATE]
+                   instantiate the configuration header FILE
+
+Configuration files:
+ build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in
+
+Configuration headers:
+ src/config.h
+
+Configuration links:
+ build.sh:build.sh
+
+Configuration commands:
+ depfiles po-directories
+
+Report bugs to <bug-make@gnu.org>.
+GNU Make home page: <http://www.gnu.org/software/make/>.
+General help using GNU software: <http://www.gnu.org/gethelp/>.
++ ac_cs_config=
++ ac_cs_version=GNU Make config.status 4.4.1
+configured by ./configure, generated by GNU Autoconf 2.69,
+  with options ""
+
+Copyright (C) 2012 Free Software Foundation, Inc.
+This config.status script is free software; the Free Software Foundation
+gives unlimited permission to copy, distribute and modify it.
++ ac_pwd=/home/miki/vscode/mofu-make-zig
++ srcdir=.
++ INSTALL=/usr/bin/install -c
++ MKDIR_P=/usr/bin/mkdir -p
++ AWK=mawk
++ test -n mawk
++ ac_need_defaults=:
++ test 1 != 0
++ ac_option=--recheck
++ ac_optarg=
++ ac_shift=shift
++ ac_cs_recheck=:
++ shift
++ test 0 != 0
++ ac_configure_extra_args=
++ false
++ :
++ set X /bin/bash ./configure --no-create --no-recursion
++ shift
++ printf %s\n running CONFIG_SHELL=/bin/bash /bin/bash ./configure --no-create --no-recursion
+running CONFIG_SHELL=/bin/bash /bin/bash ./configure --no-create --no-recursion
++ CONFIG_SHELL=/bin/bash
++ export CONFIG_SHELL
++ exec /bin/bash ./configure --no-create --no-recursion
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /usr/bin/mkdir -p
+checking for gawk... no
+checking for mawk... mawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+checking whether make supports the include directive... yes (GNU style)
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking whether gcc understands -c and -o together... yes
+checking whether the compiler is clang... no
+checking for compiler option needed when checking for declarations... none
+checking dependency style of gcc... gcc3
+checking how to run the C preprocessor... gcc -E
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for wchar.h... yes
+checking for minix/config.h... no
+checking for sys/param.h... yes
+checking for unistd.h... (cached) yes
+checking for stdbool.h... yes
+checking whether it is safe to define __EXTENSIONS__... yes
+checking whether _XOPEN_SOURCE should be defined... no
+checking for gcc... (cached) gcc
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether gcc accepts -g... (cached) yes
+checking for gcc option to accept ISO C89... (cached) none needed
+checking whether gcc understands -c and -o together... (cached) yes
+checking whether the compiler is clang... (cached) no
+checking for compiler option needed when checking for declarations... (cached) none
+checking dependency style of gcc... (cached) gcc3
+checking for g++... g++
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking dependency style of g++... gcc3
+checking build system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking for Minix Amsterdam compiler... no
+checking for ar... ar
+checking for ranlib... ranlib
+checking for gcc option to enable large file support... none needed
+checking for size_t... yes
+checking for working alloca.h... yes
+checking for alloca... yes
+checking for eaccess... yes
+checking host CPU and C ABI... x86_64
+checking for C compiler option to allow warnings... -Wno-error
+checking for alloca as a compiler built-in... yes
+checking for getloadavg... yes
+checking sys/loadavg.h usability... no
+checking sys/loadavg.h presence... no
+checking for sys/loadavg.h... no
+checking whether getloadavg is declared... yes
+checking if system libc has working GNU glob... yes
+checking whether system uses MSDOS-style paths... no
+checking for bool, true, false... no
+checking for ranlib... (cached) ranlib
+checking how to run the C preprocessor... gcc -E
+checking for ar... ar
+checking for perl... perl
+checking whether byte ordering is bigendian... no
+checking for a sed that does not truncate output... /usr/bin/sed
+checking whether NLS is requested... yes
+checking for msgfmt... no
+checking for gmsgfmt... :
+checking for xgettext... no
+checking for msgmerge... no
+checking for ld used by gcc... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for shared library run path origin... done
+checking for CFPreferencesCopyAppValue... no
+checking for CFLocaleCopyCurrent... no
+checking for GNU gettext in libc... yes
+checking whether to use NLS... yes
+checking where the gettext function comes from... libc
+checking for library containing strerror... none required
+checking for library containing getpwnam... none required
+checking for dirent.h that defines DIR... yes
+checking for library containing opendir... none required
+checking whether stat file-mode macros are broken... no
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for strings.h... (cached) yes
+checking locale.h usability... yes
+checking locale.h presence... yes
+checking for locale.h... yes
+checking for unistd.h... (cached) yes
+checking limits.h usability... yes
+checking limits.h presence... yes
+checking for limits.h... yes
+checking for memory.h... (cached) yes
+checking for sys/param.h... (cached) yes
+checking sys/resource.h usability... yes
+checking sys/resource.h presence... yes
+checking for sys/resource.h... yes
+checking sys/timeb.h usability... yes
+checking sys/timeb.h presence... yes
+checking for sys/timeb.h... yes
+checking sys/time.h usability... yes
+checking sys/time.h presence... yes
+checking for sys/time.h... yes
+checking sys/select.h usability... yes
+checking sys/select.h presence... yes
+checking for sys/select.h... yes
+checking sys/file.h usability... yes
+checking sys/file.h presence... yes
+checking for sys/file.h... yes
+checking fcntl.h usability... yes
+checking fcntl.h presence... yes
+checking for fcntl.h... yes
+checking spawn.h usability... yes
+checking spawn.h presence... yes
+checking for spawn.h... yes
+checking for an ANSI C-conforming const... yes
+checking for uid_t in sys/types.h... yes
+checking for pid_t... yes
+checking for off_t... yes
+checking for size_t... (cached) yes
+checking for ssize_t... yes
+checking for unsigned long long int... yes
+checking for long long int... yes
+checking for intmax_t... yes
+checking for uintmax_t... yes
+checking for sig_atomic_t... yes
+checking for nanoseconds field of struct stat... st_mtim.tv_nsec
+checking whether to use high resolution file timestamps... yes
+checking for library containing clock_gettime... none required
+checking for standard gettimeofday... yes
+checking for strtoll... yes
+checking for strdup... yes
+checking for strndup... yes
+checking for stpcpy... yes
+checking for memrchr... yes
+checking for mempcpy... yes
+checking for umask... yes
+checking for mkstemp... yes
+checking for mktemp... yes
+checking for fdopen... yes
+checking for dup... yes
+checking for dup2... yes
+checking for getcwd... yes
+checking for realpath... yes
+checking for sigsetmask... yes
+checking for sigaction... yes
+checking for getgroups... yes
+checking for seteuid... yes
+checking for setegid... yes
+checking for setlinebuf... yes
+checking for setreuid... yes
+checking for setregid... yes
+checking for mkfifo... yes
+checking for getrlimit... yes
+checking for setrlimit... yes
+checking for setvbuf... yes
+checking for pipe... yes
+checking for strerror... yes
+checking for strsignal... yes
+checking for lstat... yes
+checking for readlink... yes
+checking for atexit... yes
+checking for isatty... yes
+checking for ttyname... yes
+checking for pselect... yes
+checking for posix_spawn... yes
+checking for posix_spawnattr_setsigmask... yes
+checking whether bsd_signal is declared... no
+checking vfork.h usability... no
+checking vfork.h presence... no
+checking for vfork.h... no
+checking for fork... yes
+checking for vfork... yes
+checking for working fork... yes
+checking for working vfork... (cached) yes
+checking for strcasecmp... yes
+checking for strncasecmp... yes
+checking for strcmpi... no
+checking for strncmpi... no
+checking for stricmp... no
+checking for strnicmp... no
+checking for working strcoll... yes
+checking whether closedir returns void... no
+checking for struct dirent.d_type... yes
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+checking for GNU Guile... no
+checking whether sys_siglist is declared... yes
+checking whether _sys_siglist is declared... yes
+checking whether __sys_siglist is declared... no
+checking for sys/wait.h... yes
+checking for waitpid... yes
+checking for wait3... yes
+checking for union wait... no
+checking for SA_RESTART... yes
+checking whether dlopen is declared... yes
+checking whether dlsym is declared... yes
+checking whether dlerror is declared... yes
+checking for library containing dlopen... -ldl
+checking if the linker accepts -Wl,--export-dynamic... yes
+checking for posix_spawn that fails synchronously... yes
+checking for location of SCCS get command... get
+checking if malloc debugging is wanted... no
+checking that generated files are newer than configure... done
+configure: creating ./config.status
++ echo  sh -x ./config.status
+ sh -x ./config.status
++ sh -x ./config.status
++ debug=false
++ ac_cs_recheck=false
++ ac_cs_silent=false
++ SHELL=/bin/bash
++ export SHELL
++ DUALCASE=1
++ export DUALCASE
++ test -n 
++ :
++ as_nl=
+
++ export as_nl
++ as_echo=\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
++ as_echo=\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
++ as_echo=\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
++ test -z 
++ as_echo=printf %s\n
++ as_echo_n=printf %s
++ test  != set
++ PATH_SEPARATOR=:
++ IFS= 	
+
++ as_myself=
++ as_myself=./config.status
++ test x./config.status = x
++ test ! -f ./config.status
++ eval test x${BASH_ENV+set} = xset
++ test x = xset
++ :
++ eval test x${ENV+set} = xset
++ test x = xset
++ :
++ eval test x${MAIL+set} = xset
++ test x = xset
++ :
++ eval test x${MAILPATH+set} = xset
++ test x = xset
++ :
++ PS1=$ 
++ PS2=> 
++ PS4=+ 
++ LC_ALL=C
++ export LC_ALL
++ LANGUAGE=C
++ export LANGUAGE
++ unset CDPATH
++ as_unset=as_fn_unset
++ :
++ eval as_fn_arith ()
+  {
+    as_val=$(( $* ))
+  }
++ expr a : \(a\)
++ expr 00001 : .*\(...\)
++ test X001 = X001
++ as_expr=expr
++ basename -- /
++ test X/ = X/
++ as_basename=basename
++ as_dirname=dirname
++ basename -- ./config.status
++ as_me=config.status
++ as_cr_letters=abcdefghijklmnopqrstuvwxyz
++ as_cr_LETTERS=ABCDEFGHIJKLMNOPQRSTUVWXYZ
++ as_cr_Letters=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
++ as_cr_digits=0123456789
++ as_cr_alnum=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
++ ECHO_C= ECHO_N= ECHO_T=
++ echo -n x
++ ECHO_N=-n
++ rm -f conf95250 conf95250.exe conf95250.file
++ test -d conf95250.dir
++ rm -f conf95250.dir
++ mkdir conf95250.dir
++ ln -s conf95250.file conf95250
++ as_ln_s=ln -s
++ ln -s conf95250.file conf95250.dir
++ test ! -f conf95250.exe
++ rm -f conf95250 conf95250.exe conf95250.dir/conf95250.file conf95250.file
++ rmdir conf95250.dir
++ mkdir -p .
++ as_mkdir_p=mkdir -p "$as_dir"
++ as_test_x=test -x
++ as_executable_p=as_fn_executable_p
++ as_tr_cpp=eval sed 'y%*abcdefghijklmnopqrstuvwxyz%PABCDEFGHIJKLMNOPQRSTUVWXYZ%;s%[^_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]%_%g'
++ as_tr_sh=eval sed 'y%*+%pp%;s%[^_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]%_%g'
++ exec
++ sed 1q
++ ac_log=
+This file was extended by GNU Make config.status 4.4.1, which was
+generated by GNU Autoconf 2.69.  Invocation command line was
+
+  CONFIG_FILES    = 
+  CONFIG_HEADERS  = 
+  CONFIG_LINKS    = 
+  CONFIG_COMMANDS = 
+  $ ./config.status 
+
+on miki-PC-NS150GAW
+
++ config_files= build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in
++ config_headers= src/config.h
++ config_links= build.sh:build.sh
++ config_commands= depfiles po-directories
++ ac_cs_usage=`config.status' instantiates files and other configuration actions
+from templates according to the current configuration.  Unless the files
+and actions are specified as TAGs, all are instantiated by default.
+
+Usage: ./config.status [OPTION]... [TAG]...
+
+  -h, --help       print this help, then exit
+  -V, --version    print version number and configuration settings, then exit
+      --config     print configuration, then exit
+  -q, --quiet, --silent
+                   do not print progress messages
+  -d, --debug      don't remove temporary files
+      --recheck    update config.status by reconfiguring in the same conditions
+      --file=FILE[:TEMPLATE]
+                   instantiate the configuration file FILE
+      --header=FILE[:TEMPLATE]
+                   instantiate the configuration header FILE
+
+Configuration files:
+ build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in
+
+Configuration headers:
+ src/config.h
+
+Configuration links:
+ build.sh:build.sh
+
+Configuration commands:
+ depfiles po-directories
+
+Report bugs to <bug-make@gnu.org>.
+GNU Make home page: <http://www.gnu.org/software/make/>.
+General help using GNU software: <http://www.gnu.org/gethelp/>.
++ ac_cs_config=
++ ac_cs_version=GNU Make config.status 4.4.1
+configured by ./configure, generated by GNU Autoconf 2.69,
+  with options ""
+
+Copyright (C) 2012 Free Software Foundation, Inc.
+This config.status script is free software; the Free Software Foundation
+gives unlimited permission to copy, distribute and modify it.
++ ac_pwd=/home/miki/vscode/mofu-make-zig
++ srcdir=.
++ INSTALL=/usr/bin/install -c
++ MKDIR_P=/usr/bin/mkdir -p
++ AWK=mawk
++ test -n mawk
++ ac_need_defaults=:
++ test 0 != 0
++ ac_configure_extra_args=
++ false
++ false
++ exec
++ echo
++ sed h;s/./-/g;s/^.../## /;s/...$/ ##/;p;x;p;x
++ printf %s\n 
+This file was extended by GNU Make config.status 4.4.1, which was
+generated by GNU Autoconf 2.69.  Invocation command line was
+
+  CONFIG_FILES    = 
+  CONFIG_HEADERS  = 
+  CONFIG_LINKS    = 
+  CONFIG_COMMANDS = 
+  $ ./config.status 
+
+on miki-PC-NS150GAW
+
++ AMDEP_TRUE= MAKE=make
++ eval OBSOLETE_ALL_LINGUAS=""
++ OBSOLETE_ALL_LINGUAS=
++ LINGUAS=%UNSET%
++ :
++ test  = set
++ CONFIG_FILES= build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in
++ test  = set
++ CONFIG_HEADERS= src/config.h
++ test  = set
++ CONFIG_LINKS= build.sh:build.sh
++ test  = set
++ CONFIG_COMMANDS= depfiles po-directories
++ false
++ tmp= ac_tmp=
++ trap exit_status=$?
+  : "${ac_tmp:=$tmp}"
+  { test ! -d "$ac_tmp" || rm -fr "$ac_tmp"; } && exit $exit_status
+ 0
++ trap as_fn_exit 1 1 2 13 15
++ tmp=./confHToIHv
++ test -d ./confHToIHv
++ ac_tmp=./confHToIHv
++ test -n  build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in
++ mawk BEGIN { getline <"/dev/null" }
++ ac_cs_awk_getline=:
++ ac_cs_awk_pipe_init=
++ ac_cs_awk_read_file=
+      while ((getline aline < (F[key])) > 0)
+	print(aline)
+      close(F[key])
++ ac_cs_awk_pipe_fini=
++ + trecho X
+ X \015
++ ac_cr=
++ test x = x
++ mawk BEGIN { print "a\rb" }
++ ac_cs_awk_cr=ab
++ test ab = ab
++ ac_cs_awk_cr=\\r
++ echo BEGIN {
++ cat
++ cat
++ cat
++ sed s///
++ sed s/$//; s//\\r/g
++ test -n  src/config.h
++ cat
++ eval set X   :F  build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in  :H  src/config.h  :L  build.sh:build.sh  :C  depfiles po-directories
++ set X :F build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in :H src/config.h :L build.sh:build.sh :C depfiles po-directories
++ shift
++ ac_mode=:F
++ continue
++ ac_tag=build.cfg:build.cfg.in
++ ac_save_IFS= 	
+
++ IFS=:
++ set x build.cfg build.cfg.in
++ IFS= 	
+
++ shift
++ ac_file=build.cfg
++ shift
++ ac_file_inputs=
++ test -f build.cfg.in
++ as_fn_append ac_file_inputs  'build.cfg.in'
++ eval ac_file_inputs=$ac_file_inputs$2
++ ac_file_inputs= 'build.cfg.in'
++ + sed s|^[^:]*/||;s|:[^:]*/|, |g
+printf %s\n build.cfg.in
++ configure_input=Generated from build.cfg.in by configure.
++ test xbuild.cfg != x-
++ configure_input=build.cfg.  Generated from build.cfg.in by configure.
++ printf %s\n config.status:: creating build.cfg
++ printf %s\n config.status: creating build.cfg
+config.status: creating build.cfg
++ ac_sed_conf_input=build.cfg.  Generated from build.cfg.in by configure.
++ dirname -- build.cfg
++ ac_dir=.
++ as_dir=.
++ as_fn_mkdir_p
++ test -d .
++ ac_builddir=.
++ ac_dir_suffix= ac_top_builddir_sub=. ac_top_build_prefix=
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig
++ ac_top_builddir=
++ ac_srcdir=.
++ ac_top_srcdir=.
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_INSTALL=/usr/bin/install -c
++ ac_MKDIR_P=/usr/bin/mkdir -p
++ ac_datarootdir_hack=
++ ac_datarootdir_seen=
++ ac_sed_dataroot=
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p
++ eval sed -n "
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p"  'build.cfg.in'
++ sed -n 
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p build.cfg.in
++ ac_sed_extra=/^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|build.cfg.  Generated from build.cfg.in by configure.|;t t
+s&@top_builddir@&.&;t t
+s&@top_build_prefix@&&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@top_srcdir@&.&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+
++ eval sed "$ac_sed_extra"+ :
++ mawk -f ./confHToIHv/subs.awk
+  'build.cfg.in'
++ sed /^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|build.cfg.  Generated from build.cfg.in by configure.|;t t
+s&@top_builddir@&.&;t t
+s&@top_build_prefix@&&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@top_srcdir@&.&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+ build.cfg.in
++ test -z 
++ sed -n /${datarootdir}/p ./confHToIHv/out
++ ac_out=
++ test -n 
++ rm -f ./confHToIHv/stdin
++ rm -f build.cfg
++ mv ./confHToIHv/out build.cfg
++ ac_tag=tests/config-flags.pm:tests/config-flags.pm.in
++ ac_save_IFS= 	
+
++ IFS=:
++ set x tests/config-flags.pm tests/config-flags.pm.in
++ IFS= 	
+
++ shift
++ ac_file=tests/config-flags.pm
++ shift
++ ac_file_inputs=
++ test -f tests/config-flags.pm.in
++ as_fn_append ac_file_inputs  'tests/config-flags.pm.in'
++ eval ac_file_inputs=$ac_file_inputs$2
++ ac_file_inputs= 'tests/config-flags.pm.in'
++ printf %s\n tests/config-flags.pm.in
++ sed s|^[^:]*/||;s|:[^:]*/|, |g
++ configure_input=Generated from config-flags.pm.in by configure.
++ test xtests/config-flags.pm != x-
++ configure_input=tests/config-flags.pm.  Generated from config-flags.pm.in by configure.
++ printf %s\n config.status:: creating tests/config-flags.pm
++ printf %s\n config.status: creating tests/config-flags.pm
+config.status: creating tests/config-flags.pm
++ ac_sed_conf_input=tests/config-flags.pm.  Generated from config-flags.pm.in by configure.
++ dirname -- tests/config-flags.pm
++ ac_dir=tests
++ as_dir=tests
++ as_fn_mkdir_p
++ test -d tests
++ ac_builddir=.
++ + sed s|^\.[\/]||
+printf %s\n tests
++ ac_dir_suffix=/tests
++ + sed s|/[^\/]*|/..|g;s|/||
+printf %s\n /tests
++ ac_top_builddir_sub=..
++ ac_top_build_prefix=../
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig/tests
++ ac_top_builddir=../
++ ac_srcdir=.
++ ac_top_srcdir=..
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig/tests
++ ac_INSTALL=/usr/bin/install -c
++ ac_MKDIR_P=/usr/bin/mkdir -p
++ ac_datarootdir_hack=
++ ac_datarootdir_seen=
++ ac_sed_dataroot=
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p
++ eval sed -n "
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p"  'tests/config-flags.pm.in'
++ sed -n 
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p tests/config-flags.pm.in
++ ac_sed_extra=/^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|tests/config-flags.pm.  Generated from config-flags.pm.in by configure.|;t t
+s&@top_builddir@&..&;t t
+s&@top_build_prefix@&../&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig/tests&;t t
+s&@top_srcdir@&..&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig/tests&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+
++ eval sed "$ac_sed_extra"  'tests/config-flags.pm.in'
++ sed /^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|tests/config-flags.pm.  Generated from config-flags.pm.in by configure.|;t t
+s&@top_builddir@&..&;t t
+s&@top_build_prefix@&../&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig/tests&;t t
+s&@top_srcdir@&..&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig/tests&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+ tests/config-flags.pm.in
++ :
++ mawk -f ./confHToIHv/subs.awk
++ test -z 
++ sed -n /${datarootdir}/p ./confHToIHv/out
++ ac_out=
++ test -n 
++ rm -f ./confHToIHv/stdin
++ rm -f tests/config-flags.pm
++ mv ./confHToIHv/out tests/config-flags.pm
++ ac_tag=Makefile:Makefile.in
++ ac_save_IFS= 	
+
++ IFS=:
++ set x Makefile Makefile.in
++ IFS= 	
+
++ shift
++ ac_file=Makefile
++ shift
++ ac_file_inputs=
++ test -f Makefile.in
++ as_fn_append ac_file_inputs  'Makefile.in'
++ eval ac_file_inputs=$ac_file_inputs$2
++ ac_file_inputs= 'Makefile.in'
++ printf %s\n Makefile.in
++ sed s|^[^:]*/||;s|:[^:]*/|, |g
++ configure_input=Generated from Makefile.in by configure.
++ test xMakefile != x-
++ configure_input=Makefile.  Generated from Makefile.in by configure.
++ printf %s\n config.status:: creating Makefile
++ printf %s\n config.status: creating Makefile
+config.status: creating Makefile
++ ac_sed_conf_input=Makefile.  Generated from Makefile.in by configure.
++ dirname -- Makefile
++ ac_dir=.
++ as_dir=.
++ as_fn_mkdir_p
++ test -d .
++ ac_builddir=.
++ ac_dir_suffix= ac_top_builddir_sub=. ac_top_build_prefix=
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig
++ ac_top_builddir=
++ ac_srcdir=.
++ ac_top_srcdir=.
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_INSTALL=/usr/bin/install -c
++ ac_MKDIR_P=/usr/bin/mkdir -p
++ ac_datarootdir_hack=
++ ac_datarootdir_seen=
++ ac_sed_dataroot=
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p
++ eval sed -n "
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p"  'Makefile.in'
++ sed -n 
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p Makefile.in
++ ac_datarootdir_seen=yes
++ ac_sed_extra=/^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|Makefile.  Generated from Makefile.in by configure.|;t t
+s&@top_builddir@&.&;t t
+s&@top_build_prefix@&&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@top_srcdir@&.&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+
++ :
++ mawk -f ./confHToIHv/subs.awk
++ eval sed "$ac_sed_extra"  'Makefile.in'
++ sed /^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|Makefile.  Generated from Makefile.in by configure.|;t t
+s&@top_builddir@&.&;t t
+s&@top_build_prefix@&&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@top_srcdir@&.&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+ Makefile.in
++ test -z yes
++ rm -f ./confHToIHv/stdin
++ rm -f Makefile
++ mv ./confHToIHv/out Makefile
++ ac_tag=lib/Makefile:lib/Makefile.in
++ ac_save_IFS= 	
+
++ IFS=:
++ set x lib/Makefile lib/Makefile.in
++ IFS= 	
+
++ shift
++ ac_file=lib/Makefile
++ shift
++ ac_file_inputs=
++ test -f lib/Makefile.in
++ as_fn_append ac_file_inputs  'lib/Makefile.in'
++ eval ac_file_inputs=$ac_file_inputs$2
++ ac_file_inputs= 'lib/Makefile.in'
++ + sed s|^[^:]*/||;s|:[^:]*/|, |g
+printf %s\n lib/Makefile.in
++ configure_input=Generated from Makefile.in by configure.
++ test xlib/Makefile != x-
++ configure_input=lib/Makefile.  Generated from Makefile.in by configure.
++ printf %s\n config.status:: creating lib/Makefile
++ printf %s\n config.status: creating lib/Makefile
+config.status: creating lib/Makefile
++ ac_sed_conf_input=lib/Makefile.  Generated from Makefile.in by configure.
++ dirname -- lib/Makefile
++ ac_dir=lib
++ as_dir=lib
++ as_fn_mkdir_p
++ test -d lib
++ ac_builddir=.
++ + sed s|^\.[\/]||
+printf %s\n lib
++ ac_dir_suffix=/lib
++ + sed s|/[^\/]*|/..|g;s|/||
+printf %s\n /lib
++ ac_top_builddir_sub=..
++ ac_top_build_prefix=../
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig/lib
++ ac_top_builddir=../
++ ac_srcdir=.
++ ac_top_srcdir=..
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig/lib
++ ac_INSTALL=/usr/bin/install -c
++ ac_MKDIR_P=/usr/bin/mkdir -p
++ ac_datarootdir_hack=
++ ac_datarootdir_seen=
++ ac_sed_dataroot=
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p
++ eval sed -n "
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p"  'lib/Makefile.in'
++ sed -n 
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p lib/Makefile.in
++ ac_datarootdir_seen=yes
++ ac_sed_extra=/^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|lib/Makefile.  Generated from Makefile.in by configure.|;t t
+s&@top_builddir@&..&;t t
+s&@top_build_prefix@&../&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig/lib&;t t
+s&@top_srcdir@&..&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig/lib&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+
++ eval sed "$ac_sed_extra"  'lib/Makefile.in'
++ sed /^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|lib/Makefile.  Generated from Makefile.in by configure.|;t t
+s&@top_builddir@&..&;t t
+s&@top_build_prefix@&../&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig/lib&;t t
+s&@top_srcdir@&..&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig/lib&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+ lib/Makefile.in
++ :
++ mawk -f ./confHToIHv/subs.awk
++ test -z yes
++ rm -f ./confHToIHv/stdin
++ rm -f lib/Makefile
++ mv ./confHToIHv/out lib/Makefile
++ ac_tag=doc/Makefile:doc/Makefile.in
++ ac_save_IFS= 	
+
++ IFS=:
++ set x doc/Makefile doc/Makefile.in
++ IFS= 	
+
++ shift
++ ac_file=doc/Makefile
++ shift
++ ac_file_inputs=
++ test -f doc/Makefile.in
++ as_fn_append ac_file_inputs  'doc/Makefile.in'
++ eval ac_file_inputs=$ac_file_inputs$2
++ ac_file_inputs= 'doc/Makefile.in'
++ printf %s\n+ sed s|^[^:]*/||;s|:[^:]*/|, |g
+ doc/Makefile.in
++ configure_input=Generated from Makefile.in by configure.
++ test xdoc/Makefile != x-
++ configure_input=doc/Makefile.  Generated from Makefile.in by configure.
++ printf %s\n config.status:: creating doc/Makefile
++ printf %s\n config.status: creating doc/Makefile
+config.status: creating doc/Makefile
++ ac_sed_conf_input=doc/Makefile.  Generated from Makefile.in by configure.
++ dirname -- doc/Makefile
++ ac_dir=doc
++ as_dir=doc
++ as_fn_mkdir_p
++ test -d doc
++ ac_builddir=.
++ + sedprintf %s\n doc
+ s|^\.[\/]||
++ ac_dir_suffix=/doc
++ + sedprintf %s\n /doc
+ s|/[^\/]*|/..|g;s|/||
++ ac_top_builddir_sub=..
++ ac_top_build_prefix=../
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig/doc
++ ac_top_builddir=../
++ ac_srcdir=.
++ ac_top_srcdir=..
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig/doc
++ ac_INSTALL=/usr/bin/install -c
++ ac_MKDIR_P=/usr/bin/mkdir -p
++ ac_datarootdir_hack=
++ ac_datarootdir_seen=
++ ac_sed_dataroot=
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p
++ eval sed -n "
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p"  'doc/Makefile.in'
++ sed -n 
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p doc/Makefile.in
++ ac_datarootdir_seen=yes
++ ac_sed_extra=/^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|doc/Makefile.  Generated from Makefile.in by configure.|;t t
+s&@top_builddir@&..&;t t
+s&@top_build_prefix@&../&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig/doc&;t t
+s&@top_srcdir@&..&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig/doc&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+
++ eval sed "$ac_sed_extra"  'doc/Makefile.in'
++ sed /^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|doc/Makefile.  Generated from Makefile.in by configure.|;t t
+s&@top_builddir@&..&;t t
+s&@top_build_prefix@&../&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig/doc&;t t
+s&@top_srcdir@&..&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig/doc&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+ doc/Makefile.in
++ :
++ mawk -f ./confHToIHv/subs.awk
++ test -z yes
++ rm -f ./confHToIHv/stdin
++ rm -f doc/Makefile
++ mv ./confHToIHv/out doc/Makefile
++ ac_tag=po/Makefile.in:po/Makefile.in.in
++ ac_save_IFS= 	
+
++ IFS=:
++ set x po/Makefile.in po/Makefile.in.in
++ IFS= 	
+
++ shift
++ ac_file=po/Makefile.in
++ shift
++ ac_file_inputs=
++ test -f po/Makefile.in.in
++ as_fn_append ac_file_inputs  'po/Makefile.in.in'
++ eval ac_file_inputs=$ac_file_inputs$2
++ ac_file_inputs= 'po/Makefile.in.in'
++ printf+ sed s|^[^:]*/||;s|:[^:]*/|, |g
+ %s\n po/Makefile.in.in
++ configure_input=Generated from Makefile.in.in by configure.
++ test xpo/Makefile.in != x-
++ configure_input=po/Makefile.in.  Generated from Makefile.in.in by configure.
++ printf %s\n config.status:: creating po/Makefile.in
++ printf %s\n config.status: creating po/Makefile.in
+config.status: creating po/Makefile.in
++ ac_sed_conf_input=po/Makefile.in.  Generated from Makefile.in.in by configure.
++ dirname -- po/Makefile.in
++ ac_dir=po
++ as_dir=po
++ as_fn_mkdir_p
++ test -d po
++ ac_builddir=.
++ + sed s|^\.[\/]||
+printf %s\n po
++ ac_dir_suffix=/po
++ printf+ sed s|/[^\/]*|/..|g;s|/||
+ %s\n /po
++ ac_top_builddir_sub=..
++ ac_top_build_prefix=../
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig/po
++ ac_top_builddir=../
++ ac_srcdir=.
++ ac_top_srcdir=..
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig/po
++ ac_INSTALL=/usr/bin/install -c
++ ac_MKDIR_P=/usr/bin/mkdir -p
++ ac_datarootdir_hack=
++ ac_datarootdir_seen=
++ ac_sed_dataroot=
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p
++ eval sed -n "
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p"  'po/Makefile.in.in'
++ sed -n 
+/datarootdir/ {
+  p
+  q
+}
+/@datadir@/p
+/@docdir@/p
+/@infodir@/p
+/@localedir@/p
+/@mandir@/p po/Makefile.in.in
++ ac_datarootdir_seen=yes
++ ac_sed_extra=/^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|po/Makefile.in.  Generated from Makefile.in.in by configure.|;t t
+s&@top_builddir@&..&;t t
+s&@top_build_prefix@&../&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig/po&;t t
+s&@top_srcdir@&..&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig/po&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+
++ eval sed "$ac_sed_extra"  'po/Makefile.in.in'
++ sed /^[	 ]*VPATH[	 ]*=[	 ]*/{
+h
+s///
+s/^/:/
+s/[	 ]*$/:/
+s/:$(srcdir):/:/g
+s/:${srcdir}:/:/g
+s/:@srcdir@:/:/g
+s/^:*//
+s/:*$//
+x
+s/\(=[	 ]*\).*/\1/
+G
+s/\n//
+s/^[^=]*=[	 ]*$//
+}
+
+:t
+/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
+s|@configure_input@|po/Makefile.in.  Generated from Makefile.in.in by configure.|;t t
+s&@top_builddir@&..&;t t
+s&@top_build_prefix@&../&;t t
+s&@srcdir@&.&;t t
+s&@abs_srcdir@&/home/miki/vscode/mofu-make-zig/po&;t t
+s&@top_srcdir@&..&;t t
+s&@abs_top_srcdir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@builddir@&.&;t t
+s&@abs_builddir@&/home/miki/vscode/mofu-make-zig/po&;t t
+s&@abs_top_builddir@&/home/miki/vscode/mofu-make-zig&;t t
+s&@INSTALL@&/usr/bin/install -c&;t t
+s&@MKDIR_P@&/usr/bin/mkdir -p&;t t
+
+ po/Makefile.in.in
++ :
++ mawk -f ./confHToIHv/subs.awk
++ test -z yes
++ rm -f ./confHToIHv/stdin
++ rm -f po/Makefile.in
++ mv ./confHToIHv/out po/Makefile.in
++ ac_mode=:H
++ continue
++ ac_tag=src/config.h:src/config.h.in
++ ac_save_IFS= 	
+
++ IFS=:
++ set x src/config.h src/config.h.in
++ IFS= 	
+
++ shift
++ ac_file=src/config.h
++ shift
++ ac_file_inputs=
++ test -f src/config.h.in
++ as_fn_append ac_file_inputs  'src/config.h.in'
++ eval ac_file_inputs=$ac_file_inputs$2
++ ac_file_inputs= 'src/config.h.in'
++ + sed s|^[^:]*/||;s|:[^:]*/|, |g
+printf %s\n src/config.h.in
++ configure_input=Generated from config.h.in by configure.
++ test xsrc/config.h != x-
++ configure_input=src/config.h.  Generated from config.h.in by configure.
++ printf %s\n config.status:: creating src/config.h
++ printf %s\n config.status: creating src/config.h
+config.status: creating src/config.h
++ ac_sed_conf_input=src/config.h.  Generated from config.h.in by configure.
++ dirname -- src/config.h
++ ac_dir=src
++ as_dir=src
++ as_fn_mkdir_p
++ test -d src
++ ac_builddir=.
++ + sed s|^\.[\/]||
+printf %s\n src
++ ac_dir_suffix=/src
++ + sed s|/[^\/]*|/..|g;s|/||
+printf %s\n /src
++ ac_top_builddir_sub=..
++ ac_top_build_prefix=../
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig/src
++ ac_top_builddir=../
++ ac_srcdir=.
++ ac_top_srcdir=..
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig/src
++ test xsrc/config.h != x-
++ printf %s\n /* src/config.h.  Generated from config.h.in by configure.  */
++ eval $AWK -f "$ac_tmp/defines.awk"  'src/config.h.in'
++ mawk -f ./confHToIHv/defines.awk src/config.h.in
++ diff src/config.h ./confHToIHv/config.h
++ printf %s\n config.status:: src/config.h is unchanged
++ printf %s\n config.status: src/config.h is unchanged
+config.status: src/config.h is unchanged
++ _am_arg=src/config.h
++ _am_stamp_count=1
++ break
++ dirname -- src/config.h
++ echo timestamp for src/config.h
++ ac_mode=:L
++ continue
++ ac_save_IFS= 	
+
++ IFS=:
++ set x build.sh build.sh
++ IFS= 	
+
++ shift
++ ac_file=build.sh
++ shift
++ ac_source=build.sh
++ dirname -- build.sh
++ ac_dir=.
++ as_dir=.
++ as_fn_mkdir_p
++ test -d .
++ ac_builddir=.
++ ac_dir_suffix= ac_top_builddir_sub=. ac_top_build_prefix=
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig
++ ac_top_builddir=
++ ac_srcdir=.
++ ac_top_srcdir=.
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig
++ test build.sh = build.sh
++ test . = .
++ :
++ ac_mode=:C
++ continue
++ ac_save_IFS= 	
+
++ IFS=:
++ set x depfiles
++ IFS= 	
+
++ shift
++ ac_file=depfiles
++ shift
++ dirname -- depfiles
++ ac_dir=.
++ as_dir=.
++ as_fn_mkdir_p
++ test -d .
++ ac_builddir=.
++ ac_dir_suffix= ac_top_builddir_sub=. ac_top_build_prefix=
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig
++ ac_top_builddir=
++ ac_srcdir=.
++ ac_top_srcdir=.
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig
++ printf %s\n config.status:: executing depfiles commands
++ printf %s\n config.status: executing depfiles commands
+config.status: executing depfiles commands
++ test x != x
++ :
++ set x build.cfg tests/config-flags.pm Makefile lib/Makefile doc/Makefile po/Makefile.in
++ shift
++ am_rc=0
++ + sed -e s/:.*$//
+printf %s\n build.cfg
++ am_mf=build.cfg
++ sed+ grep X
+ -n s,^am--depfiles:.*,X,p build.cfg
++ continue
++ printf %s\n tests/config-flags.pm
++ sed -e s/:.*$//
++ am_mf=tests/config-flags.pm
++ sed -n s,^am--depfiles:.*,X,p tests/config-flags.pm
++ grep X
++ continue
++ + sed -e s/:.*$//
+printf %s\n Makefile
++ am_mf=Makefile
++ sed -n s,^am--depfiles:.*,X,p Makefile
++ grep X
++ dirname -- Makefile
++ am_dirpart=.
++ basename -- Makefile
++ am_filepart=Makefile
++ echo config.status:: cd .       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
++ ac_status=0
++ echo config.status:: $? = 0
++ exit 0
++ printf %s\n lib/Makefile
++ sed -e s/:.*$//
++ am_mf=lib/Makefile
++ sed -n s,^am--depfiles:.*,X,p lib/Makefile
++ grep X
++ dirname -- lib/Makefile
++ am_dirpart=lib
++ basename -- lib/Makefile
++ am_filepart=Makefile
++ echo config.status:: cd lib       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
++ ac_status=0
++ echo config.status:: $? = 0
++ exit 0
++ printf+ sed -e s/:.*$//
+ %s\n doc/Makefile
++ am_mf=doc/Makefile
++ sed -n s,^am--depfiles:.*,X,p doc/Makefile
++ grep X
++ continue
++ printf %s\n+ sed -e s/:.*$//
+ po/Makefile.in
++ am_mf=po/Makefile.in
++ grep X
++ sed -n s,^am--depfiles:.*,X,p po/Makefile.in
++ continue
++ test 0 -ne 0
++ am_dirpart=
++ unset am_dirpart
++ am_filepart=
++ unset am_filepart
++ am_mf=
++ unset am_mf
++ am_rc=
++ unset am_rc
++ rm -f conftest-deps.mk
++ ac_save_IFS= 	
+
++ IFS=:
++ set x po-directories
++ IFS= 	
+
++ shift
++ ac_file=po-directories
++ shift
++ dirname -- po-directories
++ ac_dir=.
++ as_dir=.
++ as_fn_mkdir_p
++ test -d .
++ ac_builddir=.
++ ac_dir_suffix= ac_top_builddir_sub=. ac_top_build_prefix=
++ ac_abs_top_builddir=/home/miki/vscode/mofu-make-zig
++ ac_abs_builddir=/home/miki/vscode/mofu-make-zig
++ ac_top_builddir=
++ ac_srcdir=.
++ ac_top_srcdir=.
++ ac_abs_top_srcdir=/home/miki/vscode/mofu-make-zig
++ ac_abs_srcdir=/home/miki/vscode/mofu-make-zig
++ printf %s\n config.status:: executing po-directories commands
++ printf %s\n config.status: executing po-directories commands
+config.status: executing po-directories commands
++ + sed s%/[^/][^/]*$%%
+echo po/Makefile.in
++ ac_dir=po
++ + sed s%^\./%%
+echo po
++ ac_dir_suffix=/po
++ + sed s%/[^/]*%../%g
+echo /po
++ ac_dots=../
++ test -n 
++ ac_given_srcdir=.
++ + sed s%/$%%
+echo ../
++ top_srcdir=..
++ test -f ./po/POTFILES.in
++ rm -f po/POTFILES
++ test -n config.status
++ echo config.status: creating po/POTFILES
+config.status: creating po/POTFILES
++ printf \t
++ gt_tab=	
++ sed+ sed -e $s/\(.*\) \\/\1/
++ cat ./po/POTFILES.in
+ -e /^#/d -e /^[ 	]*$/d -e s,.*,     ../& \\,
++ POMAKEFILEDEPS=POTFILES.in
++ test -f ./po/LINGUAS
++ test -n 
++ sed -e /^#/d -e s/#.*// ./po/LINGUAS
++ ALL_LINGUAS_=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ eval ALL_LINGUAS=$ALL_LINGUAS_
++ ALL_LINGUAS=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ POMAKEFILEDEPS=POTFILES.in LINGUAS
++ srcdirpre=
++ POFILES=
++ UPDATEPOFILES=
++ DUMMYPOFILES=
++ GMOFILES=
++ POFILES= be.po
++ UPDATEPOFILES= be.po-update
++ DUMMYPOFILES= be.nop
++ GMOFILES= be.gmo
++ POFILES= be.po bg.po
++ UPDATEPOFILES= be.po-update bg.po-update
++ DUMMYPOFILES= be.nop bg.nop
++ GMOFILES= be.gmo bg.gmo
++ POFILES= be.po bg.po cs.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo
++ POFILES= be.po bg.po cs.po da.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo
++ POFILES= be.po bg.po cs.po da.po de.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po ru.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update ru.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop ru.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po ru.po sr.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update ru.po-update sr.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop ru.nop sr.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po ru.po sr.po sv.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update ru.po-update sr.po-update sv.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop ru.nop sr.nop sv.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po ru.po sr.po sv.po tr.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update ru.po-update sr.po-update sv.po-update tr.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop ru.nop sr.nop sv.nop tr.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po ru.po sr.po sv.po tr.po uk.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update ru.po-update sr.po-update sv.po-update tr.po-update uk.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop ru.nop sr.nop sv.nop tr.nop uk.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po ru.po sr.po sv.po tr.po uk.po vi.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update ru.po-update sr.po-update sv.po-update tr.po-update uk.po-update vi.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop ru.nop sr.nop sv.nop tr.nop uk.nop vi.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo vi.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po ru.po sr.po sv.po tr.po uk.po vi.po zh_CN.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update ru.po-update sr.po-update sv.po-update tr.po-update uk.po-update vi.po-update zh_CN.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop ru.nop sr.nop sv.nop tr.nop uk.nop vi.nop zh_CN.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo vi.gmo zh_CN.gmo
++ POFILES= be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po ru.po sr.po sv.po tr.po uk.po vi.po zh_CN.po zh_TW.po
++ UPDATEPOFILES= be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update ru.po-update sr.po-update sv.po-update tr.po-update uk.po-update vi.po-update zh_CN.po-update zh_TW.po-update
++ DUMMYPOFILES= be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop ru.nop sr.nop sv.nop tr.nop uk.nop vi.nop zh_CN.nop zh_TW.nop
++ GMOFILES= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo vi.gmo zh_CN.gmo zh_TW.gmo
++ INST_LINGUAS=
++ test -n be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro ru
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro ru sr
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro ru sr sv
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro ru sr sv tr
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro ru sr sv tr uk
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro ru sr sv tr uk vi
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro ru sr sv tr uk vi zh_CN
++ useit=no
++ test %UNSET% != %UNSET%
++ desiredlanguages=be
+bg
+cs
+da
+de
+es
+fi
+fr
+ga
+gl
+he
+hr
+id
+it
+ja
+ko
+lt
+nl
+pl
+pt
+pt_BR
+ro
+ru
+sr
+sv
+tr
+uk
+vi
+zh_CN
+zh_TW
++ useit=yes
++ test yes = yes
++ INST_LINGUAS= be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro ru sr sv tr uk vi zh_CN zh_TW
++ CATALOGS=
++ test -n  be bg cs da de es fi fr ga gl he hr id it ja ko lt nl pl pt pt_BR ro ru sr sv tr uk vi zh_CN zh_TW
++ CATALOGS= be.gmo
++ CATALOGS= be.gmo bg.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo vi.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo vi.gmo zh_CN.gmo
++ CATALOGS= be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo vi.gmo zh_CN.gmo zh_TW.gmo
++ test -n config.status
++ echo config.status: creating po/Makefile
+config.status: creating po/Makefile
++ sed -e /^POTFILES =/r po/POTFILES -e /^# Makevars/r ./po/Makevars -e s|@POFILES@| be.po bg.po cs.po da.po de.po es.po fi.po fr.po ga.po gl.po he.po hr.po id.po it.po ja.po ko.po lt.po nl.po pl.po pt.po pt_BR.po ro.po ru.po sr.po sv.po tr.po uk.po vi.po zh_CN.po zh_TW.po|g -e s|@UPDATEPOFILES@| be.po-update bg.po-update cs.po-update da.po-update de.po-update es.po-update fi.po-update fr.po-update ga.po-update gl.po-update he.po-update hr.po-update id.po-update it.po-update ja.po-update ko.po-update lt.po-update nl.po-update pl.po-update pt.po-update pt_BR.po-update ro.po-update ru.po-update sr.po-update sv.po-update tr.po-update uk.po-update vi.po-update zh_CN.po-update zh_TW.po-update|g -e s|@DUMMYPOFILES@| be.nop bg.nop cs.nop da.nop de.nop es.nop fi.nop fr.nop ga.nop gl.nop he.nop hr.nop id.nop it.nop ja.nop ko.nop lt.nop nl.nop pl.nop pt.nop pt_BR.nop ro.nop ru.nop sr.nop sv.nop tr.nop uk.nop vi.nop zh_CN.nop zh_TW.nop|g -e s|@GMOFILES@| be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo vi.gmo zh_CN.gmo zh_TW.gmo|g -e s|@CATALOGS@| be.gmo bg.gmo cs.gmo da.gmo de.gmo es.gmo fi.gmo fr.gmo ga.gmo gl.gmo he.gmo hr.gmo id.gmo it.gmo ja.gmo ko.gmo lt.gmo nl.gmo pl.gmo pt.gmo pt_BR.gmo ro.gmo ru.gmo sr.gmo sv.gmo tr.gmo uk.gmo vi.gmo zh_CN.gmo zh_TW.gmo|g -e s|@POMAKEFILEDEPS@|POTFILES.in LINGUAS|g po/Makefile.in
++ test -f ./po/Rules-quot
++ cat ./po/Rules-quot
++ as_fn_exit 0
++ set +e
++ as_fn_set_status 0
++ return 0
++ exit 0
++ exit_status=0
++ : ./confHToIHv
++ test ! -d ./confHToIHv
++ rm -fr ./confHToIHv
++ exit 0
++ fail=
++ target_option=k
++ has_opt=no
++ sane_makeflags= -- SHELL=sh\ -x
++ test -z 0
++ test -n x86_64-pc-linux-gnu
++ true
++ sane_makeflags=
++ skip_next=no
++ test no = yes
++ failcom=exit 1
++ dot_seen=no
++ echo all-recursive+ sed s/-recursive//
+
++ target=all
++ list=lib po doc
++ echo Making all in lib
+Making all in lib
++ test lib = .
++ local_target=all
++ CDPATH=:
++ cd lib
++ make all
+make[1]: ディレクトリ '/home/miki/vscode/mofu-make-zig/lib' に入ります
+sed -e 1h -e '1s,.*,/* DO NOT EDIT! GENERATED AUTOMATICALLY! */,' -e 1G \
+  -e 's|@''HAVE_ALLOCA_H''@|1|g' \
+  ./alloca.in.h > alloca.h-t
++ sed -e 1h -e 1s,.*,/* DO NOT EDIT! GENERATED AUTOMATICALLY! */, -e 1G -e s|@HAVE_ALLOCA_H@|1|g ./alloca.in.h
+mv alloca.h-t alloca.h
++ mv alloca.h-t alloca.h
+make  all-recursive
++ make all-recursive
+make[2]: ディレクトリ '/home/miki/vscode/mofu-make-zig/lib' に入ります
++ fail=
++ target_option=k
++ has_opt=no
++ sane_makeflags=w -- SHELL=sh\ -x
++ test -z 2
++ test -n x86_64-pc-linux-gnu
++ true
++ sane_makeflags=-w
++ skip_next=no
++ test no = yes
++ test no = yes
++ failcom=exit 1
++ dot_seen=no
++ echo all-recursive+ sed s/-recursive//
+
++ target=all
++ list=
++ test no = no
++ make all-am
+make[3]: ディレクトリ '/home/miki/vscode/mofu-make-zig/lib' に入ります
+gcc -DHAVE_CONFIG_H -I. -I../src     -Wno-cast-qual -Wno-conversion -Wno-float-equal -Wno-sign-compare -Wno-undef -Wno-unused-function -Wno-unused-parameter -Wno-float-conversion -Wimplicit-fallthrough -Wno-pedantic -Wno-sign-conversion -Wno-type-limits -Wno-unsuffixed-float-constants -g -O2 -MT libgnu_a-concat-filename.o -MD -MP -MF .deps/libgnu_a-concat-filename.Tpo -c -o libgnu_a-concat-filename.o `test -f 'concat-filename.c' || echo './'`concat-filename.c
++ test -f concat-filename.c
++ gcc -DHAVE_CONFIG_H -I. -I../src -Wno-cast-qual -Wno-conversion -Wno-float-equal -Wno-sign-compare -Wno-undef -Wno-unused-function -Wno-unused-parameter -Wno-float-conversion -Wimplicit-fallthrough -Wno-pedantic -Wno-sign-conversion -Wno-type-limits -Wno-unsuffixed-float-constants -g -O2 -MT libgnu_a-concat-filename.o -MD -MP -MF .deps/libgnu_a-concat-filename.Tpo -c -o libgnu_a-concat-filename.o concat-filename.c
+mv -f .deps/libgnu_a-concat-filename.Tpo .deps/libgnu_a-concat-filename.Po
++ mv -f .deps/libgnu_a-concat-filename.Tpo .deps/libgnu_a-concat-filename.Po
+gcc -DHAVE_CONFIG_H -I. -I../src     -Wno-cast-qual -Wno-conversion -Wno-float-equal -Wno-sign-compare -Wno-undef -Wno-unused-function -Wno-unused-parameter -Wno-float-conversion -Wimplicit-fallthrough -Wno-pedantic -Wno-sign-conversion -Wno-type-limits -Wno-unsuffixed-float-constants -g -O2 -MT libgnu_a-findprog-in.o -MD -MP -MF .deps/libgnu_a-findprog-in.Tpo -c -o libgnu_a-findprog-in.o `test -f 'findprog-in.c' || echo './'`findprog-in.c
++ test -f findprog-in.c
++ gcc -DHAVE_CONFIG_H -I. -I../src -Wno-cast-qual -Wno-conversion -Wno-float-equal -Wno-sign-compare -Wno-undef -Wno-unused-function -Wno-unused-parameter -Wno-float-conversion -Wimplicit-fallthrough -Wno-pedantic -Wno-sign-conversion -Wno-type-limits -Wno-unsuffixed-float-constants -g -O2 -MT libgnu_a-findprog-in.o -MD -MP -MF .deps/libgnu_a-findprog-in.Tpo -c -o libgnu_a-findprog-in.o findprog-in.c
+mv -f .deps/libgnu_a-findprog-in.Tpo .deps/libgnu_a-findprog-in.Po
++ mv -f .deps/libgnu_a-findprog-in.Tpo .deps/libgnu_a-findprog-in.Po
+rm -f libgnu.a
++ rm -f libgnu.a
+ar cr libgnu.a libgnu_a-concat-filename.o libgnu_a-findprog-in.o    
++ ar cr libgnu.a libgnu_a-concat-filename.o libgnu_a-findprog-in.o
+ranlib libgnu.a
++ ranlib libgnu.a
+make[3]: ディレクトリ '/home/miki/vscode/mofu-make-zig/lib' から出ます
++ test -z 
+make[2]: ディレクトリ '/home/miki/vscode/mofu-make-zig/lib' から出ます
+make[1]: ディレクトリ '/home/miki/vscode/mofu-make-zig/lib' から出ます
++ echo Making all in po
+Making all in po
++ test po = .
++ local_target=all
++ CDPATH=:
++ cd po
++ make all
+make[1]: ディレクトリ '/home/miki/vscode/mofu-make-zig/po' に入ります
+make[1]: 'all' に対して行うべき事はありません.
+make[1]: ディレクトリ '/home/miki/vscode/mofu-make-zig/po' から出ます
++ echo Making all in doc
+Making all in doc
++ test doc = .
++ local_target=all
++ CDPATH=:
++ cd doc
++ make all
+make[1]: ディレクトリ '/home/miki/vscode/mofu-make-zig/doc' に入ります
++ dir=.
++ test -f ./make.texi
++ sh -x ../build-aux/mdate-sh ./make.texi
++ scriptversion=2018-03-07.03
++ test -n 
++ LANG=C
++ export LANG
++ LC_ALL=C
++ export LC_ALL
++ LC_TIME=C
++ export LC_TIME
++ TZ=UTC0
++ export TZ
++ test  = set
++ save_arg1=./make.texi
++ ls -L /dev/null
++ ls_command=ls -L -l -d
++ ls -n /dev/null
++ ls_command=ls -L -l -d -n
++ ls -L -l -d -n /
++ set xdrwxr-xr-x 19 0 0 4096 Jun 15 2022 /
++ month=
++ command=
++ test
++ test 9 -gt 0
++ shift
++ command= shift;
++ test
++ test 8 -gt 0
++ shift
++ command= shift; shift;
++ test
++ test 7 -gt 0
++ shift
++ command= shift; shift; shift;
++ test
++ test 6 -gt 0
++ shift
++ command= shift; shift; shift; shift;
++ test
++ test 5 -gt 0
++ shift
++ command= shift; shift; shift; shift; shift;
++ month=June
++ nummonth=6
++ test June
++ test -n June
++ eval ls -L -l -d -n "$save_arg1"
++ ls -L -l -d -n ./make.texi
++ set dummy x-rw-rw-r-- 1 1000 1000 525891 Apr 26 13:15 ./make.texi
++ eval shift; shift; shift; shift; shift;
++ shift
++ shift
++ shift
++ shift
++ shift
++ month=April
++ nummonth=4
++ day=26
++ shift
++ date
++ set Sun Jul 14 07:06:30 UTC 2024
++ eval year=$6
++ year=2024
++ nummonthtod=7
++ expr 4 > 7
++ echo 26 April 2024
++ set 26 April 2024
++ echo @set UPDATED 26 April 2024
++ echo @set UPDATED-MONTH April 2024
++ echo @set EDITION 4.4.1
++ echo @set VERSION 4.4.1
++ cmp -s vti.tmp95540 ./version.texi
++ rm -f vti.tmp95540 ./version.texi.95540
++ cp ./version.texi stamp-vti
+make[1]: ディレクトリ '/home/miki/vscode/mofu-make-zig/doc' から出ます
++ test no = no
++ make all-am
+make[1]: ディレクトリ '/home/miki/vscode/mofu-make-zig' に入ります
++ /usr/bin/mkdir -p src
++ :
++ /usr/bin/mkdir -p src/.deps
++ :
+depbase=`echo src/ar.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/ar.o -MD -MP -MF $depbase.Tpo -c -o src/ar.o src/ar.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/ar.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/ar
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/ar.o -MD -MP -MF src/.deps/ar.Tpo -c -o src/ar.o src/ar.c
++ mv -f src/.deps/ar.Tpo src/.deps/ar.Po
+depbase=`echo src/arscan.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/arscan.o -MD -MP -MF $depbase.Tpo -c -o src/arscan.o src/arscan.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/arscan.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/arscan
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/arscan.o -MD -MP -MF src/.deps/arscan.Tpo -c -o src/arscan.o src/arscan.c
++ mv -f src/.deps/arscan.Tpo src/.deps/arscan.Po
+depbase=`echo src/commands.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/commands.o -MD -MP -MF $depbase.Tpo -c -o src/commands.o src/commands.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/commands.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/commands
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/commands.o -MD -MP -MF src/.deps/commands.Tpo -c -o src/commands.o src/commands.c
++ mv -f src/.deps/commands.Tpo src/.deps/commands.Po
+depbase=`echo src/default.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/default.o -MD -MP -MF $depbase.Tpo -c -o src/default.o src/default.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ echo src/default.o
++ depbase=src/.deps/default
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/default.o -MD -MP -MF src/.deps/default.Tpo -c -o src/default.o src/default.c
++ mv -f src/.deps/default.Tpo src/.deps/default.Po
+depbase=`echo src/dir.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/dir.o -MD -MP -MF $depbase.Tpo -c -o src/dir.o src/dir.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/dir.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/dir
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/dir.o -MD -MP -MF src/.deps/dir.Tpo -c -o src/dir.o src/dir.c
++ mv -f src/.deps/dir.Tpo src/.deps/dir.Po
+depbase=`echo src/expand.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/expand.o -MD -MP -MF $depbase.Tpo -c -o src/expand.o src/expand.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/expand.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/expand
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/expand.o -MD -MP -MF src/.deps/expand.Tpo -c -o src/expand.o src/expand.c
++ mv -f src/.deps/expand.Tpo src/.deps/expand.Po
+depbase=`echo src/file.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/file.o -MD -MP -MF $depbase.Tpo -c -o src/file.o src/file.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/file.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/file
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/file.o -MD -MP -MF src/.deps/file.Tpo -c -o src/file.o src/file.c
++ mv -f src/.deps/file.Tpo src/.deps/file.Po
+depbase=`echo src/function.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/function.o -MD -MP -MF $depbase.Tpo -c -o src/function.o src/function.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/function.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/function
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/function.o -MD -MP -MF src/.deps/function.Tpo -c -o src/function.o src/function.c
++ mv -f src/.deps/function.Tpo src/.deps/function.Po
+depbase=`echo src/getopt.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/getopt.o -MD -MP -MF $depbase.Tpo -c -o src/getopt.o src/getopt.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/getopt.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/getopt
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/getopt.o -MD -MP -MF src/.deps/getopt.Tpo -c -o src/getopt.o src/getopt.c
++ mv -f src/.deps/getopt.Tpo src/.deps/getopt.Po
+depbase=`echo src/getopt1.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/getopt1.o -MD -MP -MF $depbase.Tpo -c -o src/getopt1.o src/getopt1.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/getopt1.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/getopt1
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/getopt1.o -MD -MP -MF src/.deps/getopt1.Tpo -c -o src/getopt1.o src/getopt1.c
++ mv -f src/.deps/getopt1.Tpo src/.deps/getopt1.Po
+depbase=`echo src/guile.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/guile.o -MD -MP -MF $depbase.Tpo -c -o src/guile.o src/guile.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ echo src/guile.o
++ depbase=src/.deps/guile
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/guile.o -MD -MP -MF src/.deps/guile.Tpo -c -o src/guile.o src/guile.c
++ mv -f src/.deps/guile.Tpo src/.deps/guile.Po
+depbase=`echo src/hash.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/hash.o -MD -MP -MF $depbase.Tpo -c -o src/hash.o src/hash.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/hash.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/hash
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/hash.o -MD -MP -MF src/.deps/hash.Tpo -c -o src/hash.o src/hash.c
++ mv -f src/.deps/hash.Tpo src/.deps/hash.Po
+depbase=`echo src/implicit.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/implicit.o -MD -MP -MF $depbase.Tpo -c -o src/implicit.o src/implicit.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/implicit.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/implicit
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/implicit.o -MD -MP -MF src/.deps/implicit.Tpo -c -o src/implicit.o src/implicit.c
++ mv -f src/.deps/implicit.Tpo src/.deps/implicit.Po
+depbase=`echo src/job.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/job.o -MD -MP -MF $depbase.Tpo -c -o src/job.o src/job.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/job.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/job
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/job.o -MD -MP -MF src/.deps/job.Tpo -c -o src/job.o src/job.c
++ mv -f src/.deps/job.Tpo src/.deps/job.Po
+depbase=`echo src/load.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/load.o -MD -MP -MF $depbase.Tpo -c -o src/load.o src/load.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/load.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/load
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/load.o -MD -MP -MF src/.deps/load.Tpo -c -o src/load.o src/load.c
++ mv -f src/.deps/load.Tpo src/.deps/load.Po
+depbase=`echo src/loadapi.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/loadapi.o -MD -MP -MF $depbase.Tpo -c -o src/loadapi.o src/loadapi.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/loadapi.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/loadapi
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/loadapi.o -MD -MP -MF src/.deps/loadapi.Tpo -c -o src/loadapi.o src/loadapi.c
++ mv -f src/.deps/loadapi.Tpo src/.deps/loadapi.Po
+depbase=`echo src/main.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/main.o -MD -MP -MF $depbase.Tpo -c -o src/main.o src/main.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/main.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/main
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/main.o -MD -MP -MF src/.deps/main.Tpo -c -o src/main.o src/main.c
++ mv -f src/.deps/main.Tpo src/.deps/main.Po
+depbase=`echo src/misc.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/misc.o -MD -MP -MF $depbase.Tpo -c -o src/misc.o src/misc.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/misc.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/misc
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/misc.o -MD -MP -MF src/.deps/misc.Tpo -c -o src/misc.o src/misc.c
++ mv -f src/.deps/misc.Tpo src/.deps/misc.Po
+depbase=`echo src/output.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/output.o -MD -MP -MF $depbase.Tpo -c -o src/output.o src/output.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/output.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/output
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/output.o -MD -MP -MF src/.deps/output.Tpo -c -o src/output.o src/output.c
++ mv -f src/.deps/output.Tpo src/.deps/output.Po
+depbase=`echo src/read.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/read.o -MD -MP -MF $depbase.Tpo -c -o src/read.o src/read.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/read.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/read
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/read.o -MD -MP -MF src/.deps/read.Tpo -c -o src/read.o src/read.c
++ mv -f src/.deps/read.Tpo src/.deps/read.Po
+depbase=`echo src/remake.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/remake.o -MD -MP -MF $depbase.Tpo -c -o src/remake.o src/remake.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/remake.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/remake
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/remake.o -MD -MP -MF src/.deps/remake.Tpo -c -o src/remake.o src/remake.c
++ mv -f src/.deps/remake.Tpo src/.deps/remake.Po
+depbase=`echo src/rule.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/rule.o -MD -MP -MF $depbase.Tpo -c -o src/rule.o src/rule.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/rule.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/rule
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/rule.o -MD -MP -MF src/.deps/rule.Tpo -c -o src/rule.o src/rule.c
++ mv -f src/.deps/rule.Tpo src/.deps/rule.Po
+depbase=`echo src/shuffle.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/shuffle.o -MD -MP -MF $depbase.Tpo -c -o src/shuffle.o src/shuffle.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/shuffle.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/shuffle
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/shuffle.o -MD -MP -MF src/.deps/shuffle.Tpo -c -o src/shuffle.o src/shuffle.c
++ mv -f src/.deps/shuffle.Tpo src/.deps/shuffle.Po
+depbase=`echo src/signame.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/signame.o -MD -MP -MF $depbase.Tpo -c -o src/signame.o src/signame.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/signame.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/signame
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/signame.o -MD -MP -MF src/.deps/signame.Tpo -c -o src/signame.o src/signame.c
++ mv -f src/.deps/signame.Tpo src/.deps/signame.Po
+depbase=`echo src/strcache.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/strcache.o -MD -MP -MF $depbase.Tpo -c -o src/strcache.o src/strcache.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/strcache.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/strcache
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/strcache.o -MD -MP -MF src/.deps/strcache.Tpo -c -o src/strcache.o src/strcache.c
++ mv -f src/.deps/strcache.Tpo src/.deps/strcache.Po
+depbase=`echo src/variable.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/variable.o -MD -MP -MF $depbase.Tpo -c -o src/variable.o src/variable.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/variable.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/variable
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/variable.o -MD -MP -MF src/.deps/variable.Tpo -c -o src/variable.o src/variable.c
++ mv -f src/.deps/variable.Tpo src/.deps/variable.Po
+depbase=`echo src/version.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/version.o -MD -MP -MF $depbase.Tpo -c -o src/version.o src/version.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/version.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/version
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/version.o -MD -MP -MF src/.deps/version.Tpo -c -o src/version.o src/version.c
++ mv -f src/.deps/version.Tpo src/.deps/version.Po
+depbase=`echo src/vpath.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/vpath.o -MD -MP -MF $depbase.Tpo -c -o src/vpath.o src/vpath.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/vpath.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/vpath
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/vpath.o -MD -MP -MF src/.deps/vpath.Tpo -c -o src/vpath.o src/vpath.c
++ mv -f src/.deps/vpath.Tpo src/.deps/vpath.Po
+depbase=`echo src/posixos.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/posixos.o -MD -MP -MF $depbase.Tpo -c -o src/posixos.o src/posixos.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/posixos.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/posixos
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/posixos.o -MD -MP -MF src/.deps/posixos.Tpo -c -o src/posixos.o src/posixos.c
++ mv -f src/.deps/posixos.Tpo src/.deps/posixos.Po
+depbase=`echo src/remote-stub.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+gcc -DHAVE_CONFIG_H   -Isrc -I./src -Ilib -I./lib -DLIBDIR=\"/usr/local/lib\" -DLOCALEDIR=\"/usr/local/share/locale\"     -g -O2 -MT src/remote-stub.o -MD -MP -MF $depbase.Tpo -c -o src/remote-stub.o src/remote-stub.c &&\
+mv -f $depbase.Tpo $depbase.Po
++ echo src/remote-stub.o
++ sed s|[^/]*$|.deps/&|;s|\.o$||
++ depbase=src/.deps/remote-stub
++ gcc -DHAVE_CONFIG_H -Isrc -I./src -Ilib -I./lib -DLIBDIR="/usr/local/lib" -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT src/remote-stub.o -MD -MP -MF src/.deps/remote-stub.Tpo -c -o src/remote-stub.o src/remote-stub.c
++ mv -f src/.deps/remote-stub.Tpo src/.deps/remote-stub.Po
++ rm -f make
+gcc  -g -O2 -Wl,--export-dynamic  -o make src/ar.o src/arscan.o src/commands.o src/default.o src/dir.o src/expand.o src/file.o src/function.o src/getopt.o src/getopt1.o src/guile.o src/hash.o src/implicit.o src/job.o src/load.o src/loadapi.o src/main.o src/misc.o src/output.o src/read.o src/remake.o src/rule.o src/shuffle.o src/signame.o src/strcache.o src/variable.o src/version.o src/vpath.o  src/posixos.o  src/remote-stub.o   lib/libgnu.a   -ldl 
++ gcc -g -O2 -Wl,--export-dynamic -o make src/ar.o src/arscan.o src/commands.o src/default.o src/dir.o src/expand.o src/file.o src/function.o src/getopt.o src/getopt1.o src/guile.o src/hash.o src/implicit.o src/job.o src/load.o src/loadapi.o src/main.o src/misc.o src/output.o src/read.o src/remake.o src/rule.o src/shuffle.o src/signame.o src/strcache.o src/variable.o src/version.o src/vpath.o src/posixos.o src/remote-stub.o lib/libgnu.a -ldl
+make[1]: ディレクトリ '/home/miki/vscode/mofu-make-zig' から出ます
++ test -z 

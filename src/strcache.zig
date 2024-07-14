@@ -1966,34 +1966,6 @@ pub extern fn globfree(__pglob: [*c]glob_t) void;
 pub extern fn glob64(noalias __pattern: [*c]const u8, __flags: c_int, __errfunc: ?*const fn ([*c]const u8, c_int) callconv(.C) c_int, noalias __pglob: [*c]glob64_t) c_int;
 pub extern fn globfree64(__pglob: [*c]glob64_t) void;
 pub extern fn glob_pattern_p(__pattern: [*c]const u8, __quote: c_int) c_int;
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_dep = opaque {};
-// src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_commands = opaque {};
-pub const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
-pub const hash_cmp_func_t = ?*const fn (?*const anyopaque, ?*const anyopaque) callconv(.C) c_int;
-pub const struct_hash_table = extern struct {
-    ht_vec: [*c]?*anyopaque = @import("std").mem.zeroes([*c]?*anyopaque),
-    ht_hash_1: hash_func_t = @import("std").mem.zeroes(hash_func_t),
-    ht_hash_2: hash_func_t = @import("std").mem.zeroes(hash_func_t),
-    ht_compare: hash_cmp_func_t = @import("std").mem.zeroes(hash_cmp_func_t),
-    ht_size: c_ulong = @import("std").mem.zeroes(c_ulong),
-    ht_capacity: c_ulong = @import("std").mem.zeroes(c_ulong),
-    ht_fill: c_ulong = @import("std").mem.zeroes(c_ulong),
-    ht_empty_slots: c_ulong = @import("std").mem.zeroes(c_ulong),
-    ht_collisions: c_ulong = @import("std").mem.zeroes(c_ulong),
-    ht_lookups: c_ulong = @import("std").mem.zeroes(c_ulong),
-    ht_rehashes: c_uint = @import("std").mem.zeroes(c_uint),
-};
-pub const struct_variable_set = extern struct {
-    table: struct_hash_table = @import("std").mem.zeroes(struct_hash_table),
-};
-pub const struct_variable_set_list = extern struct {
-    next: [*c]struct_variable_set_list = @import("std").mem.zeroes([*c]struct_variable_set_list),
-    set: [*c]struct_variable_set = @import("std").mem.zeroes([*c]struct_variable_set),
-    next_is_parent: c_int = @import("std").mem.zeroes(c_int),
-};
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
 pub const struct_file = opaque {};
 pub const floc = extern struct {
     filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
@@ -2005,16 +1977,7 @@ pub extern fn message(prefix: c_int, length: usize, fmt: [*c]const u8, ...) void
 pub extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
 pub extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
 pub extern fn out_of_memory() noreturn;
-pub const o_default: c_int = 0;
-pub const o_env: c_int = 1;
-pub const o_file: c_int = 2;
-pub const o_env_override: c_int = 3;
-pub const o_command: c_int = 4;
-pub const o_override: c_int = 5;
-pub const o_automatic: c_int = 6;
-pub const o_invalid: c_int = 7;
-pub const enum_variable_origin = c_int;
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
+pub const enum_variable_origin = opaque {};
 pub const struct_variable = opaque {};
 pub extern fn reset_makeflags(origin: enum_variable_origin) void;
 pub extern fn define_makeflags(makefile: c_int) ?*struct_variable;
@@ -2076,11 +2039,112 @@ pub extern fn gpath_search(file: [*c]const u8, len: usize) c_int;
 pub extern fn construct_include_path(arg_dirs: [*c][*c]const u8) void;
 pub extern fn strip_whitespace(begpp: [*c][*c]const u8, endpp: [*c][*c]const u8) [*c]u8;
 pub extern fn show_goal_error() void;
-pub extern fn strcache_init() void;
-pub extern fn strcache_print_stats(prefix: [*c]const u8) void;
-pub extern fn strcache_iscached(str: [*c]const u8) c_int;
-pub extern fn strcache_add(str: [*c]const u8) [*c]const u8;
-pub extern fn strcache_add_len(str: [*c]const u8, len: usize) [*c]const u8;
+pub export fn strcache_init() void {
+    hash_init(&strings, @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8000)))), &str_hash_1, &str_hash_2, &str_hash_cmp);
+}
+pub const sc_buflen_t = c_ushort;
+pub const struct_strcache = extern struct {
+    next: [*c]struct_strcache = @import("std").mem.zeroes([*c]struct_strcache),
+    end: sc_buflen_t = @import("std").mem.zeroes(sc_buflen_t),
+    bytesfree: sc_buflen_t = @import("std").mem.zeroes(sc_buflen_t),
+    count: sc_buflen_t = @import("std").mem.zeroes(sc_buflen_t),
+    buffer: [1]u8 = @import("std").mem.zeroes([1]u8),
+};
+pub export fn strcache_print_stats(arg_prefix: [*c]const u8) void {
+    var prefix = arg_prefix;
+    _ = &prefix;
+    var sp: [*c]const struct_strcache = undefined;
+    _ = &sp;
+    var numbuffs: c_ulong = 0;
+    _ = &numbuffs;
+    var fullbuffs: c_ulong = 0;
+    _ = &fullbuffs;
+    var totfree: c_ulong = 0;
+    _ = &totfree;
+    var maxfree: c_ulong = 0;
+    _ = &maxfree;
+    var minfree: c_ulong = (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer");
+    _ = &minfree;
+    if (!(strcache != null)) {
+        _ = printf(gettext("\n%s No strcache buffers\n"), prefix);
+        return;
+    }
+    {
+        sp = strcache.*.next;
+        while (sp != @as([*c]const struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (sp = sp.*.next) {
+            var bf: sc_buflen_t = sp.*.bytesfree;
+            _ = &bf;
+            totfree +%= @as(c_ulong, @bitCast(@as(c_ulong, bf)));
+            maxfree = if (@as(c_ulong, @bitCast(@as(c_ulong, bf))) > maxfree) @as(c_ulong, @bitCast(@as(c_ulong, bf))) else maxfree;
+            minfree = if (@as(c_ulong, @bitCast(@as(c_ulong, bf))) < minfree) @as(c_ulong, @bitCast(@as(c_ulong, bf))) else minfree;
+            numbuffs +%= 1;
+        }
+    }
+    {
+        sp = fullcache;
+        while (sp != @as([*c]const struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (sp = sp.*.next) {
+            var bf: sc_buflen_t = sp.*.bytesfree;
+            _ = &bf;
+            totfree +%= @as(c_ulong, @bitCast(@as(c_ulong, bf)));
+            maxfree = if (@as(c_ulong, @bitCast(@as(c_ulong, bf))) > maxfree) @as(c_ulong, @bitCast(@as(c_ulong, bf))) else maxfree;
+            minfree = if (@as(c_ulong, @bitCast(@as(c_ulong, bf))) < minfree) @as(c_ulong, @bitCast(@as(c_ulong, bf))) else minfree;
+            numbuffs +%= 1;
+            fullbuffs +%= 1;
+        }
+    }
+    _ = @as(c_int, 0);
+    _ = printf(gettext("\n%s strcache buffers: %lu (%lu) / strings = %lu / storage = %lu B / avg = %lu B\n"), prefix, numbuffs +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), fullbuffs, total_strings, total_size, total_size / total_strings);
+    _ = printf(gettext("%s current buf: size = %hu B / used = %hu B / count = %hu / avg = %u B\n"), prefix, @as(c_int, @bitCast(@as(c_uint, @as(sc_buflen_t, @bitCast(@as(c_ushort, @truncate((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer")))))))), @as(c_int, @bitCast(@as(c_uint, strcache.*.end))), @as(c_int, @bitCast(@as(c_uint, strcache.*.count))), @as(c_uint, @bitCast(@divTrunc(@as(c_int, @bitCast(@as(c_uint, strcache.*.end))), @as(c_int, @bitCast(@as(c_uint, strcache.*.count)))))));
+    if (numbuffs != 0) {
+        var sz: c_ulong = total_size -% @as(c_ulong, @bitCast(@as(c_ulong, strcache.*.end)));
+        _ = &sz;
+        var cnt: c_ulong = total_strings -% @as(c_ulong, @bitCast(@as(c_ulong, strcache.*.count)));
+        _ = &cnt;
+        var avgfree: sc_buflen_t = @as(sc_buflen_t, @bitCast(@as(c_ushort, @truncate(totfree / numbuffs))));
+        _ = &avgfree;
+        _ = printf(gettext("%s other used: total = %lu B / count = %lu / avg = %lu B\n"), prefix, sz, cnt, sz / cnt);
+        _ = printf(gettext("%s other free: total = %lu B / max = %lu B / min = %lu B / avg = %hu B\n"), prefix, totfree, maxfree, minfree, @as(c_int, @bitCast(@as(c_uint, avgfree))));
+    }
+    _ = printf(gettext("\n%s strcache performance: lookups = %lu / hit rate = %lu%%\n"), prefix, total_adds, @as(c_ulong, @intFromFloat((100.0 * @as(f64, @floatFromInt(total_adds -% total_strings))) / @as(f64, @floatFromInt(total_adds)))));
+    _ = fputs(gettext("# hash-table stats:\n# "), stdout);
+    hash_print_stats(&strings, stdout);
+}
+pub const struct_hugestring = extern struct {
+    next: [*c]struct_hugestring = @import("std").mem.zeroes([*c]struct_hugestring),
+    buffer: [1]u8 = @import("std").mem.zeroes([1]u8),
+};
+pub export fn strcache_iscached(arg_str: [*c]const u8) c_int {
+    var str = arg_str;
+    _ = &str;
+    var sp: [*c]struct_strcache = undefined;
+    _ = &sp;
+    {
+        sp = strcache;
+        while (sp != null) : (sp = sp.*.next) if ((str >= @as([*c]const u8, @ptrCast(@alignCast(@as([*c]u8, @ptrCast(@alignCast(&sp.*.buffer))))))) and (str < @as([*c]const u8, @ptrCast(@alignCast(@as([*c]u8, @ptrCast(@alignCast(&sp.*.buffer))) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, @bitCast(@as(c_uint, sp.*.end)))))))))))) return 1;
+    }
+    {
+        sp = fullcache;
+        while (sp != null) : (sp = sp.*.next) if ((str >= @as([*c]const u8, @ptrCast(@alignCast(@as([*c]u8, @ptrCast(@alignCast(&sp.*.buffer))))))) and (str < @as([*c]const u8, @ptrCast(@alignCast(@as([*c]u8, @ptrCast(@alignCast(&sp.*.buffer))) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, @bitCast(@as(c_uint, sp.*.end)))))))))))) return 1;
+    }
+    {
+        var hp: [*c]struct_hugestring = undefined;
+        _ = &hp;
+        {
+            hp = hugestrings;
+            while (hp != null) : (hp = hp.*.next) if (str == @as([*c]const u8, @ptrCast(@alignCast(@as([*c]u8, @ptrCast(@alignCast(&hp.*.buffer))))))) return 1;
+        }
+    }
+    return 0;
+}
+pub export fn strcache_add(arg_str: [*c]const u8) [*c]const u8 {
+    var str = arg_str;
+    _ = &str;
+    return add_hash(str, strlen(str));
+}
+// /usr/include/alloca.h:35:23: warning: TODO implement function '__builtin_alloca' in std.zig.c_builtins
+
+// src/strcache.c:241:1: warning: unable to translate function, demoted to extern
+pub extern fn strcache_add_len(arg_str: [*c]const u8, arg_len: usize) [*c]const u8;
 pub extern fn guile_gmake_setup(flocp: [*c]const floc) c_int;
 pub const load_func_t = ?*const fn ([*c]const floc) callconv(.C) c_int;
 pub extern fn load_file(flocp: [*c]const floc, file: ?*struct_file, noerror: c_int) c_int;
@@ -2129,37 +2193,7 @@ pub extern fn remote_status([*c]c_int, [*c]c_int, [*c]c_int, c_int) c_int;
 pub extern fn block_remote_children() void;
 pub extern fn unblock_remote_children() void;
 pub extern fn remote_kill(id: pid_t, sig: c_int) c_int;
-pub const struct_pattern_var = extern struct {
-    next: ?*struct_pattern_var = @import("std").mem.zeroes(?*struct_pattern_var),
-    suffix: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    target: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    len: usize = @import("std").mem.zeroes(usize),
-    variable: struct_variable = @import("std").mem.zeroes(struct_variable),
-};
-pub export fn print_variable_data_base() void {
-    _ = puts(gettext("\n# Variables\n"));
-    print_variable_set(&global_variable_set, "", @as(c_int, 0));
-    _ = puts(gettext("\n# Pattern-specific Variable Values"));
-    {
-        var p: ?*struct_pattern_var = undefined;
-        _ = &p;
-        var rules: c_uint = 0;
-        _ = &rules;
-        {
-            p = pattern_vars;
-            while (p != null) : (p = p.*.next) {
-                rules +%= 1;
-                _ = printf("\n%s :\n", p.*.target);
-                print_variable(@as(?*const anyopaque, @ptrCast(&p.*.variable)), @as(?*anyopaque, @ptrCast("# ")));
-            }
-        }
-        if (rules == @as(c_uint, @bitCast(@as(c_int, 0)))) {
-            _ = puts(gettext("\n# No pattern-specific variable values."));
-        } else {
-            _ = printf(gettext("\n# %u pattern-specific variable values"), rules);
-        }
-    }
-}
+pub extern fn print_variable_data_base() void;
 pub extern fn print_vpath_data_base() void;
 pub extern var starting_directory: [*c]u8;
 pub extern var makelevel: c_uint;
@@ -2168,8 +2202,23 @@ pub extern var remote_description: [*c]u8;
 pub extern var make_host: [*c]u8;
 pub extern var commands_started: c_uint;
 pub extern var handling_fatal_signal: sig_atomic_t;
+pub const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
+pub const hash_cmp_func_t = ?*const fn (?*const anyopaque, ?*const anyopaque) callconv(.C) c_int;
 pub const hash_map_func_t = ?*const fn (?*const anyopaque) callconv(.C) void;
 pub const hash_map_arg_func_t = ?*const fn (?*const anyopaque, ?*anyopaque) callconv(.C) void;
+pub const struct_hash_table = extern struct {
+    ht_vec: [*c]?*anyopaque = @import("std").mem.zeroes([*c]?*anyopaque),
+    ht_hash_1: hash_func_t = @import("std").mem.zeroes(hash_func_t),
+    ht_hash_2: hash_func_t = @import("std").mem.zeroes(hash_func_t),
+    ht_compare: hash_cmp_func_t = @import("std").mem.zeroes(hash_cmp_func_t),
+    ht_size: c_ulong = @import("std").mem.zeroes(c_ulong),
+    ht_capacity: c_ulong = @import("std").mem.zeroes(c_ulong),
+    ht_fill: c_ulong = @import("std").mem.zeroes(c_ulong),
+    ht_empty_slots: c_ulong = @import("std").mem.zeroes(c_ulong),
+    ht_collisions: c_ulong = @import("std").mem.zeroes(c_ulong),
+    ht_lookups: c_ulong = @import("std").mem.zeroes(c_ulong),
+    ht_rehashes: c_uint = @import("std").mem.zeroes(c_uint),
+};
 pub const qsort_cmp_t = ?*const fn (?*const anyopaque, ?*const anyopaque) callconv(.C) c_int;
 pub extern fn hash_init(ht: [*c]struct_hash_table, size: c_ulong, hash_1: hash_func_t, hash_2: hash_func_t, hash_cmp: hash_cmp_func_t) void;
 pub extern fn hash_load(ht: [*c]struct_hash_table, item_table: ?*anyopaque, cardinality: c_ulong, size: c_ulong) void;
@@ -2189,882 +2238,153 @@ pub extern fn hash_dump(ht: [*c]struct_hash_table, vector_0: [*c]?*anyopaque, co
 pub extern fn jhash(key: [*c]const u8, n: c_int) c_uint;
 pub extern fn jhash_string(key: [*c]const u8) c_uint;
 pub extern var hash_deleted_item: ?*anyopaque;
-pub extern var default_file: ?*struct_file;
-pub extern fn lookup_file(name: [*c]const u8) ?*struct_file;
-pub extern fn enter_file(name: [*c]const u8) ?*struct_file;
-pub extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
-pub extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
-pub extern fn expand_deps(f: ?*struct_file) void;
-pub extern fn expand_extra_prereqs(extra: ?*const struct_variable) ?*struct_dep;
-pub extern fn remove_intermediates(sig: c_int) void;
-pub extern fn snap_deps() void;
-pub extern fn rename_file(file: ?*struct_file, name: [*c]const u8) void;
-pub extern fn rehash_file(file: ?*struct_file, name: [*c]const u8) void;
-pub const cs_not_started: c_int = 0;
-pub const cs_deps_running: c_int = 1;
-pub const cs_running: c_int = 2;
-pub const cs_finished: c_int = 3;
-pub const enum_cmd_state_39 = c_uint;
-pub extern fn set_command_state(file: ?*struct_file, state: enum_cmd_state_39) void;
-pub extern fn notice_finished_file(file: ?*struct_file) void;
-pub extern fn init_hash_files() void;
-pub extern fn verify_file_data_base() void;
-pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;
-pub extern fn print_prereqs(deps: ?*const struct_dep) void;
-pub extern fn print_file_data_base() void;
-pub extern fn try_implicit_rule(file: ?*struct_file, depth: c_uint) c_int;
-pub extern fn stemlen_compare(v1: ?*const anyopaque, v2: ?*const anyopaque) c_int;
-pub extern fn file_timestamp_cons([*c]const u8, time_t, c_long) uintmax_t;
-pub extern fn file_timestamp_now([*c]c_int) uintmax_t;
-pub extern fn file_timestamp_sprintf(p: [*c]u8, ts: uintmax_t) void;
-pub extern fn f_mtime(file: ?*struct_file, search: c_int) uintmax_t;
-pub extern var snapped_deps: c_int;
-pub extern var db_level: c_int;
-pub const struct_nameseq = extern struct {
-    next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
-    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-};
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_goaldep = opaque {};
-pub extern fn parse_file_seq(stringp: [*c][*c]u8, size: usize, stopmap: c_int, prefix: [*c]const u8, flags: c_int) ?*anyopaque;
-pub extern fn tilde_expand(name: [*c]const u8) [*c]u8;
-pub extern fn ar_glob(arname: [*c]const u8, member_pattern: [*c]const u8, size: usize) [*c]struct_nameseq;
-pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
-pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
-pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) ?*struct_goaldep;
-pub extern fn eval_buffer(buffer: [*c]u8, floc: [*c]const floc) void;
-pub const us_success: c_int = 0;
-pub const us_none: c_int = 1;
-pub const us_question: c_int = 2;
-pub const us_failed: c_int = 3;
-pub const enum_update_status_40 = c_uint;
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_40;
-// src/output.h:21:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_output = opaque {};
-pub extern var output_context: ?*struct_output;
-pub extern var stdio_traced: c_uint;
-pub extern fn output_write(fd: c_int, buffer: ?*const anyopaque, len: usize) c_int;
-pub extern fn output_init(out: ?*struct_output) void;
-pub extern fn output_close(out: ?*struct_output) void;
-pub extern fn output_start() void;
-pub extern fn outputs(is_err: c_int, msg: [*c]const u8) void;
-pub extern fn output_dump(out: ?*struct_output) void;
-pub const struct_childbase = extern struct {
-    cmd_name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
-    environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
-    output: struct_output = @import("std").mem.zeroes(struct_output),
-};
-// src/job.h:59:19: warning: struct demoted to opaque type - has bitfield
-pub const struct_child = opaque {};
-pub extern var children: ?*struct_child;
-pub extern fn child_handler(sig: c_int) void;
-pub extern fn is_bourne_compatible_shell(path: [*c]const u8) c_int;
-pub extern fn new_job(file: ?*struct_file) void;
-pub extern fn reap_children(block: c_int, err: c_int) void;
-pub extern fn start_waiting_jobs() void;
-pub extern fn free_childbase(child: ?*struct_childbase) void;
-pub extern fn construct_command_argv(line: [*c]u8, restp: [*c][*c]u8, file: ?*struct_file, cmd_flags: c_int, batch_file: [*c][*c]u8) [*c][*c]u8;
-pub extern fn child_execute_job(child: ?*struct_childbase, good_stdin: c_int, argv: [*c][*c]u8) pid_t;
-pub extern fn exec_command(argv: [*c][*c]u8, envp: [*c][*c]u8) pid_t;
-pub extern fn unblock_all_sigs() void;
-pub extern var job_slots_used: c_uint;
-pub extern var jobserver_tokens: c_uint;
-pub extern fn fatal_error_signal(sig: c_int) void;
-pub extern fn execute_file_commands(file: ?*struct_file) void;
-pub extern fn print_commands(cmds: ?*const struct_commands) void;
-pub extern fn delete_child_targets(child: ?*struct_child) void;
-pub extern fn chop_commands(cmds: ?*struct_commands) void;
-pub extern fn set_file_variables(file: ?*struct_file, stem: [*c]const u8) void;
-pub const f_bogus: c_int = 0;
-pub const f_simple: c_int = 1;
-pub const f_recursive: c_int = 2;
-pub const f_expand: c_int = 3;
-pub const f_append: c_int = 4;
-pub const f_conditional: c_int = 5;
-pub const f_shell: c_int = 6;
-pub const f_append_value: c_int = 7;
-pub const enum_variable_flavor = c_uint;
-pub const v_default: c_int = 0;
-pub const v_export: c_int = 1;
-pub const v_noexport: c_int = 2;
-pub const v_ifset: c_int = 3;
-pub const enum_variable_export = c_uint;
-pub extern var env_recursion: c_ulonglong;
-pub extern var variable_buffer: [*c]u8;
-pub extern var current_variable_set_list: [*c]struct_variable_set_list;
-pub extern var default_goal_var: ?*struct_variable;
-pub extern var shell_var: struct_variable;
-pub extern fn variable_buffer_output(ptr: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
-pub extern fn variable_expand(line: [*c]const u8) [*c]u8;
-pub extern fn variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
-pub extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
-pub extern fn expand_argument(str: [*c]const u8, end: [*c]const u8) [*c]u8;
-pub extern fn variable_expand_string(line: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
-pub extern fn initialize_variable_output() [*c]u8;
-pub extern fn install_variable_buffer(bufp: [*c][*c]u8, lenp: [*c]usize) void;
-pub extern fn restore_variable_buffer(buf: [*c]u8, len: usize) void;
-pub extern fn handle_function(op: [*c][*c]u8, stringp: [*c][*c]const u8) c_int;
-pub extern fn pattern_matches(pattern: [*c]const u8, percent: [*c]const u8, str: [*c]const u8) c_int;
-pub extern fn subst_expand(o: [*c]u8, text: [*c]const u8, subst: [*c]const u8, replace: [*c]const u8, slen: usize, rlen: usize, by_word: c_int) [*c]u8;
-pub extern fn patsubst_expand_pat(o: [*c]u8, text: [*c]const u8, pattern: [*c]const u8, replace: [*c]const u8, pattern_percent: [*c]const u8, replace_percent: [*c]const u8) [*c]u8;
-pub extern fn patsubst_expand(o: [*c]u8, text: [*c]const u8, pattern: [*c]u8, replace: [*c]u8) [*c]u8;
-pub extern fn func_shell_base(o: [*c]u8, argv: [*c][*c]u8, trim_newlines: c_int) [*c]u8;
-pub extern fn shell_completed(exit_code: c_int, exit_sig: c_int) void;
-pub extern fn recursively_expand_for_file(v: ?*struct_variable, file: ?*struct_file) [*c]u8;
-pub export fn create_new_variable_set() [*c]struct_variable_set_list {
-    var setlist: [*c]struct_variable_set_list = undefined;
-    _ = &setlist;
-    var set: [*c]struct_variable_set = undefined;
-    _ = &set;
-    set = @as([*c]struct_variable_set, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_variable_set)))));
-    hash_init(&set.*.table, @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 13)))), &variable_hash_1, &variable_hash_2, &variable_hash_cmp);
-    setlist = @as([*c]struct_variable_set_list, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_variable_set_list)))));
-    setlist.*.set = set;
-    setlist.*.next = current_variable_set_list;
-    setlist.*.next_is_parent = 0;
-    return setlist;
+pub var strcache: [*c]struct_strcache = null;
+pub var fullcache: [*c]struct_strcache = null;
+pub var total_buffers: c_ulong = 0;
+pub var total_strings: c_ulong = 0;
+pub var total_size: c_ulong = 0;
+pub fn new_cache(arg_head: [*c][*c]struct_strcache, arg_buflen: sc_buflen_t) callconv(.C) [*c]struct_strcache {
+    var head = arg_head;
+    _ = &head;
+    var buflen = arg_buflen;
+    _ = &buflen;
+    var new: [*c]struct_strcache = @as([*c]struct_strcache, @ptrCast(@alignCast(xmalloc(@as(c_ulong, @bitCast(@as(c_ulong, buflen))) +% @offsetOf(struct_strcache, "buffer")))));
+    _ = &new;
+    new.*.end = 0;
+    new.*.count = 0;
+    new.*.bytesfree = buflen;
+    new.*.next = head.*;
+    head.* = new;
+    total_buffers +%= 1;
+    return new;
 }
-pub export fn free_variable_set(arg_list: [*c]struct_variable_set_list) void {
-    var list = arg_list;
-    _ = &list;
-    hash_map(&list.*.set.*.table, &free_variable_name_and_value);
-    hash_free(&list.*.set.*.table, @as(c_int, 1));
-    free(@as(?*anyopaque, @ptrCast(list.*.set)));
-    free(@as(?*anyopaque, @ptrCast(list)));
-}
-pub export fn push_new_variable_scope() [*c]struct_variable_set_list {
-    current_variable_set_list = create_new_variable_set();
-    if (current_variable_set_list.*.next == (&global_setlist)) {
-        var set: [*c]struct_variable_set = current_variable_set_list.*.set;
-        _ = &set;
-        current_variable_set_list.*.set = global_setlist.set;
-        global_setlist.set = set;
-        current_variable_set_list.*.next = global_setlist.next;
-        global_setlist.next = current_variable_set_list;
-        current_variable_set_list = &global_setlist;
-    }
-    return current_variable_set_list;
-}
-pub export fn pop_variable_scope() void {
-    var setlist: [*c]struct_variable_set_list = undefined;
-    _ = &setlist;
-    var set: [*c]struct_variable_set = undefined;
-    _ = &set;
-    _ = @as(c_int, 0);
-    if (current_variable_set_list != (&global_setlist)) {
-        setlist = current_variable_set_list;
-        set = setlist.*.set;
-        current_variable_set_list = setlist.*.next;
-    } else {
-        setlist = global_setlist.next;
-        set = global_setlist.set;
-        global_setlist.set = setlist.*.set;
-        global_setlist.next = setlist.*.next;
-        global_setlist.next_is_parent = setlist.*.next_is_parent;
-    }
-    free(@as(?*anyopaque, @ptrCast(setlist)));
-    hash_map(&set.*.table, &free_variable_name_and_value);
-    hash_free(&set.*.table, @as(c_int, 1));
-    free(@as(?*anyopaque, @ptrCast(set)));
-}
-pub export fn define_automatic_variables() void {
-    var v: ?*struct_variable = undefined;
-    _ = &v;
-    var buf: [200]u8 = undefined;
-    _ = &buf;
-    _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&buf))), "%u", makelevel);
-    _ = define_variable_in_set("MAKELEVEL", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as([*c]u8, @ptrCast(@alignCast(&buf))), @as(c_uint, @bitCast(o_env)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&buf))), "%s%s%s", version_string, if ((remote_description == null) or (@as(c_int, @bitCast(@as(c_uint, remote_description[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00'))) "" else "-", if ((remote_description == null) or (@as(c_int, @bitCast(@as(c_uint, remote_description[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00'))) "" else remote_description);
-    _ = define_variable_in_set("MAKE_VERSION", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as([*c]u8, @ptrCast(@alignCast(&buf))), @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("MAKE_HOST", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), make_host, @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    v = define_variable_in_set("SHELL", @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), default_shell, @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    if (((@as(c_int, @bitCast(@as(c_uint, v.*.value.*))) == @as(c_int, '\x00')) or (@as(c_int, @bitCast(v.*.origin)) == o_env)) or (@as(c_int, @bitCast(v.*.origin)) == o_env_override)) {
-        free(@as(?*anyopaque, @ptrCast(v.*.value)));
-        v.*.origin = @as(c_uint, @bitCast(o_file));
-        v.*.value = xstrdup(default_shell);
-    }
-    v = define_variable_in_set("MAKEFILES", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    v.*.@"export" = @as(c_uint, @bitCast(v_ifset));
-    _ = define_variable_in_set("@D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $@))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("%D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $%))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("*D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $*))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("<D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $<))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("?D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $?))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("^D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $^))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("+D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $+))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("@F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $@)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("%F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $%)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("*F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $*)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("<F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $<)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("?F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $?)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("^F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $^)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("+F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $+)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-}
-pub export fn initialize_file_variables(arg_file_1: ?*struct_file, arg_reading: c_int) void {
-    var file_1 = arg_file_1;
-    _ = &file_1;
-    var reading = arg_reading;
-    _ = &reading;
-    var l: [*c]struct_variable_set_list = file_1.*.variables;
-    _ = &l;
-    if (l == null) {
-        l = @as([*c]struct_variable_set_list, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_variable_set_list)))));
-        l.*.set = @as([*c]struct_variable_set, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_variable_set)))));
-        hash_init(&l.*.set.*.table, @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 23)))), &variable_hash_1, &variable_hash_2, &variable_hash_cmp);
-        file_1.*.variables = l;
-    }
-    if ((file_1.*.double_colon != null) and (file_1.*.double_colon != file_1)) {
-        initialize_file_variables(file_1.*.double_colon, reading);
-        l.*.next = file_1.*.double_colon.*.variables;
-        l.*.next_is_parent = 0;
-        return;
-    }
-    if (file_1.*.parent == null) {
-        l.*.next = &global_setlist;
-    } else {
-        initialize_file_variables(file_1.*.parent, reading);
-        l.*.next = file_1.*.parent.*.variables;
-    }
-    l.*.next_is_parent = 1;
-    if (!(reading != 0) and !(file_1.*.pat_searched != 0)) {
-        var p: ?*struct_pattern_var = undefined;
-        _ = &p;
-        const targlen: usize = strlen(file_1.*.name);
-        _ = &targlen;
-        p = lookup_pattern_var(null, file_1.*.name, targlen);
-        if (p != null) {
-            var global: [*c]struct_variable_set_list = current_variable_set_list;
-            _ = &global;
-            file_1.*.pat_variables = create_new_variable_set();
-            current_variable_set_list = file_1.*.pat_variables;
-            while (true) {
-                var v: ?*struct_variable = undefined;
-                _ = &v;
-                if (@as(c_int, @bitCast(p.*.variable.flavor)) == f_simple) {
-                    v = define_variable_in_set(p.*.variable.name, strlen(p.*.variable.name), p.*.variable.value, p.*.variable.origin, @as(c_int, 0), current_variable_set_list.*.set, &p.*.variable.fileinfo);
-                    v.*.flavor = @as(c_uint, @bitCast(f_simple));
-                } else {
-                    v = do_variable_definition(&p.*.variable.fileinfo, p.*.variable.name, p.*.variable.value, p.*.variable.origin, p.*.variable.flavor, @as(c_int, 1));
-                }
-                v.*.per_target = p.*.variable.per_target;
-                v.*.@"export" = p.*.variable.@"export";
-                v.*.private_var = p.*.variable.private_var;
-                if (!((blk: {
-                    const tmp = lookup_pattern_var(p, file_1.*.name, targlen);
-                    p = tmp;
-                    break :blk tmp;
-                }) != null)) break;
-            }
-            current_variable_set_list = global;
-        }
-        file_1.*.pat_searched = 1;
-    }
-    if (file_1.*.pat_variables != null) {
-        file_1.*.pat_variables.*.next = l.*.next;
-        file_1.*.pat_variables.*.next_is_parent = l.*.next_is_parent;
-        l.*.next = file_1.*.pat_variables;
-        l.*.next_is_parent = 0;
-    }
-}
-pub export fn print_file_variables(arg_file_1: ?*const struct_file) void {
-    var file_1 = arg_file_1;
-    _ = &file_1;
-    if (file_1.*.variables != null) {
-        print_variable_set(file_1.*.variables.*.set, "# ", @as(c_int, 1));
-    }
-}
-// /usr/include/alloca.h:35:23: warning: TODO implement function '__builtin_alloca' in std.zig.c_builtins
-
-// src/variable.c:2004:1: warning: unable to translate function, demoted to extern
-pub extern fn print_target_variables(arg_file_1: ?*const struct_file) void;
-pub export fn merge_variable_set_lists(arg_setlist0: [*c][*c]struct_variable_set_list, arg_setlist1: [*c]struct_variable_set_list) void {
-    var setlist0 = arg_setlist0;
-    _ = &setlist0;
-    var setlist1 = arg_setlist1;
-    _ = &setlist1;
-    var to: [*c]struct_variable_set_list = setlist0.*;
-    _ = &to;
-    var last0: [*c]struct_variable_set_list = null;
-    _ = &last0;
-    if (!(setlist1 != null) or (setlist1 == (&global_setlist))) return;
-    if (to != null) {
-        while (to != (&global_setlist)) {
-            if (to == setlist1) return;
-            to = to.*.next;
-        }
-        to = setlist0.*;
-        while ((setlist1 != (&global_setlist)) and (to != (&global_setlist))) {
-            var from: [*c]struct_variable_set_list = setlist1;
-            _ = &from;
-            setlist1 = setlist1.*.next;
-            merge_variable_sets(to.*.set, from.*.set);
-            last0 = to;
-            to = to.*.next;
-        }
-    }
-    if (setlist1 != (&global_setlist)) {
-        if (last0 == null) {
-            setlist0.* = setlist1;
-        } else {
-            last0.*.next = setlist1;
-        }
-    }
-}
-// src/variable.c:1348:9: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/variable.c:1292:1: warning: unable to translate function, demoted to extern
-pub extern fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]const u8, arg_value: [*c]const u8, arg_origin: enum_variable_origin, arg_flavor: enum_variable_flavor, arg_target_var: c_int) ?*struct_variable;
-// src/variable.c:1694:15: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/variable.c:1610:1: warning: unable to translate function, demoted to extern
-pub extern fn parse_variable_definition(arg_str: [*c]const u8, arg_var: ?*struct_variable) [*c]u8;
-// /usr/include/alloca.h:35:23: warning: TODO implement function '__builtin_alloca' in std.zig.c_builtins
-
-// src/variable.c:1762:1: warning: unable to translate function, demoted to extern
-pub extern fn assign_variable_definition(arg_v: ?*struct_variable, arg_line: [*c]const u8) ?*struct_variable;
-// src/variable.c:1798:19: warning: local variable has opaque type
-
-// src/variable.c:1795:1: warning: unable to translate function, demoted to extern
-pub extern fn try_variable_definition(arg_flocp: [*c]const floc, arg_line: [*c]const u8, arg_origin: enum_variable_origin, arg_target_var: c_int) ?*struct_variable;
-pub export fn init_hash_global_variable_set() void {
-    hash_init(&global_variable_set.table, @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 523)))), &variable_hash_1, &variable_hash_2, &variable_hash_cmp);
-}
-pub extern fn hash_init_function_table() void;
-pub extern fn define_new_function(flocp: [*c]const floc, name: [*c]const u8, min: c_uint, max: c_uint, flags: c_uint, func: gmk_func_ptr) void;
-// src/variable.c:463:19: warning: local variable has opaque type
-
-// src/variable.c:460:1: warning: unable to translate function, demoted to extern
-pub extern fn lookup_variable(arg_name: [*c]const u8, arg_length: usize) ?*struct_variable;
-pub export fn lookup_variable_for_file(arg_name: [*c]const u8, arg_length: usize, arg_file_1: ?*struct_file) ?*struct_variable {
-    var name = arg_name;
-    _ = &name;
-    var length = arg_length;
-    _ = &length;
-    var file_1 = arg_file_1;
-    _ = &file_1;
-    var @"var": ?*struct_variable = undefined;
-    _ = &@"var";
-    var savev: [*c]struct_variable_set_list = undefined;
-    _ = &savev;
-    if (file_1 == @as(?*struct_file, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) return lookup_variable(name, length);
-    savev = current_variable_set_list;
-    current_variable_set_list = file_1.*.variables;
-    @"var" = lookup_variable(name, length);
-    current_variable_set_list = savev;
-    return @"var";
-}
-// src/variable.c:574:19: warning: local variable has opaque type
-
-// src/variable.c:571:1: warning: unable to translate function, demoted to extern
-pub extern fn lookup_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_set: [*c]const struct_variable_set) ?*struct_variable;
-// src/variable.c:208:19: warning: local variable has opaque type
-
-// src/variable.c:201:1: warning: unable to translate function, demoted to extern
-pub extern fn define_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_value: [*c]const u8, arg_origin: enum_variable_origin, arg_recursive: c_int, arg_set: [*c]struct_variable_set, arg_flocp: [*c]const floc) ?*struct_variable;
-pub const struct_defined_vars = extern struct {
-    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    len: usize = @import("std").mem.zeroes(usize),
-};
-pub export fn warn_undefined(arg_name: [*c]const u8, arg_len: usize) void {
-    var name = arg_name;
-    _ = &name;
+pub fn copy_string(arg_sp: [*c]struct_strcache, arg_str: [*c]const u8, arg_len: sc_buflen_t) callconv(.C) [*c]const u8 {
+    var sp = arg_sp;
+    _ = &sp;
+    var str = arg_str;
+    _ = &str;
     var len = arg_len;
     _ = &len;
-    if (warn_undefined_variables_flag != 0) {
-        var dp: [*c]const struct_defined_vars = undefined;
-        _ = &dp;
-        {
-            dp = @as([*c]const struct_defined_vars, @ptrCast(@alignCast(&defined_vars)));
-            while (dp.*.name != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (dp += 1) if ((dp.*.len == len) and (memcmp(@as(?*const anyopaque, @ptrCast(dp.*.name)), @as(?*const anyopaque, @ptrCast(name)), len) == @as(c_int, 0))) return;
-        }
-        @"error"(reading_file, len, gettext("warning: undefined variable '%.*s'"), @as(c_int, @bitCast(@as(c_uint, @truncate(len)))), name);
-    }
+    var res: [*c]u8 = &sp.*.buffer[sp.*.end];
+    _ = &res;
+    _ = memmove(@as(?*anyopaque, @ptrCast(res)), @as(?*const anyopaque, @ptrCast(str)), @as(c_ulong, @bitCast(@as(c_ulong, len))));
+    res[blk: {
+            const ref = &len;
+            const tmp = ref.*;
+            ref.* +%= 1;
+            break :blk tmp;
+        }] = '\x00';
+    sp.*.end +%= @as(sc_buflen_t, @bitCast(@as(c_short, @truncate(@as(c_int, @bitCast(@as(c_uint, len)))))));
+    sp.*.bytesfree -%= @as(sc_buflen_t, @bitCast(@as(c_short, @truncate(@as(c_int, @bitCast(@as(c_uint, len)))))));
+    sp.*.count +%= 1;
+    return res;
 }
-// src/variable.c:338:19: warning: local variable has opaque type
-
-// src/variable.c:332:1: warning: unable to translate function, demoted to extern
-pub extern fn undefine_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_origin: enum_variable_origin, arg_set: [*c]struct_variable_set) void;
-// src/variable.c:1149:13: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/variable.c:1051:1: warning: unable to translate function, demoted to extern
-pub extern fn target_environment(arg_file_1: ?*struct_file, arg_recursive: c_int) [*c][*c]u8;
-pub export fn create_pattern_var(arg_target: [*c]const u8, arg_suffix: [*c]const u8) ?*struct_pattern_var {
-    var target = arg_target;
-    _ = &target;
-    var suffix = arg_suffix;
-    _ = &suffix;
-    var len: usize = strlen(target);
+pub fn add_string(arg_str: [*c]const u8, arg_len: sc_buflen_t) callconv(.C) [*c]const u8 {
+    var str = arg_str;
+    _ = &str;
+    var len = arg_len;
     _ = &len;
-    var p: ?*struct_pattern_var = @as(?*struct_pattern_var, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_pattern_var)))));
-    _ = &p;
-    if (pattern_vars != null) {
-        if ((len < @as(usize, @bitCast(@as(c_long, @as(c_int, 256))))) and (last_pattern_vars[len] != null)) {
-            p.*.next = last_pattern_vars[len].*.next;
-            last_pattern_vars[len].*.next = p;
-        } else {
-            var v: [*c]?*struct_pattern_var = undefined;
-            _ = &v;
-            {
-                v = &pattern_vars;
-                while (true) : (v = &v.*.*.next) {
-                    if ((v.* == null) or (v.*.*.len > len)) {
-                        p.*.next = v.*;
-                        v.* = p;
-                        break;
-                    }
-                }
-            }
-        }
-    } else {
-        pattern_vars = p;
-        p.*.next = null;
+    var res: [*c]const u8 = undefined;
+    _ = &res;
+    var sp: [*c]struct_strcache = undefined;
+    _ = &sp;
+    var spp: [*c][*c]struct_strcache = &strcache;
+    _ = &spp;
+    var sz: sc_buflen_t = @as(sc_buflen_t, @bitCast(@as(c_short, @truncate(@as(c_int, @bitCast(@as(c_uint, len))) + @as(c_int, 1)))));
+    _ = &sz;
+    total_strings +%= 1;
+    total_size +%= @as(c_ulong, @bitCast(@as(c_ulong, sz)));
+    if (@as(c_ulong, @bitCast(@as(c_ulong, sz))) > ((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer"))) {
+        sp = new_cache(&fullcache, sz);
+        return copy_string(sp, str, len);
     }
-    p.*.target = target;
-    p.*.len = len;
-    p.*.suffix = suffix + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
-    if (len < @as(usize, @bitCast(@as(c_long, @as(c_int, 256))))) {
-        last_pattern_vars[len] = p;
+    while (spp.* != @as([*c]struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (spp = &spp.*.*.next) if (@as(c_int, @bitCast(@as(c_uint, spp.*.*.bytesfree))) > @as(c_int, @bitCast(@as(c_uint, sz)))) break;
+    sp = spp.*;
+    if (sp == @as([*c]struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+        sp = new_cache(&strcache, @as(sc_buflen_t, @bitCast(@as(c_ushort, @truncate((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer"))))));
+        spp = &strcache;
     }
-    return p;
+    res = copy_string(sp, str, len);
+    if ((total_strings > @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 20))))) and (@as(c_ulong, @bitCast(@as(c_ulong, sp.*.bytesfree))) < ((total_size / total_strings) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))) {
+        spp.* = sp.*.next;
+        sp.*.next = fullcache;
+        fullcache = sp;
+    }
+    return res;
 }
-pub extern var export_all_variables: c_int;
-pub extern fn check_io_state() c_uint;
-pub extern fn fd_inherit(c_int) void;
-pub extern fn fd_noinherit(c_int) void;
-pub extern fn fd_set_append(c_int) void;
-pub extern fn os_anontmp() c_int;
-pub extern fn jobserver_enabled() c_uint;
-pub extern fn jobserver_setup(job_slots: c_int, style: [*c]const u8) c_uint;
-pub extern fn jobserver_parse_auth(auth: [*c]const u8) c_uint;
-pub extern fn jobserver_get_auth() [*c]u8;
-pub extern fn jobserver_get_invalid_auth() [*c]const u8;
-pub extern fn jobserver_clear() void;
-pub extern fn jobserver_acquire_all() c_uint;
-pub extern fn jobserver_release(is_fatal: c_int) void;
-pub extern fn jobserver_signal() void;
-pub extern fn jobserver_pre_child(c_int) void;
-pub extern fn jobserver_post_child(c_int) void;
-pub extern fn jobserver_pre_acquire() void;
-pub extern fn jobserver_acquire(timeout: c_int) c_uint;
-pub extern fn osync_enabled() c_uint;
-pub extern fn osync_setup() void;
-pub extern fn osync_get_mutex() [*c]u8;
-pub extern fn osync_parse_mutex(mutex: [*c]const u8) c_uint;
-pub extern fn osync_clear() void;
-pub extern fn osync_acquire() c_uint;
-pub extern fn osync_release() void;
-pub extern fn get_bad_stdin() c_int;
-pub const struct_rule = extern struct {
-    next: [*c]struct_rule = @import("std").mem.zeroes([*c]struct_rule),
-    targets: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
-    lens: [*c]c_uint = @import("std").mem.zeroes([*c]c_uint),
-    suffixes: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
-    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
-    cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
-    _defn: [*c]u8 = @import("std").mem.zeroes([*c]u8),
-    num: c_ushort = @import("std").mem.zeroes(c_ushort),
-    terminal: u8 = @import("std").mem.zeroes(u8),
-    in_use: u8 = @import("std").mem.zeroes(u8),
-};
-pub const struct_pspec = extern struct {
-    target: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    dep: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    commands: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-};
-pub extern var pattern_rules: [*c]struct_rule;
-pub extern var last_pattern_rule: [*c]struct_rule;
-pub extern var num_pattern_rules: c_uint;
-pub extern var max_pattern_deps: c_uint;
-pub extern var max_pattern_targets: c_uint;
-pub extern var max_pattern_dep_length: usize;
-pub extern var suffix_file: ?*struct_file;
-pub extern fn snap_implicit_rules() void;
-pub extern fn convert_to_pattern() void;
-pub extern fn install_pattern_rule(p: [*c]struct_pspec, terminal: c_int) void;
-pub extern fn create_pattern_rule(targets: [*c][*c]const u8, target_percents: [*c][*c]const u8, num: c_ushort, terminal: c_int, deps: ?*struct_dep, commands: ?*struct_commands, override: c_int) void;
-pub extern fn get_rule_defn(rule: [*c]struct_rule) [*c]const u8;
-pub extern fn print_rule_data_base() void;
-pub var variable_changenum: c_ulong = 0;
-pub var pattern_vars: ?*struct_pattern_var = null;
-pub var last_pattern_vars: [256]?*struct_pattern_var = @import("std").mem.zeroes([256]?*struct_pattern_var);
-pub fn lookup_pattern_var(arg_start: ?*struct_pattern_var, arg_target: [*c]const u8, arg_targlen: usize) callconv(.C) ?*struct_pattern_var {
-    var start = arg_start;
-    _ = &start;
-    var target = arg_target;
-    _ = &target;
-    var targlen = arg_targlen;
-    _ = &targlen;
-    var p: ?*struct_pattern_var = undefined;
-    _ = &p;
-    {
-        p = if (start != null) start.*.next else pattern_vars;
-        while (p != null) : (p = p.*.next) {
-            var stem: [*c]const u8 = undefined;
-            _ = &stem;
-            var stemlen: usize = undefined;
-            _ = &stemlen;
-            if (p.*.len > targlen) continue;
-            stem = target + @as(usize, @bitCast(@as(isize, @intCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p.*.suffix) -% @intFromPtr(p.*.target))), @sizeOf(u8)) - @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))));
-            stemlen = (targlen -% p.*.len) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
-            if ((stem > target) and !(strncmp(p.*.target, target, @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(stem) -% @intFromPtr(target))), @sizeOf(u8))))) == @as(c_int, 0))) continue;
-            if ((@as(c_int, @bitCast(@as(c_uint, p.*.suffix.*))) == @as(c_int, @bitCast(@as(c_uint, stem[stemlen])))) and ((@as(c_int, @bitCast(@as(c_uint, p.*.suffix.*))) == @as(c_int, '\x00')) or (((&p.*.suffix[@as(c_uint, @intCast(@as(c_int, 1)))]) == (&stem[stemlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))])) or ((@as(c_int, @bitCast(@as(c_uint, (&p.*.suffix[@as(c_uint, @intCast(@as(c_int, 1)))]).*))) == @as(c_int, @bitCast(@as(c_uint, (&stem[stemlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (&p.*.suffix[@as(c_uint, @intCast(@as(c_int, 1)))]).*))) == @as(c_int, '\x00')) or !(strcmp((&p.*.suffix[@as(c_uint, @intCast(@as(c_int, 1)))]) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), (&stem[stemlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))))) break;
-        }
-    }
-    return p;
+pub var hugestrings: [*c]struct_hugestring = null;
+pub fn add_hugestring(arg_str: [*c]const u8, arg_len: usize) callconv(.C) [*c]const u8 {
+    var str = arg_str;
+    _ = &str;
+    var len = arg_len;
+    _ = &len;
+    var new: [*c]struct_hugestring = @as([*c]struct_hugestring, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_hugestring) +% len))));
+    _ = &new;
+    _ = memcpy(@as(?*anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&new.*.buffer))))), @as(?*const anyopaque, @ptrCast(str)), len);
+    new.*.buffer[len] = '\x00';
+    new.*.next = hugestrings;
+    hugestrings = new;
+    return @as([*c]u8, @ptrCast(@alignCast(&new.*.buffer)));
 }
-pub fn variable_hash_1(arg_keyv: ?*const anyopaque) callconv(.C) c_ulong {
-    var keyv = arg_keyv;
-    _ = &keyv;
-    var key: ?*const struct_variable = @as(?*const struct_variable, @ptrCast(keyv));
+pub fn str_hash_1(arg_key: ?*const anyopaque) callconv(.C) c_ulong {
+    var key = arg_key;
     _ = &key;
     while (true) {
         var _result_: c_ulong = 0;
         _ = &_result_;
         while (true) {
-            var _key_: [*c]const u8 = @as([*c]const u8, @ptrCast(@alignCast(key.*.name)));
+            var _key_: [*c]const u8 = @as([*c]const u8, @ptrCast(@alignCast(@as([*c]const u8, @ptrCast(@alignCast(key))))));
             _ = &_key_;
-            _result_ +%= @as(c_ulong, @bitCast(@as(c_ulong, jhash(_key_, @as(c_int, @bitCast(key.*.length))))));
+            _result_ +%= @as(c_ulong, @bitCast(@as(c_ulong, jhash_string(_key_))));
             if (!false) break;
         }
         return _result_;
     }
     return 0;
 }
-pub fn variable_hash_2(arg_keyv: ?*const anyopaque) callconv(.C) c_ulong {
-    var keyv = arg_keyv;
-    _ = &keyv;
-    var key: ?*const struct_variable = @as(?*const struct_variable, @ptrCast(keyv));
+pub fn str_hash_2(arg_key: ?*const anyopaque) callconv(.C) c_ulong {
+    var key = arg_key;
     _ = &key;
     while (true) {
         var _result_: c_ulong = 0;
         _ = &_result_;
         while (true) {
-            _ = key.*.name;
-            _ = key.*.length;
+            _ = @as([*c]const u8, @ptrCast(@alignCast(key)));
             if (!false) break;
         }
         return _result_;
     }
     return 0;
 }
-pub fn variable_hash_cmp(arg_xv: ?*const anyopaque, arg_yv: ?*const anyopaque) callconv(.C) c_int {
-    var xv = arg_xv;
-    _ = &xv;
-    var yv = arg_yv;
-    _ = &yv;
-    var x: ?*const struct_variable = @as(?*const struct_variable, @ptrCast(xv));
+pub fn str_hash_cmp(arg_x: ?*const anyopaque, arg_y: ?*const anyopaque) callconv(.C) c_int {
+    var x = arg_x;
     _ = &x;
-    var y: ?*const struct_variable = @as(?*const struct_variable, @ptrCast(yv));
+    var y = arg_y;
     _ = &y;
-    var result: c_int = @as(c_int, @bitCast(x.*.length -% y.*.length));
-    _ = &result;
-    if (result != 0) return result;
     while (true) {
-        return if (x.*.name == y.*.name) @as(c_int, 0) else memcmp(@as(?*const anyopaque, @ptrCast(x.*.name)), @as(?*const anyopaque, @ptrCast(y.*.name)), @as(c_ulong, @bitCast(@as(c_ulong, x.*.length))));
+        return if (@as([*c]const u8, @ptrCast(@alignCast(x))) == @as([*c]const u8, @ptrCast(@alignCast(y)))) @as(c_int, 0) else strcmp(@as([*c]const u8, @ptrCast(@alignCast(x))), @as([*c]const u8, @ptrCast(@alignCast(y))));
     }
     return 0;
 }
-pub var global_variable_set: struct_variable_set = @import("std").mem.zeroes(struct_variable_set);
-pub var global_setlist: struct_variable_set_list = struct_variable_set_list{
-    .next = null,
-    .set = &global_variable_set,
-    .next_is_parent = @as(c_int, 0),
-};
-pub fn free_variable_name_and_value(arg_item: ?*const anyopaque) callconv(.C) void {
-    var item = arg_item;
-    _ = &item;
-    var v: ?*struct_variable = @as(?*struct_variable, @ptrCast(@volatileCast(@constCast(item))));
-    _ = &v;
-    free(@as(?*anyopaque, @ptrCast(v.*.name)));
-    free(@as(?*anyopaque, @ptrCast(v.*.value)));
-}
-pub fn lookup_special_var(arg_var: ?*struct_variable) callconv(.C) ?*struct_variable {
-    var @"var" = arg_var;
-    _ = &@"var";
-    const last_changenum = struct {
-        var static: c_ulong = 0;
-    };
-    _ = &last_changenum;
-    if ((variable_changenum != last_changenum.static) and ((@"var".*.name == ".VARIABLES") or ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, @bitCast(@as(c_uint, ".VARIABLES".*)))) and ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, '\x00')) or !(strcmp(@"var".*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), ".VARIABLES" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
-        var max: usize = ((strlen(@"var".*.value) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))));
-        _ = &max;
-        var len: usize = undefined;
-        _ = &len;
-        var p: [*c]u8 = undefined;
-        _ = &p;
-        var vp: [*c]?*struct_variable = @as([*c]?*struct_variable, @ptrCast(@alignCast(global_variable_set.table.ht_vec)));
-        _ = &vp;
-        var end: [*c]?*struct_variable = &vp[global_variable_set.table.ht_size];
-        _ = &end;
-        @"var".*.value = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(@"var".*.value)), max))));
-        p = @"var".*.value;
-        len = 0;
-        while (vp < end) : (vp += 1) if (!((vp.* == null) or (@as(?*anyopaque, @ptrCast(vp.*)) == hash_deleted_item))) {
-            var v: ?*struct_variable = vp.*;
-            _ = &v;
-            var l: c_int = @as(c_int, @bitCast(v.*.length));
-            _ = &l;
-            len +%= @as(usize, @bitCast(@as(c_long, l + @as(c_int, 1))));
-            if (len > max) {
-                var off: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(@"var".*.value))), @sizeOf(u8))));
-                _ = &off;
-                max +%= @as(usize, @bitCast(@as(c_long, (@divTrunc(l + @as(c_int, 1), @as(c_int, 500)) + @as(c_int, 1)) * @as(c_int, 500))));
-                @"var".*.value = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(@"var".*.value)), max))));
-                p = &@"var".*.value[off];
-            }
-            p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(v.*.name)), @as(c_ulong, @bitCast(@as(c_long, l)))))));
-            (blk: {
-                const ref = &p;
-                const tmp = ref.*;
-                ref.* += 1;
-                break :blk tmp;
-            }).* = ' ';
-        };
-        (p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))).* = '\x00';
-        last_changenum.static = variable_changenum;
-    }
-    return @"var";
-}
-pub fn merge_variable_sets(arg_to_set: [*c]struct_variable_set, arg_from_set: [*c]struct_variable_set) callconv(.C) void {
-    var to_set = arg_to_set;
-    _ = &to_set;
-    var from_set = arg_from_set;
-    _ = &from_set;
-    var from_var_slot: [*c]?*struct_variable = @as([*c]?*struct_variable, @ptrCast(@alignCast(from_set.*.table.ht_vec)));
-    _ = &from_var_slot;
-    var from_var_end: [*c]?*struct_variable = from_var_slot + from_set.*.table.ht_size;
-    _ = &from_var_end;
-    var inc: c_int = if (to_set == (&global_variable_set)) @as(c_int, 1) else @as(c_int, 0);
-    _ = &inc;
-    while (from_var_slot < from_var_end) : (from_var_slot += 1) if (!((from_var_slot.* == null) or (@as(?*anyopaque, @ptrCast(from_var_slot.*)) == hash_deleted_item))) {
-        var from_var: ?*struct_variable = from_var_slot.*;
-        _ = &from_var;
-        var to_var_slot: [*c]?*struct_variable = @as([*c]?*struct_variable, @ptrCast(@alignCast(hash_find_slot(&to_set.*.table, @as(?*const anyopaque, @ptrCast(from_var_slot.*))))));
-        _ = &to_var_slot;
-        if ((to_var_slot.* == null) or (@as(?*anyopaque, @ptrCast(to_var_slot.*)) == hash_deleted_item)) {
-            _ = hash_insert_at(&to_set.*.table, @as(?*const anyopaque, @ptrCast(from_var)), @as(?*const anyopaque, @ptrCast(to_var_slot)));
-            variable_changenum +%= @as(c_ulong, @bitCast(@as(c_long, inc)));
-        } else {
-            free(@as(?*anyopaque, @ptrCast(from_var.*.value)));
-            free(@as(?*anyopaque, @ptrCast(from_var)));
-        }
-    };
-}
-pub fn should_export(arg_v: ?*const struct_variable) callconv(.C) c_int {
-    var v = arg_v;
-    _ = &v;
-    while (true) {
-        switch (@as(c_int, @bitCast(v.*.@"export"))) {
-            @as(c_int, 1) => break,
-            @as(c_int, 2) => return 0,
-            @as(c_int, 3) => {
-                if (@as(c_int, @bitCast(v.*.origin)) == o_default) return 0;
-                break;
-            },
-            @as(c_int, 0) => {
-                if ((@as(c_int, @bitCast(v.*.origin)) == o_default) or (@as(c_int, @bitCast(v.*.origin)) == o_automatic)) return 0;
-                if (!(v.*.exportable != 0)) return 0;
-                if (((!(export_all_variables != 0) and (@as(c_int, @bitCast(v.*.origin)) != o_command)) and (@as(c_int, @bitCast(v.*.origin)) != o_env)) and (@as(c_int, @bitCast(v.*.origin)) != o_env_override)) return 0;
-                break;
-            },
-            else => {},
-        }
-        break;
-    }
-    return 1;
-}
-pub fn set_special_var(arg_var: ?*struct_variable, arg_origin: enum_variable_origin) callconv(.C) ?*struct_variable {
-    var @"var" = arg_var;
-    _ = &@"var";
-    var origin = arg_origin;
-    _ = &origin;
-    if ((@"var".*.name == "MAKEFLAGS") or ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, '\x00')) or !(strcmp(@"var".*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
-        reset_makeflags(origin);
-    } else if ((@"var".*.name == ".RECIPEPREFIX") or ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, @bitCast(@as(c_uint, ".RECIPEPREFIX".*)))) and ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, '\x00')) or !(strcmp(@"var".*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), ".RECIPEPREFIX" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
-        cmd_prefix = @as(u8, @bitCast(@as(i8, @truncate(if (@as(c_int, @bitCast(@as(c_uint, @"var".*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) @as(c_int, '\t') else @as(c_int, @bitCast(@as(c_uint, @"var".*.value[@as(c_uint, @intCast(@as(c_int, 0)))])))))));
-    }
-    return @"var";
-}
-pub fn shell_result(arg_p: [*c]const u8) callconv(.C) [*c]u8 {
-    var p = arg_p;
-    _ = &p;
-    var buf: [*c]u8 = undefined;
-    _ = &buf;
-    var len: usize = undefined;
+pub var strings: struct_hash_table = @import("std").mem.zeroes(struct_hash_table);
+pub var total_adds: c_ulong = 0;
+pub fn add_hash(arg_str: [*c]const u8, arg_len: usize) callconv(.C) [*c]const u8 {
+    var str = arg_str;
+    _ = &str;
+    var len = arg_len;
     _ = &len;
-    var args: [2][*c]u8 = undefined;
-    _ = &args;
-    var result: [*c]u8 = undefined;
-    _ = &result;
-    install_variable_buffer(&buf, &len);
-    args[@as(c_uint, @intCast(@as(c_int, 0)))] = @as([*c]u8, @ptrCast(@volatileCast(@constCast(p))));
-    args[@as(c_uint, @intCast(@as(c_int, 1)))] = null;
-    _ = variable_buffer_output(func_shell_base(variable_buffer, @as([*c][*c]u8, @ptrCast(@alignCast(&args))), @as(c_int, 0)), "\x00", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
-    result = strdup(variable_buffer);
-    restore_variable_buffer(buf, len);
-    return result;
-}
-pub const defined_vars: [11]struct_defined_vars = [11]struct_defined_vars{
-    struct_defined_vars{
-        .name = "MAKECMDGOALS",
-        .len = @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = "MAKE_RESTARTS",
-        .len = @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = "MAKE_TERMOUT",
-        .len = @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = "MAKE_TERMERR",
-        .len = @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = "MAKEOVERRIDES",
-        .len = @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = ".DEFAULT",
-        .len = @sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = "-*-command-variables-*-",
-        .len = @sizeOf([24]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = "-*-eval-flags-*-",
-        .len = @sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = "VPATH",
-        .len = @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = "GPATH",
-        .len = @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
-    },
-    struct_defined_vars{
-        .name = null,
-        .len = @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))),
-    },
-};
-pub fn print_variable(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C) void {
-    var item = arg_item;
-    _ = &item;
-    var arg = arg_arg;
-    _ = &arg;
-    var v: ?*const struct_variable = @as(?*const struct_variable, @ptrCast(item));
-    _ = &v;
-    var prefix: [*c]const u8 = @as([*c]const u8, @ptrCast(@alignCast(arg)));
-    _ = &prefix;
-    var origin: [*c]const u8 = undefined;
-    _ = &origin;
-    while (true) {
-        switch (@as(c_int, @bitCast(v.*.origin))) {
-            @as(c_int, 6) => {
-                origin = gettext("automatic");
-                break;
-            },
-            @as(c_int, 0) => {
-                origin = gettext("default");
-                break;
-            },
-            @as(c_int, 1) => {
-                origin = gettext("environment");
-                break;
-            },
-            @as(c_int, 2) => {
-                origin = gettext("makefile");
-                break;
-            },
-            @as(c_int, 3) => {
-                origin = gettext("environment under -e");
-                break;
-            },
-            @as(c_int, 4) => {
-                origin = gettext("command line");
-                break;
-            },
-            @as(c_int, 5) => {
-                origin = gettext("'override' directive");
-                break;
-            },
-            @as(c_int, 7) => {
-                abort();
-            },
-            else => {},
-        }
-        break;
-    }
-    _ = fputs("# ", stdout);
-    _ = fputs(origin, stdout);
-    if (v.*.private_var != 0) {
-        _ = fputs(" private", stdout);
-    }
-    if (v.*.fileinfo.filenm != null) {
-        _ = printf(gettext(" (from '%s', line %lu)"), v.*.fileinfo.filenm, v.*.fileinfo.lineno +% v.*.fileinfo.offset);
-    }
-    _ = putchar(@as(c_int, '\n'));
-    _ = fputs(prefix, stdout);
-    if ((@as(c_int, @bitCast(v.*.recursive)) != 0) and (strchr(v.*.value, @as(c_int, '\n')) != null)) {
-        _ = printf("define %s\n%s\nendef\n", v.*.name, v.*.value);
-    } else {
-        var p: [*c]u8 = undefined;
-        _ = &p;
-        _ = printf("%s %s= ", v.*.name, if (@as(c_int, @bitCast(v.*.recursive)) != 0) if (@as(c_int, @bitCast(v.*.append)) != 0) "+" else "" else ":");
-        p = next_token(v.*.value);
-        if ((p != v.*.value) and (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '\x00'))) {
-            _ = printf("$(subst ,,%s)", v.*.value);
-        } else if (v.*.recursive != 0) {
-            _ = fputs(v.*.value, stdout);
-        } else {
-            p = v.*.value;
-            while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) : (p += 1) {
-                if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '$')) {
-                    _ = putchar(@as(c_int, '$'));
-                }
-                _ = putchar(@as(c_int, @bitCast(@as(c_uint, p.*))));
-            }
-        }
-        _ = putchar(@as(c_int, '\n'));
-    }
-}
-pub fn print_auto_variable(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C) void {
-    var item = arg_item;
-    _ = &item;
-    var arg = arg_arg;
-    _ = &arg;
-    var v: ?*const struct_variable = @as(?*const struct_variable, @ptrCast(item));
-    _ = &v;
-    if (@as(c_int, @bitCast(v.*.origin)) == o_automatic) {
-        print_variable(item, arg);
-    }
-}
-pub fn print_noauto_variable(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C) void {
-    var item = arg_item;
-    _ = &item;
-    var arg = arg_arg;
-    _ = &arg;
-    var v: ?*const struct_variable = @as(?*const struct_variable, @ptrCast(item));
-    _ = &v;
-    if (@as(c_int, @bitCast(v.*.origin)) != o_automatic) {
-        print_variable(item, arg);
-    }
-}
-pub fn print_variable_set(arg_set: [*c]struct_variable_set, arg_prefix: [*c]const u8, arg_pauto: c_int) callconv(.C) void {
-    var set = arg_set;
-    _ = &set;
-    var prefix = arg_prefix;
-    _ = &prefix;
-    var pauto = arg_pauto;
-    _ = &pauto;
-    hash_map_arg(&set.*.table, if (pauto != 0) &print_auto_variable else &print_variable, @as(?*anyopaque, @ptrCast(@volatileCast(@constCast(prefix)))));
-    _ = fputs(gettext("# variable set hash-table stats:\n"), stdout);
-    _ = fputs("# ", stdout);
-    hash_print_stats(&set.*.table, stdout);
-    _ = putc(@as(c_int, '\n'), stdout);
+    var slot: [*c]const [*c]u8 = undefined;
+    _ = &slot;
+    var key: [*c]const u8 = undefined;
+    _ = &key;
+    if (len > @as(usize, @bitCast(@as(c_long, ((@as(c_int, 32767) * @as(c_int, 2)) + @as(c_int, 1)) - @as(c_int, 1))))) return add_hugestring(str, len);
+    slot = @as([*c]const [*c]u8, @ptrCast(@alignCast(hash_find_slot(&strings, @as(?*const anyopaque, @ptrCast(str))))));
+    key = slot.*;
+    total_adds +%= 1;
+    if (!((key == null) or (@as(?*anyopaque, @ptrCast(@volatileCast(@constCast(key)))) == hash_deleted_item))) return key;
+    key = add_string(str, @as(sc_buflen_t, @bitCast(@as(c_ushort, @truncate(len)))));
+    _ = hash_insert_at(&strings, @as(?*const anyopaque, @ptrCast(key)), @as(?*const anyopaque, @ptrCast(slot)));
+    return key;
 }
 pub const __llvm__ = @as(c_int, 1);
 pub const __clang__ = @as(c_int, 1);
@@ -6066,222 +5386,18 @@ pub inline fn return_ADDRESS_COMPARE(X: anytype, Y: anytype) @TypeOf(return_INTE
     _ = &Y;
     return return_INTEGER_COMPARE(X, Y);
 }
-pub inline fn FILE_TIMESTAMP_STAT_MODTIME(fname: anytype, st: anytype) @TypeOf(file_timestamp_cons(fname, st.st_mtime, st.ST_MTIM_NSEC)) {
-    _ = &fname;
-    _ = &st;
-    return file_timestamp_cons(fname, st.st_mtime, st.ST_MTIM_NSEC);
+pub const CACHE_BUFFER_BASE = @as(c_int, 8192);
+pub inline fn CACHE_BUFFER_ALLOC(_s: anytype) @TypeOf(_s - (@as(c_int, 2) * @import("std").zig.c_translation.sizeof(usize))) {
+    _ = &_s;
+    return _s - (@as(c_int, 2) * @import("std").zig.c_translation.sizeof(usize));
 }
-pub const FILE_TIMESTAMPS_PER_S = if (FILE_TIMESTAMP_HI_RES) @import("std").zig.c_translation.promoteIntLiteral(c_int, 1000000000, .decimal) else @as(c_int, 1);
-pub const FILE_TIMESTAMP_LO_BITS = if (FILE_TIMESTAMP_HI_RES) @as(c_int, 30) else @as(c_int, 0);
-pub inline fn FILE_TIMESTAMP_S(ts: anytype) @TypeOf((ts - ORDINARY_MTIME_MIN) >> FILE_TIMESTAMP_LO_BITS) {
-    _ = &ts;
-    return (ts - ORDINARY_MTIME_MIN) >> FILE_TIMESTAMP_LO_BITS;
+pub const CACHE_BUFFER_OFFSET = @compileError("unable to translate macro: undefined identifier `buffer`");
+// src/strcache.c:43:9
+pub inline fn CACHE_BUFFER_SIZE(_s: anytype) @TypeOf(CACHE_BUFFER_ALLOC(_s) - CACHE_BUFFER_OFFSET) {
+    _ = &_s;
+    return CACHE_BUFFER_ALLOC(_s) - CACHE_BUFFER_OFFSET;
 }
-pub inline fn FILE_TIMESTAMP_NS(ts: anytype) c_int {
-    _ = &ts;
-    return @import("std").zig.c_translation.cast(c_int, (ts - ORDINARY_MTIME_MIN) & ((@as(c_int, 1) << FILE_TIMESTAMP_LO_BITS) - @as(c_int, 1)));
-}
-pub const FLOOR_LOG2_SECONDS_PER_YEAR = @as(c_int, 24);
-pub const FILE_TIMESTAMP_PRINT_LEN_BOUND = (((@import("std").zig.c_translation.MacroArithmetic.div((((@import("std").zig.c_translation.sizeof(FILE_TIMESTAMP) * CHAR_BIT) - @as(c_int, 1)) - FLOOR_LOG2_SECONDS_PER_YEAR) * @as(c_int, 302), @as(c_int, 1000)) + @as(c_int, 1)) + @as(c_int, 1)) + @as(c_int, 4)) + @as(c_int, 25);
-pub inline fn file_mtime(f: anytype) @TypeOf(file_mtime_1(f, @as(c_int, 1))) {
-    _ = &f;
-    return file_mtime_1(f, @as(c_int, 1));
-}
-pub inline fn file_mtime_no_search(f: anytype) @TypeOf(file_mtime_1(f, @as(c_int, 0))) {
-    _ = &f;
-    return file_mtime_1(f, @as(c_int, 0));
-}
-pub inline fn file_mtime_1(f: anytype, v: anytype) @TypeOf(if (f.*.last_mtime == UNKNOWN_MTIME) f_mtime(f, v) else f.*.last_mtime) {
-    _ = &f;
-    _ = &v;
-    return if (f.*.last_mtime == UNKNOWN_MTIME) f_mtime(f, v) else f.*.last_mtime;
-}
-pub const UNKNOWN_MTIME = @as(c_int, 0);
-pub const NONEXISTENT_MTIME = @as(c_int, 1);
-pub const OLD_MTIME = @as(c_int, 2);
-pub const ORDINARY_MTIME_MIN = OLD_MTIME + @as(c_int, 1);
-pub const ORDINARY_MTIME_MAX = (((FILE_TIMESTAMP_S(NEW_MTIME) << FILE_TIMESTAMP_LO_BITS) + ORDINARY_MTIME_MIN) + FILE_TIMESTAMPS_PER_S) - @as(c_int, 1);
-pub inline fn is_ordinary_mtime(_t: anytype) @TypeOf((_t >= ORDINARY_MTIME_MIN) and (_t <= ORDINARY_MTIME_MAX)) {
-    _ = &_t;
-    return (_t >= ORDINARY_MTIME_MIN) and (_t <= ORDINARY_MTIME_MAX);
-}
-pub const NEW_MTIME = INTEGER_TYPE_MAXIMUM(FILE_TIMESTAMP);
-pub const check_renamed = @compileError("unable to translate C expr: unexpected token 'while'");
-// src/filedef.h:225:9
-pub const DB_NONE = @as(c_int, 0x000);
-pub const DB_BASIC = @as(c_int, 0x001);
-pub const DB_VERBOSE = @as(c_int, 0x002);
-pub const DB_JOBS = @as(c_int, 0x004);
-pub const DB_IMPLICIT = @as(c_int, 0x008);
-pub const DB_PRINT = @as(c_int, 0x010);
-pub const DB_WHY = @as(c_int, 0x020);
-pub const DB_MAKEFILES = @as(c_int, 0x100);
-pub const DB_ALL = @as(c_int, 0xfff);
-pub inline fn ISDB(_l: anytype) @TypeOf(_l & db_level) {
-    _ = &_l;
-    return _l & db_level;
-}
-pub const DBS = @compileError("unable to translate macro: undefined identifier `depth`");
-// src/debug.h:34:9
-pub const DBF = @compileError("unable to translate macro: undefined identifier `depth`");
-// src/debug.h:37:9
-pub const DB = @compileError("unable to translate C expr: unexpected token 'do'");
-// src/debug.h:41:9
-pub const NAMESEQ = @compileError("unable to translate macro: undefined identifier `next`");
-// src/dep.h:20:9
-pub const RM_NOFLAG = @as(c_int, 0);
-pub const RM_NO_DEFAULT_GOAL = @as(c_int, 1) << @as(c_int, 0);
-pub const RM_INCLUDED = @as(c_int, 1) << @as(c_int, 1);
-pub const RM_DONTCARE = @as(c_int, 1) << @as(c_int, 2);
-pub const RM_NO_TILDE = @as(c_int, 1) << @as(c_int, 3);
-pub const DEP = @compileError("unable to translate macro: undefined identifier `shuf`");
-// src/dep.h:46:9
-pub const PARSEFS_NONE = @as(c_int, 0x0000);
-pub const PARSEFS_NOSTRIP = @as(c_int, 0x0001);
-pub const PARSEFS_NOAR = @as(c_int, 0x0002);
-pub const PARSEFS_NOGLOB = @as(c_int, 0x0004);
-pub const PARSEFS_EXISTS = @as(c_int, 0x0008);
-pub const PARSEFS_NOCACHE = @as(c_int, 0x0010);
-pub const PARSEFS_ONEWORD = @as(c_int, 0x0020);
-pub const PARSEFS_WAIT = @as(c_int, 0x0040);
-pub const PARSE_FILE_SEQ = @compileError("unable to translate C expr: unexpected token ')'");
-// src/dep.h:87:9
-pub const PARSE_SIMPLE_SEQ = @compileError("unable to translate C expr: unexpected token ')'");
-// src/dep.h:89:9
-pub inline fn dep_name(d: anytype) @TypeOf(if (d.*.name) d.*.name else d.*.file.*.name) {
-    _ = &d;
-    return if (d.*.name) d.*.name else d.*.file.*.name;
-}
-pub inline fn alloc_seq_elt(_t: anytype) @TypeOf(xcalloc(@import("std").zig.c_translation.sizeof(_t))) {
-    _ = &_t;
-    return xcalloc(@import("std").zig.c_translation.sizeof(_t));
-}
-pub inline fn alloc_ns() @TypeOf(alloc_seq_elt(struct_nameseq)) {
-    return alloc_seq_elt(struct_nameseq);
-}
-pub inline fn alloc_dep() @TypeOf(alloc_seq_elt(struct_dep)) {
-    return alloc_seq_elt(struct_dep);
-}
-pub inline fn alloc_goaldep() @TypeOf(alloc_seq_elt(struct_goaldep)) {
-    return alloc_seq_elt(struct_goaldep);
-}
-pub inline fn free_ns(_n: anytype) @TypeOf(free(_n)) {
-    _ = &_n;
-    return free(_n);
-}
-pub inline fn free_dep(_d: anytype) @TypeOf(free_ns(_d)) {
-    _ = &_d;
-    return free_ns(_d);
-}
-pub inline fn free_goaldep(_g: anytype) @TypeOf(free_dep(_g)) {
-    _ = &_g;
-    return free_dep(_g);
-}
-pub inline fn free_dep_chain(_d: anytype) @TypeOf(free_ns_chain(@import("std").zig.c_translation.cast([*c]struct_nameseq, _d))) {
-    _ = &_d;
-    return free_ns_chain(@import("std").zig.c_translation.cast([*c]struct_nameseq, _d));
-}
-pub inline fn free_goal_chain(_g: anytype) @TypeOf(free_ns_chain(@import("std").zig.c_translation.cast([*c]struct_nameseq, _g))) {
-    _ = &_g;
-    return free_ns_chain(@import("std").zig.c_translation.cast([*c]struct_nameseq, _g));
-}
-// src/output.h:27:9: warning: macro 'FD_STDIN' contains a runtime value, translated to function
-pub inline fn FD_STDIN() @TypeOf(fileno(stdin)) {
-    return fileno(stdin);
-}
-// src/output.h:28:9: warning: macro 'FD_STDOUT' contains a runtime value, translated to function
-pub inline fn FD_STDOUT() @TypeOf(fileno(stdout)) {
-    return fileno(stdout);
-}
-// src/output.h:29:9: warning: macro 'FD_STDERR' contains a runtime value, translated to function
-pub inline fn FD_STDERR() @TypeOf(fileno(stderr)) {
-    return fileno(stderr);
-}
-pub const OUTPUT_SET = @compileError("unable to translate C expr: unexpected token 'do'");
-// src/output.h:31:9
-pub const OUTPUT_UNSET = @compileError("unable to translate C expr: unexpected token 'do'");
-// src/output.h:32:9
-pub const OUTPUT_TRACED = @compileError("unable to translate C expr: unexpected token 'do'");
-// src/output.h:34:9
-pub inline fn OUTPUT_IS_TRACED() @TypeOf(!!(stdio_traced != 0)) {
-    return !!(stdio_traced != 0);
-}
-pub const VMSCHILD = "";
-pub const CHILDBASE = @compileError("unable to translate macro: undefined identifier `cmd_name`");
-// src/job.h:31:9
-pub const COMMANDS_RECURSE = @as(c_int, 1);
-pub const COMMANDS_SILENT = @as(c_int, 2);
-pub const COMMANDS_NOERROR = @as(c_int, 4);
-pub const EXP_COUNT_BITS = @as(c_int, 15);
-pub const EXP_COUNT_MAX = (@as(c_int, 1) << EXP_COUNT_BITS) - @as(c_int, 1);
-pub const allocated_variable_expand = @compileError("unable to translate C expr: expected ')' instead got 'line'");
-// src/variable.h:132:9
-pub inline fn recursively_expand(v: anytype) @TypeOf(recursively_expand_for_file(v, NULL)) {
-    _ = &v;
-    return recursively_expand_for_file(v, NULL);
-}
-pub inline fn define_variable(n: anytype, l: anytype, v: anytype, o: anytype, r: anytype) @TypeOf(define_variable_in_set(n, l, v, o, r, current_variable_set_list.*.set, NILF)) {
-    _ = &n;
-    _ = &l;
-    _ = &v;
-    _ = &o;
-    _ = &r;
-    return define_variable_in_set(n, l, v, o, r, current_variable_set_list.*.set, NILF);
-}
-pub inline fn define_variable_cname(n: anytype, v: anytype, o: anytype, r: anytype) @TypeOf(define_variable_in_set(n, @import("std").zig.c_translation.sizeof(n) - @as(c_int, 1), v, o, r, current_variable_set_list.*.set, NILF)) {
-    _ = &n;
-    _ = &v;
-    _ = &o;
-    _ = &r;
-    return define_variable_in_set(n, @import("std").zig.c_translation.sizeof(n) - @as(c_int, 1), v, o, r, current_variable_set_list.*.set, NILF);
-}
-pub inline fn define_variable_loc(n: anytype, l: anytype, v: anytype, o: anytype, r: anytype, f: anytype) @TypeOf(define_variable_in_set(n, l, v, o, r, current_variable_set_list.*.set, f)) {
-    _ = &n;
-    _ = &l;
-    _ = &v;
-    _ = &o;
-    _ = &r;
-    _ = &f;
-    return define_variable_in_set(n, l, v, o, r, current_variable_set_list.*.set, f);
-}
-pub inline fn define_variable_global(n: anytype, l: anytype, v: anytype, o: anytype, r: anytype, f: anytype) @TypeOf(define_variable_in_set(n, l, v, o, r, NULL, f)) {
-    _ = &n;
-    _ = &l;
-    _ = &v;
-    _ = &o;
-    _ = &r;
-    _ = &f;
-    return define_variable_in_set(n, l, v, o, r, NULL, f);
-}
-pub inline fn define_variable_for_file(n: anytype, l: anytype, v: anytype, o: anytype, r: anytype, f: anytype) @TypeOf(define_variable_in_set(n, l, v, o, r, f.*.variables.*.set, NILF)) {
-    _ = &n;
-    _ = &l;
-    _ = &v;
-    _ = &o;
-    _ = &r;
-    _ = &f;
-    return define_variable_in_set(n, l, v, o, r, f.*.variables.*.set, NILF);
-}
-pub inline fn undefine_variable_global(n: anytype, l: anytype, o: anytype) @TypeOf(undefine_variable_in_set(n, l, o, NULL)) {
-    _ = &n;
-    _ = &l;
-    _ = &o;
-    return undefine_variable_in_set(n, l, o, NULL);
-}
-pub const MAKELEVEL_NAME = "MAKELEVEL";
-pub const MAKELEVEL_LENGTH = CSTRLEN(MAKELEVEL_NAME);
-pub const IO_UNKNOWN = @as(c_int, 0x0001);
-pub const IO_COMBINED_OUTERR = @as(c_int, 0x0002);
-pub const IO_STDIN_OK = @as(c_int, 0x0004);
-pub const IO_STDOUT_OK = @as(c_int, 0x0008);
-pub const IO_STDERR_OK = @as(c_int, 0x0010);
-pub const VARIABLE_BUCKETS = @as(c_int, 523);
-pub const PERFILE_VARIABLE_BUCKETS = @as(c_int, 23);
-pub const SMALL_SCOPE_VARIABLE_BUCKETS = @as(c_int, 13);
-pub inline fn EXPANSION_INCREMENT(_l: anytype) @TypeOf((@import("std").zig.c_translation.MacroArithmetic.div(_l, @as(c_int, 500)) + @as(c_int, 1)) * @as(c_int, 500)) {
-    _ = &_l;
-    return (@import("std").zig.c_translation.MacroArithmetic.div(_l, @as(c_int, 500)) + @as(c_int, 1)) * @as(c_int, 500);
-}
+pub const BUFSIZE = CACHE_BUFFER_SIZE(CACHE_BUFFER_BASE);
 pub const timeval = struct_timeval;
 pub const timespec = struct_timespec;
 pub const __pthread_internal_list = struct___pthread_internal_list;
@@ -6322,21 +5438,8 @@ pub const itimerspec = struct_itimerspec;
 pub const random_data = struct_random_data;
 pub const drand48_data = struct_drand48_data;
 pub const lconv = struct_lconv;
-pub const dep = struct_dep;
-pub const commands = struct_commands;
-pub const hash_table = struct_hash_table;
-pub const variable_set = struct_variable_set;
-pub const variable_set_list = struct_variable_set_list;
 pub const file = struct_file;
 pub const variable_origin = enum_variable_origin;
 pub const variable = struct_variable;
-pub const pattern_var = struct_pattern_var;
-pub const nameseq = struct_nameseq;
-pub const goaldep = struct_goaldep;
-pub const output = struct_output;
-pub const childbase = struct_childbase;
-pub const child = struct_child;
-pub const variable_flavor = enum_variable_flavor;
-pub const variable_export = enum_variable_export;
-pub const rule = struct_rule;
-pub const pspec = struct_pspec;
+pub const hugestring = struct_hugestring;
+pub const hash_table = struct_hash_table;
