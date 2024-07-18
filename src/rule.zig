@@ -66,23 +66,16 @@ const uintmax_t = __uintmax_t;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-const struct_dep = opaque {};
+const struct_dep = @import("dep.zig").struct_dep;
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 const struct_commands = opaque {};
 
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
 
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const fatal = @import("output.zig").fatal;
 
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-const struct_variable = opaque {};
+const struct_variable = @import("variable.zig").struct_variable;
 
 extern fn xmalloc(usize) ?*anyopaque;
 
@@ -91,21 +84,17 @@ extern fn xstrdup([*c]const u8) [*c]u8;
 
 extern fn find_percent_cached([*c][*c]const u8) [*c]const u8;
 
-extern fn dir_file_exists_p([*c]const u8, [*c]const u8) c_int;
+const dir_file_exists_p = @import("dir.zig").dir_file_exists_p;
+const expand_extra_prereqs = @import("file.zig").expand_extra_prereqs;
 
-extern fn expand_extra_prereqs(extra: ?*const struct_variable) ?*struct_dep;
-
-const struct_nameseq = extern struct {
-    next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
-    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-};
+const struct_nameseq = @import("dep.zig").struct_nameseq;
 
 extern fn parse_file_seq(stringp: [*c][*c]u8, size: usize, stopmap: c_int, prefix: [*c]const u8, flags: c_int) ?*anyopaque;
 
 extern fn free_ns_chain(n: [*c]struct_nameseq) void;
 extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
 
-extern fn print_commands(cmds: ?*const struct_commands) void;
+const print_commands = @import("commands.zig").print_commands;
 
 extern fn lookup_variable(name: [*c]const u8, length: usize) ?*struct_variable;
 

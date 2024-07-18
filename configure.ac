@@ -16,16 +16,39 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <https://www.gnu.org/licenses/>.
 
+# # AC_INIT([GNU Make],[4.4.1],[bug-make@gnu.org])
+# 初期化する。
+# パッケージ名: GNU Make
+# パッケージのバージョン: 4.4.1
+# バグ報告用のメールアドレス: bug-make@gnu.org
 AC_INIT([GNU Make],[4.4.1],[bug-make@gnu.org])
+# END: AC_INIT([GNU Make],[4.4.1],[bug-make@gnu.org])
 
+# # AC_PREREQ([2.69])
+# 使用している `autoconf` のバージョンが 2.69 より前の場合、エラーを表示して終了する。
 AC_PREREQ([2.69])
+# END: AC_PREREQ([2.69])
 
 # Autoconf setup
-AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_SRCDIR([src/vpath.c])
-AC_CONFIG_HEADERS([src/config.h])
 
+# # AC_CONFIG_AUX_DIR([build-aux])
+# build-aux ディレクトリにある補助ビルドツールを使用する。
+AC_CONFIG_AUX_DIR([build-aux])
+# END: AC_CONFIG_AUX_DIR([build-aux])
+
+# # AC_CONFIG_SRCDIR([src/vpath.c])
+# src ディレクトリにファイルがあることを確認する。
+AC_CONFIG_SRCDIR([src/vpath.c])
+# END: AC_CONFIG_SRCDIR([src/vpath.c])
+
+# # AC_CONFIG_HEADERS([src/config.h])
+# コンフィグヘッダーファイルのパスを指定する。
+AC_CONFIG_HEADERS([src/config.h])
+# END: AC_CONFIG_HEADERS([src/config.h])
+
+# # AC_CONFIG_LIBOBJ_DIR([lib])
 AC_CONFIG_LIBOBJ_DIR([lib])
+# END: AC_CONFIG_LIBOBJ_DIR([lib])
 
 # Automake setup
 # We have to enable "foreign" because ChangeLog is auto-generated

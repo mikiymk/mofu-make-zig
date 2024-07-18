@@ -149,6 +149,9 @@ pub const file = struct {
     },
 };
 
+// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
+pub const struct_file = opaque {};
+
 // extern struct file *default_file;
 
 // struct file *lookup_file (const char *name);

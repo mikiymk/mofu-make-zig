@@ -16,17 +16,12 @@ const uintmax_t = __uintmax_t;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
-extern fn concat(c_uint, ...) [*c]const u8;
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
+const concat = @import("misc.zig").concat;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 extern fn perror_with_name([*c]const u8, [*c]const u8) void;
 
@@ -35,23 +30,19 @@ extern fn xcalloc(usize) ?*anyopaque;
 extern fn xstrdup([*c]const u8) [*c]u8;
 
 const ar_member_func_t = ?*const fn (c_int, [*c]const u8, c_int, c_long, c_long, c_long, intmax_t, c_int, c_int, c_uint, ?*const anyopaque) callconv(.C) intmax_t;
-extern fn ar_scan(archive: [*c]const u8, function: ar_member_func_t, arg: ?*const anyopaque) intmax_t;
-extern fn ar_name_equal(name: [*c]const u8, mem: [*c]const u8, truncated: c_int) c_int;
-extern fn ar_member_touch(arname: [*c]const u8, memname: [*c]const u8) c_int;
+const ar_scan = @import("arscan.zig").ar_scan;
+const ar_name_equal = @import("arscan.zig").ar_name_equal;
+const ar_member_touch = @import("arscan.zig").ar_member_touch;
 
-extern fn file_exists_p([*c]const u8) c_int;
-
+const file_exists_p = @import("dir.zig").file_exists_p;
 extern fn strcache_add(str: [*c]const u8) [*c]const u8;
 
-extern fn lookup_file(name: [*c]const u8) ?*struct_file;
-extern fn enter_file(name: [*c]const u8) ?*struct_file;
+const lookup_file = @import("file.zig").lookup_file;
+const enter_file = @import("file.zig").enter_file;
 
 extern fn f_mtime(file: ?*struct_file, search: c_int) uintmax_t;
 
-const struct_nameseq = extern struct {
-    next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
-    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-};
+const struct_nameseq = @import("dep.zig").struct_nameseq;
 
 extern fn fnmatch(__pattern: [*c]const u8, __name: [*c]const u8, __flags: c_int) c_int;
 

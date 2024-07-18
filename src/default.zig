@@ -1,7 +1,6 @@
 extern fn strlen(__s: [*c]const u8) c_ulong;
 
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-const struct_dep = opaque {};
+const struct_dep = @import("dep.zig").struct_dep;
 
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 const struct_commands = opaque {};
@@ -29,20 +28,14 @@ const struct_variable_set_list = extern struct {
     next_is_parent: c_int = @import("std").mem.zeroes(c_int),
 };
 
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
 
 const o_default: c_int = 0;
 
 const enum_variable_origin = c_int;
 
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-const struct_variable = opaque {};
+const struct_variable = @import("variable.zig").struct_variable;
 
 extern fn xmalloc(usize) ?*anyopaque;
 
@@ -59,9 +52,9 @@ extern fn strcache_add(str: [*c]const u8) [*c]const u8;
 extern var no_builtin_rules_flag: c_int;
 extern var no_builtin_variables_flag: c_int;
 
-extern fn enter_file(name: [*c]const u8) ?*struct_file;
+const enter_file = @import("file.zig").enter_file;
 
-extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
+const enter_prereqs = @import("file.zig").enter_prereqs;
 
 extern var current_variable_set_list: [*c]struct_variable_set_list;
 

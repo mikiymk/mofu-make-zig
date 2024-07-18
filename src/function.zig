@@ -101,24 +101,18 @@ const struct_variable_set_list = extern struct {
     set: [*c]struct_variable_set = @import("std").mem.zeroes([*c]struct_variable_set),
     next_is_parent: c_int = @import("std").mem.zeroes(c_int),
 };
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
 
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const fatal = @import("output.zig").fatal;
 
 const o_override: c_int = 5;
 const o_automatic: c_int = 6;
 
 const enum_variable_origin = c_int;
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-const struct_variable = opaque {};
+const struct_variable = @import("variable.zig").struct_variable;
 
-extern fn make_lltoa(c_longlong, [*c]u8) [*c]u8;
+const make_lltoa = @import("misc.zig").make_lltoa;
 
 extern fn xmalloc(usize) ?*anyopaque;
 extern fn xcalloc(usize) ?*anyopaque;
@@ -155,14 +149,13 @@ extern fn jhash_string(key: [*c]const u8) c_uint;
 
 extern var current_variable_set_list: [*c]struct_variable_set_list;
 
-extern fn variable_buffer_output(ptr: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
+const variable_buffer_output = @import("expand.zig").variable_buffer_output;
+const allocated_variable_expand_for_file = @import("expand.zig").allocated_variable_expand_for_file;
 
-extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
-extern fn expand_argument(str: [*c]const u8, end: [*c]const u8) [*c]u8;
-extern fn variable_expand_string(line: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
-
-extern fn install_variable_buffer(bufp: [*c][*c]u8, lenp: [*c]usize) void;
-extern fn restore_variable_buffer(buf: [*c]u8, len: usize) void;
+const expand_argument = @import("expand.zig").expand_argument;
+const variable_expand_string = @import("expand.zig").variable_expand_string;
+const install_variable_buffer = @import("expand.zig").install_variable_buffer;
+const restore_variable_buffer = @import("expand.zig").restore_variable_buffer;
 
 extern fn push_new_variable_scope() [*c]struct_variable_set_list;
 extern fn pop_variable_scope() void;
@@ -171,10 +164,7 @@ extern fn lookup_variable(name: [*c]const u8, length: usize) ?*struct_variable;
 
 extern fn define_variable_in_set(name: [*c]const u8, length: usize, value: [*c]const u8, origin: enum_variable_origin, recursive: c_int, set: [*c]struct_variable_set, flocp: [*c]const floc) ?*struct_variable;
 
-const struct_nameseq = extern struct {
-    next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
-    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-};
+const struct_nameseq = @import("dep.zig").struct_nameseq;
 
 extern fn parse_file_seq(stringp: [*c][*c]u8, size: usize, stopmap: c_int, prefix: [*c]const u8, flags: c_int) ?*anyopaque;
 

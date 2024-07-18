@@ -127,18 +127,10 @@ extern fn strlen(__s: [*c]const u8) c_ulong;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-const struct_dep = opaque {};
-
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
-
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-
-extern fn out_of_memory() noreturn;
+const struct_dep = @import("dep.zig").struct_dep;
+const floc = @import("makeint.zig").floc;
+const @"error" = @import("output.zig").@"error";
+const out_of_memory = @import("output.zig").out_of_memory;
 
 const stopchar_map: [*c]c_ushort = @extern([*c]c_ushort, .{
     .name = "stopchar_map",
@@ -146,12 +138,8 @@ const stopchar_map: [*c]c_ushort = @extern([*c]c_ushort, .{
 
 extern var posix_pedantic: c_int;
 
-const struct_nameseq = extern struct {
-    next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
-    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-};
-
-extern fn os_anontmp() c_int;
+const struct_nameseq = @import("dep.zig").struct_nameseq;
+const os_anontmp = @import("posixos.zig").os_anontmp;
 
 var mk_state: c_uint = 0;
 

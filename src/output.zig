@@ -75,11 +75,7 @@ const uintmax_t = __uintmax_t;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const floc = @import("makeint.zig").floc;
 
 extern fn should_print_dir() c_int;
 

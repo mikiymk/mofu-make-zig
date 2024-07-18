@@ -12,12 +12,7 @@
 // # gives unlimited permission to copy, distribute and modify it.
 
 pub fn configure() !void {
-    // ## -------------------- ##
-    // ## M4sh Initialization. ##
-    // ## -------------------- ##
-
-    // # Be more Bourne compatible
-    // DUALCASE=1; export DUALCASE # for MKS sh
+    const DUALCASE = 1;
     // if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then :
     //   emulate sh
     //   NULLCMD=:

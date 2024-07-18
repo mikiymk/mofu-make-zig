@@ -97,8 +97,7 @@ const uintmax_t = __uintmax_t;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-const struct_dep = opaque {};
+const struct_dep = @import("dep.zig").struct_dep;
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 const struct_commands = opaque {};
 const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
@@ -120,19 +119,13 @@ const struct_variable_set = extern struct {
     table: struct_hash_table = @import("std").mem.zeroes(struct_hash_table),
 };
 
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
+const @"error" = @import("output.zig").@"error";
 extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
 
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-const struct_variable = opaque {};
+const struct_variable = @import("variable.zig").struct_variable;
 
 extern fn perror_with_name([*c]const u8, [*c]const u8) void;
 
@@ -171,10 +164,7 @@ extern fn hash_print_stats(ht: [*c]struct_hash_table, out_FILE: [*c]FILE) void;
 extern fn jhash_string(key: [*c]const u8) c_uint;
 extern var hash_deleted_item: ?*anyopaque;
 
-const struct_nameseq = extern struct {
-    next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
-    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-};
+const struct_nameseq = @import("dep.zig").struct_nameseq;
 
 const enum_cmd_state_39 = c_uint;
 
@@ -185,12 +175,11 @@ extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
 
 const us_none: c_int = 1;
 
-extern fn print_commands(cmds: ?*const struct_commands) void;
+const print_commands = @import("commands.zig").print_commands;
 
-extern fn set_file_variables(file: ?*struct_file, stem: [*c]const u8) void;
-
-extern fn variable_expand(line: [*c]const u8) [*c]u8;
-extern fn variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
+const set_file_variables = @import("commands.zig").set_file_variables;
+const variable_expand = @import("expand.zig").variable_expand;
+const variable_expand_for_file = @import("expand.zig").variable_expand_for_file;
 
 extern fn initialize_file_variables(file: ?*struct_file, reading: c_int) void;
 extern fn print_file_variables(file: ?*const struct_file) void;

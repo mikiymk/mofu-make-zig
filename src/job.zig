@@ -93,24 +93,16 @@ const uintmax_t = __uintmax_t;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
-
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
-
-const o_default: c_int = 0;
-
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-const struct_variable = opaque {};
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
+const o_default = @import("variable.zig").o_default;
+const struct_variable = @import("variable.zig").struct_variable;
 
 extern fn perror_with_name([*c]const u8, [*c]const u8) void;
-extern fn make_toui([*c]const u8, [*c][*c]const u8) c_uint;
+
+const make_toui = @import("misc.zig").make_toui;
 
 extern fn xstrdup([*c]const u8) [*c]u8;
 
@@ -125,7 +117,7 @@ extern var max_load_average: f64;
 
 extern fn start_remote_job_p(c_int) c_int;
 
-extern var handling_fatal_signal: sig_atomic_t;
+const handling_fatal_signal = @import("commands.zig").handling_fatal_signal;
 // src/output.h:21:18: warning: struct demoted to opaque type - has bitfield
 const struct_output = opaque {};
 
@@ -143,11 +135,10 @@ extern var db_level: c_int;
 
 const cs_running: c_int = 2;
 
-const enum_cmd_state_39 = c_uint;
-extern fn set_command_state(file: ?*struct_file, state: enum_cmd_state_39) void;
+const set_command_state = @import("file.zig").set_command_state;
 extern fn notice_finished_file(file: ?*struct_file) void;
 
-extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
+const allocated_variable_expand_for_file = @import("expand.zig").allocated_variable_expand_for_file;
 
 extern fn lookup_variable_for_file(name: [*c]const u8, length: usize, file: ?*struct_file) ?*struct_variable;
 

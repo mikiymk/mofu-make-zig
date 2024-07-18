@@ -135,14 +135,10 @@ const uintmax_t = __uintmax_t;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const floc = @import("makeint.zig").floc;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 extern fn pfatal_with_name([*c]const u8) noreturn;
 extern fn perror_with_name([*c]const u8, [*c]const u8) void;
@@ -155,7 +151,7 @@ extern fn xstrdup([*c]const u8) [*c]u8;
 extern fn get_tmpdir() [*c]const u8;
 extern fn get_tmpfd([*c][*c]u8) c_int;
 
-extern var handling_fatal_signal: sig_atomic_t;
+const handling_fatal_signal = @import("commands.zig").handling_fatal_signal;
 const struct_flock = extern struct {
     l_type: c_short = @import("std").mem.zeroes(c_short),
     l_whence: c_short = @import("std").mem.zeroes(c_short),

@@ -129,13 +129,9 @@ const glob_t = extern struct {
     gl_stat: ?*const fn (noalias [*c]const u8, noalias [*c]struct_stat) callconv(.C) c_int = @import("std").mem.zeroes(?*const fn (noalias [*c]const u8, noalias [*c]struct_stat) callconv(.C) c_int),
 };
 
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const floc = @import("makeint.zig").floc;
 
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const fatal = @import("output.zig").fatal;
 
 extern fn xmalloc(usize) ?*anyopaque;
 extern fn xcalloc(usize) ?*anyopaque;

@@ -138,8 +138,7 @@ const glob_t = extern struct {
 extern fn glob(noalias __pattern: [*c]const u8, __flags: c_int, __errfunc: ?*const fn ([*c]const u8, c_int) callconv(.C) c_int, noalias __pglob: [*c]glob_t) c_int;
 extern fn globfree(__pglob: [*c]glob_t) void;
 
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-const struct_dep = opaque {};
+const struct_dep = @import("dep.zig").struct_dep;
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 const struct_commands = opaque {};
 const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
@@ -165,18 +164,13 @@ const struct_variable_set_list = extern struct {
     set: [*c]struct_variable_set = @import("std").mem.zeroes([*c]struct_variable_set),
     next_is_parent: c_int = @import("std").mem.zeroes(c_int),
 };
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
-extern fn concat(c_uint, ...) [*c]const u8;
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
+const concat = @import("misc.zig").concat;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
-extern fn out_of_memory() noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
+const out_of_memory = @import("output.zig").out_of_memory;
 const o_default: c_int = 0;
 
 const o_file: c_int = 2;
@@ -185,8 +179,7 @@ const o_command: c_int = 4;
 const o_override: c_int = 5;
 
 const enum_variable_origin = c_int;
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-const struct_variable = opaque {};
+const struct_variable = @import("variable.zig").struct_variable;
 
 extern fn perror_with_name([*c]const u8, [*c]const u8) void;
 
@@ -198,12 +191,12 @@ extern fn xstrndup([*c]const u8, usize) [*c]u8;
 extern fn find_next_token([*c][*c]const u8, [*c]usize) [*c]u8;
 extern fn next_token([*c]const u8) [*c]u8;
 
-extern fn ar_name([*c]const u8) c_int;
-extern fn ar_parse_name([*c]const u8, [*c][*c]u8, [*c][*c]u8) void;
+const ar_name = @import("ar.zig").ar_name;
+const ar_parse_name = @import("ar.zig").ar_parse_name;
 
-extern fn file_exists_p([*c]const u8) c_int;
+const file_exists_p = @import("dir.zig").file_exists_p;
 
-extern fn dir_setup_glob([*c]glob_t) void;
+const dir_setup_glob = @import("dir.zig").dir_setup_glob;
 
 extern fn strcache_add(str: [*c]const u8) [*c]const u8;
 extern fn strcache_add_len(str: [*c]const u8, len: usize) [*c]const u8;
@@ -220,16 +213,14 @@ extern var second_expansion: c_int;
 extern var one_shell: c_int;
 
 extern var default_file: ?*struct_file;
-extern fn lookup_file(name: [*c]const u8) ?*struct_file;
-extern fn enter_file(name: [*c]const u8) ?*struct_file;
-extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
-extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
+const lookup_file = @import("file.zig").lookup_file;
+const enter_file = @import("file.zig").enter_file;
+const split_prereqs = @import("file.zig").split_prereqs;
+const enter_prereqs = @import("file.zig").enter_prereqs;
 
-extern var snapped_deps: c_int;
-const struct_nameseq = extern struct {
-    next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
-    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-};
+const snapped_deps = @import("file.zig").snapped_deps;
+const struct_nameseq = @import("dep.zig").struct_nameseq;
+
 // src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
 const struct_goaldep = opaque {};
 const struct_passwd = extern struct {
@@ -241,7 +232,7 @@ const struct_passwd = extern struct {
     pw_dir: [*c]u8 = @import("std").mem.zeroes([*c]u8),
     pw_shell: [*c]u8 = @import("std").mem.zeroes([*c]u8),
 };
-extern fn ar_glob(arname: [*c]const u8, member_pattern: [*c]const u8, size: usize) [*c]struct_nameseq;
+const ar_glob = @import("ar.zig").ar_glob;
 extern fn free_ns_chain(n: [*c]struct_nameseq) void;
 extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
 
@@ -267,11 +258,11 @@ extern var variable_buffer: [*c]u8;
 extern var current_variable_set_list: [*c]struct_variable_set_list;
 extern var default_goal_var: ?*struct_variable;
 
-extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
+const allocated_variable_expand_for_file = @import("expand.zig").allocated_variable_expand_for_file;
 
-extern fn pattern_matches(pattern: [*c]const u8, percent: [*c]const u8, str: [*c]const u8) c_int;
+const pattern_matches = @import("function.zig").pattern_matches;
 
-extern fn patsubst_expand_pat(o: [*c]u8, text: [*c]const u8, pattern: [*c]const u8, replace: [*c]const u8, pattern_percent: [*c]const u8, replace_percent: [*c]const u8) [*c]u8;
+const patsubst_expand_pat = @import("function.zig").patsubst_expand_pat;
 
 extern fn initialize_file_variables(file: ?*struct_file, reading: c_int) void;
 

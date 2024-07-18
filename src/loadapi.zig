@@ -4,16 +4,11 @@ const gmk_floc = extern struct {
 };
 const gmk_func_ptr = ?*const fn ([*c]const u8, c_uint, [*c][*c]u8) callconv(.C) [*c]u8;
 
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
+const struct_file = @import("filedef.zig").struct_file;
 
 extern fn free(__ptr: ?*anyopaque) void;
 
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const floc = @import("makeint.zig").floc;
 
 extern fn xmalloc(usize) ?*anyopaque;
 
@@ -21,10 +16,9 @@ extern fn xstrdup([*c]const u8) [*c]u8;
 
 extern var reading_file: [*c]const floc;
 
-extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
-
-extern fn install_variable_buffer(bufp: [*c][*c]u8, lenp: [*c]usize) void;
-extern fn restore_variable_buffer(buf: [*c]u8, len: usize) void;
+const allocated_variable_expand_for_file = @import("expand.zig").allocated_variable_expand_for_file;
+const install_variable_buffer = @import("expand.zig").install_variable_buffer;
+const restore_variable_buffer = @import("expand.zig").restore_variable_buffer;
 
 extern fn define_new_function(flocp: [*c]const floc, name: [*c]const u8, min: c_uint, max: c_uint, flags: c_uint, func: gmk_func_ptr) void;
 

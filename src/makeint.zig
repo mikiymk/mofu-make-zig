@@ -537,10 +537,10 @@ pub fn ALL_SET(_v: anytype, _m: @TypeOf(_v)) bool {
 // struct file;
 
 // makefileから読み込んだ要素の場所を指定する。
-pub const floc = struct {
-    filenm: *const c_char,
-    lineno: c_ulong,
-    offset: c_ulong,
+pub const floc = extern struct {
+    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
+    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
 };
 
 // const char *concat (unsigned int, ...);

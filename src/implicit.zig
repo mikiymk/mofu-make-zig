@@ -47,17 +47,15 @@ extern fn printf(__format: [*c]const u8, ...) c_int;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-const struct_dep = opaque {};
+const struct_dep = @import("dep.zig").struct_dep;
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 const struct_commands = opaque {};
 
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
+const struct_file = @import("filedef.zig").struct_file;
 
 extern fn print_spaces(c_uint) void;
 
-extern fn ar_name([*c]const u8) c_int;
+const ar_name = @import("ar.zig").ar_name;
 
 const struct_rule = extern struct {
     next: [*c]struct_rule = @import("std").mem.zeroes([*c]struct_rule),

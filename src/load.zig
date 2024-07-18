@@ -53,17 +53,12 @@ extern fn strlen(__s: [*c]const u8) c_ulong;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
-extern fn concat(c_uint, ...) [*c]const u8;
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
+const concat = @import("misc.zig").concat;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 extern fn perror_with_name([*c]const u8, [*c]const u8) void;
 

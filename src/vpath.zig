@@ -65,7 +65,7 @@ extern fn xrealloc(?*anyopaque, usize) ?*anyopaque;
 
 extern fn find_percent([*c]u8) [*c]u8;
 
-extern fn dir_name([*c]const u8) [*c]const u8;
+const dir_name = @import("dir.zig").dir_name;
 
 extern fn strcache_add(str: [*c]const u8) [*c]const u8;
 extern fn strcache_add_len(str: [*c]const u8, len: usize) [*c]const u8;
@@ -74,9 +74,9 @@ const stopchar_map: [*c]c_ushort = @extern([*c]c_ushort, .{
     .name = "stopchar_map",
 });
 
-extern fn variable_expand(line: [*c]const u8) [*c]u8;
+const variable_expand = @import("expand.zig").variable_expand;
 
-extern fn pattern_matches(pattern: [*c]const u8, percent: [*c]const u8, str: [*c]const u8) c_int;
+const pattern_matches = @import("function.zig").pattern_matches;
 
 pub const struct_vpath = extern struct {
     next: [*c]struct_vpath = @import("std").mem.zeroes([*c]struct_vpath),

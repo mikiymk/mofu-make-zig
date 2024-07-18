@@ -91,27 +91,23 @@ const struct_variable_set_list = extern struct {
     set: [*c]struct_variable_set = @import("std").mem.zeroes([*c]struct_variable_set),
     next_is_parent: c_int = @import("std").mem.zeroes(c_int),
 };
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
+const @"error" = @import("output.zig").@"error";
 
-const o_default: c_int = 0;
-const o_env: c_int = 1;
-const o_file: c_int = 2;
-const o_env_override: c_int = 3;
-const o_command: c_int = 4;
+pub const o_default: c_int = 0;
+pub const o_env: c_int = 1;
+pub const o_file: c_int = 2;
+pub const o_env_override: c_int = 3;
+pub const o_command: c_int = 4;
+pub const o_override: c_int = 5;
+pub const o_automatic: c_int = 6;
+pub const o_invalid: c_int = 7;
 
-const o_automatic: c_int = 6;
-
-const enum_variable_origin = c_int;
+pub const enum_variable_origin = c_int;
 // src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-const struct_variable = opaque {};
+pub const struct_variable = opaque {};
 extern fn reset_makeflags(origin: enum_variable_origin) void;
 
 extern fn xmalloc(usize) ?*anyopaque;
@@ -168,12 +164,11 @@ const v_ifset: c_int = 3;
 
 extern var variable_buffer: [*c]u8;
 
-extern fn variable_buffer_output(ptr: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
+const variable_buffer_output = @import("expand.zig").variable_buffer_output;
+const install_variable_buffer = @import("expand.zig").install_variable_buffer;
+const restore_variable_buffer = @import("expand.zig").restore_variable_buffer;
 
-extern fn install_variable_buffer(bufp: [*c][*c]u8, lenp: [*c]usize) void;
-extern fn restore_variable_buffer(buf: [*c]u8, len: usize) void;
-
-extern fn func_shell_base(o: [*c]u8, argv: [*c][*c]u8, trim_newlines: c_int) [*c]u8;
+const func_shell_base = @import("function.zig").func_shell_base;
 
 extern var export_all_variables: c_int;
 

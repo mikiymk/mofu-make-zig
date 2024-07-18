@@ -114,20 +114,14 @@ const uintmax_t = __uintmax_t;
 
 extern fn gettext(__msgid: [*c]const u8) [*c]u8;
 
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-const struct_dep = opaque {};
+const struct_dep = @import("dep.zig").struct_dep;
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 const struct_commands = opaque {};
 
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-const struct_file = opaque {};
-const floc = extern struct {
-    filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
-    offset: c_ulong = @import("std").mem.zeroes(c_ulong),
-};
+const struct_file = @import("filedef.zig").struct_file;
+const floc = @import("makeint.zig").floc;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
+const @"error" = @import("output.zig").@"error";
 
 extern fn temp_stdin_unlink() void;
 //  extern fn die(c_int) noreturn;
@@ -136,9 +130,8 @@ extern fn perror_with_name([*c]const u8, [*c]const u8) void;
 
 extern fn make_pid() pid_t;
 
-extern fn ar_name([*c]const u8) c_int;
-
-extern fn ar_member_date([*c]const u8) time_t;
+const ar_name = @import("ar.zig").ar_name;
+const ar_member_date = @import("ar.zig").ar_member_date;
 
 extern fn unload_file(name: [*c]const u8) c_int;
 
@@ -152,15 +145,14 @@ extern fn remote_kill(id: pid_t, sig: c_int) c_int;
 
 extern fn jhash_string(key: [*c]const u8) c_uint;
 
-extern fn remove_intermediates(sig: c_int) void;
+const remove_intermediates = @import("file.zig").remove_intermediates;
 
 const cs_running: c_int = 2;
 
-const enum_cmd_state_39 = c_uint;
-extern fn set_command_state(file: ?*struct_file, state: enum_cmd_state_39) void;
+const set_command_state = @import("file.zig").set_command_state;
 extern fn notice_finished_file(file: ?*struct_file) void;
 
-extern fn file_timestamp_cons([*c]const u8, time_t, c_long) uintmax_t;
+const file_timestamp_cons = @import("file.zig").file_timestamp_cons;
 
 extern fn jobserver_clear() void;
 

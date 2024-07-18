@@ -25,10 +25,10 @@ fn NAMESEQ(_t: type) type {
     };
 }
 
-// struct nameseq
-//   {
-//     NAMESEQ (struct nameseq);
-//   };
+pub const struct_nameseq = extern struct {
+    next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+};
 
 // /* Flag bits for the second argument to 'read_makefile'.
 //    These flags are saved in the 'flags' field of each
@@ -64,9 +64,8 @@ fn DEP(_t: type) type {
     };
 }
 
-pub const dep = struct {
-    dep: DEP(dep),
-};
+// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
+pub const struct_dep = opaque {};
 
 /// 一つのゴールを表す構造。
 /// 構築されるゴールは、'next'を介して連鎖する、この連鎖を構成する。

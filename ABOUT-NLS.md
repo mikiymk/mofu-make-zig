@@ -1,7 +1,5 @@
 # 1 Notes on the Free Translation Project
 
----
-
 Free software is going international! The Free Translation Project is
 a way to get maintainers of free software, translators, and users all
 together, so that free software will gradually become able to speak many
