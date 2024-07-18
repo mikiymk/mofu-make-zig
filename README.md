@@ -1,5 +1,5 @@
 # これは https://repo.jing.rocks/gnu/make/make-4.4.1.tar.gz のコピーを変更したものです。
-`// (pub|const| |\}|//).*`
+
 # ここから下、元のREADME(翻訳)
 
 DeepL.com（無料版）で翻訳しました。
