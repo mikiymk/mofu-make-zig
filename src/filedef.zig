@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 // /* Definition of target file data structures for GNU Make.
 // Copyright (C) 1988-2023 Free Software Foundation, Inc.
 // This file is part of GNU Make.
@@ -151,6 +153,18 @@ pub const file = struct {
 
 // src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
 pub const struct_file = opaque {};
+
+pub const us_success: c_int = 0;
+pub const us_none: c_int = 1;
+pub const us_question: c_int = 2;
+pub const us_failed: c_int = 3;
+pub const enum_update_status = c_uint;
+
+pub const cs_not_started: c_int = 0;
+pub const cs_deps_running: c_int = 1;
+pub const cs_running: c_int = 2;
+pub const cs_finished: c_int = 3;
+pub const enum_cmd_state = c_uint;
 
 // extern struct file *default_file;
 

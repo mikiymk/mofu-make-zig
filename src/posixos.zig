@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 const __uintmax_t = c_ulong;
 const __dev_t = c_ulong;
 const __uid_t = c_uint;

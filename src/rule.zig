@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 const __uintmax_t = c_ulong;
 
 const __off_t = c_long;
@@ -92,7 +94,7 @@ const struct_nameseq = @import("dep.zig").struct_nameseq;
 extern fn parse_file_seq(stringp: [*c][*c]u8, size: usize, stopmap: c_int, prefix: [*c]const u8, flags: c_int) ?*anyopaque;
 
 extern fn free_ns_chain(n: [*c]struct_nameseq) void;
-extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
+const copy_dep_chain = @import("misc.zig").copy_dep_chain;
 
 const print_commands = @import("commands.zig").print_commands;
 

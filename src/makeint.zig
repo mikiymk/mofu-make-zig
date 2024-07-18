@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 const misc = @import("misc.zig");
 
 // /* Miscellaneous global declarations and portability cruft for GNU Make.

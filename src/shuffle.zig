@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 extern fn sprintf(__s: [*c]u8, __format: [*c]const u8, ...) c_int;
 
 extern fn free(__ptr: ?*anyopaque) void;

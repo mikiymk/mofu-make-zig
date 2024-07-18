@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 extern fn strlen(__s: [*c]const u8) c_ulong;
 
 const struct_dep = @import("dep.zig").struct_dep;

@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 const gmk_floc = extern struct {
     filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     lineno: c_ulong = @import("std").mem.zeroes(c_ulong),

@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 pub const struct_option = extern struct {
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     has_arg: c_int = @import("std").mem.zeroes(c_int),

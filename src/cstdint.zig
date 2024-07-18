@@ -1,0 +1,31 @@
+const root = @import("root.zig");
+
+pub const __int_least8_t = root.ctypes.__int_least8_t;
+pub const __uint_least8_t = root.ctypes.__uint_least8_t;
+pub const __int_least16_t = root.ctypes.__int_least16_t;
+pub const __uint_least16_t = root.ctypes.__uint_least16_t;
+pub const __int_least32_t = root.ctypes.__int_least32_t;
+pub const __uint_least32_t = root.ctypes.__uint_least32_t;
+pub const __int_least64_t = root.ctypes.__int_least64_t;
+pub const __uint_least64_t = root.ctypes.__uint_least64_t;
+pub const __intmax_t = root.ctypes.__intmax_t;
+pub const __uintmax_t = root.ctypes.__uintmax_t;
+
+pub const int_least8_t = __int_least8_t;
+pub const int_least16_t = __int_least16_t;
+pub const int_least32_t = __int_least32_t;
+pub const int_least64_t = __int_least64_t;
+pub const uint_least8_t = __uint_least8_t;
+pub const uint_least16_t = __uint_least16_t;
+pub const uint_least32_t = __uint_least32_t;
+pub const uint_least64_t = __uint_least64_t;
+pub const int_fast8_t = i8;
+pub const int_fast16_t = c_long;
+pub const int_fast32_t = c_long;
+pub const int_fast64_t = c_long;
+pub const uint_fast8_t = u8;
+pub const uint_fast16_t = c_ulong;
+pub const uint_fast32_t = c_ulong;
+pub const uint_fast64_t = c_ulong;
+pub const intmax_t = __intmax_t;
+pub const uintmax_t = __uintmax_t;

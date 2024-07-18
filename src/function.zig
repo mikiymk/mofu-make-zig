@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 const ptrdiff_t = c_long;
 
 const __dev_t = c_ulong;

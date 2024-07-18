@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 const std = @import("std");
 const builtin = @import("builtin");
 

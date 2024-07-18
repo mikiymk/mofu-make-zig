@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 const __pid_t = c_int;
 const pid_t = __pid_t;
 

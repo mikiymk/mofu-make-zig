@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 const __uintmax_t = c_ulong;
 const __dev_t = c_ulong;
 const __uid_t = c_uint;
@@ -126,7 +128,7 @@ const @"error" = @import("output.zig").@"error";
 extern fn temp_stdin_unlink() void;
 //  extern fn die(c_int) noreturn;
 extern fn pfatal_with_name([*c]const u8) noreturn;
-extern fn perror_with_name([*c]const u8, [*c]const u8) void;
+const perror_with_name = root.output.perror_with_name;
 
 extern fn make_pid() pid_t;
 

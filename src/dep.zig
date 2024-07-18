@@ -1,3 +1,5 @@
+const root = @import("root.zig");
+
 // /* Definitions of dependency data structures for GNU Make.
 // Copyright (C) 1988-2023 Free Software Foundation, Inc.
 // This file is part of GNU Make.
@@ -75,6 +77,9 @@ pub const goaldep = struct {
     error_: c_int,
     floc: makeint.floc,
 };
+
+// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
+pub const struct_goaldep = opaque {};
 
 // /* Options for parsing lists of filenames.  */
 
