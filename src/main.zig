@@ -203,18 +203,7 @@ const root = @import("root.zig");
 //     _ = &__x;
 //     return __x;
 // }
-// pub const __sigset_t = extern struct {
-//     __val: [16]c_ulong = @import("std").mem.zeroes([16]c_ulong),
-// };
-// pub const sigset_t = __sigset_t;
-// pub const struct_timeval = extern struct {
-//     tv_sec: __time_t = @import("std").mem.zeroes(__time_t),
-//     tv_usec: __suseconds_t = @import("std").mem.zeroes(__suseconds_t),
-// };
-// pub const struct_timespec = extern struct {
-//     tv_sec: __time_t = @import("std").mem.zeroes(__time_t),
-//     tv_nsec: __syscall_slong_t = @import("std").mem.zeroes(__syscall_slong_t),
-// };
+
 // pub const __fd_mask = c_long;
 // pub const fd_set = extern struct {
 //     fds_bits: [16]__fd_mask = @import("std").mem.zeroes([16]__fd_mask),
@@ -229,108 +218,7 @@ const root = @import("root.zig");
 // pub const blkcnt64_t = __blkcnt64_t;
 // pub const fsblkcnt64_t = __fsblkcnt64_t;
 // pub const fsfilcnt64_t = __fsfilcnt64_t;
-// pub const struct___pthread_internal_list = extern struct {
-//     __prev: [*c]struct___pthread_internal_list = @import("std").mem.zeroes([*c]struct___pthread_internal_list),
-//     __next: [*c]struct___pthread_internal_list = @import("std").mem.zeroes([*c]struct___pthread_internal_list),
-// };
-// pub const __pthread_list_t = struct___pthread_internal_list;
-// pub const struct___pthread_internal_slist = extern struct {
-//     __next: [*c]struct___pthread_internal_slist = @import("std").mem.zeroes([*c]struct___pthread_internal_slist),
-// };
-// pub const __pthread_slist_t = struct___pthread_internal_slist;
-// pub const struct___pthread_mutex_s = extern struct {
-//     __lock: c_int = @import("std").mem.zeroes(c_int),
-//     __count: c_uint = @import("std").mem.zeroes(c_uint),
-//     __owner: c_int = @import("std").mem.zeroes(c_int),
-//     __nusers: c_uint = @import("std").mem.zeroes(c_uint),
-//     __kind: c_int = @import("std").mem.zeroes(c_int),
-//     __spins: c_short = @import("std").mem.zeroes(c_short),
-//     __elision: c_short = @import("std").mem.zeroes(c_short),
-//     __list: __pthread_list_t = @import("std").mem.zeroes(__pthread_list_t),
-// };
-// pub const struct___pthread_rwlock_arch_t = extern struct {
-//     __readers: c_uint = @import("std").mem.zeroes(c_uint),
-//     __writers: c_uint = @import("std").mem.zeroes(c_uint),
-//     __wrphase_futex: c_uint = @import("std").mem.zeroes(c_uint),
-//     __writers_futex: c_uint = @import("std").mem.zeroes(c_uint),
-//     __pad3: c_uint = @import("std").mem.zeroes(c_uint),
-//     __pad4: c_uint = @import("std").mem.zeroes(c_uint),
-//     __cur_writer: c_int = @import("std").mem.zeroes(c_int),
-//     __shared: c_int = @import("std").mem.zeroes(c_int),
-//     __rwelision: i8 = @import("std").mem.zeroes(i8),
-//     __pad1: [7]u8 = @import("std").mem.zeroes([7]u8),
-//     __pad2: c_ulong = @import("std").mem.zeroes(c_ulong),
-//     __flags: c_uint = @import("std").mem.zeroes(c_uint),
-// };
-// const struct_unnamed_2 = extern struct {
-//     __low: c_uint = @import("std").mem.zeroes(c_uint),
-//     __high: c_uint = @import("std").mem.zeroes(c_uint),
-// };
-// const union_unnamed_1 = extern union {
-//     __wseq: c_ulonglong,
-//     __wseq32: struct_unnamed_2,
-// };
-// const struct_unnamed_4 = extern struct {
-//     __low: c_uint = @import("std").mem.zeroes(c_uint),
-//     __high: c_uint = @import("std").mem.zeroes(c_uint),
-// };
-// const union_unnamed_3 = extern union {
-//     __g1_start: c_ulonglong,
-//     __g1_start32: struct_unnamed_4,
-// };
-// pub const struct___pthread_cond_s = extern struct {
-//     unnamed_0: union_unnamed_1 = @import("std").mem.zeroes(union_unnamed_1),
-//     unnamed_1: union_unnamed_3 = @import("std").mem.zeroes(union_unnamed_3),
-//     __g_refs: [2]c_uint = @import("std").mem.zeroes([2]c_uint),
-//     __g_size: [2]c_uint = @import("std").mem.zeroes([2]c_uint),
-//     __g1_orig_size: c_uint = @import("std").mem.zeroes(c_uint),
-//     __wrefs: c_uint = @import("std").mem.zeroes(c_uint),
-//     __g_signals: [2]c_uint = @import("std").mem.zeroes([2]c_uint),
-// };
-// pub const pthread_t = c_ulong;
-// pub const pthread_mutexattr_t = extern union {
-//     __size: [4]u8,
-//     __align: c_int,
-// };
-// pub const pthread_condattr_t = extern union {
-//     __size: [4]u8,
-//     __align: c_int,
-// };
-// pub const pthread_key_t = c_uint;
-// pub const pthread_once_t = c_int;
-// pub const union_pthread_attr_t = extern union {
-//     __size: [56]u8,
-//     __align: c_long,
-// };
-// pub const pthread_attr_t = union_pthread_attr_t;
-// pub const pthread_mutex_t = extern union {
-//     __data: struct___pthread_mutex_s,
-//     __size: [40]u8,
-//     __align: c_long,
-// };
-// pub const pthread_cond_t = extern union {
-//     __data: struct___pthread_cond_s,
-//     __size: [48]u8,
-//     __align: c_longlong,
-// };
-// pub const pthread_rwlock_t = extern union {
-//     __data: struct___pthread_rwlock_arch_t,
-//     __size: [56]u8,
-//     __align: c_long,
-// };
-// pub const pthread_rwlockattr_t = extern union {
-//     __size: [8]u8,
-//     __align: c_long,
-// };
-// pub const pthread_spinlock_t = c_int;
-// pub const pthread_barrier_t = extern union {
-//     __size: [32]u8,
-//     __align: c_long,
-// };
-// pub const pthread_barrierattr_t = extern union {
-//     __size: [4]u8,
-//     __align: c_int,
-// };
+
 // pub const struct_stat = extern struct {
 //     st_dev: __dev_t = @import("std").mem.zeroes(__dev_t),
 //     st_ino: __ino_t = @import("std").mem.zeroes(__ino_t),
@@ -480,205 +368,7 @@ const root = @import("root.zig");
 //     __spare2: [14]__u64 = @import("std").mem.zeroes([14]__u64),
 // };
 // pub extern fn statx(__dirfd: c_int, noalias __path: [*c]const u8, __flags: c_int, __mask: c_uint, noalias __buf: [*c]struct_statx) c_int;
-// pub const sig_atomic_t = __sig_atomic_t;
-// pub const union_sigval = extern union {
-//     sival_int: c_int,
-//     sival_ptr: ?*anyopaque,
-// };
-// pub const __sigval_t = union_sigval;
-// const struct_unnamed_6 = extern struct {
-//     si_pid: __pid_t = @import("std").mem.zeroes(__pid_t),
-//     si_uid: __uid_t = @import("std").mem.zeroes(__uid_t),
-// };
-// const struct_unnamed_7 = extern struct {
-//     si_tid: c_int = @import("std").mem.zeroes(c_int),
-//     si_overrun: c_int = @import("std").mem.zeroes(c_int),
-//     si_sigval: __sigval_t = @import("std").mem.zeroes(__sigval_t),
-// };
-// const struct_unnamed_8 = extern struct {
-//     si_pid: __pid_t = @import("std").mem.zeroes(__pid_t),
-//     si_uid: __uid_t = @import("std").mem.zeroes(__uid_t),
-//     si_sigval: __sigval_t = @import("std").mem.zeroes(__sigval_t),
-// };
-// const struct_unnamed_9 = extern struct {
-//     si_pid: __pid_t = @import("std").mem.zeroes(__pid_t),
-//     si_uid: __uid_t = @import("std").mem.zeroes(__uid_t),
-//     si_status: c_int = @import("std").mem.zeroes(c_int),
-//     si_utime: __clock_t = @import("std").mem.zeroes(__clock_t),
-//     si_stime: __clock_t = @import("std").mem.zeroes(__clock_t),
-// };
-// const struct_unnamed_12 = extern struct {
-//     _lower: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
-//     _upper: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
-// };
-// const union_unnamed_11 = extern union {
-//     _addr_bnd: struct_unnamed_12,
-//     _pkey: __uint32_t,
-// };
-// const struct_unnamed_10 = extern struct {
-//     si_addr: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
-//     si_addr_lsb: c_short = @import("std").mem.zeroes(c_short),
-//     _bounds: union_unnamed_11 = @import("std").mem.zeroes(union_unnamed_11),
-// };
-// const struct_unnamed_13 = extern struct {
-//     si_band: c_long = @import("std").mem.zeroes(c_long),
-//     si_fd: c_int = @import("std").mem.zeroes(c_int),
-// };
-// const struct_unnamed_14 = extern struct {
-//     _call_addr: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
-//     _syscall: c_int = @import("std").mem.zeroes(c_int),
-//     _arch: c_uint = @import("std").mem.zeroes(c_uint),
-// };
-// const union_unnamed_5 = extern union {
-//     _pad: [28]c_int,
-//     _kill: struct_unnamed_6,
-//     _timer: struct_unnamed_7,
-//     _rt: struct_unnamed_8,
-//     _sigchld: struct_unnamed_9,
-//     _sigfault: struct_unnamed_10,
-//     _sigpoll: struct_unnamed_13,
-//     _sigsys: struct_unnamed_14,
-// };
-// pub const siginfo_t = extern struct {
-//     si_signo: c_int = @import("std").mem.zeroes(c_int),
-//     si_errno: c_int = @import("std").mem.zeroes(c_int),
-//     si_code: c_int = @import("std").mem.zeroes(c_int),
-//     __pad0: c_int = @import("std").mem.zeroes(c_int),
-//     _sifields: union_unnamed_5 = @import("std").mem.zeroes(union_unnamed_5),
-// };
-// pub const SI_ASYNCNL: c_int = -60;
-// pub const SI_DETHREAD: c_int = -7;
-// pub const SI_TKILL: c_int = -6;
-// pub const SI_SIGIO: c_int = -5;
-// pub const SI_ASYNCIO: c_int = -4;
-// pub const SI_MESGQ: c_int = -3;
-// pub const SI_TIMER: c_int = -2;
-// pub const SI_QUEUE: c_int = -1;
-// pub const SI_USER: c_int = 0;
-// pub const SI_KERNEL: c_int = 128;
-// const enum_unnamed_15 = c_int;
-// pub const ILL_ILLOPC: c_int = 1;
-// pub const ILL_ILLOPN: c_int = 2;
-// pub const ILL_ILLADR: c_int = 3;
-// pub const ILL_ILLTRP: c_int = 4;
-// pub const ILL_PRVOPC: c_int = 5;
-// pub const ILL_PRVREG: c_int = 6;
-// pub const ILL_COPROC: c_int = 7;
-// pub const ILL_BADSTK: c_int = 8;
-// pub const ILL_BADIADDR: c_int = 9;
-// const enum_unnamed_16 = c_uint;
-// pub const FPE_INTDIV: c_int = 1;
-// pub const FPE_INTOVF: c_int = 2;
-// pub const FPE_FLTDIV: c_int = 3;
-// pub const FPE_FLTOVF: c_int = 4;
-// pub const FPE_FLTUND: c_int = 5;
-// pub const FPE_FLTRES: c_int = 6;
-// pub const FPE_FLTINV: c_int = 7;
-// pub const FPE_FLTSUB: c_int = 8;
-// pub const FPE_FLTUNK: c_int = 14;
-// pub const FPE_CONDTRAP: c_int = 15;
-// const enum_unnamed_17 = c_uint;
-// pub const SEGV_MAPERR: c_int = 1;
-// pub const SEGV_ACCERR: c_int = 2;
-// pub const SEGV_BNDERR: c_int = 3;
-// pub const SEGV_PKUERR: c_int = 4;
-// pub const SEGV_ACCADI: c_int = 5;
-// pub const SEGV_ADIDERR: c_int = 6;
-// pub const SEGV_ADIPERR: c_int = 7;
-// const enum_unnamed_18 = c_uint;
-// pub const BUS_ADRALN: c_int = 1;
-// pub const BUS_ADRERR: c_int = 2;
-// pub const BUS_OBJERR: c_int = 3;
-// pub const BUS_MCEERR_AR: c_int = 4;
-// pub const BUS_MCEERR_AO: c_int = 5;
-// const enum_unnamed_19 = c_uint;
-// pub const TRAP_BRKPT: c_int = 1;
-// pub const TRAP_TRACE: c_int = 2;
-// pub const TRAP_BRANCH: c_int = 3;
-// pub const TRAP_HWBKPT: c_int = 4;
-// pub const TRAP_UNK: c_int = 5;
-// const enum_unnamed_20 = c_uint;
-// pub const CLD_EXITED: c_int = 1;
-// pub const CLD_KILLED: c_int = 2;
-// pub const CLD_DUMPED: c_int = 3;
-// pub const CLD_TRAPPED: c_int = 4;
-// pub const CLD_STOPPED: c_int = 5;
-// pub const CLD_CONTINUED: c_int = 6;
-// const enum_unnamed_21 = c_uint;
-// pub const POLL_IN: c_int = 1;
-// pub const POLL_OUT: c_int = 2;
-// pub const POLL_MSG: c_int = 3;
-// pub const POLL_ERR: c_int = 4;
-// pub const POLL_PRI: c_int = 5;
-// pub const POLL_HUP: c_int = 6;
-// const enum_unnamed_22 = c_uint;
-// pub const sigval_t = __sigval_t;
-// const struct_unnamed_24 = extern struct {
-//     _function: ?*const fn (__sigval_t) callconv(.C) void = @import("std").mem.zeroes(?*const fn (__sigval_t) callconv(.C) void),
-//     _attribute: [*c]pthread_attr_t = @import("std").mem.zeroes([*c]pthread_attr_t),
-// };
-// const union_unnamed_23 = extern union {
-//     _pad: [12]c_int,
-//     _tid: __pid_t,
-//     _sigev_thread: struct_unnamed_24,
-// };
-// pub const struct_sigevent = extern struct {
-//     sigev_value: __sigval_t = @import("std").mem.zeroes(__sigval_t),
-//     sigev_signo: c_int = @import("std").mem.zeroes(c_int),
-//     sigev_notify: c_int = @import("std").mem.zeroes(c_int),
-//     _sigev_un: union_unnamed_23 = @import("std").mem.zeroes(union_unnamed_23),
-// };
-// pub const sigevent_t = struct_sigevent;
-// pub const SIGEV_SIGNAL: c_int = 0;
-// pub const SIGEV_NONE: c_int = 1;
-// pub const SIGEV_THREAD: c_int = 2;
-// pub const SIGEV_THREAD_ID: c_int = 4;
-// const enum_unnamed_25 = c_uint;
-// pub const __sighandler_t = ?*const fn (c_int) callconv(.C) void;
-// pub extern fn __sysv_signal(__sig: c_int, __handler: __sighandler_t) __sighandler_t;
-// pub extern fn sysv_signal(__sig: c_int, __handler: __sighandler_t) __sighandler_t;
-// pub extern fn signal(__sig: c_int, __handler: __sighandler_t) __sighandler_t;
-// pub extern fn kill(__pid: __pid_t, __sig: c_int) c_int;
-// pub extern fn killpg(__pgrp: __pid_t, __sig: c_int) c_int;
-// pub extern fn raise(__sig: c_int) c_int;
-// pub extern fn ssignal(__sig: c_int, __handler: __sighandler_t) __sighandler_t;
-// pub extern fn gsignal(__sig: c_int) c_int;
-// pub extern fn psignal(__sig: c_int, __s: [*c]const u8) void;
-// pub extern fn psiginfo(__pinfo: [*c]const siginfo_t, __s: [*c]const u8) void;
-// pub extern fn sigpause(__sig: c_int) c_int;
-// pub extern fn sigblock(__mask: c_int) c_int;
-// pub extern fn sigsetmask(__mask: c_int) c_int;
-// pub extern fn siggetmask() c_int;
-// pub const sighandler_t = __sighandler_t;
-// pub const sig_t = __sighandler_t;
-// pub extern fn sigemptyset(__set: [*c]sigset_t) c_int;
-// pub extern fn sigfillset(__set: [*c]sigset_t) c_int;
-// pub extern fn sigaddset(__set: [*c]sigset_t, __signo: c_int) c_int;
-// pub extern fn sigdelset(__set: [*c]sigset_t, __signo: c_int) c_int;
-// pub extern fn sigismember(__set: [*c]const sigset_t, __signo: c_int) c_int;
-// pub extern fn sigisemptyset(__set: [*c]const sigset_t) c_int;
-// pub extern fn sigandset(__set: [*c]sigset_t, __left: [*c]const sigset_t, __right: [*c]const sigset_t) c_int;
-// pub extern fn sigorset(__set: [*c]sigset_t, __left: [*c]const sigset_t, __right: [*c]const sigset_t) c_int;
-// const union_unnamed_26 = extern union {
-//     sa_handler: __sighandler_t,
-//     sa_sigaction: ?*const fn (c_int, [*c]siginfo_t, ?*anyopaque) callconv(.C) void,
-// };
-// pub const struct_sigaction = extern struct {
-//     __sigaction_handler: union_unnamed_26 = @import("std").mem.zeroes(union_unnamed_26),
-//     sa_mask: __sigset_t = @import("std").mem.zeroes(__sigset_t),
-//     sa_flags: c_int = @import("std").mem.zeroes(c_int),
-//     sa_restorer: ?*const fn () callconv(.C) void = @import("std").mem.zeroes(?*const fn () callconv(.C) void),
-// };
-// pub extern fn sigprocmask(__how: c_int, noalias __set: [*c]const sigset_t, noalias __oset: [*c]sigset_t) c_int;
-// pub extern fn sigsuspend(__set: [*c]const sigset_t) c_int;
-// pub extern fn sigaction(__sig: c_int, noalias __act: [*c]const struct_sigaction, noalias __oact: [*c]struct_sigaction) c_int;
-// pub extern fn sigpending(__set: [*c]sigset_t) c_int;
-// pub extern fn sigwait(noalias __set: [*c]const sigset_t, noalias __sig: [*c]c_int) c_int;
-// pub extern fn sigwaitinfo(noalias __set: [*c]const sigset_t, noalias __info: [*c]siginfo_t) c_int;
-// pub extern fn sigtimedwait(noalias __set: [*c]const sigset_t, noalias __info: [*c]siginfo_t, noalias __timeout: [*c]const struct_timespec) c_int;
-// pub extern fn sigqueue(__pid: __pid_t, __sig: c_int, __val: union_sigval) c_int;
-// pub extern const _sys_siglist: [65][*c]const u8;
-// pub extern const sys_siglist: [65][*c]const u8;
+
 // pub const struct__fpx_sw_bytes = extern struct {
 //     magic1: __uint32_t = @import("std").mem.zeroes(__uint32_t),
 //     extended_size: __uint32_t = @import("std").mem.zeroes(__uint32_t),
@@ -1038,35 +728,7 @@ const root = @import("root.zig");
 // pub extern fn funlockfile(__stream: [*c]FILE) void;
 // pub extern fn __uflow([*c]FILE) c_int;
 // pub extern fn __overflow([*c]FILE, c_int) c_int;
-// pub const _ISupper: c_int = 256;
-// pub const _ISlower: c_int = 512;
-// pub const _ISalpha: c_int = 1024;
-// pub const _ISdigit: c_int = 2048;
-// pub const _ISxdigit: c_int = 4096;
-// pub const _ISspace: c_int = 8192;
-// pub const _ISprint: c_int = 16384;
-// pub const _ISgraph: c_int = 32768;
-// pub const _ISblank: c_int = 1;
-// pub const _IScntrl: c_int = 2;
-// pub const _ISpunct: c_int = 4;
-// pub const _ISalnum: c_int = 8;
-// const enum_unnamed_32 = c_uint;
-// pub extern fn __ctype_b_loc() [*c][*c]const c_ushort;
-// pub extern fn __ctype_tolower_loc() [*c][*c]const __int32_t;
-// pub extern fn __ctype_toupper_loc() [*c][*c]const __int32_t;
-// pub extern fn isalnum(c_int) c_int;
-// pub extern fn isalpha(c_int) c_int;
-// pub extern fn iscntrl(c_int) c_int;
-// pub extern fn isdigit(c_int) c_int;
-// pub extern fn islower(c_int) c_int;
-// pub extern fn isgraph(c_int) c_int;
-// pub extern fn isprint(c_int) c_int;
-// pub extern fn ispunct(c_int) c_int;
-// pub extern fn isspace(c_int) c_int;
-// pub extern fn isupper(c_int) c_int;
-// pub extern fn isxdigit(c_int) c_int;
-// pub extern fn tolower(__c: c_int) c_int;
-// pub extern fn toupper(__c: c_int) c_int;
+
 // pub extern fn isblank(c_int) c_int;
 // pub extern fn isctype(__c: c_int, __mask: c_int) c_int;
 // pub extern fn isascii(__c: c_int) c_int;
@@ -1099,529 +761,13 @@ const root = @import("root.zig");
 // pub extern fn tolower_l(__c: c_int, __l: locale_t) c_int;
 // pub extern fn __toupper_l(__c: c_int, __l: locale_t) c_int;
 // pub extern fn toupper_l(__c: c_int, __l: locale_t) c_int;
-// pub const struct_timeb = extern struct {
-//     time: time_t = @import("std").mem.zeroes(time_t),
-//     millitm: c_ushort = @import("std").mem.zeroes(c_ushort),
-//     timezone: c_short = @import("std").mem.zeroes(c_short),
-//     dstflag: c_short = @import("std").mem.zeroes(c_short),
-// };
-// pub extern fn ftime(__timebuf: [*c]struct_timeb) c_int;
-// pub const struct_timezone = extern struct {
-//     tz_minuteswest: c_int = @import("std").mem.zeroes(c_int),
-//     tz_dsttime: c_int = @import("std").mem.zeroes(c_int),
-// };
-// pub extern fn gettimeofday(noalias __tv: [*c]struct_timeval, noalias __tz: ?*anyopaque) c_int;
-// pub extern fn settimeofday(__tv: [*c]const struct_timeval, __tz: [*c]const struct_timezone) c_int;
-// pub extern fn adjtime(__delta: [*c]const struct_timeval, __olddelta: [*c]struct_timeval) c_int;
-// pub const ITIMER_REAL: c_int = 0;
-// pub const ITIMER_VIRTUAL: c_int = 1;
-// pub const ITIMER_PROF: c_int = 2;
-// pub const enum___itimer_which = c_uint;
-// pub const struct_itimerval = extern struct {
-//     it_interval: struct_timeval = @import("std").mem.zeroes(struct_timeval),
-//     it_value: struct_timeval = @import("std").mem.zeroes(struct_timeval),
-// };
-// pub const __itimer_which_t = enum___itimer_which;
-// pub extern fn getitimer(__which: __itimer_which_t, __value: [*c]struct_itimerval) c_int;
-// pub extern fn setitimer(__which: __itimer_which_t, noalias __new: [*c]const struct_itimerval, noalias __old: [*c]struct_itimerval) c_int;
-// pub extern fn utimes(__file: [*c]const u8, __tvp: [*c]const struct_timeval) c_int;
-// pub extern fn lutimes(__file: [*c]const u8, __tvp: [*c]const struct_timeval) c_int;
-// pub extern fn futimes(__fd: c_int, __tvp: [*c]const struct_timeval) c_int;
-// pub extern fn futimesat(__fd: c_int, __file: [*c]const u8, __tvp: [*c]const struct_timeval) c_int;
-// // /usr/include/x86_64-linux-gnu/bits/timex.h:51:3: warning: struct demoted to opaque type - has bitfield
-// pub const struct_timex = opaque {};
-// pub extern fn clock_adjtime(__clock_id: __clockid_t, __utx: ?*struct_timex) c_int;
-// pub const struct_tm = extern struct {
-//     tm_sec: c_int = @import("std").mem.zeroes(c_int),
-//     tm_min: c_int = @import("std").mem.zeroes(c_int),
-//     tm_hour: c_int = @import("std").mem.zeroes(c_int),
-//     tm_mday: c_int = @import("std").mem.zeroes(c_int),
-//     tm_mon: c_int = @import("std").mem.zeroes(c_int),
-//     tm_year: c_int = @import("std").mem.zeroes(c_int),
-//     tm_wday: c_int = @import("std").mem.zeroes(c_int),
-//     tm_yday: c_int = @import("std").mem.zeroes(c_int),
-//     tm_isdst: c_int = @import("std").mem.zeroes(c_int),
-//     tm_gmtoff: c_long = @import("std").mem.zeroes(c_long),
-//     tm_zone: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-// };
-// pub const struct_itimerspec = extern struct {
-//     it_interval: struct_timespec = @import("std").mem.zeroes(struct_timespec),
-//     it_value: struct_timespec = @import("std").mem.zeroes(struct_timespec),
-// };
-// pub extern fn clock() clock_t;
-// pub extern fn time(__timer: [*c]time_t) time_t;
-// pub extern fn difftime(__time1: time_t, __time0: time_t) f64;
-// pub extern fn mktime(__tp: [*c]struct_tm) time_t;
-// pub extern fn strftime(noalias __s: [*c]u8, __maxsize: usize, noalias __format: [*c]const u8, noalias __tp: [*c]const struct_tm) usize;
-// pub extern fn strptime(noalias __s: [*c]const u8, noalias __fmt: [*c]const u8, __tp: [*c]struct_tm) [*c]u8;
-// pub extern fn strftime_l(noalias __s: [*c]u8, __maxsize: usize, noalias __format: [*c]const u8, noalias __tp: [*c]const struct_tm, __loc: locale_t) usize;
-// pub extern fn strptime_l(noalias __s: [*c]const u8, noalias __fmt: [*c]const u8, __tp: [*c]struct_tm, __loc: locale_t) [*c]u8;
-// pub extern fn gmtime(__timer: [*c]const time_t) [*c]struct_tm;
-// pub extern fn localtime(__timer: [*c]const time_t) [*c]struct_tm;
-// pub extern fn gmtime_r(noalias __timer: [*c]const time_t, noalias __tp: [*c]struct_tm) [*c]struct_tm;
-// pub extern fn localtime_r(noalias __timer: [*c]const time_t, noalias __tp: [*c]struct_tm) [*c]struct_tm;
-// pub extern fn asctime(__tp: [*c]const struct_tm) [*c]u8;
-// pub extern fn ctime(__timer: [*c]const time_t) [*c]u8;
-// pub extern fn asctime_r(noalias __tp: [*c]const struct_tm, noalias __buf: [*c]u8) [*c]u8;
-// pub extern fn ctime_r(noalias __timer: [*c]const time_t, noalias __buf: [*c]u8) [*c]u8;
-// pub extern var __tzname: [2][*c]u8;
-// pub extern var __daylight: c_int;
-// pub extern var __timezone: c_long;
-// pub extern var tzname: [2][*c]u8;
-// pub extern fn tzset() void;
-// pub extern var daylight: c_int;
-// pub extern var timezone: c_long;
-// pub extern fn timegm(__tp: [*c]struct_tm) time_t;
-// pub extern fn timelocal(__tp: [*c]struct_tm) time_t;
-// pub extern fn dysize(__year: c_int) c_int;
-// pub extern fn nanosleep(__requested_time: [*c]const struct_timespec, __remaining: [*c]struct_timespec) c_int;
-// pub extern fn clock_getres(__clock_id: clockid_t, __res: [*c]struct_timespec) c_int;
-// pub extern fn clock_gettime(__clock_id: clockid_t, __tp: [*c]struct_timespec) c_int;
-// pub extern fn clock_settime(__clock_id: clockid_t, __tp: [*c]const struct_timespec) c_int;
-// pub extern fn clock_nanosleep(__clock_id: clockid_t, __flags: c_int, __req: [*c]const struct_timespec, __rem: [*c]struct_timespec) c_int;
-// pub extern fn clock_getcpuclockid(__pid: pid_t, __clock_id: [*c]clockid_t) c_int;
-// pub extern fn timer_create(__clock_id: clockid_t, noalias __evp: [*c]struct_sigevent, noalias __timerid: [*c]timer_t) c_int;
-// pub extern fn timer_delete(__timerid: timer_t) c_int;
-// pub extern fn timer_settime(__timerid: timer_t, __flags: c_int, noalias __value: [*c]const struct_itimerspec, noalias __ovalue: [*c]struct_itimerspec) c_int;
-// pub extern fn timer_gettime(__timerid: timer_t, __value: [*c]struct_itimerspec) c_int;
-// pub extern fn timer_getoverrun(__timerid: timer_t) c_int;
-// pub extern fn timespec_get(__ts: [*c]struct_timespec, __base: c_int) c_int;
-// pub extern var getdate_err: c_int;
-// pub extern fn getdate(__string: [*c]const u8) [*c]struct_tm;
-// pub extern fn getdate_r(noalias __string: [*c]const u8, noalias __resbufp: [*c]struct_tm) c_int;
+
 // pub extern fn __errno_location() [*c]c_int;
 // pub extern var program_invocation_name: [*c]u8;
 // pub extern var program_invocation_short_name: [*c]u8;
 // pub const error_t = c_int;
 // pub const socklen_t = __socklen_t;
-// pub extern fn access(__name: [*c]const u8, __type: c_int) c_int;
-// pub extern fn euidaccess(__name: [*c]const u8, __type: c_int) c_int;
-// pub extern fn eaccess(__name: [*c]const u8, __type: c_int) c_int;
-// pub extern fn faccessat(__fd: c_int, __file: [*c]const u8, __type: c_int, __flag: c_int) c_int;
-// pub extern fn lseek(__fd: c_int, __offset: __off_t, __whence: c_int) __off_t;
-// pub extern fn lseek64(__fd: c_int, __offset: __off64_t, __whence: c_int) __off64_t;
-// pub extern fn close(__fd: c_int) c_int;
-// pub extern fn read(__fd: c_int, __buf: ?*anyopaque, __nbytes: usize) isize;
-// pub extern fn write(__fd: c_int, __buf: ?*const anyopaque, __n: usize) isize;
-// pub extern fn pread(__fd: c_int, __buf: ?*anyopaque, __nbytes: usize, __offset: __off_t) isize;
-// pub extern fn pwrite(__fd: c_int, __buf: ?*const anyopaque, __n: usize, __offset: __off_t) isize;
-// pub extern fn pread64(__fd: c_int, __buf: ?*anyopaque, __nbytes: usize, __offset: __off64_t) isize;
-// pub extern fn pwrite64(__fd: c_int, __buf: ?*const anyopaque, __n: usize, __offset: __off64_t) isize;
-// pub extern fn pipe(__pipedes: [*c]c_int) c_int;
-// pub extern fn pipe2(__pipedes: [*c]c_int, __flags: c_int) c_int;
-// pub extern fn alarm(__seconds: c_uint) c_uint;
-// pub extern fn sleep(__seconds: c_uint) c_uint;
-// pub extern fn ualarm(__value: __useconds_t, __interval: __useconds_t) __useconds_t;
-// pub extern fn usleep(__useconds: __useconds_t) c_int;
-// pub extern fn pause() c_int;
-// pub extern fn chown(__file: [*c]const u8, __owner: __uid_t, __group: __gid_t) c_int;
-// pub extern fn fchown(__fd: c_int, __owner: __uid_t, __group: __gid_t) c_int;
-// pub extern fn lchown(__file: [*c]const u8, __owner: __uid_t, __group: __gid_t) c_int;
-// pub extern fn fchownat(__fd: c_int, __file: [*c]const u8, __owner: __uid_t, __group: __gid_t, __flag: c_int) c_int;
-// pub extern fn chdir(__path: [*c]const u8) c_int;
-// pub extern fn fchdir(__fd: c_int) c_int;
-// pub extern fn getcwd(__buf: [*c]u8, __size: usize) [*c]u8;
-// pub extern fn get_current_dir_name() [*c]u8;
-// pub extern fn getwd(__buf: [*c]u8) [*c]u8;
-// pub extern fn dup(__fd: c_int) c_int;
-// pub extern fn dup2(__fd: c_int, __fd2: c_int) c_int;
-// pub extern fn dup3(__fd: c_int, __fd2: c_int, __flags: c_int) c_int;
-// pub extern var __environ: [*c][*c]u8;
-// pub extern var environ: [*c][*c]u8;
-// pub extern fn execve(__path: [*c]const u8, __argv: [*c]const [*c]u8, __envp: [*c]const [*c]u8) c_int;
-// pub extern fn fexecve(__fd: c_int, __argv: [*c]const [*c]u8, __envp: [*c]const [*c]u8) c_int;
-// pub extern fn execv(__path: [*c]const u8, __argv: [*c]const [*c]u8) c_int;
-// pub extern fn execle(__path: [*c]const u8, __arg: [*c]const u8, ...) c_int;
-// pub extern fn execl(__path: [*c]const u8, __arg: [*c]const u8, ...) c_int;
-// pub extern fn execvp(__file: [*c]const u8, __argv: [*c]const [*c]u8) c_int;
-// pub extern fn execlp(__file: [*c]const u8, __arg: [*c]const u8, ...) c_int;
-// pub extern fn execvpe(__file: [*c]const u8, __argv: [*c]const [*c]u8, __envp: [*c]const [*c]u8) c_int;
-// pub extern fn nice(__inc: c_int) c_int;
-// pub extern fn _exit(__status: c_int) noreturn;
-// pub const _PC_LINK_MAX: c_int = 0;
-// pub const _PC_MAX_CANON: c_int = 1;
-// pub const _PC_MAX_INPUT: c_int = 2;
-// pub const _PC_NAME_MAX: c_int = 3;
-// pub const _PC_PATH_MAX: c_int = 4;
-// pub const _PC_PIPE_BUF: c_int = 5;
-// pub const _PC_CHOWN_RESTRICTED: c_int = 6;
-// pub const _PC_NO_TRUNC: c_int = 7;
-// pub const _PC_VDISABLE: c_int = 8;
-// pub const _PC_SYNC_IO: c_int = 9;
-// pub const _PC_ASYNC_IO: c_int = 10;
-// pub const _PC_PRIO_IO: c_int = 11;
-// pub const _PC_SOCK_MAXBUF: c_int = 12;
-// pub const _PC_FILESIZEBITS: c_int = 13;
-// pub const _PC_REC_INCR_XFER_SIZE: c_int = 14;
-// pub const _PC_REC_MAX_XFER_SIZE: c_int = 15;
-// pub const _PC_REC_MIN_XFER_SIZE: c_int = 16;
-// pub const _PC_REC_XFER_ALIGN: c_int = 17;
-// pub const _PC_ALLOC_SIZE_MIN: c_int = 18;
-// pub const _PC_SYMLINK_MAX: c_int = 19;
-// pub const _PC_2_SYMLINKS: c_int = 20;
-// const enum_unnamed_34 = c_uint;
-// pub const _SC_ARG_MAX: c_int = 0;
-// pub const _SC_CHILD_MAX: c_int = 1;
-// pub const _SC_CLK_TCK: c_int = 2;
-// pub const _SC_NGROUPS_MAX: c_int = 3;
-// pub const _SC_OPEN_MAX: c_int = 4;
-// pub const _SC_STREAM_MAX: c_int = 5;
-// pub const _SC_TZNAME_MAX: c_int = 6;
-// pub const _SC_JOB_CONTROL: c_int = 7;
-// pub const _SC_SAVED_IDS: c_int = 8;
-// pub const _SC_REALTIME_SIGNALS: c_int = 9;
-// pub const _SC_PRIORITY_SCHEDULING: c_int = 10;
-// pub const _SC_TIMERS: c_int = 11;
-// pub const _SC_ASYNCHRONOUS_IO: c_int = 12;
-// pub const _SC_PRIORITIZED_IO: c_int = 13;
-// pub const _SC_SYNCHRONIZED_IO: c_int = 14;
-// pub const _SC_FSYNC: c_int = 15;
-// pub const _SC_MAPPED_FILES: c_int = 16;
-// pub const _SC_MEMLOCK: c_int = 17;
-// pub const _SC_MEMLOCK_RANGE: c_int = 18;
-// pub const _SC_MEMORY_PROTECTION: c_int = 19;
-// pub const _SC_MESSAGE_PASSING: c_int = 20;
-// pub const _SC_SEMAPHORES: c_int = 21;
-// pub const _SC_SHARED_MEMORY_OBJECTS: c_int = 22;
-// pub const _SC_AIO_LISTIO_MAX: c_int = 23;
-// pub const _SC_AIO_MAX: c_int = 24;
-// pub const _SC_AIO_PRIO_DELTA_MAX: c_int = 25;
-// pub const _SC_DELAYTIMER_MAX: c_int = 26;
-// pub const _SC_MQ_OPEN_MAX: c_int = 27;
-// pub const _SC_MQ_PRIO_MAX: c_int = 28;
-// pub const _SC_VERSION: c_int = 29;
-// pub const _SC_PAGESIZE: c_int = 30;
-// pub const _SC_RTSIG_MAX: c_int = 31;
-// pub const _SC_SEM_NSEMS_MAX: c_int = 32;
-// pub const _SC_SEM_VALUE_MAX: c_int = 33;
-// pub const _SC_SIGQUEUE_MAX: c_int = 34;
-// pub const _SC_TIMER_MAX: c_int = 35;
-// pub const _SC_BC_BASE_MAX: c_int = 36;
-// pub const _SC_BC_DIM_MAX: c_int = 37;
-// pub const _SC_BC_SCALE_MAX: c_int = 38;
-// pub const _SC_BC_STRING_MAX: c_int = 39;
-// pub const _SC_COLL_WEIGHTS_MAX: c_int = 40;
-// pub const _SC_EQUIV_CLASS_MAX: c_int = 41;
-// pub const _SC_EXPR_NEST_MAX: c_int = 42;
-// pub const _SC_LINE_MAX: c_int = 43;
-// pub const _SC_RE_DUP_MAX: c_int = 44;
-// pub const _SC_CHARCLASS_NAME_MAX: c_int = 45;
-// pub const _SC_2_VERSION: c_int = 46;
-// pub const _SC_2_C_BIND: c_int = 47;
-// pub const _SC_2_C_DEV: c_int = 48;
-// pub const _SC_2_FORT_DEV: c_int = 49;
-// pub const _SC_2_FORT_RUN: c_int = 50;
-// pub const _SC_2_SW_DEV: c_int = 51;
-// pub const _SC_2_LOCALEDEF: c_int = 52;
-// pub const _SC_PII: c_int = 53;
-// pub const _SC_PII_XTI: c_int = 54;
-// pub const _SC_PII_SOCKET: c_int = 55;
-// pub const _SC_PII_INTERNET: c_int = 56;
-// pub const _SC_PII_OSI: c_int = 57;
-// pub const _SC_POLL: c_int = 58;
-// pub const _SC_SELECT: c_int = 59;
-// pub const _SC_UIO_MAXIOV: c_int = 60;
-// pub const _SC_IOV_MAX: c_int = 60;
-// pub const _SC_PII_INTERNET_STREAM: c_int = 61;
-// pub const _SC_PII_INTERNET_DGRAM: c_int = 62;
-// pub const _SC_PII_OSI_COTS: c_int = 63;
-// pub const _SC_PII_OSI_CLTS: c_int = 64;
-// pub const _SC_PII_OSI_M: c_int = 65;
-// pub const _SC_T_IOV_MAX: c_int = 66;
-// pub const _SC_THREADS: c_int = 67;
-// pub const _SC_THREAD_SAFE_FUNCTIONS: c_int = 68;
-// pub const _SC_GETGR_R_SIZE_MAX: c_int = 69;
-// pub const _SC_GETPW_R_SIZE_MAX: c_int = 70;
-// pub const _SC_LOGIN_NAME_MAX: c_int = 71;
-// pub const _SC_TTY_NAME_MAX: c_int = 72;
-// pub const _SC_THREAD_DESTRUCTOR_ITERATIONS: c_int = 73;
-// pub const _SC_THREAD_KEYS_MAX: c_int = 74;
-// pub const _SC_THREAD_STACK_MIN: c_int = 75;
-// pub const _SC_THREAD_THREADS_MAX: c_int = 76;
-// pub const _SC_THREAD_ATTR_STACKADDR: c_int = 77;
-// pub const _SC_THREAD_ATTR_STACKSIZE: c_int = 78;
-// pub const _SC_THREAD_PRIORITY_SCHEDULING: c_int = 79;
-// pub const _SC_THREAD_PRIO_INHERIT: c_int = 80;
-// pub const _SC_THREAD_PRIO_PROTECT: c_int = 81;
-// pub const _SC_THREAD_PROCESS_SHARED: c_int = 82;
-// pub const _SC_NPROCESSORS_CONF: c_int = 83;
-// pub const _SC_NPROCESSORS_ONLN: c_int = 84;
-// pub const _SC_PHYS_PAGES: c_int = 85;
-// pub const _SC_AVPHYS_PAGES: c_int = 86;
-// pub const _SC_ATEXIT_MAX: c_int = 87;
-// pub const _SC_PASS_MAX: c_int = 88;
-// pub const _SC_XOPEN_VERSION: c_int = 89;
-// pub const _SC_XOPEN_XCU_VERSION: c_int = 90;
-// pub const _SC_XOPEN_UNIX: c_int = 91;
-// pub const _SC_XOPEN_CRYPT: c_int = 92;
-// pub const _SC_XOPEN_ENH_I18N: c_int = 93;
-// pub const _SC_XOPEN_SHM: c_int = 94;
-// pub const _SC_2_CHAR_TERM: c_int = 95;
-// pub const _SC_2_C_VERSION: c_int = 96;
-// pub const _SC_2_UPE: c_int = 97;
-// pub const _SC_XOPEN_XPG2: c_int = 98;
-// pub const _SC_XOPEN_XPG3: c_int = 99;
-// pub const _SC_XOPEN_XPG4: c_int = 100;
-// pub const _SC_CHAR_BIT: c_int = 101;
-// pub const _SC_CHAR_MAX: c_int = 102;
-// pub const _SC_CHAR_MIN: c_int = 103;
-// pub const _SC_INT_MAX: c_int = 104;
-// pub const _SC_INT_MIN: c_int = 105;
-// pub const _SC_LONG_BIT: c_int = 106;
-// pub const _SC_WORD_BIT: c_int = 107;
-// pub const _SC_MB_LEN_MAX: c_int = 108;
-// pub const _SC_NZERO: c_int = 109;
-// pub const _SC_SSIZE_MAX: c_int = 110;
-// pub const _SC_SCHAR_MAX: c_int = 111;
-// pub const _SC_SCHAR_MIN: c_int = 112;
-// pub const _SC_SHRT_MAX: c_int = 113;
-// pub const _SC_SHRT_MIN: c_int = 114;
-// pub const _SC_UCHAR_MAX: c_int = 115;
-// pub const _SC_UINT_MAX: c_int = 116;
-// pub const _SC_ULONG_MAX: c_int = 117;
-// pub const _SC_USHRT_MAX: c_int = 118;
-// pub const _SC_NL_ARGMAX: c_int = 119;
-// pub const _SC_NL_LANGMAX: c_int = 120;
-// pub const _SC_NL_MSGMAX: c_int = 121;
-// pub const _SC_NL_NMAX: c_int = 122;
-// pub const _SC_NL_SETMAX: c_int = 123;
-// pub const _SC_NL_TEXTMAX: c_int = 124;
-// pub const _SC_XBS5_ILP32_OFF32: c_int = 125;
-// pub const _SC_XBS5_ILP32_OFFBIG: c_int = 126;
-// pub const _SC_XBS5_LP64_OFF64: c_int = 127;
-// pub const _SC_XBS5_LPBIG_OFFBIG: c_int = 128;
-// pub const _SC_XOPEN_LEGACY: c_int = 129;
-// pub const _SC_XOPEN_REALTIME: c_int = 130;
-// pub const _SC_XOPEN_REALTIME_THREADS: c_int = 131;
-// pub const _SC_ADVISORY_INFO: c_int = 132;
-// pub const _SC_BARRIERS: c_int = 133;
-// pub const _SC_BASE: c_int = 134;
-// pub const _SC_C_LANG_SUPPORT: c_int = 135;
-// pub const _SC_C_LANG_SUPPORT_R: c_int = 136;
-// pub const _SC_CLOCK_SELECTION: c_int = 137;
-// pub const _SC_CPUTIME: c_int = 138;
-// pub const _SC_THREAD_CPUTIME: c_int = 139;
-// pub const _SC_DEVICE_IO: c_int = 140;
-// pub const _SC_DEVICE_SPECIFIC: c_int = 141;
-// pub const _SC_DEVICE_SPECIFIC_R: c_int = 142;
-// pub const _SC_FD_MGMT: c_int = 143;
-// pub const _SC_FIFO: c_int = 144;
-// pub const _SC_PIPE: c_int = 145;
-// pub const _SC_FILE_ATTRIBUTES: c_int = 146;
-// pub const _SC_FILE_LOCKING: c_int = 147;
-// pub const _SC_FILE_SYSTEM: c_int = 148;
-// pub const _SC_MONOTONIC_CLOCK: c_int = 149;
-// pub const _SC_MULTI_PROCESS: c_int = 150;
-// pub const _SC_SINGLE_PROCESS: c_int = 151;
-// pub const _SC_NETWORKING: c_int = 152;
-// pub const _SC_READER_WRITER_LOCKS: c_int = 153;
-// pub const _SC_SPIN_LOCKS: c_int = 154;
-// pub const _SC_REGEXP: c_int = 155;
-// pub const _SC_REGEX_VERSION: c_int = 156;
-// pub const _SC_SHELL: c_int = 157;
-// pub const _SC_SIGNALS: c_int = 158;
-// pub const _SC_SPAWN: c_int = 159;
-// pub const _SC_SPORADIC_SERVER: c_int = 160;
-// pub const _SC_THREAD_SPORADIC_SERVER: c_int = 161;
-// pub const _SC_SYSTEM_DATABASE: c_int = 162;
-// pub const _SC_SYSTEM_DATABASE_R: c_int = 163;
-// pub const _SC_TIMEOUTS: c_int = 164;
-// pub const _SC_TYPED_MEMORY_OBJECTS: c_int = 165;
-// pub const _SC_USER_GROUPS: c_int = 166;
-// pub const _SC_USER_GROUPS_R: c_int = 167;
-// pub const _SC_2_PBS: c_int = 168;
-// pub const _SC_2_PBS_ACCOUNTING: c_int = 169;
-// pub const _SC_2_PBS_LOCATE: c_int = 170;
-// pub const _SC_2_PBS_MESSAGE: c_int = 171;
-// pub const _SC_2_PBS_TRACK: c_int = 172;
-// pub const _SC_SYMLOOP_MAX: c_int = 173;
-// pub const _SC_STREAMS: c_int = 174;
-// pub const _SC_2_PBS_CHECKPOINT: c_int = 175;
-// pub const _SC_V6_ILP32_OFF32: c_int = 176;
-// pub const _SC_V6_ILP32_OFFBIG: c_int = 177;
-// pub const _SC_V6_LP64_OFF64: c_int = 178;
-// pub const _SC_V6_LPBIG_OFFBIG: c_int = 179;
-// pub const _SC_HOST_NAME_MAX: c_int = 180;
-// pub const _SC_TRACE: c_int = 181;
-// pub const _SC_TRACE_EVENT_FILTER: c_int = 182;
-// pub const _SC_TRACE_INHERIT: c_int = 183;
-// pub const _SC_TRACE_LOG: c_int = 184;
-// pub const _SC_LEVEL1_ICACHE_SIZE: c_int = 185;
-// pub const _SC_LEVEL1_ICACHE_ASSOC: c_int = 186;
-// pub const _SC_LEVEL1_ICACHE_LINESIZE: c_int = 187;
-// pub const _SC_LEVEL1_DCACHE_SIZE: c_int = 188;
-// pub const _SC_LEVEL1_DCACHE_ASSOC: c_int = 189;
-// pub const _SC_LEVEL1_DCACHE_LINESIZE: c_int = 190;
-// pub const _SC_LEVEL2_CACHE_SIZE: c_int = 191;
-// pub const _SC_LEVEL2_CACHE_ASSOC: c_int = 192;
-// pub const _SC_LEVEL2_CACHE_LINESIZE: c_int = 193;
-// pub const _SC_LEVEL3_CACHE_SIZE: c_int = 194;
-// pub const _SC_LEVEL3_CACHE_ASSOC: c_int = 195;
-// pub const _SC_LEVEL3_CACHE_LINESIZE: c_int = 196;
-// pub const _SC_LEVEL4_CACHE_SIZE: c_int = 197;
-// pub const _SC_LEVEL4_CACHE_ASSOC: c_int = 198;
-// pub const _SC_LEVEL4_CACHE_LINESIZE: c_int = 199;
-// pub const _SC_IPV6: c_int = 235;
-// pub const _SC_RAW_SOCKETS: c_int = 236;
-// pub const _SC_V7_ILP32_OFF32: c_int = 237;
-// pub const _SC_V7_ILP32_OFFBIG: c_int = 238;
-// pub const _SC_V7_LP64_OFF64: c_int = 239;
-// pub const _SC_V7_LPBIG_OFFBIG: c_int = 240;
-// pub const _SC_SS_REPL_MAX: c_int = 241;
-// pub const _SC_TRACE_EVENT_NAME_MAX: c_int = 242;
-// pub const _SC_TRACE_NAME_MAX: c_int = 243;
-// pub const _SC_TRACE_SYS_MAX: c_int = 244;
-// pub const _SC_TRACE_USER_EVENT_MAX: c_int = 245;
-// pub const _SC_XOPEN_STREAMS: c_int = 246;
-// pub const _SC_THREAD_ROBUST_PRIO_INHERIT: c_int = 247;
-// pub const _SC_THREAD_ROBUST_PRIO_PROTECT: c_int = 248;
-// const enum_unnamed_35 = c_uint;
-// pub const _CS_PATH: c_int = 0;
-// pub const _CS_V6_WIDTH_RESTRICTED_ENVS: c_int = 1;
-// pub const _CS_GNU_LIBC_VERSION: c_int = 2;
-// pub const _CS_GNU_LIBPTHREAD_VERSION: c_int = 3;
-// pub const _CS_V5_WIDTH_RESTRICTED_ENVS: c_int = 4;
-// pub const _CS_V7_WIDTH_RESTRICTED_ENVS: c_int = 5;
-// pub const _CS_LFS_CFLAGS: c_int = 1000;
-// pub const _CS_LFS_LDFLAGS: c_int = 1001;
-// pub const _CS_LFS_LIBS: c_int = 1002;
-// pub const _CS_LFS_LINTFLAGS: c_int = 1003;
-// pub const _CS_LFS64_CFLAGS: c_int = 1004;
-// pub const _CS_LFS64_LDFLAGS: c_int = 1005;
-// pub const _CS_LFS64_LIBS: c_int = 1006;
-// pub const _CS_LFS64_LINTFLAGS: c_int = 1007;
-// pub const _CS_XBS5_ILP32_OFF32_CFLAGS: c_int = 1100;
-// pub const _CS_XBS5_ILP32_OFF32_LDFLAGS: c_int = 1101;
-// pub const _CS_XBS5_ILP32_OFF32_LIBS: c_int = 1102;
-// pub const _CS_XBS5_ILP32_OFF32_LINTFLAGS: c_int = 1103;
-// pub const _CS_XBS5_ILP32_OFFBIG_CFLAGS: c_int = 1104;
-// pub const _CS_XBS5_ILP32_OFFBIG_LDFLAGS: c_int = 1105;
-// pub const _CS_XBS5_ILP32_OFFBIG_LIBS: c_int = 1106;
-// pub const _CS_XBS5_ILP32_OFFBIG_LINTFLAGS: c_int = 1107;
-// pub const _CS_XBS5_LP64_OFF64_CFLAGS: c_int = 1108;
-// pub const _CS_XBS5_LP64_OFF64_LDFLAGS: c_int = 1109;
-// pub const _CS_XBS5_LP64_OFF64_LIBS: c_int = 1110;
-// pub const _CS_XBS5_LP64_OFF64_LINTFLAGS: c_int = 1111;
-// pub const _CS_XBS5_LPBIG_OFFBIG_CFLAGS: c_int = 1112;
-// pub const _CS_XBS5_LPBIG_OFFBIG_LDFLAGS: c_int = 1113;
-// pub const _CS_XBS5_LPBIG_OFFBIG_LIBS: c_int = 1114;
-// pub const _CS_XBS5_LPBIG_OFFBIG_LINTFLAGS: c_int = 1115;
-// pub const _CS_POSIX_V6_ILP32_OFF32_CFLAGS: c_int = 1116;
-// pub const _CS_POSIX_V6_ILP32_OFF32_LDFLAGS: c_int = 1117;
-// pub const _CS_POSIX_V6_ILP32_OFF32_LIBS: c_int = 1118;
-// pub const _CS_POSIX_V6_ILP32_OFF32_LINTFLAGS: c_int = 1119;
-// pub const _CS_POSIX_V6_ILP32_OFFBIG_CFLAGS: c_int = 1120;
-// pub const _CS_POSIX_V6_ILP32_OFFBIG_LDFLAGS: c_int = 1121;
-// pub const _CS_POSIX_V6_ILP32_OFFBIG_LIBS: c_int = 1122;
-// pub const _CS_POSIX_V6_ILP32_OFFBIG_LINTFLAGS: c_int = 1123;
-// pub const _CS_POSIX_V6_LP64_OFF64_CFLAGS: c_int = 1124;
-// pub const _CS_POSIX_V6_LP64_OFF64_LDFLAGS: c_int = 1125;
-// pub const _CS_POSIX_V6_LP64_OFF64_LIBS: c_int = 1126;
-// pub const _CS_POSIX_V6_LP64_OFF64_LINTFLAGS: c_int = 1127;
-// pub const _CS_POSIX_V6_LPBIG_OFFBIG_CFLAGS: c_int = 1128;
-// pub const _CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS: c_int = 1129;
-// pub const _CS_POSIX_V6_LPBIG_OFFBIG_LIBS: c_int = 1130;
-// pub const _CS_POSIX_V6_LPBIG_OFFBIG_LINTFLAGS: c_int = 1131;
-// pub const _CS_POSIX_V7_ILP32_OFF32_CFLAGS: c_int = 1132;
-// pub const _CS_POSIX_V7_ILP32_OFF32_LDFLAGS: c_int = 1133;
-// pub const _CS_POSIX_V7_ILP32_OFF32_LIBS: c_int = 1134;
-// pub const _CS_POSIX_V7_ILP32_OFF32_LINTFLAGS: c_int = 1135;
-// pub const _CS_POSIX_V7_ILP32_OFFBIG_CFLAGS: c_int = 1136;
-// pub const _CS_POSIX_V7_ILP32_OFFBIG_LDFLAGS: c_int = 1137;
-// pub const _CS_POSIX_V7_ILP32_OFFBIG_LIBS: c_int = 1138;
-// pub const _CS_POSIX_V7_ILP32_OFFBIG_LINTFLAGS: c_int = 1139;
-// pub const _CS_POSIX_V7_LP64_OFF64_CFLAGS: c_int = 1140;
-// pub const _CS_POSIX_V7_LP64_OFF64_LDFLAGS: c_int = 1141;
-// pub const _CS_POSIX_V7_LP64_OFF64_LIBS: c_int = 1142;
-// pub const _CS_POSIX_V7_LP64_OFF64_LINTFLAGS: c_int = 1143;
-// pub const _CS_POSIX_V7_LPBIG_OFFBIG_CFLAGS: c_int = 1144;
-// pub const _CS_POSIX_V7_LPBIG_OFFBIG_LDFLAGS: c_int = 1145;
-// pub const _CS_POSIX_V7_LPBIG_OFFBIG_LIBS: c_int = 1146;
-// pub const _CS_POSIX_V7_LPBIG_OFFBIG_LINTFLAGS: c_int = 1147;
-// pub const _CS_V6_ENV: c_int = 1148;
-// pub const _CS_V7_ENV: c_int = 1149;
-// const enum_unnamed_36 = c_uint;
-// pub extern fn pathconf(__path: [*c]const u8, __name: c_int) c_long;
-// pub extern fn fpathconf(__fd: c_int, __name: c_int) c_long;
-// pub extern fn sysconf(__name: c_int) c_long;
-// pub extern fn confstr(__name: c_int, __buf: [*c]u8, __len: usize) usize;
-// pub extern fn getpid() __pid_t;
-// pub extern fn getppid() __pid_t;
-// pub extern fn getpgrp() __pid_t;
-// pub extern fn __getpgid(__pid: __pid_t) __pid_t;
-// pub extern fn getpgid(__pid: __pid_t) __pid_t;
-// pub extern fn setpgid(__pid: __pid_t, __pgid: __pid_t) c_int;
-// pub extern fn setpgrp() c_int;
-// pub extern fn setsid() __pid_t;
-// pub extern fn getsid(__pid: __pid_t) __pid_t;
-// pub extern fn getuid() __uid_t;
-// pub extern fn geteuid() __uid_t;
-// pub extern fn getgid() __gid_t;
-// pub extern fn getegid() __gid_t;
-// pub extern fn getgroups(__size: c_int, __list: [*c]__gid_t) c_int;
-// pub extern fn group_member(__gid: __gid_t) c_int;
-// pub extern fn setuid(__uid: __uid_t) c_int;
-// pub extern fn setreuid(__ruid: __uid_t, __euid: __uid_t) c_int;
-// pub extern fn seteuid(__uid: __uid_t) c_int;
-// pub extern fn setgid(__gid: __gid_t) c_int;
-// pub extern fn setregid(__rgid: __gid_t, __egid: __gid_t) c_int;
-// pub extern fn setegid(__gid: __gid_t) c_int;
-// pub extern fn getresuid(__ruid: [*c]__uid_t, __euid: [*c]__uid_t, __suid: [*c]__uid_t) c_int;
-// pub extern fn getresgid(__rgid: [*c]__gid_t, __egid: [*c]__gid_t, __sgid: [*c]__gid_t) c_int;
-// pub extern fn setresuid(__ruid: __uid_t, __euid: __uid_t, __suid: __uid_t) c_int;
-// pub extern fn setresgid(__rgid: __gid_t, __egid: __gid_t, __sgid: __gid_t) c_int;
-// pub extern fn fork() __pid_t;
-// pub extern fn vfork() c_int;
-// pub extern fn ttyname(__fd: c_int) [*c]u8;
-// pub extern fn ttyname_r(__fd: c_int, __buf: [*c]u8, __buflen: usize) c_int;
-// pub extern fn isatty(__fd: c_int) c_int;
-// pub extern fn ttyslot() c_int;
-// pub extern fn link(__from: [*c]const u8, __to: [*c]const u8) c_int;
-// pub extern fn linkat(__fromfd: c_int, __from: [*c]const u8, __tofd: c_int, __to: [*c]const u8, __flags: c_int) c_int;
-// pub extern fn symlink(__from: [*c]const u8, __to: [*c]const u8) c_int;
-// pub extern fn readlink(noalias __path: [*c]const u8, noalias __buf: [*c]u8, __len: usize) isize;
-// pub extern fn symlinkat(__from: [*c]const u8, __tofd: c_int, __to: [*c]const u8) c_int;
-// pub extern fn readlinkat(__fd: c_int, noalias __path: [*c]const u8, noalias __buf: [*c]u8, __len: usize) isize;
-// pub extern fn unlink(__name: [*c]const u8) c_int;
-// pub extern fn unlinkat(__fd: c_int, __name: [*c]const u8, __flag: c_int) c_int;
-// pub extern fn rmdir(__path: [*c]const u8) c_int;
-// pub extern fn tcgetpgrp(__fd: c_int) __pid_t;
-// pub extern fn tcsetpgrp(__fd: c_int, __pgrp_id: __pid_t) c_int;
-// pub extern fn getlogin() [*c]u8;
-// pub extern fn getlogin_r(__name: [*c]u8, __name_len: usize) c_int;
-// pub extern fn setlogin(__name: [*c]const u8) c_int;
-// pub extern var optarg: [*c]u8;
-// pub extern var optind: c_int;
-// pub extern var opterr: c_int;
-// pub extern var optopt: c_int;
-// pub extern fn getopt(___argc: c_int, ___argv: [*c]const [*c]u8, __shortopts: [*c]const u8) c_int;
-// pub extern fn gethostname(__name: [*c]u8, __len: usize) c_int;
-// pub extern fn sethostname(__name: [*c]const u8, __len: usize) c_int;
-// pub extern fn sethostid(__id: c_long) c_int;
-// pub extern fn getdomainname(__name: [*c]u8, __len: usize) c_int;
-// pub extern fn setdomainname(__name: [*c]const u8, __len: usize) c_int;
-// pub extern fn vhangup() c_int;
-// pub extern fn revoke(__file: [*c]const u8) c_int;
-// pub extern fn profil(__sample_buffer: [*c]c_ushort, __size: usize, __offset: usize, __scale: c_uint) c_int;
-// pub extern fn acct(__name: [*c]const u8) c_int;
-// pub extern fn getusershell() [*c]u8;
-// pub extern fn endusershell() void;
-// pub extern fn setusershell() void;
-// pub extern fn daemon(__nochdir: c_int, __noclose: c_int) c_int;
-// pub extern fn chroot(__path: [*c]const u8) c_int;
-// pub extern fn getpass(__prompt: [*c]const u8) [*c]u8;
-// pub extern fn fsync(__fd: c_int) c_int;
-// pub extern fn syncfs(__fd: c_int) c_int;
-// pub extern fn gethostid() c_long;
-// pub extern fn sync() void;
-// pub extern fn getpagesize() c_int;
-// pub extern fn getdtablesize() c_int;
-// pub extern fn truncate(__file: [*c]const u8, __length: __off_t) c_int;
-// pub extern fn truncate64(__file: [*c]const u8, __length: __off64_t) c_int;
-// pub extern fn ftruncate(__fd: c_int, __length: __off_t) c_int;
-// pub extern fn ftruncate64(__fd: c_int, __length: __off64_t) c_int;
-// pub extern fn brk(__addr: ?*anyopaque) c_int;
-// pub extern fn sbrk(__delta: isize) ?*anyopaque;
+
 // pub extern fn syscall(__sysno: c_long, ...) c_long;
 // pub extern fn lockf(__fd: c_int, __cmd: c_int, __len: __off_t) c_int;
 // pub extern fn lockf64(__fd: c_int, __cmd: c_int, __len: __off64_t) c_int;
@@ -2085,9 +1231,7 @@ const root = @import("root.zig");
 // pub extern fn unload_file(name: [*c]const u8) c_int;
 // pub extern var reading_file: [*c]const floc;
 // pub extern var expanding_var: [*c][*c]const floc;
-// pub const stopchar_map: [*c]c_ushort = @extern([*c]c_ushort, .{
-//     .name = "stopchar_map",
-// });
+
 // pub extern var default_shell: [*c]const u8;
 // pub extern fn remote_setup() void;
 // pub extern fn remote_cleanup() void;
@@ -2326,15 +1470,7 @@ const root = @import("root.zig");
 // pub extern fn create_pattern_rule(targets: [*c][*c]const u8, target_percents: [*c][*c]const u8, num: c_ushort, terminal: c_int, deps: ?*struct_dep, commands: ?*struct_commands, override: c_int) void;
 // pub extern fn get_rule_defn(rule: [*c]struct_rule) [*c]const u8;
 // pub extern fn print_rule_data_base() void;
-// pub const struct_option = extern struct {
-//     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-//     has_arg: c_int = @import("std").mem.zeroes(c_int),
-//     flag: [*c]c_int = @import("std").mem.zeroes([*c]c_int),
-//     val: c_int = @import("std").mem.zeroes(c_int),
-// };
-// pub extern fn getopt_long(argc: c_int, argv: [*c]const [*c]u8, shortopts: [*c]const u8, longopts: [*c]const struct_option, longind: [*c]c_int) c_int;
-// pub extern fn getopt_long_only(argc: c_int, argv: [*c]const [*c]u8, shortopts: [*c]const u8, longopts: [*c]const struct_option, longind: [*c]c_int) c_int;
-// pub extern fn _getopt_internal(argc: c_int, argv: [*c]const [*c]u8, shortopts: [*c]const u8, longopts: [*c]const struct_option, longind: [*c]c_int, long_only: c_int) c_int;
+
 // pub extern fn shuffle_set_mode(cmdarg: [*c]const u8) void;
 // pub extern fn shuffle_get_mode() [*c]const u8;
 // pub extern fn shuffle_deps_recursive(g: ?*struct_dep) void;
@@ -2396,10 +1532,6 @@ const root = @import("root.zig");
 // pub extern fn posix_fallocate(__fd: c_int, __offset: off_t, __len: off_t) c_int;
 // pub extern fn posix_fallocate64(__fd: c_int, __offset: off64_t, __len: off64_t) c_int;
 
-// pub const bsd_signal_ret_t = ?*const fn (c_int) callconv(.C) void;
-
-// pub var options: [121]u8 = @import("std").mem.zeroes([121]u8);
-// pub var long_options: [49]struct_option = @import("std").mem.zeroes([49]struct_option);
 // pub const __llvm__ = @as(c_int, 1);
 // pub const __clang__ = @as(c_int, 1);
 // pub const __clang_major__ = @as(c_int, 18);
@@ -4354,142 +3486,7 @@ const root = @import("root.zig");
 // pub const TEMP_FAILURE_RETRY = @compileError("unable to translate macro: undefined identifier `__result`");
 // // /usr/include/unistd.h:1099:10
 // pub const POSIX = @as(c_int, 1);
-// pub const __CLANG_LIMITS_H = "";
-// pub const _GCC_LIMITS_H_ = "";
-// pub const _LIBC_LIMITS_H_ = @as(c_int, 1);
-// pub const MB_LEN_MAX = @as(c_int, 16);
-// pub const LLONG_MIN = -LLONG_MAX - @as(c_int, 1);
-// pub const LLONG_MAX = __LONG_LONG_MAX__;
-// pub const ULLONG_MAX = (LLONG_MAX * @as(c_ulonglong, 2)) + @as(c_int, 1);
-// pub const CHAR_WIDTH = @as(c_int, 8);
-// pub const SCHAR_WIDTH = @as(c_int, 8);
-// pub const UCHAR_WIDTH = @as(c_int, 8);
-// pub const SHRT_WIDTH = @as(c_int, 16);
-// pub const USHRT_WIDTH = @as(c_int, 16);
-// pub const INT_WIDTH = @as(c_int, 32);
-// pub const UINT_WIDTH = @as(c_int, 32);
-// pub const LONG_WIDTH = __WORDSIZE;
-// pub const ULONG_WIDTH = __WORDSIZE;
-// pub const LLONG_WIDTH = @as(c_int, 64);
-// pub const ULLONG_WIDTH = @as(c_int, 64);
-// pub const _BITS_POSIX1_LIM_H = @as(c_int, 1);
-// pub const _POSIX_AIO_LISTIO_MAX = @as(c_int, 2);
-// pub const _POSIX_AIO_MAX = @as(c_int, 1);
-// pub const _POSIX_ARG_MAX = @as(c_int, 4096);
-// pub const _POSIX_CHILD_MAX = @as(c_int, 25);
-// pub const _POSIX_DELAYTIMER_MAX = @as(c_int, 32);
-// pub const _POSIX_HOST_NAME_MAX = @as(c_int, 255);
-// pub const _POSIX_LINK_MAX = @as(c_int, 8);
-// pub const _POSIX_LOGIN_NAME_MAX = @as(c_int, 9);
-// pub const _POSIX_MAX_CANON = @as(c_int, 255);
-// pub const _POSIX_MAX_INPUT = @as(c_int, 255);
-// pub const _POSIX_MQ_OPEN_MAX = @as(c_int, 8);
-// pub const _POSIX_MQ_PRIO_MAX = @as(c_int, 32);
-// pub const _POSIX_NAME_MAX = @as(c_int, 14);
-// pub const _POSIX_NGROUPS_MAX = @as(c_int, 8);
-// pub const _POSIX_OPEN_MAX = @as(c_int, 20);
-// pub const _POSIX_FD_SETSIZE = _POSIX_OPEN_MAX;
-// pub const _POSIX_PATH_MAX = @as(c_int, 256);
-// pub const _POSIX_PIPE_BUF = @as(c_int, 512);
-// pub const _POSIX_RE_DUP_MAX = @as(c_int, 255);
-// pub const _POSIX_RTSIG_MAX = @as(c_int, 8);
-// pub const _POSIX_SEM_NSEMS_MAX = @as(c_int, 256);
-// pub const _POSIX_SEM_VALUE_MAX = @as(c_int, 32767);
-// pub const _POSIX_SIGQUEUE_MAX = @as(c_int, 32);
-// pub const _POSIX_SSIZE_MAX = @as(c_int, 32767);
-// pub const _POSIX_STREAM_MAX = @as(c_int, 8);
-// pub const _POSIX_SYMLINK_MAX = @as(c_int, 255);
-// pub const _POSIX_SYMLOOP_MAX = @as(c_int, 8);
-// pub const _POSIX_TIMER_MAX = @as(c_int, 32);
-// pub const _POSIX_TTY_NAME_MAX = @as(c_int, 9);
-// pub const _POSIX_TZNAME_MAX = @as(c_int, 6);
-// pub const _POSIX_QLIMIT = @as(c_int, 1);
-// pub const _POSIX_HIWAT = _POSIX_PIPE_BUF;
-// pub const _POSIX_UIO_MAXIOV = @as(c_int, 16);
-// pub const _POSIX_CLOCKRES_MIN = @import("std").zig.c_translation.promoteIntLiteral(c_int, 20000000, .decimal);
-// pub const __undef_NR_OPEN = "";
-// pub const __undef_LINK_MAX = "";
-// pub const __undef_OPEN_MAX = "";
-// pub const __undef_ARG_MAX = "";
-// pub const _LINUX_LIMITS_H = "";
-// pub const NR_OPEN = @as(c_int, 1024);
-// pub const NGROUPS_MAX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 65536, .decimal);
-// pub const ARG_MAX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 131072, .decimal);
-// pub const LINK_MAX = @as(c_int, 127);
-// pub const MAX_CANON = @as(c_int, 255);
-// pub const MAX_INPUT = @as(c_int, 255);
-// pub const NAME_MAX = @as(c_int, 255);
-// pub const PATH_MAX = @as(c_int, 4096);
-// pub const PIPE_BUF = @as(c_int, 4096);
-// pub const XATTR_NAME_MAX = @as(c_int, 255);
-// pub const XATTR_SIZE_MAX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 65536, .decimal);
-// pub const XATTR_LIST_MAX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 65536, .decimal);
-// pub const RTSIG_MAX = @as(c_int, 32);
-// pub const _POSIX_THREAD_KEYS_MAX = @as(c_int, 128);
-// pub const PTHREAD_KEYS_MAX = @as(c_int, 1024);
-// pub const _POSIX_THREAD_DESTRUCTOR_ITERATIONS = @as(c_int, 4);
-// pub const PTHREAD_DESTRUCTOR_ITERATIONS = _POSIX_THREAD_DESTRUCTOR_ITERATIONS;
-// pub const _POSIX_THREAD_THREADS_MAX = @as(c_int, 64);
-// pub const AIO_PRIO_DELTA_MAX = @as(c_int, 20);
-// pub const PTHREAD_STACK_MIN = @as(c_int, 16384);
-// pub const DELAYTIMER_MAX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 2147483647, .decimal);
-// pub const TTY_NAME_MAX = @as(c_int, 32);
-// pub const LOGIN_NAME_MAX = @as(c_int, 256);
-// pub const HOST_NAME_MAX = @as(c_int, 64);
-// pub const MQ_PRIO_MAX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 32768, .decimal);
-// pub const SEM_VALUE_MAX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 2147483647, .decimal);
-// pub const SSIZE_MAX = LONG_MAX;
-// pub const _BITS_POSIX2_LIM_H = @as(c_int, 1);
-// pub const _POSIX2_BC_BASE_MAX = @as(c_int, 99);
-// pub const _POSIX2_BC_DIM_MAX = @as(c_int, 2048);
-// pub const _POSIX2_BC_SCALE_MAX = @as(c_int, 99);
-// pub const _POSIX2_BC_STRING_MAX = @as(c_int, 1000);
-// pub const _POSIX2_COLL_WEIGHTS_MAX = @as(c_int, 2);
-// pub const _POSIX2_EXPR_NEST_MAX = @as(c_int, 32);
-// pub const _POSIX2_LINE_MAX = @as(c_int, 2048);
-// pub const _POSIX2_RE_DUP_MAX = @as(c_int, 255);
-// pub const _POSIX2_CHARCLASS_NAME_MAX = @as(c_int, 14);
-// pub const BC_BASE_MAX = _POSIX2_BC_BASE_MAX;
-// pub const BC_DIM_MAX = _POSIX2_BC_DIM_MAX;
-// pub const BC_SCALE_MAX = _POSIX2_BC_SCALE_MAX;
-// pub const BC_STRING_MAX = _POSIX2_BC_STRING_MAX;
-// pub const COLL_WEIGHTS_MAX = @as(c_int, 255);
-// pub const EXPR_NEST_MAX = _POSIX2_EXPR_NEST_MAX;
-// pub const LINE_MAX = _POSIX2_LINE_MAX;
-// pub const CHARCLASS_NAME_MAX = @as(c_int, 2048);
-// pub const RE_DUP_MAX = @as(c_int, 0x7fff);
-// pub const _XOPEN_LIM_H = @as(c_int, 1);
-// pub const _XOPEN_IOV_MAX = _POSIX_UIO_MAXIOV;
-// pub const _BITS_UIO_LIM_H = @as(c_int, 1);
-// pub const __IOV_MAX = @as(c_int, 1024);
-// pub const IOV_MAX = __IOV_MAX;
-// pub const NL_ARGMAX = _POSIX_ARG_MAX;
-// pub const NL_LANGMAX = _POSIX2_LINE_MAX;
-// pub const NL_MSGMAX = INT_MAX;
-// pub const NL_NMAX = INT_MAX;
-// pub const NL_SETMAX = INT_MAX;
-// pub const NL_TEXTMAX = INT_MAX;
-// pub const NZERO = @as(c_int, 20);
-// pub const WORD_BIT = @as(c_int, 32);
-// pub const LONG_BIT = @as(c_int, 64);
-// pub const SCHAR_MAX = __SCHAR_MAX__;
-// pub const SHRT_MAX = __SHRT_MAX__;
-// pub const INT_MAX = __INT_MAX__;
-// pub const LONG_MAX = __LONG_MAX__;
-// pub const SCHAR_MIN = -__SCHAR_MAX__ - @as(c_int, 1);
-// pub const SHRT_MIN = -__SHRT_MAX__ - @as(c_int, 1);
-// pub const INT_MIN = -__INT_MAX__ - @as(c_int, 1);
-// pub const LONG_MIN = -__LONG_MAX__ - @as(c_long, 1);
-// pub const UCHAR_MAX = (__SCHAR_MAX__ * @as(c_int, 2)) + @as(c_int, 1);
-// pub const USHRT_MAX = (__SHRT_MAX__ * @as(c_int, 2)) + @as(c_int, 1);
-// pub const UINT_MAX = (__INT_MAX__ * @as(c_uint, 2)) + @as(c_uint, 1);
-// pub const ULONG_MAX = (__LONG_MAX__ * @as(c_ulong, 2)) + @as(c_ulong, 1);
-// pub const CHAR_BIT = __CHAR_BIT__;
-// pub const CHAR_MIN = SCHAR_MIN;
-// pub const CHAR_MAX = __SCHAR_MAX__;
-// pub const LONG_LONG_MAX = __LONG_LONG_MAX__;
-// pub const LONG_LONG_MIN = -__LONG_LONG_MAX__ - @as(c_longlong, 1);
-// pub const ULONG_LONG_MAX = (__LONG_LONG_MAX__ * @as(c_ulonglong, 2)) + @as(c_ulonglong, 1);
+
 // pub const _SYS_PARAM_H = @as(c_int, 1);
 // pub const _LINUX_PARAM_H = "";
 // pub const __ASM_GENERIC_PARAM_H = "";
@@ -5843,6 +4840,92 @@ const root = @import("root.zig");
 // pub const file_handle = struct_file_handle;
 // pub const command_variable = struct_command_variable;
 
+const sigset_t = root.csignal.sigset_t;
+const FILE = root.cstdio.FILE;
+const printf = root.cstdio.printf;
+const ferror = root.cstdio.ferror;
+const fputs = root.cstdio.fputs;
+const stdout = root.cstdio.stdout;
+const stderr = root.cstdio.stderr;
+const fprintf = root.cstdio.fprintf;
+const fclose = root.cstdio.fclose;
+const gettext = root.cgettext.gettext;
+const CHAR_MAX = root.climits.CHAR_MAX;
+const opterr = root.cunistd.opterr;
+const optind = root.cunistd.optind;
+const optarg = root.cunistd.optarg;
+const unlink = root.cunistd.unlink;
+const __errno_location = root.cerrno.__errno_location;
+const tolower = root.ctype.tolower;
+const strlen = root.cstring.strlen;
+const time_t = root.ctypes.time_t;
+const uintmax_t = root.cstdint.uintmax_t;
+const free = root.cstdlib.free;
+const getopt_long = root.cunistd.getopt_long;
+const exit = root.cstdlib.exit;
+const abort = root.cstdlib.abort;
+const xstrdup = root.cpublib.xstrdup;
+const xmalloc = root.cpublib.xmalloc;
+const xrealloc = root.cpublib.xrealloc;
+const strcmp = root.cstring.strcmp;
+const atof = root.cstdlib.atof;
+const time = root.ctime.time;
+const ctime = root.ctime.ctime;
+const chdir = root.cunistd.chdir;
+const __ctype_b_loc = root.ctype.__ctype_b_loc;
+const struct_sigaction = root.csignal.struct_sigaction;
+const sigemptyset = root.csignal.sigemptyset;
+const sigaddset = root.csignal.sigaddset;
+const __sighandler_t = root.csignal.__sighandler_t;
+const sigaction = root.csignal.sigaction;
+const _ISspace = root.ctype._ISspace;
+const _ISalnum = root.ctype._ISalnum;
+
+const enum_variable_origin = root.variable.enum_variable_origin;
+const o_default = root.variable.o_default;
+const o_command = root.variable.o_command;
+const struct_variable = root.variable.struct_variable;
+const init_hash_global_variable_set = root.variable.init_hash_global_variable_set;
+const struct_option = root.getopt1.struct_option;
+const struct_goaldep = root.dep.struct_goaldep;
+const struct_file = root.filedef.struct_file;
+const strcache_init = root.strcache.strcache_init;
+const init_hash_files = root.file.init_hash_files;
+const hash_init_directories = root.dir.hash_init_directories;
+const hash_init_function_table = root.function.hash_init_function_table;
+const fatal = root.output.fatal;
+const @"error" = root.output.@"error";
+const floc = root.output.floc;
+const version_string = root.version.version_string;
+const perror_with_name = root.output.perror_with_name;
+const jobserver_enabled = root.posixos.jobserver_enabled;
+const jobserver_clear = root.posixos.jobserver_clear;
+const jobserver_tokens = root.job.jobserver_tokens;
+const job_slots_used = root.job.job_slots_used;
+const jobserver_release = root.job.jobserver_release;
+const jobserver_acquire_all = root.posixos.jobserver_acquire_all;
+const remote_description = root.remote_stub.remote_description;
+const remote_cleanup = root.remote_stub.remote_cleanup;
+const reap_children = root.job.reap_children;
+const remove_intermediates = root.file.remove_intermediates;
+const handling_fatal_signal = root.commands.handling_fatal_signal;
+const make_host = root.version.make_host;
+const strcache_add = root.strcache.strcache_add;
+const construct_include_path = root.read.construct_include_path;
+const make_toui = root.misc.make_toui;
+const print_variable_data_base = root.variable.print_variable_data_base;
+const print_dir_data_base = root.dir.print_dir_data_base;
+const print_rule_data_base = root.rule.print_rule_data_base;
+const print_file_data_base = root.file.print_file_data_base;
+const print_vpath_data_base = root.vpath.print_vpath_data_base;
+const strcache_print_stats = root.strcache.strcache_print_stats;
+const verify_file_data_base = root.file.verify_file_data_base;
+const output_context = root.output.output_context;
+const output_close = root.output.output_close;
+const osync_clear = root.posixos.osync_clear;
+const tilde_expand = root.read.tilde_expand;
+const osync_parse_mutex = root.posixos.osync_parse_mutex;
+
 pub const HAVE_WAIT_NOHANG = "";
 
 pub inline fn short_option(c: anytype) @TypeOf(c <= CHAR_MAX) {
@@ -6097,11 +5180,16 @@ pub extern var not_parallel: c_int;
 
 pub extern var clock_skew_detected: c_int;
 
+pub const stopchar_map: [*c]c_ushort = @extern([*c]c_ushort, .{
+    .name = "stopchar_map",
+});
+
 pub const make_sync = @compileError("non-extern variable has opaque type");
 // src/main.c:608:15
 
 pub export var fatal_signal_set: sigset_t = @import("std").mem.zeroes(sigset_t);
 
+pub const bsd_signal_ret_t = ?*const fn (c_int) callconv(.C) void;
 pub fn bsd_signal(arg_sig: c_int, arg_func: bsd_signal_ret_t) callconv(.C) bsd_signal_ret_t {
     var sig = arg_sig;
     _ = &sig;
@@ -6298,13 +5386,13 @@ pub fn decode_debug_flags() callconv(.C) void {
 
 pub fn decode_output_sync_flags() callconv(.C) void {
     if (output_sync_option != null) {
-        if ((output_sync_option == "none") or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "none".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "none" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+        if (((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "none".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "none" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
             output_sync = 0;
-        } else if ((output_sync_option == "line") or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "line".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "line" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+        } else if (((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "line".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "line" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
             output_sync = 1;
-        } else if ((output_sync_option == "target") or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "target".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "target" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+        } else if (((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "target".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "target" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
             output_sync = 2;
-        } else if ((output_sync_option == "recurse") or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "recurse".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "recurse" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+        } else if (((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "recurse".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "recurse" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
             output_sync = 3;
         } else {
             fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(output_sync_option), gettext("unknown output-sync type '%s'"), output_sync_option);
@@ -6376,6 +5464,9 @@ pub export fn temp_stdin_unlink() void {
 
 // src/main.c:1172:1: warning: unable to translate function, demoted to extern
 pub extern fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) c_int;
+
+pub var options: [121]u8 = @import("std").mem.zeroes([121]u8);
+pub var long_options: [49]struct_option = @import("std").mem.zeroes([49]struct_option);
 
 pub fn init_switches() callconv(.C) void {
     var p: [*c]u8 = undefined;

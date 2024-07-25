@@ -5,6 +5,8 @@ const pid_t = __pid_t;
 
 extern fn __errno_location() [*c]c_int;
 
+pub extern var remote_description: [*c]u8 = 0;
+
 pub export fn remote_setup() void {}
 
 pub export fn remote_cleanup() void {}

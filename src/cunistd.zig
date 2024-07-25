@@ -403,3 +403,45 @@ pub extern fn tcsetpgrp(__fd: c_int, __pgrp_id: __pid_t) c_int;
 pub extern fn getlogin() [*c]u8;
 pub extern fn getlogin_r(__name: [*c]u8, __name_len: usize) c_int;
 pub extern fn setlogin(__name: [*c]const u8) c_int;
+pub extern var optarg: [*c]u8;
+pub extern var optind: c_int;
+pub extern var opterr: c_int;
+pub extern var optopt: c_int;
+pub extern fn getopt(___argc: c_int, ___argv: [*c]const [*c]u8, __shortopts: [*c]const u8) c_int;
+pub extern fn gethostname(__name: [*c]u8, __len: usize) c_int;
+pub extern fn sethostname(__name: [*c]const u8, __len: usize) c_int;
+pub extern fn sethostid(__id: c_long) c_int;
+pub extern fn getdomainname(__name: [*c]u8, __len: usize) c_int;
+pub extern fn setdomainname(__name: [*c]const u8, __len: usize) c_int;
+pub extern fn vhangup() c_int;
+pub extern fn revoke(__file: [*c]const u8) c_int;
+pub extern fn profil(__sample_buffer: [*c]c_ushort, __size: usize, __offset: usize, __scale: c_uint) c_int;
+pub extern fn acct(__name: [*c]const u8) c_int;
+pub extern fn getusershell() [*c]u8;
+pub extern fn endusershell() void;
+pub extern fn setusershell() void;
+pub extern fn daemon(__nochdir: c_int, __noclose: c_int) c_int;
+pub extern fn chroot(__path: [*c]const u8) c_int;
+pub extern fn getpass(__prompt: [*c]const u8) [*c]u8;
+pub extern fn fsync(__fd: c_int) c_int;
+pub extern fn syncfs(__fd: c_int) c_int;
+pub extern fn gethostid() c_long;
+pub extern fn sync() void;
+pub extern fn getpagesize() c_int;
+pub extern fn getdtablesize() c_int;
+pub extern fn truncate(__file: [*c]const u8, __length: __off_t) c_int;
+pub extern fn truncate64(__file: [*c]const u8, __length: __off64_t) c_int;
+pub extern fn ftruncate(__fd: c_int, __length: __off_t) c_int;
+pub extern fn ftruncate64(__fd: c_int, __length: __off64_t) c_int;
+pub extern fn brk(__addr: ?*anyopaque) c_int;
+pub extern fn sbrk(__delta: isize) ?*anyopaque;
+
+pub const struct_option = extern struct {
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    has_arg: c_int = @import("std").mem.zeroes(c_int),
+    flag: [*c]c_int = @import("std").mem.zeroes([*c]c_int),
+    val: c_int = @import("std").mem.zeroes(c_int),
+};
+pub extern fn getopt_long(argc: c_int, argv: [*c]const [*c]u8, shortopts: [*c]const u8, longopts: [*c]const struct_option, longind: [*c]c_int) c_int;
+pub extern fn getopt_long_only(argc: c_int, argv: [*c]const [*c]u8, shortopts: [*c]const u8, longopts: [*c]const struct_option, longind: [*c]c_int) c_int;
+pub extern fn _getopt_internal(argc: c_int, argv: [*c]const [*c]u8, shortopts: [*c]const u8, longopts: [*c]const struct_option, longind: [*c]c_int, long_only: c_int) c_int;

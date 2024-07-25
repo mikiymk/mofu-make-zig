@@ -83,7 +83,7 @@ extern fn unlink(__name: [*c]const u8) c_int;
 
 extern fn free(__ptr: ?*anyopaque) void;
 
-extern fn abort() noreturn;
+const abort = root.cstdlib.abort;
 
 extern fn strcpy(__dest: [*c]u8, __src: [*c]const u8) [*c]u8;
 

@@ -55,7 +55,7 @@ extern fn strtoll(__nptr: [*c]const u8, __endptr: [*c][*c]u8, __base: c_int) c_l
 
 extern fn free(__ptr: ?*anyopaque) void;
 
-extern fn abort() noreturn;
+const abort = root.cstdlib.abort;
 
 extern fn realpath(noalias __name: [*c]const u8, noalias __resolved: [*c]u8) [*c]u8;
 const __compar_fn_t = ?*const fn (?*const anyopaque, ?*const anyopaque) callconv(.C) c_int;

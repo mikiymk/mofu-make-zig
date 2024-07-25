@@ -54,7 +54,7 @@ extern fn puts(__s: [*c]const u8) c_int;
 
 extern fn free(__ptr: ?*anyopaque) void;
 
-extern fn abort() noreturn;
+const abort = root.cstdlib.abort;
 
 extern fn memcmp(__s1: ?*const anyopaque, __s2: ?*const anyopaque, __n: c_ulong) c_int;
 
@@ -136,7 +136,7 @@ const struct_pattern_var = extern struct {
 };
 
 extern var makelevel: c_uint;
-extern var version_string: [*c]u8;
+const version_string = @import("version.zig").version_string;
 extern var remote_description: [*c]u8;
 extern var make_host: [*c]u8;
 

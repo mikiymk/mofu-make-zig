@@ -54,7 +54,7 @@ extern fn puts(__s: [*c]const u8) c_int;
 
 extern fn free(__ptr: ?*anyopaque) void;
 
-extern fn abort() noreturn;
+const abort = root.cstdlib.abort;
 
 extern fn memcpy(__dest: ?*anyopaque, __src: ?*const anyopaque, __n: c_ulong) ?*anyopaque;
 

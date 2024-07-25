@@ -474,8 +474,7 @@ pub export fn jobserver_release(arg_is_fatal: c_int) void {
     }
 }
 
-// unsigned int
-// jobserver_acquire_all ()
+pub export fn jobserver_acquire_all() c_uint {}
 
 pub export fn jobserver_pre_child(arg_recursive: c_int) void {
     var recursive = arg_recursive;

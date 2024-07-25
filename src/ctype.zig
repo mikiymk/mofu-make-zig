@@ -1,0 +1,33 @@
+const root = @import("root.zig");
+
+const __int32_t = root.ctypes.__int32_t;
+
+pub const _ISupper: c_int = 256;
+pub const _ISlower: c_int = 512;
+pub const _ISalpha: c_int = 1024;
+pub const _ISdigit: c_int = 2048;
+pub const _ISxdigit: c_int = 4096;
+pub const _ISspace: c_int = 8192;
+pub const _ISprint: c_int = 16384;
+pub const _ISgraph: c_int = 32768;
+pub const _ISblank: c_int = 1;
+pub const _IScntrl: c_int = 2;
+pub const _ISpunct: c_int = 4;
+pub const _ISalnum: c_int = 8;
+const enum_unnamed_32 = c_uint;
+pub extern fn __ctype_b_loc() [*c][*c]const c_ushort;
+pub extern fn __ctype_tolower_loc() [*c][*c]const __int32_t;
+pub extern fn __ctype_toupper_loc() [*c][*c]const __int32_t;
+pub extern fn isalnum(c_int) c_int;
+pub extern fn isalpha(c_int) c_int;
+pub extern fn iscntrl(c_int) c_int;
+pub extern fn isdigit(c_int) c_int;
+pub extern fn islower(c_int) c_int;
+pub extern fn isgraph(c_int) c_int;
+pub extern fn isprint(c_int) c_int;
+pub extern fn ispunct(c_int) c_int;
+pub extern fn isspace(c_int) c_int;
+pub extern fn isupper(c_int) c_int;
+pub extern fn isxdigit(c_int) c_int;
+pub extern fn tolower(__c: c_int) c_int;
+pub extern fn toupper(__c: c_int) c_int;
