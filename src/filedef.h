@@ -1,18 +1,4 @@
-/* Definition of target file data structures for GNU Make.
-Copyright (C) 1988-2023 Free Software Foundation, Inc.
-This file is part of GNU Make.
-
-GNU Make is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation; either version 3 of the License, or (at your option) any later
-version.
-
-GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>.  */
+/* Definition of target file data structures for GNU Make. */
 
 
 /* Structure that represents the info on one file
@@ -139,13 +125,8 @@ void print_file_data_base (void);
 int try_implicit_rule (struct file *file, unsigned int depth);
 int stemlen_compare (const void *v1, const void *v2);
 
-#if FILE_TIMESTAMP_HI_RES
-# define FILE_TIMESTAMP_STAT_MODTIME(fname, st) \
-    file_timestamp_cons (fname, (st).st_mtime, (st).ST_MTIM_NSEC)
-#else
 # define FILE_TIMESTAMP_STAT_MODTIME(fname, st) \
     file_timestamp_cons (fname, (st).st_mtime, 0)
-#endif
 
 /* If FILE_TIMESTAMP is 64 bits (or more), use nanosecond resolution.
    (Multiply by 2**30 instead of by 10**9 to save time at the cost of

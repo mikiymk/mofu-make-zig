@@ -1,18 +1,4 @@
-/* Output to stdout / stderr for GNU Make
-Copyright (C) 2013-2023 Free Software Foundation, Inc.
-This file is part of GNU Make.
-
-GNU Make is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation; either version 3 of the License, or (at your option) any later
-version.
-
-GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>.  */
+/* Output to stdout / stderr for GNU Make */
 
 struct output
   {
@@ -50,9 +36,4 @@ void output_start (void);
 /* Show a message on stdout or stderr.  Will start the output if needed.  */
 void outputs (int is_err, const char *msg);
 
-#if defined(NO_OUTPUT_SYNC)
 # define output_dump(_o) (void)(0)
-#else
-/* Dump any child output content to stdout, and reset it.  */
-void output_dump (struct output *out);
-#endif

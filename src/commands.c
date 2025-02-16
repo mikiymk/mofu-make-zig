@@ -1,18 +1,4 @@
-/* Command processing for GNU Make.
-Copyright (C) 1988-2023 Free Software Foundation, Inc.
-This file is part of GNU Make.
-
-GNU Make is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation; either version 3 of the License, or (at your option) any later
-version.
-
-GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>.  */
+/* Command processing for GNU Make. */
 
 #include "makeint.h"
 #include "filedef.h"
@@ -21,17 +7,8 @@ this program.  If not, see <https://www.gnu.org/licenses/>.  */
 #include "variable.h"
 #include "job.h"
 #include "commands.h"
-#ifdef WINDOWS32
-#include <windows.h>
-#include "w32err.h"
-#endif
 
-#if VMS
-# define FILE_LIST_SEPARATOR (vms_comma_separator ? ',' : ' ')
-#else
 # define FILE_LIST_SEPARATOR ' '
-#endif
-
 
 static unsigned long
 dep_hash_1 (const void *key)
@@ -66,29 +43,6 @@ set_file_variables (struct file *file, const char *stem)
   struct dep *d;
   const char *at, *percent, *star, *less;
 
-#ifndef NO_ARCHIVES
-  /* If the target is an archive member 'lib(member)',
-     then $@ is 'lib' and $% is 'member'.  */
-
-  if (ar_name (file->name))
-    {
-      size_t len;
-      const char *cp;
-      char *p;
-
-      cp = strchr (file->name, '(');
-      p = alloca (cp - file->name + 1);
-      memcpy (p, file->name, cp - file->name);
-      p[cp - file->name] = '\0';
-      at = p;
-      len = strlen (cp + 1);
-      p = alloca (len);
-      memcpy (p, cp + 1, len - 1);
-      p[len - 1] = '\0';
-      percent = p;
-    }
-  else
-#endif  /* NO_ARCHIVES.  */
     {
       at = file->name;
       percent = "";
@@ -103,14 +57,6 @@ set_file_variables (struct file *file, const char *stem)
       const char *name;
       size_t len;
 
-#ifndef NO_ARCHIVES
-      if (ar_name (file->name))
-        {
-          name = strchr (file->name, '(') + 1;
-          len = strlen (name) - 1;
-        }
-      else
-#endif
         {
           name = file->name;
           len = strlen (name);
@@ -204,14 +150,6 @@ set_file_variables (struct file *file, const char *stem)
         {
           const char *c = dep_name (d);
 
-#ifndef NO_ARCHIVES
-          if (ar_name (c))
-            {
-              c = strchr (c, '(') + 1;
-              len = strlen (c) - 1;
-            }
-          else
-#endif
             len = strlen (c);
 
           cp = mempcpy (cp, c, len);
@@ -272,14 +210,7 @@ set_file_variables (struct file *file, const char *stem)
           continue;
 
         c = dep_name (d);
-#ifndef NO_ARCHIVES
-        if (ar_name (c))
-          {
-            c = strchr (c, '(') + 1;
-            len = strlen (c) - 1;
-          }
-        else
-#endif
+
           len = strlen (c);
 
         if (d->ignore_mtime)
@@ -483,46 +414,6 @@ volatile sig_atomic_t handling_fatal_signal = 0;
 void
 fatal_error_signal (int sig)
 {
-#ifdef __MSDOS__
-  extern int dos_status, dos_command_running;
-
-  if (dos_command_running)
-    {
-      /* That was the child who got the signal, not us.  */
-      dos_status |= (sig << 8);
-      return;
-    }
-  remove_intermediates (1);
-  exit (EXIT_FAILURE);
-#else /* not __MSDOS__ */
-#ifdef _AMIGA
-  remove_intermediates (1);
-  if (sig == SIGINT)
-     fputs (_("*** Break.\n"), stderr);
-
-  exit (10);
-#else /* not Amiga */
-#ifdef WINDOWS32
-  extern HANDLE main_thread;
-
-  /* Windows creates a separate thread for handling Ctrl+C, so we need
-     to suspend the main thread, or else we will have race conditions
-     when both threads call reap_children.  */
-  if (main_thread)
-    {
-      DWORD susp_count = SuspendThread (main_thread);
-
-      if (susp_count != 0)
-        fprintf (stderr, "SuspendThread: suspend count = %lu\n", susp_count);
-      else if (susp_count == (DWORD)-1)
-        {
-          DWORD ierr = GetLastError ();
-
-          fprintf (stderr, "SuspendThread: error %lu: %s\n",
-                   ierr, map_windows32_error_to_string (ierr));
-        }
-    }
-#endif
   handling_fatal_signal = 1;
 
   /* Set the handling for this signal to the default.
@@ -548,12 +439,6 @@ fatal_error_signal (int sig)
      wanted to kill make, remove pending targets.  */
 
   if (sig == SIGTERM || sig == SIGINT
-#ifdef SIGHUP
-    || sig == SIGHUP
-#endif
-#ifdef SIGQUIT
-    || sig == SIGQUIT
-#endif
     )
     {
       struct child *c;
@@ -581,27 +466,10 @@ fatal_error_signal (int sig)
 
   remove_intermediates (1);
 
-#ifdef SIGQUIT
-  if (sig == SIGQUIT)
-    /* We don't want to send ourselves SIGQUIT, because it will
-       cause a core dump.  Just exit instead.  */
-    exit (MAKE_TROUBLE);
-#endif
-
-#ifdef WINDOWS32
-  if (main_thread)
-    CloseHandle (main_thread);
-  /* Cannot call W32_kill with a pid (it needs a handle).  The exit
-     status of 130 emulates what happens in Bash.  */
-  exit (130);
-#else
   /* Signal the same code; this time it will really be fatal.  The signal
      will be unblocked when we return and arrive then to kill us.  */
   if (kill (make_pid (), sig) < 0)
     pfatal_with_name ("kill");
-#endif /* not WINDOWS32 */
-#endif /* not Amiga */
-#endif /* not __MSDOS__  */
 }
 
 /* Delete FILE unless it's precious or not actually a file (phony),
@@ -615,27 +483,6 @@ delete_target (struct file *file, const char *on_behalf_of)
 
   if (file->precious || file->phony)
     return;
-
-#ifndef NO_ARCHIVES
-  if (ar_name (file->name))
-    {
-      time_t file_date = (file->last_mtime == NONEXISTENT_MTIME
-                          ? (time_t) -1
-                          : (time_t) FILE_TIMESTAMP_S (file->last_mtime));
-      if (ar_member_date (file->name) != file_date)
-        {
-          if (on_behalf_of)
-            OSS (error, NILF,
-                 _("*** [%s] Archive member '%s' may be bogus; not deleted"),
-                 on_behalf_of, file->name);
-          else
-            OS (error, NILF,
-                _("*** Archive member '%s' may be bogus; not deleted"),
-                file->name);
-        }
-      return;
-    }
-#endif
 
   EINTRLOOP (e, stat (file->name, &st));
   if (e == 0

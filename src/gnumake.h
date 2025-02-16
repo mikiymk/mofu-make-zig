@@ -1,20 +1,5 @@
 /* External interfaces usable by dynamic objects loaded into GNU Make.
-   --THIS API IS A "TECHNOLOGY PREVIEW" ONLY.  IT IS NOT A STABLE INTERFACE--
-
-Copyright (C) 2013-2023 Free Software Foundation, Inc.
-This file is part of GNU Make.
-
-GNU Make is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation; either version 3 of the License, or (at your option) any later
-version.
-
-GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>.  */
+   --THIS API IS A "TECHNOLOGY PREVIEW" ONLY.  IT IS NOT A STABLE INTERFACE-- */
 
 #ifndef _GNUMAKE_H_
 #define _GNUMAKE_H_
@@ -28,15 +13,7 @@ typedef struct
 
 typedef char *(*gmk_func_ptr)(const char *nm, unsigned int argc, char **argv);
 
-#ifdef _WIN32
-# ifdef GMK_BUILDING_MAKE
-#  define GMK_EXPORT  __declspec(dllexport)
-# else
-#  define GMK_EXPORT  __declspec(dllimport)
-# endif
-#else
 # define GMK_EXPORT
-#endif
 
 /* Free memory returned by the gmk_expand() function.  */
 GMK_EXPORT void gmk_free (char *str);

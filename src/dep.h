@@ -1,18 +1,4 @@
-/* Definitions of dependency data structures for GNU Make.
-Copyright (C) 1988-2023 Free Software Foundation, Inc.
-This file is part of GNU Make.
-
-GNU Make is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation; either version 3 of the License, or (at your option) any later
-version.
-
-GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>.  */
+/* Definitions of dependency data structures for GNU Make. */
 
 
 /* Structure used in chains of names, for parsing and globbing.  */
@@ -89,37 +75,16 @@ struct goaldep
 #define PARSE_SIMPLE_SEQ(_s,_t) \
             (_t *)parse_file_seq ((_s),sizeof (_t),MAP_NUL,NULL,PARSEFS_NONE)
 
-#ifdef VMS
-void *parse_file_seq ();
-#else
 void *parse_file_seq (char **stringp, size_t size,
                       int stopmap, const char *prefix, int flags);
-#endif
 
 char *tilde_expand (const char *name);
-
-#ifndef NO_ARCHIVES
-struct nameseq *ar_glob (const char *arname, const char *member_pattern, size_t size);
-#endif
 
 #define dep_name(d)       ((d)->name ? (d)->name : (d)->file->name)
 
 #define alloc_seq_elt(_t) xcalloc (sizeof (_t))
 void free_ns_chain (struct nameseq *n);
 
-#if defined(MAKE_MAINTAINER_MODE) && defined(__GNUC__) && !defined(__STRICT_ANSI__)
-/* Use inline to get real type-checking.  */
-#define SI static inline
-SI struct nameseq *alloc_ns (void)    { return alloc_seq_elt (struct nameseq); }
-SI struct dep *alloc_dep (void)       { return alloc_seq_elt (struct dep); }
-SI struct goaldep *alloc_goaldep (void) { return alloc_seq_elt (struct goaldep); }
-
-SI void free_ns (struct nameseq *n)      { free (n); }
-SI void free_dep (struct dep *d)         { free_ns ((struct nameseq *)d); }
-SI void free_goaldep (struct goaldep *g) { free_dep ((struct dep *)g); }
-SI void free_dep_chain (struct dep *d)   { free_ns_chain((struct nameseq *)d); }
-SI void free_goal_chain (struct goaldep *g) { free_dep_chain((struct dep *)g); }
-#else
 # define alloc_ns()          alloc_seq_elt (struct nameseq)
 # define alloc_dep()         alloc_seq_elt (struct dep)
 # define alloc_goaldep()     alloc_seq_elt (struct goaldep)
@@ -130,7 +95,6 @@ SI void free_goal_chain (struct goaldep *g) { free_dep_chain((struct dep *)g); }
 
 # define free_dep_chain(_d)  free_ns_chain ((struct nameseq *)(_d))
 # define free_goal_chain(_g) free_ns_chain ((struct nameseq *)(_g))
-#endif
 
 struct dep *copy_dep_chain (const struct dep *d);
 

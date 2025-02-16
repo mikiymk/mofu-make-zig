@@ -1,18 +1,4 @@
-/* hash.h -- decls for hash table
-Copyright (C) 1995, 1999, 2002, 2010 Free Software Foundation, Inc.
-Written by Greg McGary <gkm@gnu.org> <greg@mcgary.org>
-
-GNU Make is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation; either version 3 of the License, or (at your option) any later
-version.
-
-GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>.  */
+/* hash.h -- decls for hash table */
 
 #ifndef _hash_h_
 #define _hash_h_
@@ -20,18 +6,11 @@ this program.  If not, see <https://www.gnu.org/licenses/>.  */
 #include <stdio.h>
 #include <ctype.h>
 
-#if defined __cplusplus || (defined __STDC__ && __STDC__) || defined WINDOWS32
-# if !defined __GLIBC__ || !defined __P
-#  undef	__P
-#  define __P(protos)	protos
-# endif
-#else /* Not C++ or ANSI C.  */
 # undef	__P
 # define __P(protos)	()
 /* We can get away without defining 'const' here only because in this file
    it is used only inside the prototype for 'fnmatch', which is elided in
    non-ANSI C where 'const' is problematical.  */
-#endif /* C++ or ANSI C.  */
 
 typedef unsigned long (*hash_func_t) __P((void const *key));
 typedef int (*hash_cmp_func_t) __P((void const *x, void const *y));
@@ -147,41 +126,6 @@ extern void *hash_deleted_item;
   return (X) == (Y) ? 0 : memcmp ((X), (Y), (N)); \
 } while (0)
 
-#ifdef HAVE_CASE_INSENSITIVE_FS
-
-/* hash and comparison macros for case-insensitive string _key_s. */
-
-#define ISTRING_HASH_1(KEY, RESULT) do { \
-  unsigned char const *_key_ = (unsigned char const *) (KEY) - 1; \
-  while (*++_key_) \
-    (RESULT) += (tolower (*_key_) << (_key_[1] & 0xf)); \
-} while (0)
-#define return_ISTRING_HASH_1(KEY) do { \
-  unsigned long _result_ = 0; \
-  ISTRING_HASH_1 ((KEY), _result_); \
-  return _result_; \
-} while (0)
-
-#define ISTRING_HASH_2(KEY, RESULT) do { \
-  unsigned char const *_key_ = (unsigned char const *) (KEY) - 1; \
-  while (*++_key_) \
-    (RESULT) += (tolower (*_key_) << (_key_[1] & 0x7)); \
-} while (0)
-#define return_ISTRING_HASH_2(KEY) do { \
-  unsigned long _result_ = 0; \
-  ISTRING_HASH_2 ((KEY), _result_); \
-  return _result_; \
-} while (0)
-
-#define ISTRING_COMPARE(X, Y, RESULT) do { \
-  RESULT = (X) == (Y) ? 0 : strcasecmp ((X), (Y)); \
-} while (0)
-#define return_ISTRING_COMPARE(X, Y) do { \
-  return (X) == (Y) ? 0 : strcasecmp ((X), (Y)); \
-} while (0)
-
-#else
-
 #define ISTRING_HASH_1(KEY, RESULT) STRING_HASH_1 ((KEY), (RESULT))
 #define return_ISTRING_HASH_1(KEY) return_STRING_HASH_1 (KEY)
 
@@ -190,8 +134,6 @@ extern void *hash_deleted_item;
 
 #define ISTRING_COMPARE(X, Y, RESULT) STRING_COMPARE ((X), (Y), (RESULT))
 #define return_ISTRING_COMPARE(X, Y) return_STRING_COMPARE ((X), (Y))
-
-#endif
 
 /* hash and comparison macros for integer _key_s. */
 

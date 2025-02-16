@@ -1,27 +1,7 @@
-/* Declarations for getopt.
-Copyright (C) 1989-2023 Free Software Foundation, Inc.
-
-NOTE: The canonical source of this file is maintained with the GNU C Library.
-Bugs can be reported to bug-glibc@gnu.org.
-
-GNU Make is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation; either version 3 of the License, or (at your option) any later
-version.
-
-GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>.  */
+/* Declarations for getopt. */
 
 #ifndef _GETOPT_H
 #define _GETOPT_H 1
-
-#ifdef	__cplusplus
-extern "C" {
-#endif
 
 /* For communication from `getopt' to the caller.
    When `getopt' finds an option that takes an argument,
@@ -77,11 +57,7 @@ extern int optopt;
 
 struct option
 {
-#if defined (__STDC__) && __STDC__
-  const char *name;
-#else
   char *name;
-#endif
   /* has_arg can't be an enum because some compilers complain about
      type mismatches in all the code that assumes it is an int.  */
   int has_arg;
@@ -95,36 +71,10 @@ struct option
 #define required_argument	1
 #define optional_argument	2
 
-#if defined (__STDC__) && __STDC__
-#ifdef __GNU_LIBRARY__
-/* Many other libraries have conflicting prototypes for getopt, with
-   differences in the consts, in stdlib.h.  To avoid compilation
-   errors, only prototype getopt for the GNU C library.  */
-extern int getopt (int argc, char *const *argv, const char *shortopts);
-#else /* not __GNU_LIBRARY__ */
-extern int getopt ();
-#endif /* __GNU_LIBRARY__ */
-extern int getopt_long (int argc, char *const *argv, const char *shortopts,
-		        const struct option *longopts, int *longind);
-extern int getopt_long_only (int argc, char *const *argv,
-			     const char *shortopts,
-		             const struct option *longopts, int *longind);
-
-/* Internal only.  Users should not call this directly.  */
-extern int _getopt_internal (int argc, char *const *argv,
-			     const char *shortopts,
-		             const struct option *longopts, int *longind,
-			     int long_only);
-#else /* not __STDC__ */
 extern int getopt ();
 extern int getopt_long ();
 extern int getopt_long_only ();
 
 extern int _getopt_internal ();
-#endif /* __STDC__ */
-
-#ifdef	__cplusplus
-}
-#endif
 
 #endif /* getopt.h */
