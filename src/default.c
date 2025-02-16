@@ -677,7 +677,7 @@ static const char *default_variables[] =
     GNUMAKEFLAGS_NAME, "",
     0, 0
   };
-
+
 /* Set up the default .SUFFIXES list.  */
 
 void

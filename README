@@ -205,7 +205,7 @@ systems: a native Windows tool built with (for example) MSVC or Cygwin,
 and a DOS-based tool built with DJGPP.  Please be sure you are looking
 at the right README!
 
-
+
 -------------------------------------------------------------------------------
 Copyright (C) 1988-2023 Free Software Foundation, Inc.
 This file is part of GNU Make.
