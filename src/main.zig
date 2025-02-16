@@ -1,4 +1,5 @@
 const root = @import("root.zig");
+const zigstd = @import("std");
 
 const sigset_t = root.csignal.sigset_t;
 const FILE = root.cstdio.FILE;
@@ -626,7 +627,63 @@ pub fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) c_int {
     _ = &arg_envp;
 
     var makefile_status: c_int = root.makeint.MAKE_SUCCESS;
-    _ = &makefile_status;
+    var read_files: struct_goaldep = undefined;
+    var current_directory: [root.makeint.PATH_MAX + 1]c_char = undefined;
+    var restarts: c_uint = 0;
+    var syncing: c_uint = 0;
+    // The jobslot info we got from our parent process.
+    var argv_slots: c_int = 0;
+
+    // #ifdef WINDOWS32 ...
+
+    root.expand.initialize_variable_output();
+
+    // Useful for attaching debuggers, etc.
+    root.makeint.SPIN("main-entry");
+
+    // #ifdef HAVE_ATEXIT ...
+
+    root.output.output_init(&make_sync);
+
+    initialize_stopchar_map();
+
+    // #ifdef SET_STACK_SIZE ...
+
+    // Needed for OS/2
+    root.makeint.initialize_main(&arg_argc, &arg_argv);
+
+    // #ifdef MAKE_MAINTAINER_MODE ...
+
+    // #if defined (__MSDOS__) && !defined (_POSIX_SOURCE) ...
+
+    // Set up gettext/internationalization support.
+    cstd.locale.setlocale(cstd.locale.LC_ALL, "");
+    // The cast to void shuts up compiler warnings on systems that disable NLS.
+    _ = bindtextdomain(PACKAGE, LOCALEDIR);
+    _ = textdomain(PACKAGE);
+
+    // FATAL_SIG(SIGINT);
+    {
+        const sig = SIGINT;
+
+        if (bsd_signal(sig, fatal_error_signal) == SIG_IGN) {
+            bsd_signal(sig, SIG_IGN);
+        } else {
+            // ADD_SIG(sig);
+            _ = sig;
+        }
+    }
+    // FATAL_SIG(SIGTERM);
+    {
+        const sig = SIGTERM;
+
+        if (bsd_signal(sig, fatal_error_signal) == SIG_IGN) {
+            bsd_signal(sig, SIG_IGN);
+        } else {
+            // ADD_SIG(sig);
+            _ = sig;
+        }
+    }
 }
 
 pub var options: [121]u8 = @import("std").mem.zeroes([121]u8);
