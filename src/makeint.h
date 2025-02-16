@@ -493,7 +493,7 @@ extern int unixy_shell;
 extern struct rlimit stack_limit;
 #endif
 
-#include <glob.h>
+// #include <glob.h>
 
 #define NILF ((floc *)0)
 
