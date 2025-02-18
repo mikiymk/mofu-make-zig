@@ -127,6 +127,7 @@ pub const __id_t = c_uint;
 pub const __time_t = c_long;
 pub const __useconds_t = c_uint;
 pub const __suseconds_t = c_long;
+pub const __suseconds64_t = c_long;
 pub const __daddr_t = c_int;
 pub const __key_t = c_int;
 pub const __clockid_t = c_int;
@@ -225,12 +226,12 @@ pub extern fn remove(__filename: [*c]const u8) c_int;
 pub extern fn rename(__old: [*c]const u8, __new: [*c]const u8) c_int;
 pub extern fn renameat(__oldfd: c_int, __old: [*c]const u8, __newfd: c_int, __new: [*c]const u8) c_int;
 pub extern fn renameat2(__oldfd: c_int, __old: [*c]const u8, __newfd: c_int, __new: [*c]const u8, __flags: c_uint) c_int;
+pub extern fn fclose(__stream: [*c]FILE) c_int;
 pub extern fn tmpfile() [*c]FILE;
 pub extern fn tmpfile64() [*c]FILE;
-pub extern fn tmpnam(__s: [*c]u8) [*c]u8;
+pub extern fn tmpnam([*c]u8) [*c]u8;
 pub extern fn tmpnam_r(__s: [*c]u8) [*c]u8;
 pub extern fn tempnam(__dir: [*c]const u8, __pfx: [*c]const u8) [*c]u8;
-pub extern fn fclose(__stream: [*c]FILE) c_int;
 pub extern fn fflush(__stream: [*c]FILE) c_int;
 pub extern fn fflush_unlocked(__stream: [*c]FILE) c_int;
 pub extern fn fcloseall() c_int;
@@ -262,6 +263,10 @@ pub extern fn dprintf(__fd: c_int, noalias __fmt: [*c]const u8, ...) c_int;
 pub extern fn fscanf(noalias __stream: [*c]FILE, noalias __format: [*c]const u8, ...) c_int;
 pub extern fn scanf(noalias __format: [*c]const u8, ...) c_int;
 pub extern fn sscanf(noalias __s: [*c]const u8, noalias __format: [*c]const u8, ...) c_int;
+pub const _Float32 = f32;
+pub const _Float64 = f64;
+pub const _Float32x = f64;
+pub const _Float64x = c_longdouble;
 pub extern fn vfscanf(noalias __s: [*c]FILE, noalias __format: [*c]const u8, __arg: [*c]struct___va_list_tag_1) c_int;
 pub extern fn vscanf(noalias __format: [*c]const u8, __arg: [*c]struct___va_list_tag_1) c_int;
 pub extern fn vsscanf(noalias __s: [*c]const u8, noalias __format: [*c]const u8, __arg: [*c]struct___va_list_tag_1) c_int;
@@ -310,18 +315,10 @@ pub extern fn clearerr_unlocked(__stream: [*c]FILE) void;
 pub extern fn feof_unlocked(__stream: [*c]FILE) c_int;
 pub extern fn ferror_unlocked(__stream: [*c]FILE) c_int;
 pub extern fn perror(__s: [*c]const u8) void;
-pub extern var sys_nerr: c_int;
-pub const sys_errlist: [*c]const [*c]const u8 = @extern([*c]const [*c]const u8, .{
-    .name = "sys_errlist",
-});
-pub extern var _sys_nerr: c_int;
-pub const _sys_errlist: [*c]const [*c]const u8 = @extern([*c]const [*c]const u8, .{
-    .name = "_sys_errlist",
-});
 pub extern fn fileno(__stream: [*c]FILE) c_int;
 pub extern fn fileno_unlocked(__stream: [*c]FILE) c_int;
-pub extern fn popen(__command: [*c]const u8, __modes: [*c]const u8) [*c]FILE;
 pub extern fn pclose(__stream: [*c]FILE) c_int;
+pub extern fn popen(__command: [*c]const u8, __modes: [*c]const u8) [*c]FILE;
 pub extern fn ctermid(__s: [*c]u8) [*c]u8;
 pub extern fn cuserid(__s: [*c]u8) [*c]u8;
 pub const struct_obstack = opaque {};
@@ -336,8 +333,8 @@ pub const __llvm__ = @as(c_int, 1);
 pub const __clang__ = @as(c_int, 1);
 pub const __clang_major__ = @as(c_int, 18);
 pub const __clang_minor__ = @as(c_int, 1);
-pub const __clang_patchlevel__ = @as(c_int, 6);
-pub const __clang_version__ = "18.1.6 (https://github.com/ziglang/zig-bootstrap 98bc6bf4fc4009888d33941daf6b600d20a42a56)";
+pub const __clang_patchlevel__ = @as(c_int, 8);
+pub const __clang_version__ = "18.1.8 ";
 pub const __GNUC__ = @as(c_int, 4);
 pub const __GNUC_MINOR__ = @as(c_int, 2);
 pub const __GNUC_PATCHLEVEL__ = @as(c_int, 1);
@@ -369,7 +366,7 @@ pub const __FPCLASS_POSSUBNORMAL = @as(c_int, 0x0080);
 pub const __FPCLASS_POSNORMAL = @as(c_int, 0x0100);
 pub const __FPCLASS_POSINF = @as(c_int, 0x0200);
 pub const __PRAGMA_REDEFINE_EXTNAME = @as(c_int, 1);
-pub const __VERSION__ = "Clang 18.1.6 (https://github.com/ziglang/zig-bootstrap 98bc6bf4fc4009888d33941daf6b600d20a42a56)";
+pub const __VERSION__ = "Clang 18.1.8";
 pub const __OBJC_BOOL_IS_BOOL = @as(c_int, 0);
 pub const __CONSTANT_CFSTRINGS__ = @as(c_int, 1);
 pub const __clang_literal_encoding__ = "UTF-8";
@@ -745,18 +742,16 @@ pub const __STDC_HOSTED__ = @as(c_int, 1);
 pub const __STDC_VERSION__ = @as(c_long, 201710);
 pub const __STDC_UTF_16__ = @as(c_int, 1);
 pub const __STDC_UTF_32__ = @as(c_int, 1);
-pub const __GLIBC_MINOR__ = @as(c_int, 31);
+pub const __GLIBC_MINOR__ = @as(c_int, 39);
 pub const _DEBUG = @as(c_int, 1);
 pub const HAVE_CONFIG_H = @as(c_int, 1);
-pub const LIBDIR = @compileError("unable to translate macro: undefined identifier `usr`");
-// (no file):412:9
-pub const LOCALEDIR = @compileError("unable to translate macro: undefined identifier `usr`");
-// (no file):413:9
+pub const LIBDIR = "/usr/local/lib";
+pub const LOCALEDIR = "/usr/local/share/locale";
 pub const __GCC_HAVE_DWARF2_CFI_ASM = @as(c_int, 1);
 pub const ENABLE_NLS = @as(c_int, 1);
 pub const FILE_TIMESTAMP_HI_RES = @as(c_int, 1);
 pub const GNULIB_TEST_GETLOADAVG = @as(c_int, 1);
-pub const HAVE_ALLOCA = @as(c_int, 1);
+pub const HAVE_ALLOCA = @as(c_int, 0);
 pub const HAVE_ALLOCA_H = @as(c_int, 1);
 pub const HAVE_ATEXIT = @as(c_int, 1);
 pub const HAVE_CLOCK_GETTIME = @as(c_int, 1);
@@ -959,6 +954,12 @@ pub const @"false" = @as(c_int, 0);
 pub const _ALLOCA_H = @as(c_int, 1);
 pub const _FEATURES_H = @as(c_int, 1);
 pub const __KERNEL_STRICT_NAMES = "";
+pub const __GLIBC__ = @as(c_int, 2);
+pub inline fn __GLIBC_PREREQ(maj: anytype, min: anytype) @TypeOf(((__GLIBC__ << @as(c_int, 16)) + __GLIBC_MINOR__) >= ((maj << @as(c_int, 16)) + min)) {
+    _ = &maj;
+    _ = &min;
+    return ((__GLIBC__ << @as(c_int, 16)) + __GLIBC_MINOR__) >= ((maj << @as(c_int, 16)) + min);
+}
 pub inline fn __GNUC_PREREQ(maj: anytype, min: anytype) @TypeOf(((__GNUC__ << @as(c_int, 16)) + __GNUC_MINOR__) >= ((maj << @as(c_int, 16)) + min)) {
     _ = &maj;
     _ = &min;
@@ -970,7 +971,7 @@ pub inline fn __glibc_clang_prereq(maj: anytype, min: anytype) @TypeOf(((__clang
     return ((__clang_major__ << @as(c_int, 16)) + __clang_minor__) >= ((maj << @as(c_int, 16)) + min);
 }
 pub const __GLIBC_USE = @compileError("unable to translate macro: undefined identifier `__GLIBC_USE_`");
-// /usr/include/features.h:179:9
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/features.h:196:9
 pub const _ISOC95_SOURCE = @as(c_int, 1);
 pub const _ISOC99_SOURCE = @as(c_int, 1);
 pub const _ISOC11_SOURCE = @as(c_int, 1);
@@ -982,6 +983,7 @@ pub const _XOPEN_SOURCE_EXTENDED = @as(c_int, 1);
 pub const _LARGEFILE64_SOURCE = @as(c_int, 1);
 pub const _DEFAULT_SOURCE = @as(c_int, 1);
 pub const _ATFILE_SOURCE = @as(c_int, 1);
+pub const _DYNAMIC_STACK_SIZE_SOURCE = @as(c_int, 1);
 pub const __GLIBC_USE_ISOC2X = @as(c_int, 1);
 pub const __USE_ISOC11 = @as(c_int, 1);
 pub const __USE_ISOC99 = @as(c_int, 1);
@@ -1000,36 +1002,46 @@ pub const __USE_XOPEN2K8XSI = @as(c_int, 1);
 pub const __USE_XOPEN2KXSI = @as(c_int, 1);
 pub const __USE_LARGEFILE = @as(c_int, 1);
 pub const __USE_LARGEFILE64 = @as(c_int, 1);
+pub const __WORDSIZE = @as(c_int, 64);
+pub const __WORDSIZE_TIME64_COMPAT32 = @as(c_int, 1);
+pub const __SYSCALL_WORDSIZE = @as(c_int, 64);
+pub const __TIMESIZE = __WORDSIZE;
 pub const __USE_MISC = @as(c_int, 1);
 pub const __USE_ATFILE = @as(c_int, 1);
+pub const __USE_DYNAMIC_STACK_SIZE = @as(c_int, 1);
 pub const __USE_GNU = @as(c_int, 1);
 pub const __USE_FORTIFY_LEVEL = @as(c_int, 0);
 pub const __GLIBC_USE_DEPRECATED_GETS = @as(c_int, 0);
 pub const __GLIBC_USE_DEPRECATED_SCANF = @as(c_int, 0);
+pub const __GLIBC_USE_C2X_STRTOL = @as(c_int, 1);
 pub const _STDC_PREDEF_H = @as(c_int, 1);
 pub const __STDC_IEC_559__ = @as(c_int, 1);
+pub const __STDC_IEC_60559_BFP__ = @as(c_long, 201404);
 pub const __STDC_IEC_559_COMPLEX__ = @as(c_int, 1);
+pub const __STDC_IEC_60559_COMPLEX__ = @as(c_long, 201404);
 pub const __STDC_ISO_10646__ = @as(c_long, 201706);
 pub const __GNU_LIBRARY__ = @as(c_int, 6);
-pub const __GLIBC__ = @as(c_int, 2);
-pub inline fn __GLIBC_PREREQ(maj: anytype, min: anytype) @TypeOf(((__GLIBC__ << @as(c_int, 16)) + __GLIBC_MINOR__) >= ((maj << @as(c_int, 16)) + min)) {
-    _ = &maj;
-    _ = &min;
-    return ((__GLIBC__ << @as(c_int, 16)) + __GLIBC_MINOR__) >= ((maj << @as(c_int, 16)) + min);
-}
 pub const _SYS_CDEFS_H = @as(c_int, 1);
+pub const __glibc_has_attribute = @compileError("unable to translate macro: undefined identifier `__has_attribute`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:45:10
+pub inline fn __glibc_has_builtin(name: anytype) @TypeOf(__has_builtin(name)) {
+    _ = &name;
+    return __has_builtin(name);
+}
+pub const __glibc_has_extension = @compileError("unable to translate macro: undefined identifier `__has_extension`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:55:10
 pub const __LEAF = "";
 pub const __LEAF_ATTR = "";
 pub const __THROW = @compileError("unable to translate macro: undefined identifier `__nothrow__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:55:11
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:79:11
 pub const __THROWNL = @compileError("unable to translate macro: undefined identifier `__nothrow__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:56:11
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:80:11
 pub const __NTH = @compileError("unable to translate macro: undefined identifier `__nothrow__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:57:11
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:81:11
 pub const __NTHNL = @compileError("unable to translate macro: undefined identifier `__nothrow__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:58:11
-pub const __glibc_clang_has_extension = @compileError("unable to translate macro: undefined identifier `__has_extension`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:92:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:82:11
+pub const __COLD = @compileError("unable to translate macro: undefined identifier `__cold__`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:102:11
 pub inline fn __P(args: anytype) @TypeOf(args) {
     _ = &args;
     return args;
@@ -1039,9 +1051,9 @@ pub inline fn __PMT(args: anytype) @TypeOf(args) {
     return args;
 }
 pub const __CONCAT = @compileError("unable to translate C expr: unexpected token '##'");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:105:9
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:131:9
 pub const __STRING = @compileError("unable to translate C expr: unexpected token '#'");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:106:9
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:132:9
 pub const __ptr_t = ?*anyopaque;
 pub const __BEGIN_DECLS = "";
 pub const __END_DECLS = "";
@@ -1053,63 +1065,82 @@ pub inline fn __bos0(ptr: anytype) @TypeOf(__builtin_object_size(ptr, @as(c_int,
     _ = &ptr;
     return __builtin_object_size(ptr, @as(c_int, 0));
 }
-pub const __warndecl = @compileError("unable to translate C expr: unexpected token 'extern'");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:133:10
+pub inline fn __glibc_objsize0(__o: anytype) @TypeOf(__bos0(__o)) {
+    _ = &__o;
+    return __bos0(__o);
+}
+pub inline fn __glibc_objsize(__o: anytype) @TypeOf(__bos(__o)) {
+    _ = &__o;
+    return __bos(__o);
+}
 pub const __warnattr = @compileError("unable to translate C expr: unexpected token ''");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:134:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:216:10
 pub const __errordecl = @compileError("unable to translate C expr: unexpected token 'extern'");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:135:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:217:10
 pub const __flexarr = @compileError("unable to translate C expr: unexpected token '['");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:143:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:225:10
 pub const __glibc_c99_flexarr_available = @as(c_int, 1);
 pub const __REDIRECT = @compileError("unable to translate C expr: unexpected token '__asm__'");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:174:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:256:10
 pub const __REDIRECT_NTH = @compileError("unable to translate C expr: unexpected token '__asm__'");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:181:11
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:263:11
 pub const __REDIRECT_NTHNL = @compileError("unable to translate C expr: unexpected token '__asm__'");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:183:11
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:265:11
 pub const __ASMNAME = @compileError("unable to translate C expr: unexpected token ','");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:186:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:268:10
 pub inline fn __ASMNAME2(prefix: anytype, cname: anytype) @TypeOf(__STRING(prefix) ++ cname) {
     _ = &prefix;
     _ = &cname;
     return __STRING(prefix) ++ cname;
 }
+pub const __REDIRECT_FORTIFY = __REDIRECT;
+pub const __REDIRECT_FORTIFY_NTH = __REDIRECT_NTH;
 pub const __attribute_malloc__ = @compileError("unable to translate macro: undefined identifier `__malloc__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:208:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:298:10
 pub const __attribute_alloc_size__ = @compileError("unable to translate C expr: unexpected token ''");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:219:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:309:10
+pub const __attribute_alloc_align__ = @compileError("unable to translate macro: undefined identifier `__alloc_align__`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:315:10
 pub const __attribute_pure__ = @compileError("unable to translate macro: undefined identifier `__pure__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:226:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:325:10
 pub const __attribute_const__ = @compileError("unable to translate C expr: unexpected token '__attribute__'");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:233:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:332:10
+pub const __attribute_maybe_unused__ = @compileError("unable to translate macro: undefined identifier `__unused__`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:338:10
 pub const __attribute_used__ = @compileError("unable to translate macro: undefined identifier `__used__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:242:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:347:10
 pub const __attribute_noinline__ = @compileError("unable to translate macro: undefined identifier `__noinline__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:243:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:348:10
 pub const __attribute_deprecated__ = @compileError("unable to translate macro: undefined identifier `__deprecated__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:251:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:356:10
 pub const __attribute_deprecated_msg__ = @compileError("unable to translate macro: undefined identifier `__deprecated__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:261:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:366:10
 pub const __attribute_format_arg__ = @compileError("unable to translate macro: undefined identifier `__format_arg__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:274:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:379:10
 pub const __attribute_format_strfmon__ = @compileError("unable to translate macro: undefined identifier `__format__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:284:10
-pub const __nonnull = @compileError("unable to translate macro: undefined identifier `__nonnull__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:293:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:389:10
+pub const __attribute_nonnull__ = @compileError("unable to translate macro: undefined identifier `__nonnull__`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:401:11
+pub inline fn __nonnull(params: anytype) @TypeOf(__attribute_nonnull__(params)) {
+    _ = &params;
+    return __attribute_nonnull__(params);
+}
+pub const __returns_nonnull = @compileError("unable to translate macro: undefined identifier `__returns_nonnull__`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:414:10
 pub const __attribute_warn_unused_result__ = @compileError("unable to translate macro: undefined identifier `__warn_unused_result__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:301:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:423:10
 pub const __wur = "";
 pub const __always_inline = @compileError("unable to translate macro: undefined identifier `__always_inline__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:319:10
-pub const __attribute_artificial__ = "";
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:441:10
+pub const __attribute_artificial__ = @compileError("unable to translate macro: undefined identifier `__artificial__`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:450:10
 pub const __extern_inline = @compileError("unable to translate macro: undefined identifier `__gnu_inline__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:346:11
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:468:11
 pub const __extern_always_inline = @compileError("unable to translate macro: undefined identifier `__gnu_inline__`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:347:11
-pub const __fortify_function = __extern_always_inline;
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:469:11
+pub const __fortify_function = __extern_always_inline ++ __attribute_artificial__;
 pub const __restrict_arr = @compileError("unable to translate C expr: unexpected token '__restrict'");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:387:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:512:10
 pub inline fn __glibc_unlikely(cond: anytype) @TypeOf(__builtin_expect(cond, @as(c_int, 0))) {
     _ = &cond;
     return __builtin_expect(cond, @as(c_int, 0));
@@ -1118,15 +1149,10 @@ pub inline fn __glibc_likely(cond: anytype) @TypeOf(__builtin_expect(cond, @as(c
     _ = &cond;
     return __builtin_expect(cond, @as(c_int, 1));
 }
-pub const __glibc_has_attribute = @compileError("unable to translate macro: undefined identifier `__has_attribute`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:410:10
 pub const __attribute_nonstring__ = "";
 pub const __attribute_copy__ = @compileError("unable to translate C expr: unexpected token ''");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:441:10
-pub const __WORDSIZE = @as(c_int, 64);
-pub const __WORDSIZE_TIME64_COMPAT32 = @as(c_int, 1);
-pub const __SYSCALL_WORDSIZE = @as(c_int, 64);
-pub const __LONG_DOUBLE_USES_FLOAT128 = @as(c_int, 0);
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:561:10
+pub const __LDOUBLE_REDIRECTS_TO_FLOAT128_ABI = @as(c_int, 0);
 pub inline fn __LDBL_REDIR1(name: anytype, proto: anytype, alias: anytype) @TypeOf(name ++ proto) {
     _ = &name;
     _ = &proto;
@@ -1149,8 +1175,10 @@ pub inline fn __LDBL_REDIR_NTH(name: anytype, proto: anytype) @TypeOf(name ++ pr
     _ = &proto;
     return name ++ proto ++ __THROW;
 }
+pub const __LDBL_REDIR2_DECL = @compileError("unable to translate C expr: unexpected token ''");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:638:10
 pub const __LDBL_REDIR_DECL = @compileError("unable to translate C expr: unexpected token ''");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:479:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:639:10
 pub inline fn __REDIRECT_LDBL(name: anytype, proto: anytype, alias: anytype) @TypeOf(__REDIRECT(name, proto, alias)) {
     _ = &name;
     _ = &proto;
@@ -1164,19 +1192,28 @@ pub inline fn __REDIRECT_NTH_LDBL(name: anytype, proto: anytype, alias: anytype)
     return __REDIRECT_NTH(name, proto, alias);
 }
 pub const __glibc_macro_warning1 = @compileError("unable to translate macro: undefined identifier `_Pragma`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:493:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:653:10
 pub const __glibc_macro_warning = @compileError("unable to translate macro: undefined identifier `GCC`");
-// /usr/include/x86_64-linux-gnu/sys/cdefs.h:494:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:654:10
 pub const __HAVE_GENERIC_SELECTION = @as(c_int, 1);
+pub const __fortified_attr_access = @compileError("unable to translate C expr: unexpected token ''");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:699:11
+pub const __attr_access = @compileError("unable to translate C expr: unexpected token ''");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:700:11
+pub const __attr_access_none = @compileError("unable to translate C expr: unexpected token ''");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:701:11
+pub const __attr_dealloc = @compileError("unable to translate C expr: unexpected token ''");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:711:10
+pub const __attr_dealloc_free = "";
+pub const __attribute_returns_twice__ = @compileError("unable to translate macro: undefined identifier `__returns_twice__`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/sys/cdefs.h:718:10
 pub const __stub___compat_bdflush = "";
 pub const __stub_chflags = "";
 pub const __stub_fchflags = "";
 pub const __stub_gtty = "";
-pub const __stub_lchmod = "";
 pub const __stub_revoke = "";
 pub const __stub_setlogin = "";
 pub const __stub_sigreturn = "";
-pub const __stub_sstk = "";
 pub const __stub_stty = "";
 pub const __need_size_t = "";
 pub const _SIZE_T = "";
@@ -1191,7 +1228,7 @@ pub const _WCHAR_T = "";
 pub const NULL = @import("std").zig.c_translation.cast(?*anyopaque, @as(c_int, 0));
 pub const __CLANG_MAX_ALIGN_T_DEFINED = "";
 pub const offsetof = @compileError("unable to translate C expr: unexpected token 'an identifier'");
-// /snap/zig/11625/lib/include/__stddef_offsetof.h:16:9
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/include/__stddef_offsetof.h:16:9
 pub const _GETOPT_H = @as(c_int, 1);
 pub const no_argument = @as(c_int, 0);
 pub const required_argument = @as(c_int, 1);
@@ -1201,13 +1238,13 @@ pub const __GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION = "";
 pub const __GLIBC_USE_LIB_EXT2 = @as(c_int, 1);
 pub const __GLIBC_USE_IEC_60559_BFP_EXT = @as(c_int, 1);
 pub const __GLIBC_USE_IEC_60559_BFP_EXT_C2X = @as(c_int, 1);
+pub const __GLIBC_USE_IEC_60559_EXT = @as(c_int, 1);
 pub const __GLIBC_USE_IEC_60559_FUNCS_EXT = @as(c_int, 1);
 pub const __GLIBC_USE_IEC_60559_FUNCS_EXT_C2X = @as(c_int, 1);
 pub const __GLIBC_USE_IEC_60559_TYPES_EXT = @as(c_int, 1);
 pub const __need___va_list = "";
 pub const __GNUC_VA_LIST = "";
 pub const _BITS_TYPES_H = @as(c_int, 1);
-pub const __TIMESIZE = __WORDSIZE;
 pub const __S16_TYPE = c_short;
 pub const __U16_TYPE = c_ushort;
 pub const __S32_TYPE = c_int;
@@ -1223,7 +1260,7 @@ pub const __ULONG32_TYPE = c_uint;
 pub const __S64_TYPE = c_long;
 pub const __U64_TYPE = c_ulong;
 pub const __STD_TYPE = @compileError("unable to translate C expr: unexpected token 'typedef'");
-// /usr/include/x86_64-linux-gnu/bits/types.h:137:10
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/types.h:137:10
 pub const _BITS_TYPESIZES_H = @as(c_int, 1);
 pub const __SYSCALL_SLONG_TYPE = __SLONGWORD_TYPE;
 pub const __SYSCALL_ULONG_TYPE = __ULONGWORD_TYPE;
@@ -1251,19 +1288,21 @@ pub const __CLOCK_T_TYPE = __SYSCALL_SLONG_TYPE;
 pub const __TIME_T_TYPE = __SYSCALL_SLONG_TYPE;
 pub const __USECONDS_T_TYPE = __U32_TYPE;
 pub const __SUSECONDS_T_TYPE = __SYSCALL_SLONG_TYPE;
+pub const __SUSECONDS64_T_TYPE = __SQUAD_TYPE;
 pub const __DADDR_T_TYPE = __S32_TYPE;
 pub const __KEY_T_TYPE = __S32_TYPE;
 pub const __CLOCKID_T_TYPE = __S32_TYPE;
 pub const __TIMER_T_TYPE = ?*anyopaque;
 pub const __BLKSIZE_T_TYPE = __SYSCALL_SLONG_TYPE;
 pub const __FSID_T_TYPE = @compileError("unable to translate macro: undefined identifier `__val`");
-// /usr/include/x86_64-linux-gnu/bits/typesizes.h:72:9
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/x86_64-linux-gnu/bits/typesizes.h:73:9
 pub const __SSIZE_T_TYPE = __SWORD_TYPE;
 pub const __CPU_MASK_TYPE = __SYSCALL_ULONG_TYPE;
 pub const __OFF_T_MATCHES_OFF64_T = @as(c_int, 1);
 pub const __INO_T_MATCHES_INO64_T = @as(c_int, 1);
 pub const __RLIM_T_MATCHES_RLIM64_T = @as(c_int, 1);
 pub const __STATFS_MATCHES_STATFS64 = @as(c_int, 1);
+pub const __KERNEL_OLD_TIMEVAL_MATCHES_TIMEVAL64 = @as(c_int, 1);
 pub const __FD_SETSIZE = @as(c_int, 1024);
 pub const _BITS_TIME64_H = @as(c_int, 1);
 pub const __TIME64_T_TYPE = __TIME_T_TYPE;
@@ -1274,9 +1313,9 @@ pub const ____FILE_defined = @as(c_int, 1);
 pub const __FILE_defined = @as(c_int, 1);
 pub const __struct_FILE_defined = @as(c_int, 1);
 pub const __getc_unlocked_body = @compileError("TODO postfix inc/dec expr");
-// /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:102:9
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/types/struct_FILE.h:102:9
 pub const __putc_unlocked_body = @compileError("TODO postfix inc/dec expr");
-// /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:106:9
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/types/struct_FILE.h:106:9
 pub const _IO_EOF_SEEN = @as(c_int, 0x0010);
 pub inline fn __feof_unlocked_body(_fp: anytype) @TypeOf((_fp.*._flags & _IO_EOF_SEEN) != @as(c_int, 0)) {
     _ = &_fp;
@@ -1304,16 +1343,91 @@ pub const SEEK_END = @as(c_int, 2);
 pub const SEEK_DATA = @as(c_int, 3);
 pub const SEEK_HOLE = @as(c_int, 4);
 pub const P_tmpdir = "/tmp";
-pub const _BITS_STDIO_LIM_H = @as(c_int, 1);
 pub const L_tmpnam = @as(c_int, 20);
 pub const TMP_MAX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 238328, .decimal);
+pub const _BITS_STDIO_LIM_H = @as(c_int, 1);
 pub const FILENAME_MAX = @as(c_int, 4096);
 pub const L_ctermid = @as(c_int, 9);
 pub const L_cuserid = @as(c_int, 9);
 pub const FOPEN_MAX = @as(c_int, 16);
+pub const _PRINTF_NAN_LEN_MAX = @as(c_int, 4);
 pub const RENAME_NOREPLACE = @as(c_int, 1) << @as(c_int, 0);
 pub const RENAME_EXCHANGE = @as(c_int, 1) << @as(c_int, 1);
 pub const RENAME_WHITEOUT = @as(c_int, 1) << @as(c_int, 2);
+pub const __attr_dealloc_fclose = __attr_dealloc(fclose, @as(c_int, 1));
+pub const _BITS_FLOATN_H = "";
+pub const __HAVE_FLOAT128 = @as(c_int, 0);
+pub const __HAVE_DISTINCT_FLOAT128 = @as(c_int, 0);
+pub const __HAVE_FLOAT64X = @as(c_int, 1);
+pub const __HAVE_FLOAT64X_LONG_DOUBLE = @as(c_int, 1);
+pub const _BITS_FLOATN_COMMON_H = "";
+pub const __HAVE_FLOAT16 = @as(c_int, 0);
+pub const __HAVE_FLOAT32 = @as(c_int, 1);
+pub const __HAVE_FLOAT64 = @as(c_int, 1);
+pub const __HAVE_FLOAT32X = @as(c_int, 1);
+pub const __HAVE_FLOAT128X = @as(c_int, 0);
+pub const __HAVE_DISTINCT_FLOAT16 = __HAVE_FLOAT16;
+pub const __HAVE_DISTINCT_FLOAT32 = @as(c_int, 0);
+pub const __HAVE_DISTINCT_FLOAT64 = @as(c_int, 0);
+pub const __HAVE_DISTINCT_FLOAT32X = @as(c_int, 0);
+pub const __HAVE_DISTINCT_FLOAT64X = @as(c_int, 0);
+pub const __HAVE_DISTINCT_FLOAT128X = __HAVE_FLOAT128X;
+pub const __HAVE_FLOAT128_UNLIKE_LDBL = (__HAVE_DISTINCT_FLOAT128 != 0) and (__LDBL_MANT_DIG__ != @as(c_int, 113));
+pub const __HAVE_FLOATN_NOT_TYPEDEF = @as(c_int, 0);
+pub const __f32 = @import("std").zig.c_translation.Macros.F_SUFFIX;
+pub inline fn __f64(x: anytype) @TypeOf(x) {
+    _ = &x;
+    return x;
+}
+pub inline fn __f32x(x: anytype) @TypeOf(x) {
+    _ = &x;
+    return x;
+}
+pub const __f64x = @import("std").zig.c_translation.Macros.L_SUFFIX;
+pub const __CFLOAT32 = @compileError("unable to translate: TODO _Complex");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:149:12
+pub const __CFLOAT64 = @compileError("unable to translate: TODO _Complex");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:160:13
+pub const __CFLOAT32X = @compileError("unable to translate: TODO _Complex");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:169:12
+pub const __CFLOAT64X = @compileError("unable to translate: TODO _Complex");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:178:13
+pub inline fn __builtin_huge_valf32() @TypeOf(__builtin_huge_valf()) {
+    return __builtin_huge_valf();
+}
+pub inline fn __builtin_inff32() @TypeOf(__builtin_inff()) {
+    return __builtin_inff();
+}
+pub inline fn __builtin_nanf32(x: anytype) @TypeOf(__builtin_nanf(x)) {
+    _ = &x;
+    return __builtin_nanf(x);
+}
+pub const __builtin_nansf32 = @compileError("unable to translate macro: undefined identifier `__builtin_nansf`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:221:12
+pub const __builtin_huge_valf64 = @compileError("unable to translate macro: undefined identifier `__builtin_huge_val`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:255:13
+pub const __builtin_inff64 = @compileError("unable to translate macro: undefined identifier `__builtin_inf`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:256:13
+pub const __builtin_nanf64 = @compileError("unable to translate macro: undefined identifier `__builtin_nan`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:257:13
+pub const __builtin_nansf64 = @compileError("unable to translate macro: undefined identifier `__builtin_nans`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:258:13
+pub const __builtin_huge_valf32x = @compileError("unable to translate macro: undefined identifier `__builtin_huge_val`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:272:12
+pub const __builtin_inff32x = @compileError("unable to translate macro: undefined identifier `__builtin_inf`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:273:12
+pub const __builtin_nanf32x = @compileError("unable to translate macro: undefined identifier `__builtin_nan`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:274:12
+pub const __builtin_nansf32x = @compileError("unable to translate macro: undefined identifier `__builtin_nans`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:275:12
+pub const __builtin_huge_valf64x = @compileError("unable to translate macro: undefined identifier `__builtin_huge_vall`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:289:13
+pub const __builtin_inff64x = @compileError("unable to translate macro: undefined identifier `__builtin_infl`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:290:13
+pub const __builtin_nanf64x = @compileError("unable to translate macro: undefined identifier `__builtin_nanl`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:291:13
+pub const __builtin_nansf64x = @compileError("unable to translate macro: undefined identifier `__builtin_nansl`");
+// /nix/store/1l5gb4773rbqjzv49wb4h9xlmaz2zs5h-zig-0.13.0/lib/zig/libc/include/generic-glibc/bits/floatn-common.h:292:13
 pub const GETOPT_INTERFACE_VERSION = @as(c_int, 2);
 pub const _GNU_VERSIONS_H = @as(c_int, 1);
 pub const _GNU_OBSTACK_INTERFACE_VERSION = @as(c_int, 1);

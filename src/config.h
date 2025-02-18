@@ -136,7 +136,7 @@
 
 /* Define to 1 if you have 'alloca' after including <alloca.h>, a header that
    may be supplied by this distribution. */
-#define HAVE_ALLOCA 1
+#define HAVE_ALLOCA 0
 
 /* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
    */
