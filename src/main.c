@@ -1835,6 +1835,7 @@ main (int argc, char **argv, char **envp)
      At this point arg_job_slots is the argv setting, if there is one, else
      the MAKEFLAGS env setting, if there is one.  */
 
+  while (1) {
   if (jobserver_auth)
     {
       /* We're a child in an existing jobserver group.  */
@@ -1843,7 +1844,8 @@ main (int argc, char **argv, char **envp)
           /* There's no -j option on the command line: check authorization.  */
           if (jobserver_parse_auth (jobserver_auth))
             /* Success!  Use the jobserver.  */
-            goto job_setup_complete;
+            /* goto job_setup_complete; */
+            break;
 
           /* Oops: we have jobserver-auth but it's invalid :(.  */
           O (error, NILF, _("warning: jobserver unavailable: using -j1.  Add '+' to parent make rule."));
@@ -1860,8 +1862,9 @@ main (int argc, char **argv, char **envp)
       /* We can't use our parent's jobserver, so reset.  */
       reset_jobserver ();
     }
+  }
 
- job_setup_complete:
+/* job_setup_complete: */
 
   /* The extra indirection through $(MAKE_COMMAND) is done
      for hysterical raisins.  */
