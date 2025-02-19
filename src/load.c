@@ -125,7 +125,7 @@ load_file (const floc *flocp, struct file *file, int noerror)
 {
   const char *ldname = file->name;
   size_t nmlen = strlen (ldname);
-  char *new = alloca (nmlen + CSTRLEN (SYMBOL_EXTENSION) + 1);
+  char *new = /* */ malloc /* from alloca */ (nmlen + CSTRLEN (SYMBOL_EXTENSION) + 1);
   char *symname = NULL;
   const char *fp;
   int r;

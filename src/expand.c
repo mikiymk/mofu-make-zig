@@ -360,12 +360,12 @@ variable_expand_string (char *line, const char *string, size_t length)
                         /* Copy the pattern and the replacement.  Add in an
                            extra % at the beginning to use in case there
                            isn't one in the pattern.  */
-                        pattern = alloca (subst_end - subst_beg + 2);
+                        pattern = /* */ malloc /* from alloca */ (subst_end - subst_beg + 2);
                         *(pattern++) = '%';
                         memcpy (pattern, subst_beg, subst_end - subst_beg);
                         pattern[subst_end - subst_beg] = '\0';
 
-                        replace = alloca (replace_end - replace_beg + 2);
+                        replace = /* */ malloc /* from alloca */ (replace_end - replace_beg + 2);
                         *(replace++) = '%';
                         memcpy (replace, replace_beg,
                                replace_end - replace_beg);
@@ -462,7 +462,7 @@ expand_argument (const char *str, const char *end)
   if (end - str + 1 > 1000)
     tmp = alloc = xmalloc (end - str + 1);
   else
-    tmp = alloca (end - str + 1);
+    tmp = /* */ malloc /* from alloca */ (end - str + 1);
 
   memcpy (tmp, str, end - str);
   tmp[end - str] = '\0';

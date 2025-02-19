@@ -233,7 +233,7 @@ pattern_search (struct file *file, int archive,
   /* Names of possible dependencies are constructed in this buffer.
      We may replace % by $(*F) for second expansion, increasing the length.  */
   size_t deplen = namelen + max_pattern_dep_length + 4;
-  char *depname = alloca (deplen);
+  char *depname = /* */ malloc /* from alloca */ (deplen);
 #ifndef NDEBUG
   char *dend = depname + deplen;
 #endif
@@ -493,7 +493,7 @@ pattern_search (struct file *file, int archive,
               /* We need to add the directory prefix, so set it up.  */
               if (! pathdir)
                 {
-                  pathdir = alloca (pathlen + 1);
+                  pathdir = /* */ malloc /* from alloca */ (pathlen + 1);
                   memcpy (pathdir, filename, pathlen);
                   pathdir[pathlen] = '\0';
                 }
@@ -889,7 +889,7 @@ pattern_search (struct file *file, int archive,
                             d->name));
 
                       if (int_file == 0)
-                        int_file = alloca (sizeof (struct file));
+                        int_file = /* */ malloc /* from alloca */ (sizeof (struct file));
                       memset (int_file, '\0', sizeof (struct file));
                       int_file->name = d->name;
 
@@ -1104,7 +1104,7 @@ pattern_search (struct file *file, int archive,
     for (ri = 0; ri < rule->num; ++ri)
       if (ri != tryrules[foundrule].matches)
         {
-          char *nm = alloca (rule->lens[ri] + fullstemlen + 1);
+          char *nm = /* */ malloc /* from alloca */ (rule->lens[ri] + fullstemlen + 1);
           char *p = nm;
           struct file *f;
           struct dep *new = alloc_dep ();

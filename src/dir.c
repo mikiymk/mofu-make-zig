@@ -661,7 +661,7 @@ dir_contents_file_exists_p (struct directory *dir,
   if (filename != NULL)
     {
       size_t len = strlen (filename);
-      char *fname = alloca (len + 1);
+      char *fname = /* */ malloc /* from alloca */ (len + 1);
       memcpy (fname, filename, len + 1);
       _fnlwr (fname); /* lower case for FAT drives */
       filename = fname;
@@ -871,7 +871,7 @@ file_exists_p (const char *name)
           (ISDIRSEP (*dirend) || *dirend == ':'))
         dirend++;
 #endif
-      p = alloca (dirend - name + 1);
+      p = /* */ malloc /* from alloca */ (dirend - name + 1);
       memcpy (p, name, dirend - name);
       p[dirend - name] = '\0';
       dirname = p;
@@ -947,7 +947,7 @@ file_impossible (const char *filename)
               (ISDIRSEP (*dirend) || *dirend == ':'))
             dirend++;
 #endif
-          cp = alloca (dirend - p + 1);
+          cp = /* */ malloc /* from alloca */ (dirend - p + 1);
           memcpy (cp, p, dirend - p);
           cp[dirend - p] = '\0';
           dirname = cp;
@@ -1043,7 +1043,7 @@ file_impossible_p (const char *filename)
               (ISDIRSEP (*dirend) || *dirend == ':'))
             dirend++;
 #endif
-          cp = alloca (dirend - filename + 1);
+          cp = /* */ malloc /* from alloca */ (dirend - filename + 1);
           memcpy (cp, filename, dirend - filename);
           cp[dirend - filename] = '\0';
           dirname = cp;

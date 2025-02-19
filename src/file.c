@@ -491,7 +491,7 @@ enter_prereqs (struct dep *deps, const char *stem)
         {
           char *percent;
           size_t nl = strlen (dp->name) + 1;
-          char *nm = alloca (nl);
+          char *nm = /* */ malloc /* from alloca */ (nl);
           memcpy (nm, dp->name, nl);
           percent = find_percent (nm);
           if (percent)

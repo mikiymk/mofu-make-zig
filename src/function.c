@@ -297,7 +297,7 @@ pattern_matches (const char *pattern, const char *percent, const char *str)
   if (percent == 0)
     {
       size_t len = strlen (pattern) + 1;
-      char *new_chars = alloca (len);
+      char *new_chars = /* */ malloc /* from alloca */ (len);
       memcpy (new_chars, pattern, len);
       percent = find_percent (new_chars);
       if (percent == 0)
@@ -602,7 +602,7 @@ func_basename_dir (char *o, char **argv, const char *funcname)
   int stop = MAP_DIRSEP | (is_basename ? MAP_DOT : 0) | MAP_NUL;
 #ifdef VMS
   /* As in func_notdir_suffix ... */
-  char *vms_p3 = alloca (strlen(p3) + 1);
+  char *vms_p3 = /* */ malloc /* from alloca */ (strlen(p3) + 1);
   int i;
   for (i = 0; p3[i]; i++)
     if (p3[i] == ',')
@@ -1183,7 +1183,7 @@ func_error (char *o, char **argv, const char *funcname)
     case 'i':
       {
         size_t len = strlen (argv[0]);
-        char *msg = alloca (len + 2);
+        char *msg = /* */ malloc /* from alloca */ (len + 2);
         memcpy (msg, argv[0], len);
         msg[len] = '\n';
         msg[len + 1] = '\0';
@@ -2349,7 +2349,7 @@ func_file (char *o, char **argv, const char *funcname UNUSED)
 
       end = end_of_token (start);
       len = end - start;
-      nm = alloca (len + 1);
+      nm = /* */ malloc /* from alloca */ (len + 1);
       memcpy (nm, start, len);
       nm[len] = '\0';
 
@@ -2392,7 +2392,7 @@ func_file (char *o, char **argv, const char *funcname UNUSED)
 
       end = end_of_token (start);
       len = end - start;
-      nm = alloca (len + 1);
+      nm = /* */ malloc /* from alloca */ (len + 1);
       memcpy (nm, start, len);
       nm[len] = '\0';
 
@@ -2636,7 +2636,7 @@ handle_function (char **op, const char **stringp)
   *stringp = end;
 
   /* Get some memory to store the arg pointers.  */
-  argvp = argv = alloca (sizeof (char *) * (nargs + 2));
+  argvp = argv = /* */ malloc /* from alloca */ (sizeof (char *) * (nargs + 2));
 
   /* Chop the string into arguments, then a nul.  As soon as we hit
      MAXIMUM_ARGS (if it's >0) assume the rest of the string is part of the
@@ -2750,7 +2750,7 @@ func_call (char *o, char **argv, const char *funcname UNUSED)
   if (v == 0 || *v->value == '\0')
     return o;
 
-  body = alloca (flen + 4);
+  body = /* */ malloc /* from alloca */ (flen + 4);
   body[0] = '$';
   body[1] = '(';
   memcpy (body + 2, fname, flen);

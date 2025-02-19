@@ -1725,7 +1725,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
       /* We must allocate a new copy of the expanded string because
          variable_expand re-uses the same buffer.  */
       l = strlen (s2);
-      s1 = alloca (l + 1);
+      s1 = /* */ malloc /* from alloca */ (l + 1);
       memcpy (s1, s2, l + 1);
 
       if (termin != ',')
@@ -2549,7 +2549,7 @@ find_percent_cached (const char **string)
 
   /* We must create a new cached string with backslashes compressed.  */
   slen = strlen (*string);
-  new = alloca (slen + 1);
+  new = /* */ malloc /* from alloca */ (slen + 1);
   memcpy (new, *string, slen + 1);
   np = new + (p - *string);
 
@@ -3040,7 +3040,7 @@ construct_include_path (const char **arg_dirs)
       if (djdir)
         {
           size_t len = strlen (djdir->value) + 8;
-          char *defdir = alloca (len + 1);
+          char *defdir = /* */ malloc /* from alloca */ (len + 1);
 
           strcat (strcpy (defdir, djdir->value), "/include");
           dirs[idx++] = strcache_add (defdir);

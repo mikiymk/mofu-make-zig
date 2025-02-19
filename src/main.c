@@ -1897,7 +1897,7 @@ main (int argc, char **argv, char **envp)
         }
 
       /* Now allocate a buffer big enough and fill it.  */
-      p = value = alloca (len);
+      p = value = /* */ malloc /* from alloca */ (len);
       for (cv = command_variables; cv != 0; cv = cv->next)
         {
           v = cv->variable;
@@ -2059,7 +2059,7 @@ main (int argc, char **argv, char **envp)
           free (p);
         }
 
-      p = endp = value = alloca (len);
+      p = endp = value = /* */ malloc /* from alloca */ (len);
       for (i = 0; i < eval_strings->idx; ++i)
         {
           p = stpcpy (p, "--eval=");
@@ -2370,7 +2370,7 @@ main (int argc, char **argv, char **envp)
             ++num_mkfiles;
           }
 
-        makefile_mtimes = alloca (num_mkfiles * sizeof (FILE_TIMESTAMP));
+        makefile_mtimes = /* */ malloc /* from alloca */ (num_mkfiles * sizeof (FILE_TIMESTAMP));
       }
 
       /* Remove any makefiles we don't want to try to update.  Record the
@@ -2602,7 +2602,7 @@ main (int argc, char **argv, char **envp)
               char** av = argv;
               const char** nv;
 
-              nv = nargv = alloca (sizeof (char*) * (argc + 1 + 1));
+              nv = nargv = /* */ malloc /* from alloca */ (sizeof (char*) * (argc + 1 + 1));
               *(nv++) = *(av++);
 
               for (; *av; ++av, ++nv)
@@ -2637,14 +2637,14 @@ main (int argc, char **argv, char **envp)
 
                       if (mfidx == stdin_offset)
                         {
-                          char *na = alloca (CSTRLEN ("--temp-stdin=")
+                          char *na = /* */ malloc /* from alloca */ (CSTRLEN ("--temp-stdin=")
                                              + strlen (mf) +  1);
                           sprintf (na, "--temp-stdin=%s", mf);
                           *nv = na;
                         }
                       else
                         {
-                          char *na = alloca (strlen (mf) + 3);
+                          char *na = /* */ malloc /* from alloca */ (strlen (mf) + 3);
                           sprintf (na, "-f%s", mf);
                           *nv = na;
                         }
@@ -2671,14 +2671,14 @@ main (int argc, char **argv, char **envp)
                       if (al > 1)
                         {
                           /* Preserve the prior options.  */
-                          na = alloca (al + 1);
+                          na = /* */ malloc /* from alloca */ (al + 1);
                           memcpy (na, a, al);
                           na[al] = '\0';
                           *(nv++) = na;
                         }
 
                       /* Remove the "f" and any subsequent content.  */
-                      na = alloca (CSTRLEN ("--temp-stdin=") + strlen (mf) + 1);
+                      na = /* */ malloc /* from alloca */ (CSTRLEN ("--temp-stdin=") + strlen (mf) + 1);
                       sprintf (na, "--temp-stdin=%s", mf);
                       *nv = na;
                     }
@@ -2690,7 +2690,7 @@ main (int argc, char **argv, char **envp)
                       /* -f<name> or -xyzf<name>. */
                       const size_t al = f - a + 1;
                       const size_t ml = strlen (mf) + 1;
-                      char *na = alloca (al + ml);
+                      char *na = /* */ malloc /* from alloca */ (al + ml);
                       memcpy (na, a, al);
                       memcpy (na + al, mf, ml);
                       *nv = na;
@@ -2736,7 +2736,7 @@ main (int argc, char **argv, char **envp)
               {
                 if (strneq (*p, MAKELEVEL_NAME "=", MAKELEVEL_LENGTH+1))
                   {
-                    *p = alloca (40);
+                    *p = /* */ malloc /* from alloca */ (40);
                     sprintf (*p, "%s=%u", MAKELEVEL_NAME, makelevel);
 #ifdef VMS
                     vms_putenv_symbol (*p);
@@ -2744,7 +2744,7 @@ main (int argc, char **argv, char **envp)
                   }
                 else if (strneq (*p, "MAKE_RESTARTS=", CSTRLEN ("MAKE_RESTARTS=")))
                   {
-                    *p = alloca (40);
+                    *p = /* */ malloc /* from alloca */ (40);
                     sprintf (*p, "MAKE_RESTARTS=%s%u",
                              OUTPUT_IS_TRACED () ? "-" : "", restarts);
                     restarts = 0;
@@ -2767,7 +2767,7 @@ main (int argc, char **argv, char **envp)
           /* If we didn't set the restarts variable yet, add it.  */
           if (restarts)
             {
-              char *b = alloca (40);
+              char *b = /* */ malloc /* from alloca */ (40);
               sprintf (b, "MAKE_RESTARTS=%s%u",
                        OUTPUT_IS_TRACED () ? "-" : "", restarts);
               putenv (b);
@@ -3107,7 +3107,7 @@ handle_non_switch_argument (const char *arg, enum variable_origin origin)
 
             oldlen = strlen (gv->value);
             newlen = strlen (f->name);
-            vp = alloca (oldlen + 1 + newlen + 1);
+            vp = /* */ malloc /* from alloca */ (oldlen + 1 + newlen + 1);
             memcpy (vp, gv->value, oldlen);
             vp[oldlen] = ' ';
             memcpy (&vp[oldlen + 1], f->name, newlen + 1);
@@ -3379,7 +3379,7 @@ decode_switches (int argc, const char **argv, enum variable_origin origin)
 static void
 decode_env_switches (const char *envar, size_t len, enum variable_origin origin)
 {
-  char *varref = alloca (2 + len + 2);
+  char *varref = /* */ malloc /* from alloca */ (2 + len + 2);
   char *value, *p, *buf;
   int argc;
   const char **argv;
@@ -3400,7 +3400,7 @@ decode_env_switches (const char *envar, size_t len, enum variable_origin origin)
     return;
 
   /* Allocate a vector that is definitely big enough.  */
-  argv = alloca ((1 + len + 1) * sizeof (char *));
+  argv = /* */ malloc /* from alloca */ ((1 + len + 1) * sizeof (char *));
 
   /* getopt will look at the arguments starting at ARGV[1].
      Prepend a spacer word.  */
@@ -3409,7 +3409,7 @@ decode_env_switches (const char *envar, size_t len, enum variable_origin origin)
 
   /* We need a buffer to copy the value into while we split it into words
      and unquote it.  Set up in case we need to prepend a dash later.  */
-  buf = alloca (1 + len + 1);
+  buf = /* */ malloc /* from alloca */ (1 + len + 1);
   buf[0] = '-';
   p = buf+1;
   argv[argc] = p;
@@ -3494,7 +3494,7 @@ define_makeflags (int makefile)
   size_t flagslen = 0;
 #define ADD_FLAG(ARG, LEN) \
   do {                                                                        \
-    struct flag *new = alloca (sizeof (struct flag));                         \
+    struct flag *new = /* */ malloc /* from alloca */ (sizeof (struct flag));                         \
     new->cs = cs;                                                             \
     new->arg = (ARG);                                                         \
     new->next = 0;                                                            \
@@ -3540,7 +3540,7 @@ define_makeflags (int makefile)
             ADD_FLAG ("", 0); /* Optional value omitted; see below.  */
           else
             {
-              char *buf = alloca (30);
+              char *buf = /* */ malloc /* from alloca */ (30);
               sprintf (buf, "%u", *(unsigned int *) cs->value_ptr);
               ADD_FLAG (buf, strlen (buf));
             }
@@ -3555,7 +3555,7 @@ define_makeflags (int makefile)
             ADD_FLAG ("", 0); /* Optional value omitted; see below.  */
           else
             {
-              char *buf = alloca (100);
+              char *buf = /* */ malloc /* from alloca */ (100);
               sprintf (buf, "%g", *(double *) cs->value_ptr);
               ADD_FLAG (buf, strlen (buf));
             }
@@ -3591,7 +3591,7 @@ define_makeflags (int makefile)
 
   /* Construct the value in FLAGSTRING.
      We allocate enough space for a preceding dash and trailing null.  */
-  flagstring = alloca (1 + flagslen + 1);
+  flagstring = /* */ malloc /* from alloca */ (1 + flagslen + 1);
   memset (flagstring, '\0', 1 + flagslen + 1);
   p = flagstring;
 

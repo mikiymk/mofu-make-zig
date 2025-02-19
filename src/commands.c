@@ -77,12 +77,12 @@ set_file_variables (struct file *file, const char *stem)
       char *p;
 
       cp = strchr (file->name, '(');
-      p = alloca (cp - file->name + 1);
+      p = /* */ malloc /* from alloca */ (cp - file->name + 1);
       memcpy (p, file->name, cp - file->name);
       p[cp - file->name] = '\0';
       at = p;
       len = strlen (cp + 1);
-      p = alloca (len);
+      p = /* */ malloc /* from alloca */ (len);
       memcpy (p, cp + 1, len - 1);
       p[len - 1] = '\0';
       percent = p;

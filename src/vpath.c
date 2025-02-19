@@ -350,7 +350,7 @@ selective_vpath_search (struct vpath *path, const char *file,
   /* Get enough space for the biggest VPATH entry, a slash, the directory
      prefix that came with FILE, another slash (although this one may not
      always be necessary), the filename, and a null terminator.  */
-  name = alloca (maxvpath + 1 + name_dplen + 1 + flen + 1);
+  name = /* */ malloc /* from alloca */ (maxvpath + 1 + name_dplen + 1 + flen + 1);
 
   /* Try each VPATH entry.  */
   for (i = 0; vpath[i] != 0; ++i)

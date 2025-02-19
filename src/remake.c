@@ -1371,7 +1371,7 @@ f_mtime (struct file *file, int search)
           arlen = strlen (arfile->hname);
           memlen = strlen (memname);
 
-          name = alloca (arlen + 1 + memlen + 2);
+          name = /* */ malloc /* from alloca */ (arlen + 1 + memlen + 2);
           memcpy (name, arfile->hname, arlen);
           name[arlen] = '(';
           memcpy (name + arlen + 1, memname, memlen);

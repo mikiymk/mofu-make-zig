@@ -729,7 +729,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
               if (err || name_len == 0 || name_len >= MIN (PATH_MAX, INT_MAX))
                 goto invalid;
 
-              name = alloca (name_len + 1);
+              name = /* */ malloc /* from alloca */ (name_len + 1);
               nread = readbuf (desc, name, name_len);
               if (nread < 0 || (unsigned int) nread != name_len)
                 goto invalid;
@@ -803,7 +803,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
 
             if (eltsize > INT_MAX)
               goto invalid;
-            namemap = alloca (eltsize + 1);
+            namemap = /* */ malloc /* from alloca */ (eltsize + 1);
             nread = readbuf (desc, namemap, eltsize);
             if (nread != eltsize)
               goto invalid;

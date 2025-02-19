@@ -261,7 +261,7 @@ convert_suffix_rule (const char *target, const char *source,
     {
       /* Construct the target name.  */
       size_t len = strlen (target);
-      char *p = alloca (1 + len + 1);
+      char *p = /* */ malloc /* from alloca */ (1 + len + 1);
       p[0] = '%';
       memcpy (p + 1, target, len + 1);
       *names = strcache_add_len (p, len + 1);
@@ -274,7 +274,7 @@ convert_suffix_rule (const char *target, const char *source,
     {
       /* Construct the dependency name.  */
       size_t len = strlen (source);
-      char *p = alloca (1 + len + 1);
+      char *p = /* */ malloc /* from alloca */ (1 + len + 1);
       p[0] = '%';
       memcpy (p + 1, source, len + 1);
       deps = alloc_dep ();
@@ -307,7 +307,7 @@ convert_to_pattern (void)
     }
 
   /* Space to construct the suffix rule target name.  */
-  rulename = alloca ((maxsuffix * 2) + 1);
+  rulename = /* */ malloc /* from alloca */ ((maxsuffix * 2) + 1);
 
   for (d = suffix_file->deps; d != 0; d = d->next)
     {

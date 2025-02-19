@@ -244,7 +244,7 @@ strcache_add_len (const char *str, size_t len)
      the hashing functions expect it.  */
   if (str[len] != '\0')
     {
-      char *key = alloca (len + 1);
+      char *key = /* */ malloc /* from alloca */ (len + 1);
       memcpy (key, str, len);
       key[len] = '\0';
       str = key;

@@ -558,7 +558,7 @@ child_error (struct child *child,
     nm = _("<builtin>");
   else
     {
-      char *a = alloca (strlen (flocp->filenm) + 6 + INTSTR_LENGTH + 1);
+      char *a = /* */ malloc /* from alloca */ (strlen (flocp->filenm) + 6 + INTSTR_LENGTH + 1);
       sprintf (a, "%s:%lu", flocp->filenm, flocp->lineno + flocp->offset);
       nm = a;
     }
@@ -569,7 +569,7 @@ child_error (struct child *child,
   if (smode)
     {
 #define SHUFFLE_PREFIX " shuffle="
-      char *a = alloca (CSTRLEN(SHUFFLE_PREFIX) + strlen (smode) + 1);
+      char *a = /* */ malloc /* from alloca */ (CSTRLEN(SHUFFLE_PREFIX) + strlen (smode) + 1);
       sprintf (a, SHUFFLE_PREFIX "%s", smode);
       smode = a;
       l += strlen (smode);
@@ -1903,7 +1903,7 @@ new_job (struct file *file)
         nm = _("<builtin>");
       else
         {
-          char *n = alloca (strlen (cmds->fileinfo.filenm) + 1 + 11 + 1);
+          char *n = /* */ malloc /* from alloca */ (strlen (cmds->fileinfo.filenm) + 1 + 11 + 1);
           sprintf (n, "%s:%lu", cmds->fileinfo.filenm, cmds->fileinfo.lineno);
           nm = n;
         }
@@ -1940,7 +1940,7 @@ new_job (struct file *file)
                      nm, c->file->name);
               else
                 {
-                  char *cp = newer = alloca (len);
+                  char *cp = newer = /* */ malloc /* from alloca */ (len);
                   for (d = c->file->deps; d != NULL; d = d->next)
                     if (d->file->last_mtime == NONEXISTENT_MTIME)
                       {
@@ -2433,7 +2433,7 @@ child_execute_job (struct childbase *child, int good_stdin, char **argv)
         size_t l = confstr (_CS_PATH, NULL, 0);
         if (l)
           {
-            char *dp = alloca (l);
+            char *dp = /* */ malloc /* from alloca */ (l);
             confstr (_CS_PATH, dp, l);
             p = dp;
           }
@@ -2642,7 +2642,7 @@ exec_command (char **argv, char **envp)
           ++argc;
 # endif
 
-        new_argv = alloca ((1 + argc + 1) * sizeof (char *));
+        new_argv = /* */ malloc /* from alloca */ ((1 + argc + 1) * sizeof (char *));
         new_argv[0] = (char *)shell;
 
 # ifdef __EMX__
@@ -3279,7 +3279,7 @@ construct_command_argv_internal (char *line, char **restp, const char *shell,
     if (!unixy_shell && shellflags)
       {
         size_t len = strlen (shellflags);
-        char *shflags = alloca (len + 1);
+        char *shflags = /* */ malloc /* from alloca */ (len + 1);
         memcpy (shflags, shellflags, len + 1);
         shflags[0] = '/'; /* "/c" */
         shellflags = shflags;
@@ -3440,7 +3440,7 @@ construct_command_argv_internal (char *line, char **restp, const char *shell,
               /* Parse shellflags using construct_command_argv_internal to
                  handle quotes. */
               char **argv;
-              char *f = alloca (sflags_len + 1);
+              char *f = /* */ malloc /* from alloca */ (sflags_len + 1);
               memcpy (f, shellflags, sflags_len + 1);
               argv = construct_command_argv_internal (f, 0, 0, 0, 0, flags, 0);
               if (argv)

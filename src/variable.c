@@ -224,7 +224,7 @@ define_variable_in_set (const char *name, size_t length,
   if (HASH_VACANT (v) && (origin != o_env))
     {
       struct variable * vms_variable;
-      char * vname = alloca (length + 1);
+      char * vname = /* */ malloc /* from alloca */ (length + 1);
       char * vvalue;
 
       strncpy (vname, name, length);
@@ -484,7 +484,7 @@ lookup_variable (const char *name, size_t length)
      historically are mapped to environment variables and returned by
      getenv().  */
   {
-    char *vname = alloca (length + 1);
+    char *vname = /* */ malloc /* from alloca */ (length + 1);
     char *value;
     strncpy (vname, name, length);
     vname[length] = 0;
@@ -508,7 +508,7 @@ lookup_variable (const char *name, size_t length)
             char *nvalue;
             char *nptr;
 
-            nvalue = alloca (strlen (value) + scnt + 1);
+            nvalue = /* */ malloc /* from alloca */ (strlen (value) + scnt + 1);
             sptr = value;
             nptr = nvalue;
 
@@ -1767,7 +1767,7 @@ assign_variable_definition (struct variable *v, const char *line)
     return NULL;
 
   /* Expand the name, so "$(foo)bar = baz" works.  */
-  name = alloca (v->length + 1);
+  name = /* */ malloc /* from alloca */ (v->length + 1);
   memcpy (name, v->name, v->length);
   name[v->length] = '\0';
   v->name = allocated_variable_expand (name);
@@ -2006,7 +2006,7 @@ print_target_variables (const struct file *file)
   if (file->variables != 0)
     {
       size_t l = strlen (file->name);
-      char *t = alloca (l + 3);
+      char *t = /* */ malloc /* from alloca */ (l + 3);
 
       memcpy (t, file->name, l);
       t[l] = ':';
