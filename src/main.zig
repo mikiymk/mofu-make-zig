@@ -3683,10 +3683,1070 @@ pub fn reset_jobserver() callconv(.C) void {
     free(@as(?*anyopaque, @ptrCast(jobserver_auth)));
     jobserver_auth = null;
 }
-// src/main.c:2579:15: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/main.c:1172:1: warning: unable to translate function, demoted to extern
-pub extern fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) c_int;
+pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) c_int {
+    var argc = arg_argc;
+    _ = &argc;
+    var argv = arg_argv;
+    _ = &argv;
+    var envp = arg_envp;
+    _ = &envp;
+    var makefile_status: c_int = 0;
+    _ = &makefile_status;
+    var read_files: ?*struct_goaldep = undefined;
+    _ = &read_files;
+    var current_directory: [4097]u8 = undefined;
+    _ = &current_directory;
+    var restarts: c_uint = 0;
+    _ = &restarts;
+    var syncing: c_uint = 0;
+    _ = &syncing;
+    var argv_slots: c_int = undefined;
+    _ = &argv_slots;
+    _ = initialize_variable_output();
+    if ((check_io_state() & @as(c_uint, @bitCast(@as(c_int, 8)))) != @as(c_uint, @bitCast(@as(c_int, 0)))) {
+        _ = atexit(&close_stdout);
+    }
+    output_init(&make_sync);
+    initialize_stopchar_map();
+    _ = setlocale(@as(c_int, 6), "");
+    _ = bindtextdomain("make", "/usr/local/share/locale");
+    _ = textdomain("make");
+    _ = sigemptyset(&fatal_signal_set);
+    if (bsd_signal(@as(c_int, 1), &fatal_error_signal) == @as(__sighandler_t, @ptrFromInt(@as(c_int, 1)))) {
+        _ = bsd_signal(@as(c_int, 1), @as(__sighandler_t, @ptrFromInt(@as(c_int, 1))));
+    } else {
+        _ = sigaddset(&fatal_signal_set, @as(c_int, 1));
+    }
+    if (bsd_signal(@as(c_int, 3), &fatal_error_signal) == @as(__sighandler_t, @ptrFromInt(@as(c_int, 1)))) {
+        _ = bsd_signal(@as(c_int, 3), @as(__sighandler_t, @ptrFromInt(@as(c_int, 1))));
+    } else {
+        _ = sigaddset(&fatal_signal_set, @as(c_int, 3));
+    }
+    if (bsd_signal(@as(c_int, 13), &fatal_error_signal) == @as(__sighandler_t, @ptrFromInt(@as(c_int, 1)))) {
+        _ = bsd_signal(@as(c_int, 13), @as(__sighandler_t, @ptrFromInt(@as(c_int, 1))));
+    } else {
+        _ = sigaddset(&fatal_signal_set, @as(c_int, 13));
+    }
+    if (bsd_signal(@as(c_int, 2), &fatal_error_signal) == @as(__sighandler_t, @ptrFromInt(@as(c_int, 1)))) {
+        _ = bsd_signal(@as(c_int, 2), @as(__sighandler_t, @ptrFromInt(@as(c_int, 1))));
+    } else {
+        _ = sigaddset(&fatal_signal_set, @as(c_int, 2));
+    }
+    if (bsd_signal(@as(c_int, 15), &fatal_error_signal) == @as(__sighandler_t, @ptrFromInt(@as(c_int, 1)))) {
+        _ = bsd_signal(@as(c_int, 15), @as(__sighandler_t, @ptrFromInt(@as(c_int, 1))));
+    } else {
+        _ = sigaddset(&fatal_signal_set, @as(c_int, 15));
+    }
+    if (bsd_signal(@as(c_int, 24), &fatal_error_signal) == @as(__sighandler_t, @ptrFromInt(@as(c_int, 1)))) {
+        _ = bsd_signal(@as(c_int, 24), @as(__sighandler_t, @ptrFromInt(@as(c_int, 1))));
+    } else {
+        _ = sigaddset(&fatal_signal_set, @as(c_int, 24));
+    }
+    if (bsd_signal(@as(c_int, 25), &fatal_error_signal) == @as(__sighandler_t, @ptrFromInt(@as(c_int, 1)))) {
+        _ = bsd_signal(@as(c_int, 25), @as(__sighandler_t, @ptrFromInt(@as(c_int, 1))));
+    } else {
+        _ = sigaddset(&fatal_signal_set, @as(c_int, 25));
+    }
+    _ = bsd_signal(@as(c_int, 17), @as(__sighandler_t, @ptrFromInt(@as(c_int, 0))));
+    output_init(null);
+    if (argv[@as(c_uint, @intCast(@as(c_int, 0)))] == null) {
+        argv[@as(c_uint, @intCast(@as(c_int, 0)))] = "";
+    }
+    if (@as(c_int, @bitCast(@as(c_uint, argv[@as(c_uint, @intCast(@as(c_int, 0)))][@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) {
+        program = "make";
+    } else {
+        program = strrchr(argv[@as(c_uint, @intCast(@as(c_int, 0)))], @as(c_int, '/'));
+        if (program == null) {
+            program = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+        } else {
+            program += 1;
+        }
+    }
+    initialize_global_hash_tables();
+    _ = get_tmpdir();
+    if (getcwd(@as([*c]u8, @ptrCast(@alignCast(&current_directory))), @as(usize, @bitCast(@as(c_long, @as(c_int, 4096))))) == null) {
+        perror_with_name("getcwd", "");
+        current_directory[@as(c_uint, @intCast(@as(c_int, 0)))] = '\x00';
+        directory_before_chdir = null;
+    } else {
+        directory_before_chdir = xstrdup(@as([*c]u8, @ptrCast(@alignCast(&current_directory))));
+    }
+    define_variable_in_set(".VARIABLES", @sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0)))).*.special = 1;
+    define_variable_in_set(".RECIPEPREFIX", @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0)))).*.special = 1;
+    _ = define_variable_in_set(".SHELLFLAGS", @sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "-c", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    _ = define_variable_in_set(".LOADED", @sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    {
+        var features: [*c]const u8 = "target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs notintermediate shell-export archives jobserver jobserver-fifo output-sync check-symlink load";
+        _ = &features;
+        _ = define_variable_in_set(".FEATURES", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), features, @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    }
+    _ = guile_gmake_setup(@as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    {
+        var i: c_uint = undefined;
+        _ = &i;
+        {
+            i = 0;
+            while (envp[i] != null) : (i +%= 1) {
+                var v: ?*struct_variable = undefined;
+                _ = &v;
+                var ep: [*c]const u8 = envp[i];
+                _ = &ep;
+                var @"export": enum_variable_export = @as(c_uint, @bitCast(v_export));
+                _ = &@"export";
+                var len: usize = undefined;
+                _ = &len;
+                while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(ep.*))]))) & (@as(c_int, 32) | @as(c_int, 1))) != @as(c_int, 0))) {
+                    ep += 1;
+                }
+                if (@as(c_int, @bitCast(@as(c_uint, ep.*))) == @as(c_int, '\x00')) continue;
+                len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(blk: {
+                    const ref = &ep;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                }) -% @intFromPtr(envp[i]))), @sizeOf(u8))));
+                if ((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 13))))) and (memcmp(@as(?*const anyopaque, @ptrCast(envp[i])), @as(?*const anyopaque, @ptrCast("MAKE_RESTARTS")), @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) {
+                    if (@as(c_int, @bitCast(@as(c_uint, ep.*))) == @as(c_int, '-')) {
+                        while (true) {
+                            stdio_traced = 1;
+                            if (!false) break;
+                        }
+                        ep += 1;
+                    }
+                    restarts = make_toui(ep, null);
+                    @"export" = @as(c_uint, @bitCast(v_noexport));
+                }
+                v = define_variable_in_set(envp[i], len, ep, @as(c_uint, @bitCast(o_env)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+                if ((v.*.name == "SHELL") or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "SHELL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "SHELL" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+                    @"export" = @as(c_uint, @bitCast(v_noexport));
+                    shell_var.name = xstrdup("SHELL");
+                    shell_var.length = 5;
+                    shell_var.value = xstrdup(ep);
+                }
+                v.*.@"export" = @"export";
+            }
+        }
+    }
+    if (lookup_variable("GNUMAKEFLAGS", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) != null) {
+        decode_env_switches("GNUMAKEFLAGS", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as(c_uint, @bitCast(o_command)));
+        _ = define_variable_in_set("GNUMAKEFLAGS", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_env)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    }
+    decode_env_switches("MAKEFLAGS", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as(c_uint, @bitCast(o_command)));
+    syncing = blk: {
+        const tmp = @as(c_uint, @intFromBool((output_sync == @as(c_int, 1)) or (output_sync == @as(c_int, 2))));
+        make_sync.syncout = tmp;
+        break :blk tmp;
+    };
+    while (true) {
+        output_context = if (@as(c_int, @bitCast((&make_sync).*.syncout)) != 0) &make_sync else null;
+        if (!false) break;
+    }
+    {
+        var env_slots: c_int = arg_job_slots;
+        _ = &env_slots;
+        arg_job_slots = -@as(c_int, 1);
+        decode_switches(argc, @as([*c][*c]const u8, @ptrCast(@alignCast(argv))), @as(c_uint, @bitCast(o_command)));
+        argv_slots = arg_job_slots;
+        if (arg_job_slots == -@as(c_int, 1)) {
+            arg_job_slots = env_slots;
+        }
+    }
+    if (print_usage_flag != 0) {
+        print_usage(@as(c_int, 0));
+    }
+    if (print_version_flag != 0) {
+        print_version();
+        die(@as(c_int, 0));
+    }
+    _ = setvbuf(stdout, null, @as(c_int, 1), @as(usize, @bitCast(@as(c_long, @as(c_int, 8192)))));
+    if (shuffle_mode != null) {
+        var effective_mode: [*c]const u8 = undefined;
+        _ = &effective_mode;
+        shuffle_set_mode(shuffle_mode);
+        free(@as(?*anyopaque, @ptrCast(shuffle_mode)));
+        effective_mode = shuffle_get_mode();
+        if (effective_mode != null) {
+            shuffle_mode = xstrdup(effective_mode);
+        } else {
+            shuffle_mode = null;
+        }
+    }
+    if (isatty(fileno(stdout)) != 0) if (!(lookup_variable("MAKE_TERMOUT", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) != null)) {
+        var tty: [*c]const u8 = ttyname(fileno(stdout));
+        _ = &tty;
+        define_variable_in_set("MAKE_TERMOUT", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), if (tty != null) tty else "true", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0)))).*.@"export" = @as(c_uint, @bitCast(v_export));
+    };
+    if (isatty(fileno(stderr)) != 0) if (!(lookup_variable("MAKE_TERMERR", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) != null)) {
+        var tty: [*c]const u8 = ttyname(fileno(stderr));
+        _ = &tty;
+        define_variable_in_set("MAKE_TERMERR", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), if (tty != null) tty else "true", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0)))).*.@"export" = @as(c_uint, @bitCast(v_export));
+    };
+    syncing = @as(c_uint, @intFromBool((output_sync == @as(c_int, 1)) or (output_sync == @as(c_int, 2))));
+    if ((@as(c_int, @bitCast(make_sync.syncout)) != 0) and !(syncing != 0)) {
+        output_close(&make_sync);
+    }
+    make_sync.syncout = syncing;
+    while (true) {
+        output_context = if (@as(c_int, @bitCast((&make_sync).*.syncout)) != 0) &make_sync else null;
+        if (!false) break;
+    }
+    {
+        var v: ?*struct_variable = lookup_variable("MAKELEVEL", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+        _ = &v;
+        if (((v != null) and (@as(c_int, @bitCast(@as(c_uint, v.*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00'))) and (@as(c_int, @bitCast(@as(c_uint, v.*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '-'))) {
+            makelevel = make_toui(v.*.value, null);
+        } else {
+            makelevel = 0;
+        }
+    }
+    always_make_flag = @intFromBool((always_make_set != 0) and (restarts == @as(c_uint, @bitCast(@as(c_int, 0)))));
+    if (no_builtin_variables_flag != 0) {
+        no_builtin_rules_flag = 1;
+    }
+    if ((@as(c_int, 1) & db_level) != 0) {
+        print_version();
+        _ = fflush(stdout);
+    }
+    if ((((@as(c_int, @bitCast(@as(c_uint, current_directory[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00')) and (argv[@as(c_uint, @intCast(@as(c_int, 0)))] != null)) and (@as(c_int, @bitCast(@as(c_uint, argv[@as(c_uint, @intCast(@as(c_int, 0)))][@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '/'))) and (strchr(argv[@as(c_uint, @intCast(@as(c_int, 0)))], @as(c_int, '/')) != null)) {
+        argv[@as(c_uint, @intCast(@as(c_int, 0)))] = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), @as([*c]u8, @ptrCast(@alignCast(&current_directory))), "/", argv[@as(c_uint, @intCast(@as(c_int, 0)))]));
+    }
+    starting_directory = @as([*c]u8, @ptrCast(@alignCast(&current_directory)));
+    if (directories != null) {
+        var i: c_uint = undefined;
+        _ = &i;
+        {
+            i = 0;
+            while (directories.*.list[i] != null) : (i +%= 1) {
+                var dir: [*c]const u8 = directories.*.list[i];
+                _ = &dir;
+                if (chdir(dir) < @as(c_int, 0)) {
+                    pfatal_with_name(dir);
+                }
+            }
+        }
+    }
+    if (directories != null) {
+        if (getcwd(@as([*c]u8, @ptrCast(@alignCast(&current_directory))), @as(usize, @bitCast(@as(c_long, @as(c_int, 4096))))) == null) {
+            perror_with_name("getcwd", "");
+            starting_directory = null;
+        } else {
+            starting_directory = @as([*c]u8, @ptrCast(@alignCast(&current_directory)));
+        }
+    }
+    _ = define_variable_in_set("CURDIR", @sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as([*c]u8, @ptrCast(@alignCast(&current_directory))), @as(c_uint, @bitCast(o_file)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    construct_include_path(if (include_dirs != null) include_dirs.*.list else null);
+    while (true) {
+        if (jobserver_auth != null) {
+            if (argv_slots == -@as(c_int, 1)) {
+                if (jobserver_parse_auth(jobserver_auth) != 0) break;
+                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("warning: jobserver unavailable: using -j1.  Add '+' to parent make rule."));
+                arg_job_slots = 1;
+            } else if (!(restarts != 0)) {
+                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), ((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3)))), gettext("warning: -j%d forced in submake: resetting jobserver mode."), argv_slots);
+            }
+            reset_jobserver();
+        }
+    }
+    _ = define_variable_in_set("MAKE_COMMAND", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), argv[@as(c_uint, @intCast(@as(c_int, 0)))], @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    _ = define_variable_in_set("MAKE", @sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(MAKE_COMMAND)", @as(c_uint, @bitCast(o_default)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    if (command_variables != null) {
+        var cv: [*c]struct_command_variable = undefined;
+        _ = &cv;
+        var v: ?*struct_variable = undefined;
+        _ = &v;
+        var len: usize = 0;
+        _ = &len;
+        var value: [*c]u8 = undefined;
+        _ = &value;
+        var p: [*c]u8 = undefined;
+        _ = &p;
+        {
+            cv = command_variables;
+            while (cv != null) : (cv = cv.*.next) {
+                v = cv.*.variable;
+                len +%= @as(usize, @bitCast(@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% strlen(v.*.name)));
+                if (!(v.*.recursive != 0)) {
+                    len +%= 1;
+                }
+                len +%= 1;
+                len +%= @as(usize, @bitCast(@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% strlen(v.*.value)));
+                len +%= 1;
+            }
+        }
+        p = blk: {
+            const tmp = @as([*c]u8, @ptrCast(@alignCast(malloc(len))));
+            value = tmp;
+            break :blk tmp;
+        };
+        {
+            cv = command_variables;
+            while (cv != null) : (cv = cv.*.next) {
+                v = cv.*.variable;
+                p = quote_for_env(p, v.*.name);
+                if (!(v.*.recursive != 0)) {
+                    (blk: {
+                        const ref = &p;
+                        const tmp = ref.*;
+                        ref.* += 1;
+                        break :blk tmp;
+                    }).* = ':';
+                }
+                (blk: {
+                    const ref = &p;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                }).* = '=';
+                p = quote_for_env(p, v.*.value);
+                (blk: {
+                    const ref = &p;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                }).* = ' ';
+            }
+        }
+        (blk: {
+            const tmp = -@as(c_int, 1);
+            if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+        }).* = '\x00';
+        _ = define_variable_in_set("-*-command-variables-*-", @sizeOf([24]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), value, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set("MAKEOVERRIDES", @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "${-*-command-variables-*-}", @as(c_uint, @bitCast(o_default)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    }
+    if (makefiles != null) {
+        var i: c_uint = undefined;
+        _ = &i;
+        {
+            i = 0;
+            while (i < makefiles.*.idx) : (i +%= 1) if ((@as(c_int, @bitCast(@as(c_uint, makefiles.*.list[i][@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '-')) and (@as(c_int, @bitCast(@as(c_uint, makefiles.*.list[i][@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\x00'))) {
+                var outfile: [*c]FILE = undefined;
+                _ = &outfile;
+                var newnm: [*c]u8 = undefined;
+                _ = &newnm;
+                if (stdin_offset >= @as(c_int, 0)) {
+                    fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("Makefile from standard input specified twice"));
+                }
+                outfile = get_tmpfile(&newnm);
+                if (!(outfile != null)) {
+                    fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("cannot store makefile from stdin to a temporary file"));
+                }
+                while (!(feof(stdin) != 0) and !(ferror(stdin) != 0)) {
+                    var buf: [2048]u8 = undefined;
+                    _ = &buf;
+                    var n: usize = fread(@as(?*anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&buf))))), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @sizeOf([2048]u8), stdin);
+                    _ = &n;
+                    if ((n > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) and (fwrite(@as(?*const anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&buf))))), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), n, outfile) != n)) {
+                        fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(newnm) +% strlen(strerror(__errno_location().*)), gettext("fwrite: temporary file %s: %s"), newnm, strerror(__errno_location().*));
+                    }
+                }
+                _ = fclose(outfile);
+                makefiles.*.list[i] = strcache_add(newnm);
+                stdin_offset = @as(c_int, @bitCast(i));
+                free(@as(?*anyopaque, @ptrCast(newnm)));
+            };
+        }
+    }
+    if (stdin_offset >= @as(c_int, 0)) {
+        var f: ?*struct_file = enter_file((blk: {
+            const tmp = stdin_offset;
+            if (tmp >= 0) break :blk makefiles.*.list + @as(usize, @intCast(tmp)) else break :blk makefiles.*.list - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+        }).*);
+        _ = &f;
+        f.*.updated = 1;
+        f.*.update_status = @as(c_uint, @bitCast(us_success));
+        f.*.command_state = @as(c_uint, @bitCast(cs_finished));
+        f.*.intermediate = 0;
+        f.*.dontcare = 0;
+        f.*.last_mtime = blk: {
+            const tmp = f_mtime(f, @as(c_int, 0));
+            f.*.mtime_before_update = tmp;
+            break :blk tmp;
+        };
+    }
+    {
+        _ = bsd_signal(@as(c_int, 17), &child_handler);
+    }
+    {
+        var block: sigset_t = undefined;
+        _ = &block;
+        _ = sigemptyset(&block);
+        _ = sigaddset(&block, @as(c_int, 17));
+        if (sigprocmask(@as(c_int, 2), &block, null) < @as(c_int, 0)) {
+            pfatal_with_name("sigprocmask(SIG_SETMASK, SIGCHLD)");
+        }
+    }
+    _ = bsd_signal(@as(c_int, 10), &debug_signal_handler);
+    set_default_suffixes();
+    define_automatic_variables();
+    define_makeflags(@as(c_int, 0)).*.@"export" = @as(c_uint, @bitCast(v_export));
+    define_default_variables();
+    default_file = enter_file(strcache_add(".DEFAULT"));
+    default_goal_var = define_variable_in_set(".DEFAULT_GOAL", @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_file)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    if (eval_strings != null) {
+        var p: [*c]u8 = undefined;
+        _ = &p;
+        var endp: [*c]u8 = undefined;
+        _ = &endp;
+        var value: [*c]u8 = undefined;
+        _ = &value;
+        var i: c_uint = undefined;
+        _ = &i;
+        var len: usize = ((@sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) *% @as(c_ulong, @bitCast(@as(c_ulong, eval_strings.*.idx)));
+        _ = &len;
+        {
+            i = 0;
+            while (i < eval_strings.*.idx) : (i +%= 1) {
+                p = xstrdup(eval_strings.*.list[i]);
+                len +%= @as(usize, @bitCast(@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% strlen(p)));
+                eval_buffer(p, null);
+                free(@as(?*anyopaque, @ptrCast(p)));
+            }
+        }
+        p = blk: {
+            const tmp = blk_1: {
+                const tmp_2 = @as([*c]u8, @ptrCast(@alignCast(malloc(len))));
+                value = tmp_2;
+                break :blk_1 tmp_2;
+            };
+            endp = tmp;
+            break :blk tmp;
+        };
+        {
+            i = 0;
+            while (i < eval_strings.*.idx) : (i +%= 1) {
+                p = stpcpy(p, "--eval=");
+                p = quote_for_env(p, eval_strings.*.list[i]);
+                endp = blk: {
+                    const ref = &p;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                };
+                endp.* = ' ';
+            }
+        }
+        endp.* = '\x00';
+        _ = define_variable_in_set("-*-eval-flags-*-", @sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), value, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    }
+    {
+        var old_builtin_rules_flag: c_int = no_builtin_rules_flag;
+        _ = &old_builtin_rules_flag;
+        var old_builtin_variables_flag: c_int = no_builtin_variables_flag;
+        _ = &old_builtin_variables_flag;
+        var old_arg_job_slots: c_int = arg_job_slots;
+        _ = &old_arg_job_slots;
+        read_files = read_all_makefiles(if (makefiles == null) null else makefiles.*.list);
+        arg_job_slots = -@as(c_int, 1);
+        decode_env_switches("GNUMAKEFLAGS", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as(c_uint, @bitCast(o_env)));
+        _ = define_variable_in_set("GNUMAKEFLAGS", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_override)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        decode_env_switches("MAKEFLAGS", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as(c_uint, @bitCast(o_env)));
+        if ((arg_job_slots == -@as(c_int, 1)) or (argv_slots != -@as(c_int, 1))) {
+            arg_job_slots = old_arg_job_slots;
+        } else if ((jobserver_auth != null) and (arg_job_slots != old_arg_job_slots)) {
+            if (!(restarts != 0)) {
+                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), ((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3)))), gettext("warning: -j%d forced in makefile: resetting jobserver mode."), arg_job_slots);
+            }
+            reset_jobserver();
+        }
+        syncing = @as(c_uint, @intFromBool((output_sync == @as(c_int, 1)) or (output_sync == @as(c_int, 2))));
+        if ((@as(c_int, @bitCast(make_sync.syncout)) != 0) and !(syncing != 0)) {
+            output_close(&make_sync);
+        }
+        make_sync.syncout = syncing;
+        while (true) {
+            output_context = if (@as(c_int, @bitCast((&make_sync).*.syncout)) != 0) &make_sync else null;
+            if (!false) break;
+        }
+        if (no_builtin_variables_flag != 0) {
+            no_builtin_rules_flag = 1;
+        }
+        if ((no_builtin_rules_flag != 0) and !(old_builtin_rules_flag != 0)) {
+            if (suffix_file.*.builtin != 0) {
+                free_ns_chain(@as([*c]struct_nameseq, @ptrCast(@alignCast(suffix_file.*.deps))));
+                suffix_file.*.deps = null;
+            }
+            _ = define_variable_in_set("SUFFIXES", @sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        }
+        if ((no_builtin_variables_flag != 0) and !(old_builtin_variables_flag != 0)) {
+            undefine_default_variables();
+        }
+    }
+    if (jobserver_auth != null) {
+        job_slots = 0;
+    } else if (arg_job_slots == -@as(c_int, 1)) {
+        job_slots = 1;
+    } else {
+        job_slots = @as(c_uint, @bitCast(arg_job_slots));
+    }
+    if ((job_slots > @as(c_uint, @bitCast(@as(c_int, 1)))) and (jobserver_setup(@as(c_int, @bitCast(job_slots -% @as(c_uint, @bitCast(@as(c_int, 1))))), jobserver_style) != 0)) {
+        jobserver_auth = jobserver_get_auth();
+        if (jobserver_auth != null) {
+            master_job_slots = job_slots;
+            job_slots = 0;
+        }
+    }
+    if ((syncing != 0) and (job_slots == @as(c_uint, @bitCast(@as(c_int, 1))))) {
+        while (true) {
+            output_context = null;
+            if (!false) break;
+        }
+        output_close(&make_sync);
+        syncing = 0;
+        output_sync = 0;
+    }
+    if (syncing != 0) {
+        if (!(sync_mutex != null)) {
+            osync_setup();
+            sync_mutex = osync_get_mutex();
+        } else if (!(osync_parse_mutex(sync_mutex) != 0)) {
+            osync_clear();
+            free(@as(?*anyopaque, @ptrCast(sync_mutex)));
+            sync_mutex = null;
+            syncing = 0;
+        }
+    }
+    if (jobserver_auth != null) while (true) {
+        if (((@as(c_int, 2) | @as(c_int, 4)) & db_level) != 0) {
+            _ = printf(gettext("Using jobserver controller %s\n"), jobserver_auth);
+            _ = fflush(stdout);
+        }
+        if (!false) break;
+    };
+    if (sync_mutex != null) while (true) {
+        if ((@as(c_int, 2) & db_level) != 0) {
+            _ = printf(gettext("Using output-sync mutex %s\n"), sync_mutex);
+            _ = fflush(stdout);
+        }
+        if (!false) break;
+    };
+    _ = define_makeflags(@as(c_int, 0));
+    snap_deps();
+    install_default_suffix_rules();
+    convert_to_pattern();
+    install_default_implicit_rules();
+    snap_implicit_rules();
+    build_vpath_lists();
+    if (old_files != null) {
+        var p: [*c][*c]const u8 = undefined;
+        _ = &p;
+        {
+            p = old_files.*.list;
+            while (p.* != null) : (p += 1) {
+                var f: ?*struct_file = enter_file(p.*);
+                _ = &f;
+                f.*.last_mtime = blk: {
+                    const tmp = @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2))));
+                    f.*.mtime_before_update = tmp;
+                    break :blk tmp;
+                };
+                f.*.updated = 1;
+                f.*.update_status = @as(c_uint, @bitCast(us_success));
+                f.*.command_state = @as(c_uint, @bitCast(cs_finished));
+            }
+        }
+    }
+    if (!(restarts != 0) and (new_files != null)) {
+        var p: [*c][*c]const u8 = undefined;
+        _ = &p;
+        {
+            p = new_files.*.list;
+            while (p.* != null) : (p += 1) {
+                var f: ?*struct_file = enter_file(p.*);
+                _ = &f;
+                f.*.last_mtime = blk: {
+                    const tmp = ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+                    f.*.mtime_before_update = tmp;
+                    break :blk tmp;
+                };
+            }
+        }
+    }
+    remote_setup();
+    while (true) {
+        output_context = null;
+        if (!false) break;
+    }
+    output_close(&make_sync);
+    if (shuffle_mode != null) while (true) {
+        if ((@as(c_int, 1) & db_level) != 0) {
+            _ = printf(gettext("Enabled shuffle mode: %s\n"), shuffle_mode);
+            _ = fflush(stdout);
+        }
+        if (!false) break;
+    };
+    if (read_files != null) {
+        var makefile_mtimes: [*c]uintmax_t = undefined;
+        _ = &makefile_mtimes;
+        var skipped_makefiles: ?*struct_goaldep = null;
+        _ = &skipped_makefiles;
+        var nargv: [*c][*c]const u8 = @as([*c][*c]const u8, @ptrCast(@alignCast(argv)));
+        _ = &nargv;
+        var any_failed: c_int = 0;
+        _ = &any_failed;
+        var status: enum_update_status_38 = undefined;
+        _ = &status;
+        while (true) {
+            if ((@as(c_int, 1) & db_level) != 0) {
+                _ = printf(gettext("Updating makefiles....\n"));
+                _ = fflush(stdout);
+            }
+            if (!false) break;
+        }
+        {
+            var num_mkfiles: c_uint = 0;
+            _ = &num_mkfiles;
+            var d: ?*struct_goaldep = read_files;
+            _ = &d;
+            read_files = null;
+            while (d != @as(?*struct_goaldep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) {
+                var t: ?*struct_goaldep = d;
+                _ = &t;
+                d = d.*.next;
+                t.*.next = read_files;
+                read_files = t;
+                num_mkfiles +%= 1;
+            }
+            makefile_mtimes = @as([*c]uintmax_t, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_ulong, num_mkfiles))) *% @sizeOf(uintmax_t)))));
+        }
+        {
+            var d: ?*struct_goaldep = read_files;
+            _ = &d;
+            var last: ?*struct_goaldep = null;
+            _ = &last;
+            var mm_idx: c_uint = 0;
+            _ = &mm_idx;
+            while (d != null) {
+                var skip: c_int = 0;
+                _ = &skip;
+                var f: ?*struct_file = d.*.file;
+                _ = &f;
+                if (f.*.phony != 0) {
+                    skip = 1;
+                } else {
+                    f = f.*.double_colon;
+                    while (f != @as(?*struct_file, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) : (f = f.*.prev) if ((f.*.deps == @as(?*struct_dep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) and (f.*.cmds != @as(?*struct_commands, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+                        skip = 1;
+                        break;
+                    };
+                }
+                if (!(skip != 0)) {
+                    makefile_mtimes[blk: {
+                            const ref = &mm_idx;
+                            const tmp = ref.*;
+                            ref.* +%= 1;
+                            break :blk tmp;
+                        }] = if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 0)) else d.*.file.*.last_mtime;
+                    last = d;
+                    d = d.*.next;
+                } else {
+                    while (true) {
+                        if ((@as(c_int, 2) & db_level) != 0) {
+                            _ = printf(gettext("Makefile '%s' might loop; not remaking it.\n"), f.*.name);
+                            _ = fflush(stdout);
+                        }
+                        if (!false) break;
+                    }
+                    if (last != null) {
+                        last.*.next = d.*.next;
+                    } else {
+                        read_files = d.*.next;
+                    }
+                    if ((d.*.@"error" != 0) and !((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(2))) != 0)) {
+                        d.*.next = skipped_makefiles;
+                        skipped_makefiles = d;
+                        any_failed = 1;
+                    } else {
+                        free(@as(?*anyopaque, @ptrCast(d)));
+                    }
+                    d = if (last != null) last.*.next else read_files;
+                }
+            }
+        }
+        _ = define_makeflags(@as(c_int, 1));
+        {
+            var orig_db_level: c_int = db_level;
+            _ = &orig_db_level;
+            if (!((@as(c_int, 256) & db_level) != 0)) {
+                db_level = @as(c_int, 0);
+            }
+            rebuilding_makefiles = 1;
+            status = update_goal_chain(read_files);
+            rebuilding_makefiles = 0;
+            db_level = orig_db_level;
+        }
+        while (skipped_makefiles != @as(?*struct_goaldep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) {
+            var d: ?*struct_goaldep = skipped_makefiles;
+            _ = &d;
+            var err: [*c]const u8 = strerror(d.*.@"error");
+            _ = &err;
+            @"error"(&d.*.floc, strlen(if (d.*.name != null) d.*.name else d.*.file.*.name) +% strlen(err), gettext("%s: %s"), if (d.*.name != null) d.*.name else d.*.file.*.name, err);
+            skipped_makefiles = skipped_makefiles.*.next;
+            free(@as(?*anyopaque, @ptrCast(d)));
+        }
+        if ((any_failed != 0) and (status == @as(c_uint, @bitCast(us_success)))) {
+            status = @as(c_uint, @bitCast(us_none));
+        }
+        while (true) {
+            switch (status) {
+                @as(c_uint, @bitCast(@as(c_int, 2))) => break,
+                @as(c_uint, @bitCast(@as(c_int, 1))) => {
+                    {
+                        var d: ?*struct_goaldep = undefined;
+                        _ = &d;
+                        {
+                            d = read_files;
+                            while (d != null) : (d = d.*.next) if (d.*.file.*.unloaded != 0) {
+                                var f: ?*struct_file = d.*.file;
+                                _ = &f;
+                                if (load_file(&d.*.floc, f, @as(c_int, 0)) == @as(c_int, 0)) {
+                                    fatal(&d.*.floc, strlen(f.*.name), gettext("%s: failed to load"), f.*.name);
+                                }
+                                f.*.unloaded = 0;
+                                f.*.loaded = 1;
+                            };
+                        }
+                    }
+                    if (false) {
+                        var d: ?*struct_goaldep = undefined;
+                        _ = &d;
+                        {
+                            d = read_files;
+                            while (d != null) : (d = d.*.next) if ((d.*.@"error" != 0) and !((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(2))) != 0)) {
+                                var err: [*c]const u8 = strerror(d.*.@"error");
+                                _ = &err;
+                                @"error"(&d.*.floc, strlen(if (d.*.name != null) d.*.name else d.*.file.*.name) +% strlen(err), gettext("%s: %s"), if (d.*.name != null) d.*.name else d.*.file.*.name, err);
+                                any_failed = 1;
+                            };
+                        }
+                    }
+                    break;
+                },
+                @as(c_uint, @bitCast(@as(c_int, 3))), @as(c_uint, @bitCast(@as(c_int, 0))) => {
+                    if (status == @as(c_uint, @bitCast(us_failed))) {
+                        var any_remade: c_int = 0;
+                        _ = &any_remade;
+                        var i: c_uint = undefined;
+                        _ = &i;
+                        var d: ?*struct_goaldep = undefined;
+                        _ = &d;
+                        {
+                            _ = blk: {
+                                i = 0;
+                                break :blk blk_1: {
+                                    const tmp = read_files;
+                                    d = tmp;
+                                    break :blk_1 tmp;
+                                };
+                            };
+                            while (d != null) : (_ = blk: {
+                                i +%= 1;
+                                break :blk blk_1: {
+                                    const tmp = d.*.next;
+                                    d = tmp;
+                                    break :blk_1 tmp;
+                                };
+                            }) {
+                                if (d.*.file.*.updated != 0) {
+                                    if (@as(c_int, @bitCast(d.*.file.*.update_status)) == us_success) {
+                                        any_remade |= (if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 0)) else d.*.file.*.last_mtime) != makefile_mtimes[i];
+                                    } else if (!((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(2))) != 0)) {
+                                        var mtime: uintmax_t = undefined;
+                                        _ = &mtime;
+                                        @"error"(&d.*.floc, strlen(d.*.file.*.name), gettext("Failed to remake makefile '%s'."), d.*.file.*.name);
+                                        mtime = if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 0)) else d.*.file.*.last_mtime;
+                                        any_remade |= (mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) and (mtime != makefile_mtimes[i]);
+                                        makefile_status = 2;
+                                        any_failed = 1;
+                                    }
+                                } else if (!((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(2))) != 0)) {
+                                    var dnm: [*c]const u8 = if (d.*.name != null) d.*.name else d.*.file.*.name;
+                                    _ = &dnm;
+                                    if ((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(1))) != 0) {
+                                        @"error"(&d.*.floc, strlen(dnm), gettext("Included makefile '%s' was not found."), dnm);
+                                    } else {
+                                        @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(dnm), gettext("Makefile '%s' was not found"), dnm);
+                                        any_failed = 1;
+                                    }
+                                }
+                            }
+                        }
+                        if (!(any_remade != 0)) break;
+                    }
+                    remove_intermediates(@as(c_int, 0));
+                    if (print_data_base_flag != 0) {
+                        print_data_base();
+                    }
+                    clean_jobserver(@as(c_int, 0));
+                    if (makefiles != null) {
+                        var mfidx: c_int = 0;
+                        _ = &mfidx;
+                        var av: [*c][*c]u8 = argv;
+                        _ = &av;
+                        var nv: [*c][*c]const u8 = undefined;
+                        _ = &nv;
+                        nv = blk: {
+                            const tmp = @as([*c][*c]const u8, @ptrCast(@alignCast(malloc(@sizeOf([*c]u8) *% @as(c_ulong, @bitCast(@as(c_long, (argc + @as(c_int, 1)) + @as(c_int, 1))))))));
+                            nargv = tmp;
+                            break :blk tmp;
+                        };
+                        (blk: {
+                            const ref = &nv;
+                            const tmp = ref.*;
+                            ref.* += 1;
+                            break :blk tmp;
+                        }).* = (blk: {
+                            const ref = &av;
+                            const tmp = ref.*;
+                            ref.* += 1;
+                            break :blk tmp;
+                        }).*;
+                        while (av.* != null) : (_ = blk: {
+                            av += 1;
+                            break :blk blk_1: {
+                                const ref = &nv;
+                                ref.* += 1;
+                                break :blk_1 ref.*;
+                            };
+                        }) {
+                            var f: [*c]u8 = undefined;
+                            _ = &f;
+                            var a: [*c]u8 = av.*;
+                            _ = &a;
+                            var mf: [*c]const u8 = (blk: {
+                                const tmp = mfidx;
+                                if (tmp >= 0) break :blk makefiles.*.list + @as(usize, @intCast(tmp)) else break :blk makefiles.*.list - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+                            }).*;
+                            _ = &mf;
+                            _ = @as(c_int, 0);
+                            nv.* = a;
+                            if (@as(c_int, @bitCast(@as(c_uint, a[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '-')) continue;
+                            if (@as(c_int, @bitCast(@as(c_uint, a[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '-')) {
+                                if ((strcmp(a, "--file") == @as(c_int, 0)) or (strcmp(a, "--makefile") == @as(c_int, 0))) {
+                                    av += 1;
+                                } else if (!(strncmp(a, "--file=", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 7))))) == @as(c_int, 0)) and !(strncmp(a, "--makefile=", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 11))))) == @as(c_int, 0))) continue;
+                                if (mfidx == stdin_offset) {
+                                    var na: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(((@sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% strlen(mf)) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                                    _ = &na;
+                                    _ = sprintf(na, "--temp-stdin=%s", mf);
+                                    nv.* = na;
+                                } else {
+                                    var na: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(strlen(mf) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))))));
+                                    _ = &na;
+                                    _ = sprintf(na, "-f%s", mf);
+                                    nv.* = na;
+                                }
+                                mfidx += 1;
+                                continue;
+                            }
+                            f = strchr(a, @as(c_int, 'f'));
+                            if (!(f != null)) continue;
+                            if (@as(c_int, @bitCast(@as(c_uint, f[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\x00')) {
+                                av += 1;
+                            }
+                            if (mfidx == stdin_offset) {
+                                const al: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(f) -% @intFromPtr(a))), @sizeOf(u8))));
+                                _ = &al;
+                                var na: [*c]u8 = undefined;
+                                _ = &na;
+                                if (al > @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) {
+                                    na = @as([*c]u8, @ptrCast(@alignCast(malloc(al +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                                    _ = memcpy(@as(?*anyopaque, @ptrCast(na)), @as(?*const anyopaque, @ptrCast(a)), al);
+                                    na[al] = '\x00';
+                                    (blk: {
+                                        const ref = &nv;
+                                        const tmp = ref.*;
+                                        ref.* += 1;
+                                        break :blk tmp;
+                                    }).* = na;
+                                }
+                                na = @as([*c]u8, @ptrCast(@alignCast(malloc(((@sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% strlen(mf)) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                                _ = sprintf(na, "--temp-stdin=%s", mf);
+                                nv.* = na;
+                            } else if (@as(c_int, @bitCast(@as(c_uint, f[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\x00')) {
+                                (blk: {
+                                    const ref = &nv;
+                                    ref.* += 1;
+                                    break :blk ref.*;
+                                }).* = mf;
+                            } else {
+                                const al: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(f) -% @intFromPtr(a))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))));
+                                _ = &al;
+                                const ml: usize = strlen(mf) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+                                _ = &ml;
+                                var na: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(al +% ml))));
+                                _ = &na;
+                                _ = memcpy(@as(?*anyopaque, @ptrCast(na)), @as(?*const anyopaque, @ptrCast(a)), al);
+                                _ = memcpy(@as(?*anyopaque, @ptrCast(na + al)), @as(?*const anyopaque, @ptrCast(mf)), ml);
+                                nv.* = na;
+                            }
+                            mfidx += 1;
+                        }
+                        nv.* = null;
+                    }
+                    if ((directories != null) and (directories.*.idx > @as(c_uint, @bitCast(@as(c_int, 0))))) {
+                        var bad: c_int = 1;
+                        _ = &bad;
+                        if (directory_before_chdir != null) {
+                            if (chdir(directory_before_chdir) < @as(c_int, 0)) {
+                                perror_with_name("chdir", "");
+                            } else {
+                                bad = 0;
+                            }
+                        }
+                        if (bad != 0) {
+                            fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("Couldn't change back to original directory"));
+                        }
+                    }
+                    restarts +%= 1;
+                    if ((@as(c_int, 1) & db_level) != 0) {
+                        var p: [*c][*c]const u8 = undefined;
+                        _ = &p;
+                        _ = printf(gettext("Re-executing[%u]:"), restarts);
+                        {
+                            p = nargv;
+                            while (p.* != null) : (p += 1) {
+                                _ = printf(" %s", p.*);
+                            }
+                        }
+                        _ = putchar(@as(c_int, '\n'));
+                        _ = fflush(stdout);
+                    }
+                    {
+                        var p: [*c][*c]u8 = undefined;
+                        _ = &p;
+                        {
+                            p = environ;
+                            while (p.* != null) : (p += 1) {
+                                if (strncmp(p.*, "MAKELEVEL=", (@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)) {
+                                    p.* = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 40))))))));
+                                    _ = sprintf(p.*, "%s=%u", "MAKELEVEL", makelevel);
+                                } else if (strncmp(p.*, "MAKE_RESTARTS=", @sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)) {
+                                    p.* = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 40))))))));
+                                    _ = sprintf(p.*, "MAKE_RESTARTS=%s%u", if (!!(stdio_traced != 0)) "-" else "", restarts);
+                                    restarts = 0;
+                                }
+                            }
+                        }
+                    }
+                    if (restarts != 0) {
+                        var b: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 40))))))));
+                        _ = &b;
+                        _ = sprintf(b, "MAKE_RESTARTS=%s%u", if (!!(stdio_traced != 0)) "-" else "", restarts);
+                        _ = putenv(b);
+                    }
+                    _ = fflush(stdout);
+                    _ = fflush(stderr);
+                    osync_clear();
+                    jobserver_pre_child(@as(c_int, 1));
+                    _ = exec_command(@as([*c][*c]u8, @ptrCast(@alignCast(nargv))), environ);
+                    jobserver_post_child(@as(c_int, 1));
+                    temp_stdin_unlink();
+                    _exit(@as(c_int, 127));
+                },
+                else => {},
+            }
+            break;
+        }
+        if (any_failed != 0) {
+            die(@as(c_int, 2));
+        }
+    }
+    _ = define_makeflags(@as(c_int, 0));
+    always_make_flag = always_make_set;
+    if ((restarts != 0) and (new_files != null)) {
+        var p: [*c][*c]const u8 = undefined;
+        _ = &p;
+        {
+            p = new_files.*.list;
+            while (p.* != null) : (p += 1) {
+                var f: ?*struct_file = enter_file(p.*);
+                _ = &f;
+                f.*.last_mtime = blk: {
+                    const tmp = ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+                    f.*.mtime_before_update = tmp;
+                    break :blk tmp;
+                };
+            }
+        }
+    }
+    temp_stdin_unlink();
+    if (goals == null) {
+        var p: [*c]u8 = undefined;
+        _ = &p;
+        if (default_goal_var.*.recursive != 0) {
+            p = variable_expand(default_goal_var.*.value);
+        } else {
+            p = variable_buffer_output(variable_buffer, default_goal_var.*.value, strlen(default_goal_var.*.value));
+            p.* = '\x00';
+            p = variable_buffer;
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) {
+            var f: ?*struct_file = lookup_file(p);
+            _ = &f;
+            if (f == null) {
+                var ns: [*c]struct_nameseq = undefined;
+                _ = &ns;
+                ns = @as([*c]struct_nameseq, @ptrCast(@alignCast(parse_file_seq(&p, @sizeOf(struct_nameseq), @as(c_int, 1), null, @as(c_int, 0)))));
+                if (ns != null) {
+                    if (ns.*.next != null) {
+                        fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext(".DEFAULT_GOAL contains more than one target"));
+                    }
+                    f = enter_file(strcache_add(ns.*.name));
+                    ns.*.name = null;
+                    free_ns_chain(ns);
+                }
+            }
+            if (f != null) {
+                goals = @as(?*struct_goaldep, @ptrCast(xcalloc(@sizeOf(struct_goaldep))));
+                goals.*.file = f;
+            }
+        }
+    } else {
+        lastgoal.*.next = null;
+    }
+    if (!(goals != null)) {
+        var v: ?*struct_variable = lookup_variable("MAKEFILE_LIST", @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+        _ = &v;
+        if (((v != null) and (v.*.value != null)) and (@as(c_int, @bitCast(@as(c_uint, v.*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00'))) {
+            fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("No targets"));
+        }
+        fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("No targets specified and no makefile found"));
+    }
+    while (true) {
+        shuffle_deps_recursive(@as(?*struct_dep, @ptrCast(goals)));
+        if (!false) break;
+    }
+    while (true) {
+        if ((@as(c_int, 1) & db_level) != 0) {
+            _ = printf(gettext("Updating goal targets....\n"));
+            _ = fflush(stdout);
+        }
+        if (!false) break;
+    }
+    {
+        while (true) {
+            switch (update_goal_chain(goals)) {
+                @as(c_uint, @bitCast(@as(c_int, 1))), @as(c_uint, @bitCast(@as(c_int, 0))) => break,
+                @as(c_uint, @bitCast(@as(c_int, 2))) => {
+                    makefile_status = 1;
+                    break;
+                },
+                @as(c_uint, @bitCast(@as(c_int, 3))) => {
+                    makefile_status = 2;
+                    break;
+                },
+                else => {},
+            }
+            break;
+        }
+        if (clock_skew_detected != 0) {
+            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("warning:  Clock skew detected.  Your build may be incomplete."));
+        }
+        die(makefile_status);
+    }
+    exit(@as(c_int, 0));
+    return 0;
+}
 pub var options: [121]u8 = @import("std").mem.zeroes([121]u8);
 pub var long_options: [49]struct_option = @import("std").mem.zeroes([49]struct_option);
 pub fn init_switches() callconv(.C) void {
@@ -7311,7 +8371,7 @@ pub inline fn ADD_SIG(sig: anytype) @TypeOf(sigaddset(&fatal_signal_set, sig)) {
 pub const FATAL_SIG = @compileError("unable to translate C expr: unexpected token 'if'");
 // src/main.c:1263:9
 pub const ADD_FLAG = @compileError("unable to translate macro: undefined identifier `new`");
-// src/main.c:3498:9
+// src/main.c:3500:9
 pub const timeval = struct_timeval;
 pub const timespec = struct_timespec;
 pub const __pthread_internal_list = struct___pthread_internal_list;

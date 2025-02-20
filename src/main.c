@@ -2523,8 +2523,10 @@ main (int argc, char **argv, char **envp)
           break;
 
         case us_failed:
+	case us_success:
           /* Failed to update.  Figure out if we care.  */
-          {
+          if (status == us_failed)
+	  {
             /* Nonzero if any makefile was successfully remade.  */
             int any_remade = 0;
             unsigned int i;
@@ -2575,14 +2577,14 @@ main (int argc, char **argv, char **envp)
                   }
               }
 
-            if (any_remade)
-              goto re_exec;
+            if (!any_remade)
+              /* goto re_exec; */
 
             break;
           }
 
-        case us_success:
-        re_exec:
+        
+        /* re_exec: */
           /* Updated successfully.  Re-exec ourselves.  */
 
           remove_intermediates (0);
