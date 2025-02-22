@@ -2533,11 +2533,12 @@ pub export fn subst_expand(arg_o: [*c]u8, arg_text: [*c]const u8, arg_subst: [*c
         if (p > t) {
             o = variable_buffer_output(o, t, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(t))), @sizeOf(u8)))));
         }
-        if ((by_word != 0) and (((p > text) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+        if ((by_word != 0) and (((p > text) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+            @as(u8, @bitCast((blk: {
                 const tmp = -@as(c_int, 1);
                 if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-            }).*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0))) or !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p[slen]))]))) & ((@as(c_int, 2) | @as(c_int, 4)) | @as(c_int, 1))) != @as(c_int, 0))))
-        {
+            }).*))
+        ]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0))) or !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p[slen]))]))) & ((@as(c_int, 2) | @as(c_int, 4)) | @as(c_int, 1))) != @as(c_int, 0)))) {
             o = variable_buffer_output(o, subst, slen);
         } else if (rlen > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
             o = variable_buffer_output(o, replace, rlen);
@@ -3089,12 +3090,14 @@ pub fn string_glob(arg_line: [*c]u8) callconv(.C) [*c]u8 {
         }
         _ = memcpy(@as(?*anyopaque, @ptrCast(&result.static[idx])), @as(?*const anyopaque, @ptrCast(chain.*.name)), len);
         idx +%= len;
-        result.static[blk: {
+        result.static[
+            blk: {
                 const ref = &idx;
                 const tmp = ref.*;
                 ref.* +%= 1;
                 break :blk tmp;
-            }] = ' ';
+            }
+        ] = ' ';
         free(@as(?*anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@volatileCast(@constCast(chain.*.name)))))));
         free(@as(?*anyopaque, @ptrCast(chain)));
         chain = next;
@@ -4375,18 +4378,20 @@ pub fn abspath(arg_name: [*c]const u8, arg_apath: [*c]u8) callconv(.C) [*c]u8 {
             if (len == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) break else if ((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) and (@as(c_int, @bitCast(@as(c_uint, start[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '.'))) {} else if (((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))) and (@as(c_int, @bitCast(@as(c_uint, start[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '.'))) and (@as(c_int, @bitCast(@as(c_uint, start[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '.'))) {
                 if (dest > (apath + root_len)) {
                     dest -= 1;
-                    while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+                    while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+                        @as(u8, @bitCast((blk: {
                             const tmp = -@as(c_int, 1);
                             if (tmp >= 0) break :blk dest + @as(usize, @intCast(tmp)) else break :blk dest - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-                        }).*))]))) & @as(c_int, 32768)) != @as(c_int, 0))) : (dest -= 1)
-                    {}
+                        }).*))
+                    ]))) & @as(c_int, 32768)) != @as(c_int, 0))) : (dest -= 1) {}
                 }
             } else {
-                if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+                if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+                    @as(u8, @bitCast((blk: {
                         const tmp = -@as(c_int, 1);
                         if (tmp >= 0) break :blk dest + @as(usize, @intCast(tmp)) else break :blk dest - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-                    }).*))]))) & @as(c_int, 32768)) != @as(c_int, 0)))
-                {
+                    }).*))
+                ]))) & @as(c_int, 32768)) != @as(c_int, 0))) {
                     (blk: {
                         const ref = &dest;
                         const tmp = ref.*;
@@ -4400,11 +4405,12 @@ pub fn abspath(arg_name: [*c]const u8, arg_apath: [*c]u8) callconv(.C) [*c]u8 {
             }
         }
     }
-    if ((dest > (apath + root_len)) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+    if ((dest > (apath + root_len)) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+        @as(u8, @bitCast((blk: {
             const tmp = -@as(c_int, 1);
             if (tmp >= 0) break :blk dest + @as(usize, @intCast(tmp)) else break :blk dest - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-        }).*))]))) & @as(c_int, 32768)) != @as(c_int, 0)))
-    {
+        }).*))
+    ]))) & @as(c_int, 32768)) != @as(c_int, 0))) {
         dest -= 1;
     }
     dest.* = '\x00';

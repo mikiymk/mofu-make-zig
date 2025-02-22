@@ -2168,7 +2168,7 @@ pub export fn define_makeflags(arg_makefile: c_int) [*c]struct_variable {
     var p: [*c]u8 = undefined;
     _ = &p;
     const struct_flag = extern struct {
-        next: [*c]struct_flag = @import("std").mem.zeroes([*c]struct_flag),
+        next: [*c]@This() = @import("std").mem.zeroes([*c]@This()),
         cs: [*c]const struct_command_switch = @import("std").mem.zeroes([*c]const struct_command_switch),
         arg: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     };
@@ -3154,12 +3154,14 @@ pub fn decode_switches(arg_argc: c_int, arg_argv: [*c][*c]const u8, arg_origin: 
                                 if (k < sl.*.idx) break;
                             }
                             if (cs.*.type == @as(c_uint, @bitCast(strlist))) {
-                                sl.*.list[blk: {
+                                sl.*.list[
+                                    blk: {
                                         const ref = &sl.*.idx;
                                         const tmp = ref.*;
                                         ref.* +%= 1;
                                         break :blk tmp;
-                                    }] = xstrdup(coptarg);
+                                    }
+                                ] = xstrdup(coptarg);
                                 if (cs.*.origin != null) {
                                     cs.*.origin.* = origin;
                                 }
@@ -3168,22 +3170,26 @@ pub fn decode_switches(arg_argc: c_int, arg_argv: [*c][*c]const u8, arg_origin: 
                                     fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), "INTERNAL: multiple --temp-stdin options provided!");
                                 }
                                 stdin_offset = @as(c_int, @bitCast(sl.*.idx));
-                                sl.*.list[blk: {
+                                sl.*.list[
+                                    blk: {
                                         const ref = &sl.*.idx;
                                         const tmp = ref.*;
                                         ref.* +%= 1;
                                         break :blk tmp;
-                                    }] = strcache_add(coptarg);
+                                    }
+                                ] = strcache_add(coptarg);
                                 if (cs.*.origin != null) {
                                     cs.*.origin.* = origin;
                                 }
                             } else {
-                                sl.*.list[blk: {
+                                sl.*.list[
+                                    blk: {
                                         const ref = &sl.*.idx;
                                         const tmp = ref.*;
                                         ref.* +%= 1;
                                         break :blk tmp;
-                                    }] = expand_command_line_file(coptarg);
+                                    }
+                                ] = expand_command_line_file(coptarg);
                                 if (cs.*.origin != null) {
                                     cs.*.origin.* = origin;
                                 }
@@ -4275,13 +4281,13 @@ pub fn decode_debug_flags() callconv(.C) void {
 }
 pub fn decode_output_sync_flags() callconv(.C) void {
     if (output_sync_option != null) {
-        if ((output_sync_option == "none") or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "none".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "none" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+        if ((output_sync_option == ("none")) or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "none".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "none" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
             output_sync = 0;
-        } else if ((output_sync_option == "line") or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "line".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "line" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+        } else if ((output_sync_option == ("line")) or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "line".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "line" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
             output_sync = 1;
-        } else if ((output_sync_option == "target") or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "target".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "target" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+        } else if ((output_sync_option == ("target")) or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "target".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "target" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
             output_sync = 2;
-        } else if ((output_sync_option == "recurse") or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "recurse".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "recurse" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+        } else if ((output_sync_option == ("recurse")) or ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, @bitCast(@as(c_uint, "recurse".*)))) and ((@as(c_int, @bitCast(@as(c_uint, output_sync_option.*))) == @as(c_int, '\x00')) or !(strcmp(output_sync_option + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "recurse" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
             output_sync = 3;
         } else {
             fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(output_sync_option), gettext("unknown output-sync type '%s'"), output_sync_option);
@@ -4457,7 +4463,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                     @"export" = @as(c_uint, @bitCast(v_noexport));
                 }
                 v = define_variable_in_set(envp[i], len, ep, @as(c_uint, @bitCast(o_env)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-                if ((v.*.name == "SHELL") or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "SHELL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "SHELL" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+                if ((v.*.name == ("SHELL")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "SHELL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "SHELL" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
                     @"export" = @as(c_uint, @bitCast(v_noexport));
                     shell_var.name = xstrdup("SHELL");
                     shell_var.length = 5;
@@ -4970,12 +4976,14 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                     };
                 }
                 if (!(skip != 0)) {
-                    makefile_mtimes[blk: {
+                    makefile_mtimes[
+                        blk: {
                             const ref = &mm_idx;
                             const tmp = ref.*;
                             ref.* +%= 1;
                             break :blk tmp;
-                        }] = if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 0)) else d.*.file.*.last_mtime;
+                        }
+                    ] = if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 0)) else d.*.file.*.last_mtime;
                     last = d;
                     d = d.*.next;
                 } else {
@@ -5458,12 +5466,14 @@ pub fn init_switches() callconv(.C) void {
     {
         c = 0;
         while (@as(c_ulong, @bitCast(@as(c_ulong, c))) < (@sizeOf([9]struct_option) / @sizeOf(struct_option))) : (c +%= 1) {
-            long_options[blk: {
+            long_options[
+                blk: {
                     const ref = &i;
                     const tmp = ref.*;
                     ref.* +%= 1;
                     break :blk tmp;
-                }] = long_option_aliases[c];
+                }
+            ] = long_option_aliases[c];
         }
     }
     long_options[i].name = null;

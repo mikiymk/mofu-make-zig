@@ -2609,10 +2609,12 @@ pub export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8,
                     break;
                 },
                 else => {
-                    if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+                    if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+                        @as(u8, @bitCast((blk: {
                             const tmp = -@as(c_int, 1);
                             if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-                        }).*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) break;
+                        }).*))
+                    ]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) break;
                     o = reference_variable(o, p, @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
                     break;
                 },

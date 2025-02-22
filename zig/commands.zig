@@ -2626,12 +2626,14 @@ pub export fn chop_commands(arg_cmds: [*c]struct_commands) void {
                 max +%= @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
                 lines = @as([*c][*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(lines)), max *% @sizeOf([*c]u8)))));
             }
-            lines[blk: {
+            lines[
+                blk: {
                     const ref = &nlines;
                     const tmp = ref.*;
                     ref.* +%= 1;
                     break :blk tmp;
-                }] = xstrndup(p, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(p))), @sizeOf(u8)))));
+                }
+            ] = xstrndup(p, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(p))), @sizeOf(u8)))));
             p = end;
             if (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) {
                 p += 1;

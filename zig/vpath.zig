@@ -2246,13 +2246,14 @@ pub export fn construct_vpath_list(arg_pattern: [*c]u8, arg_dirpath: [*c]u8) voi
     }
     maxelem = 2;
     p = dirpath;
-    while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+    while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+        @as(u8, @bitCast((blk: {
             const ref = &p;
             const tmp = ref.*;
             ref.* += 1;
             break :blk tmp;
-        }).*))]))) & (@as(c_int, 2) | @as(c_int, 64))) != @as(c_int, 0))
-    {
+        }).*))
+    ]))) & (@as(c_int, 2) | @as(c_int, 64))) != @as(c_int, 0)) {
         maxelem +%= 1;
     };
     vpath_1 = @as([*c][*c]const u8, @ptrCast(@alignCast(xmalloc(@as(c_ulong, @bitCast(@as(c_ulong, maxelem))) *% @sizeOf([*c]const u8)))));
@@ -2276,12 +2277,14 @@ pub export fn construct_vpath_list(arg_pattern: [*c]u8, arg_dirpath: [*c]u8) voi
             len -%= 1;
         }
         if ((len > @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) or (@as(c_int, @bitCast(@as(c_uint, v.*))) != @as(c_int, '.'))) {
-            vpath_1[blk: {
+            vpath_1[
+                blk: {
                     const ref = &elem;
                     const tmp = ref.*;
                     ref.* +%= 1;
                     break :blk tmp;
-                }] = dir_name(strcache_add_len(v, len));
+                }
+            ] = dir_name(strcache_add_len(v, len));
             if (len > maxvpath) {
                 maxvpath = len;
             }

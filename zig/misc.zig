@@ -2244,11 +2244,12 @@ pub export fn collapse_continuations(arg_line: [*c]u8) void {
             while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(in.*))]))) & @as(c_int, 2)) != @as(c_int, 0)) {
                 in += 1;
             }
-            if (!(posix_pedantic != 0)) while ((out > line) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+            if (!(posix_pedantic != 0)) while ((out > line) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+                @as(u8, @bitCast((blk: {
                     const tmp = -@as(c_int, 1);
                     if (tmp >= 0) break :blk out + @as(usize, @intCast(tmp)) else break :blk out - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-                }).*))]))) & @as(c_int, 2)) != @as(c_int, 0)))
-            {
+                }).*))
+            ]))) & @as(c_int, 2)) != @as(c_int, 0))) {
                 out -= 1;
             };
             (blk: {
@@ -2789,11 +2790,12 @@ pub fn get_tmptemplate() callconv(.C) [*c]u8 {
     _ = &cp;
     template = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(tmpdir) +% (@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))))));
     cp = stpcpy(template, tmpdir);
-    if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+    if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+        @as(u8, @bitCast((blk: {
             const tmp = -@as(c_int, 1);
             if (tmp >= 0) break :blk cp + @as(usize, @intCast(tmp)) else break :blk cp - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-        }).*))]))) & @as(c_int, 32768)) != @as(c_int, 0)))
-    {
+        }).*))
+    ]))) & @as(c_int, 32768)) != @as(c_int, 0))) {
         (blk: {
             const ref = &cp;
             const tmp = ref.*;

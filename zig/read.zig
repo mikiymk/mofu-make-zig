@@ -2294,12 +2294,14 @@ pub export fn construct_include_path(arg_arg_dirs: [*c][*c]const u8) void {
             if (len > max_incl_len) {
                 max_incl_len = len;
             }
-            dirs[blk: {
+            dirs[
+                blk: {
                     const ref = &idx;
                     const tmp = ref.*;
                     ref.* +%= 1;
                     break :blk tmp;
-                }] = strcache_add_len(dir, len);
+                }
+            ] = strcache_add_len(dir, len);
         }
         free(@as(?*anyopaque, @ptrCast(expanded)));
     };
@@ -2323,12 +2325,14 @@ pub export fn construct_include_path(arg_arg_dirs: [*c][*c]const u8) void {
                     if (len > max_incl_len) {
                         max_incl_len = len;
                     }
-                    dirs[blk: {
+                    dirs[
+                        blk: {
                             const ref = &idx;
                             const tmp = ref.*;
                             ref.* +%= 1;
                             break :blk tmp;
-                        }] = strcache_add_len(cpp.*, len);
+                        }
+                    ] = strcache_add_len(cpp.*, len);
                 }
             }
         }
@@ -2614,12 +2618,14 @@ pub export fn parse_file_seq(arg_stringp: [*c][*c]u8, arg_size: usize, arg_stopm
                 tp = tmpbuf.static;
                 if (nlen == @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) continue;
             } else {
-                tp[blk: {
+                tp[
+                    blk: {
                         const ref = &nlen;
                         const tmp = ref.*;
                         ref.* +%= 1;
                         break :blk tmp;
-                    }] = ')';
+                    }
+                ] = ')';
                 tp[nlen] = '\x00';
             }
         }
@@ -3404,12 +3410,14 @@ pub fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) v
                 }
                 _ = memcpy(@as(?*anyopaque, @ptrCast(&commands_1[commands_idx])), @as(?*const anyopaque, @ptrCast(line + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), linelen -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
                 commands_idx +%= linelen -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
-                commands_1[blk: {
+                commands_1[
+                    blk: {
                         const ref = &commands_idx;
                         const tmp = ref.*;
                         ref.* +%= 1;
                         break :blk tmp;
-                    }] = '\n';
+                    }
+                ] = '\n';
                 continue;
             }
         }
@@ -3977,12 +3985,14 @@ pub fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) v
                 }
                 _ = memcpy(@as(?*anyopaque, @ptrCast(commands_1)), @as(?*const anyopaque, @ptrCast(cmdleft)), l);
                 commands_idx +%= l;
-                commands_1[blk: {
+                commands_1[
+                    blk: {
                         const ref = &commands_idx;
                         const tmp = ref.*;
                         ref.* +%= 1;
                         break :blk tmp;
-                    }] = '\n';
+                    }
+                ] = '\n';
             }
             check_specials(filenames, set_default);
         }
@@ -4216,12 +4226,14 @@ pub fn do_define(arg_name: [*c]u8, arg_origin: enum_variable_origin, arg_ebuf: [
         }
         _ = memcpy(@as(?*anyopaque, @ptrCast(&definition[idx])), @as(?*const anyopaque, @ptrCast(line)), len);
         idx +%= len;
-        definition[blk: {
+        definition[
+            blk: {
                 const ref = &idx;
                 const tmp = ref.*;
                 ref.* +%= 1;
                 break :blk tmp;
-            }] = '\n';
+            }
+        ] = '\n';
     }
     if (idx == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
         definition[@as(c_uint, @intCast(@as(c_int, 0)))] = '\x00';
@@ -4435,11 +4447,12 @@ pub fn conditional_line(arg_line: [*c]u8, arg_len: usize, arg_flocp: [*c]const f
                 break :blk tmp;
             };
             _ = &p;
-            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+                @as(u8, @bitCast((blk: {
                     const tmp = -@as(c_int, 1);
                     if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-                }).*))]))) & @as(c_int, 2)) != @as(c_int, 0))
-            {
+                }).*))
+            ]))) & @as(c_int, 2)) != @as(c_int, 0)) {
                 p -= 1;
             }
             p.* = '\x00';

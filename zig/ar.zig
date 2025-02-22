@@ -2398,12 +2398,14 @@ pub export fn ar_glob(arg_arname: [*c]const u8, arg_member_pattern: [*c]const u8
     {
         n = state.chain;
         while (n != null) : (n = n.*.next) {
-            names[blk: {
+            names[
+                blk: {
                     const ref = &i;
                     const tmp = ref.*;
                     ref.* +%= 1;
                     break :blk tmp;
-                }] = n.*.name;
+                }
+            ] = n.*.name;
         }
     }
     qsort(@as(?*anyopaque, @ptrCast(names)), @as(usize, @bitCast(@as(c_ulong, i))), @sizeOf([*c]const u8), &alpha_compare);
@@ -2411,12 +2413,14 @@ pub export fn ar_glob(arg_arname: [*c]const u8, arg_member_pattern: [*c]const u8
     {
         n = state.chain;
         while (n != null) : (n = n.*.next) {
-            n.*.name = names[blk: {
+            n.*.name = names[
+                blk: {
                     const ref = &i;
                     const tmp = ref.*;
                     ref.* +%= 1;
                     break :blk tmp;
-                }];
+                }
+            ];
         }
     }
     return state.chain;

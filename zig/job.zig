@@ -2302,11 +2302,12 @@ pub export fn is_bourne_compatible_shell(arg_path: [*c]const u8) c_int {
     _ = &s;
     var cp: [*c]const u8 = path + strlen(path);
     _ = &cp;
-    while ((cp > path) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+    while ((cp > path) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+        @as(u8, @bitCast((blk: {
             const tmp = -@as(c_int, 1);
             if (tmp >= 0) break :blk cp + @as(usize, @intCast(tmp)) else break :blk cp - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-        }).*))]))) & @as(c_int, 32768)) != @as(c_int, 0)))
-    {
+        }).*))
+    ]))) & @as(c_int, 32768)) != @as(c_int, 0))) {
         cp -= 1;
     }
     {
@@ -2421,11 +2422,12 @@ pub export fn new_job(arg_file_1: [*c]struct_file) void {
                                 while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(in.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
                                     in += 1;
                                 }
-                                while ((out > outref) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+                                while ((out > outref) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
+                                    @as(u8, @bitCast((blk: {
                                         const tmp = -@as(c_int, 1);
                                         if (tmp >= 0) break :blk out + @as(usize, @intCast(tmp)) else break :blk out - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-                                    }).*))]))) & @as(c_int, 2)) != @as(c_int, 0)))
-                                {
+                                    }).*))
+                                ]))) & @as(c_int, 2)) != @as(c_int, 0))) {
                                     out -= 1;
                                 }
                                 (blk: {
@@ -3225,12 +3227,14 @@ pub fn job_next_command(arg_child_1: [*c]struct_child) callconv(.C) c_int {
             child_1.*.file.*.cmds.*.fileinfo.offset = 0;
             return 0;
         } else {
-            child_1.*.command_ptr = child_1.*.command_lines[blk: {
+            child_1.*.command_ptr = child_1.*.command_lines[
+                blk: {
                     const ref = &child_1.*.command_line;
                     const tmp = ref.*;
                     ref.* +%= 1;
                     break :blk tmp;
-                }];
+                }
+            ];
         }
     }
     child_1.*.file.*.cmds.*.fileinfo.offset = @as(c_ulong, @bitCast(@as(c_ulong, child_1.*.command_line -% @as(c_uint, @bitCast(@as(c_int, 1))))));

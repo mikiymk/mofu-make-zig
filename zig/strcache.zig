@@ -2277,12 +2277,14 @@ pub fn copy_string(arg_sp: [*c]struct_strcache, arg_str: [*c]const u8, arg_len: 
     var res: [*c]u8 = &sp.*.buffer[sp.*.end];
     _ = &res;
     _ = memmove(@as(?*anyopaque, @ptrCast(res)), @as(?*const anyopaque, @ptrCast(str)), @as(c_ulong, @bitCast(@as(c_ulong, len))));
-    res[blk: {
+    res[
+        blk: {
             const ref = &len;
             const tmp = ref.*;
             ref.* +%= 1;
             break :blk tmp;
-        }] = '\x00';
+        }
+    ] = '\x00';
     sp.*.end +%= @as(sc_buflen_t, @bitCast(@as(c_short, @truncate(@as(c_int, @bitCast(@as(c_uint, len)))))));
     sp.*.bytesfree -%= @as(sc_buflen_t, @bitCast(@as(c_short, @truncate(@as(c_int, @bitCast(@as(c_uint, len)))))));
     sp.*.count +%= 1;
