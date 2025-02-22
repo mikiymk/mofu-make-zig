@@ -2646,9 +2646,9 @@ pub export fn construct_command_argv(arg_line: [*c]u8, arg_restp: [*c][*c]u8, ar
     free(@as(?*anyopaque, @ptrCast(ifs)));
     return argv;
 }
-// src/job.c:2373:5: warning: TODO implement translation of stmt class GotoStmtClass
+// src/job.c:2430:7: warning: TODO implement translation of stmt class GotoStmtClass
 
-// src/job.c:2312:1: warning: unable to translate function, demoted to extern
+// src/job.c:2354:1: warning: unable to translate function, demoted to extern
 pub extern fn child_execute_job(arg_child_1: [*c]struct_childbase, arg_good_stdin: c_int, arg_argv: [*c][*c]u8) pid_t;
 pub export fn exec_command(arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) pid_t {
     var argv = arg_argv;
@@ -3073,7 +3073,7 @@ pub fn free_child(arg_child_1: [*c]struct_child) callconv(.C) void {
     free_childbase(@as([*c]struct_childbase, @ptrCast(@alignCast(child_1))));
     free(@as(?*anyopaque, @ptrCast(child_1)));
 }
-// src/job.c:1188:5: warning: TODO implement translation of stmt class GotoStmtClass
+// src/job.c:1490:9: warning: TODO implement translation of stmt class GotoStmtClass
 
 // src/job.c:1174:1: warning: unable to translate function, demoted to extern
 pub extern fn start_job_command(arg_child_1: [*c]struct_child) callconv(.C) void;
@@ -3371,9 +3371,9 @@ pub fn child_error(arg_child_1: [*c]struct_child, arg_exit_code: c_int, arg_exit
 }
 pub var dead_children: c_uint = 0;
 pub extern var shell_function_pid: pid_t;
-// src/job.c:2946:5: warning: TODO implement translation of stmt class GotoStmtClass
+// src/job.c:2988:5: warning: TODO implement translation of stmt class GotoStmtClass
 
-// src/job.c:2732:1: warning: unable to translate function, demoted to extern
+// src/job.c:2774:1: warning: unable to translate function, demoted to extern
 pub extern fn construct_command_argv_internal(arg_line: [*c]u8, arg_restp: [*c][*c]u8, arg_shell: [*c]const u8, arg_shellflags: [*c]const u8, arg_ifs: [*c]const u8, arg_flags: c_int, arg_batch_filename: [*c][*c]u8) callconv(.C) [*c][*c]u8;
 pub const __llvm__ = @as(c_int, 1);
 pub const __clang__ = @as(c_int, 1);

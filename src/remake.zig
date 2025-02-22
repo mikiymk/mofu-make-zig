@@ -2302,10 +2302,98 @@ pub extern fn snap_deps() void;
 pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
 pub extern fn rehash_file(file: [*c]struct_file, name: [*c]const u8) void;
 pub extern fn set_command_state(file: [*c]struct_file, state: enum_cmd_state_37) void;
-// src/remake.c:970:9: warning: TODO implement translation of stmt class LabelStmtClass
-
-// src/remake.c:939:1: warning: unable to translate function, demoted to extern
-pub extern fn notice_finished_file(arg_file_1: [*c]struct_file) void;
+pub export fn notice_finished_file(arg_file_1: [*c]struct_file) void {
+    var file_1 = arg_file_1;
+    _ = &file_1;
+    var d: [*c]struct_dep = undefined;
+    _ = &d;
+    var ran: c_int = @intFromBool(file_1.*.command_state == @as(c_uint, @bitCast(cs_running)));
+    _ = &ran;
+    var touched: c_int = 0;
+    _ = &touched;
+    file_1.*.command_state = @as(c_uint, @bitCast(cs_finished));
+    file_1.*.updated = 1;
+    if ((touch_flag != 0) and (file_1.*.update_status == @as(c_uint, @bitCast(us_success)))) {
+        var flag_957: c_int = 0;
+        _ = &flag_957;
+        if ((file_1.*.cmds != null) and (file_1.*.cmds.*.any_recurse != 0)) {
+            var i: c_uint = undefined;
+            _ = &i;
+            {
+                i = 0;
+                while (i < @as(c_uint, @bitCast(@as(c_uint, file_1.*.cmds.*.ncommand_lines)))) : (i +%= 1) if (!((@as(c_int, @bitCast(@as(c_uint, file_1.*.cmds.*.lines_flags[i]))) & @as(c_int, 1)) != @as(c_int, 0))) {
+                    flag_957 = 1;
+                };
+            }
+        } else {
+            flag_957 = 1;
+        }
+        if (flag_957 == @as(c_int, 1)) {
+            if (file_1.*.phony != 0) {
+                file_1.*.update_status = @as(c_uint, @bitCast(us_success));
+            } else if (file_1.*.cmds != null) {
+                file_1.*.update_status = touch_file(file_1);
+                commands_started +%= 1;
+                touched = 1;
+            }
+        }
+    }
+    if (file_1.*.mtime_before_update == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+        file_1.*.mtime_before_update = file_1.*.last_mtime;
+    }
+    if (((ran != 0) and !(file_1.*.phony != 0)) or (touched != 0)) {
+        var i: c_int = 0;
+        _ = &i;
+        if ((((question_flag != 0) or (just_print_flag != 0)) or (touch_flag != 0)) and (file_1.*.cmds != null)) {
+            {
+                i = @as(c_int, @bitCast(@as(c_uint, file_1.*.cmds.*.ncommand_lines)));
+                while (i > @as(c_int, 0)) : (i -= 1) if (!((@as(c_int, @bitCast(@as(c_uint, (blk: {
+                    const tmp = i - @as(c_int, 1);
+                    if (tmp >= 0) break :blk file_1.*.cmds.*.lines_flags + @as(usize, @intCast(tmp)) else break :blk file_1.*.cmds.*.lines_flags - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+                }).*))) & @as(c_int, 1)) != @as(c_int, 0))) break;
+            }
+        } else if ((file_1.*.is_target != 0) and (file_1.*.cmds == null)) {
+            i = 1;
+        }
+        file_1.*.last_mtime = if (i == @as(c_int, 0)) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+    }
+    if (file_1.*.double_colon != null) {
+        var f: [*c]struct_file = undefined;
+        _ = &f;
+        var max_mtime: uintmax_t = file_1.*.last_mtime;
+        _ = &max_mtime;
+        {
+            f = file_1.*.double_colon;
+            while ((f != null) and (f.*.updated != 0)) : (f = f.*.prev) if ((max_mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) and ((f.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) or (f.*.last_mtime > max_mtime))) {
+                max_mtime = f.*.last_mtime;
+            };
+        }
+        if (f == null) {
+            f = file_1.*.double_colon;
+            while (f != null) : (f = f.*.prev) {
+                f.*.last_mtime = max_mtime;
+            }
+        }
+    }
+    if ((ran != 0) and (file_1.*.update_status != @as(c_uint, @bitCast(us_none)))) {
+        {
+            d = file_1.*.also_make;
+            while (d != null) : (d = d.*.next) {
+                d.*.file.*.command_state = @as(c_uint, @bitCast(cs_finished));
+                d.*.file.*.updated = 1;
+                d.*.file.*.update_status = file_1.*.update_status;
+                if ((ran != 0) and !(d.*.file.*.phony != 0)) {
+                    _ = f_mtime(d.*.file, @as(c_int, 0));
+                }
+            }
+        }
+        if ((file_1.*.tried_implicit != 0) and (file_1.*.also_make != null)) {
+            check_also_make(file_1);
+        }
+    } else if (file_1.*.update_status == @as(c_uint, @bitCast(us_none))) {
+        file_1.*.update_status = @as(c_uint, @bitCast(us_success));
+    }
+}
 pub extern fn init_hash_files() void;
 pub extern fn verify_file_data_base() void;
 pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;

@@ -4006,10 +4006,109 @@ pub fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) v
     free(@as(?*anyopaque, @ptrCast(collapsed)));
     free(@as(?*anyopaque, @ptrCast(commands_1)));
 }
-// src/read.c:2697:9: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/read.c:2651:1: warning: unable to translate function, demoted to extern
-pub extern fn readline(arg_ebuf: [*c]struct_ebuffer) callconv(.C) c_long;
+pub fn readline(arg_ebuf: [*c]struct_ebuffer) callconv(.C) c_long {
+    var ebuf = arg_ebuf;
+    _ = &ebuf;
+    var p: [*c]u8 = undefined;
+    _ = &p;
+    var end: [*c]u8 = undefined;
+    _ = &end;
+    var start: [*c]u8 = undefined;
+    _ = &start;
+    var nlines: c_long = 0;
+    _ = &nlines;
+    if (!(ebuf.*.fp != null)) return readstring(ebuf);
+    p = blk: {
+        const tmp = ebuf.*.bufstart;
+        start = tmp;
+        break :blk tmp;
+    };
+    end = p + ebuf.*.size;
+    p.* = '\x00';
+    while (fgets(p, @as(c_int, @bitCast(@as(c_int, @truncate(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(p))), @sizeOf(u8)))))), ebuf.*.fp) != null) {
+        var p2: [*c]u8 = undefined;
+        _ = &p2;
+        var len: usize = undefined;
+        _ = &len;
+        var backslash: c_int = undefined;
+        _ = &backslash;
+        len = strlen(p);
+        if (len == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
+            @"error"(&ebuf.*.floc, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("warning: NUL character seen; rest of line ignored"));
+            p[@as(c_uint, @intCast(@as(c_int, 0)))] = '\n';
+            len = 1;
+        }
+        p += @as([*c]u8, @ptrFromInt(len));
+        if (@as(c_int, @bitCast(@as(c_uint, (blk: {
+            const tmp = -@as(c_int, 1);
+            if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+        }).*))) != @as(c_int, '\n')) {
+            {
+                var off: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(start))), @sizeOf(u8))));
+                _ = &off;
+                ebuf.*.size *%= @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
+                start = blk: {
+                    const tmp = blk_1: {
+                        const tmp_2 = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(start)), ebuf.*.size))));
+                        ebuf.*.bufstart = tmp_2;
+                        break :blk_1 tmp_2;
+                    };
+                    ebuf.*.buffer = tmp;
+                    break :blk tmp;
+                };
+                p = start + off;
+                end = start + ebuf.*.size;
+                p.* = '\x00';
+            }
+            continue;
+        }
+        nlines += 1;
+        if ((@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(start))), @sizeOf(u8)) > @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
+            const tmp = -@as(c_int, 2);
+            if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+        }).*))) == @as(c_int, '\r'))) {
+            p -= 1;
+            _ = memmove(@as(?*anyopaque, @ptrCast(p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), @as(?*const anyopaque, @ptrCast(p)), strlen(p) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+        }
+        backslash = 0;
+        {
+            p2 = p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));
+            while (p2 >= start) : (p2 -= 1) {
+                if (@as(c_int, @bitCast(@as(c_uint, p2.*))) != @as(c_int, '\\')) break;
+                backslash = @intFromBool(!(backslash != 0));
+            }
+        }
+        if (!(backslash != 0)) {
+            (blk: {
+                const tmp = -@as(c_int, 1);
+                if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+            }).* = '\x00';
+            break;
+        }
+        if (@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(p))), @sizeOf(u8)) >= @as(c_long, @bitCast(@as(c_long, @as(c_int, 80))))) continue;
+        {
+            var off: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(start))), @sizeOf(u8))));
+            _ = &off;
+            ebuf.*.size *%= @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
+            start = blk: {
+                const tmp = blk_1: {
+                    const tmp_2 = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(start)), ebuf.*.size))));
+                    ebuf.*.bufstart = tmp_2;
+                    break :blk_1 tmp_2;
+                };
+                ebuf.*.buffer = tmp;
+                break :blk tmp;
+            };
+            p = start + off;
+            end = start + ebuf.*.size;
+            p.* = '\x00';
+        }
+    }
+    if (ferror(ebuf.*.fp) != 0) {
+        pfatal_with_name(ebuf.*.floc.filenm);
+    }
+    return if (nlines != 0) nlines else @as(c_long, @bitCast(@as(c_long, if (p == ebuf.*.bufstart) -@as(c_int, 1) else @as(c_int, 1))));
+}
 pub fn do_undefine(arg_name: [*c]u8, arg_origin: enum_variable_origin, arg_ebuf: [*c]struct_ebuffer) callconv(.C) void {
     var name = arg_name;
     _ = &name;
@@ -4134,10 +4233,278 @@ pub fn do_define(arg_name: [*c]u8, arg_origin: enum_variable_origin, arg_ebuf: [
     free(@as(?*anyopaque, @ptrCast(n)));
     return v;
 }
-// src/read.c:1565:7: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/read.c:1526:1: warning: unable to translate function, demoted to extern
-pub extern fn conditional_line(arg_line: [*c]u8, arg_len: usize, arg_flocp: [*c]const floc) callconv(.C) c_int;
+pub fn conditional_line(arg_line: [*c]u8, arg_len: usize, arg_flocp: [*c]const floc) callconv(.C) c_int {
+    var line = arg_line;
+    _ = &line;
+    var len = arg_len;
+    _ = &len;
+    var flocp = arg_flocp;
+    _ = &flocp;
+    var cmdname: [*c]const u8 = undefined;
+    _ = &cmdname;
+    const c_ifdef: c_int = 0;
+    _ = &c_ifdef;
+    const c_ifndef: c_int = 1;
+    _ = &c_ifndef;
+    const c_ifeq: c_int = 2;
+    _ = &c_ifeq;
+    const c_ifneq: c_int = 3;
+    _ = &c_ifneq;
+    const c_else: c_int = 4;
+    _ = &c_else;
+    const c_endif: c_int = 5;
+    _ = &c_endif;
+    const enum_unnamed_38 = c_uint;
+    _ = &enum_unnamed_38;
+    var cmdtype: enum_unnamed_38 = undefined;
+    _ = &cmdtype;
+    var i: c_uint = undefined;
+    _ = &i;
+    var o: c_uint = undefined;
+    _ = &o;
+    if ((len == (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (strncmp("ifdef", line, @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) {
+        cmdtype = @as(c_uint, @bitCast(c_ifdef));
+        cmdname = "ifdef";
+    } else if ((len == (@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (strncmp("ifndef", line, @sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) {
+        cmdtype = @as(c_uint, @bitCast(c_ifndef));
+        cmdname = "ifndef";
+    } else if ((len == (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (strncmp("ifeq", line, @sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) {
+        cmdtype = @as(c_uint, @bitCast(c_ifeq));
+        cmdname = "ifeq";
+    } else if ((len == (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (strncmp("ifneq", line, @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) {
+        cmdtype = @as(c_uint, @bitCast(c_ifneq));
+        cmdname = "ifneq";
+    } else if ((len == (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (strncmp("else", line, @sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) {
+        cmdtype = @as(c_uint, @bitCast(c_else));
+        cmdname = "else";
+    } else if ((len == (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (strncmp("endif", line, @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) {
+        cmdtype = @as(c_uint, @bitCast(c_endif));
+        cmdname = "endif";
+    } else return -@as(c_int, 2);
+    line += @as([*c]u8, @ptrFromInt(len));
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(line.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+        line += 1;
+    }
+    if (cmdtype == @as(c_uint, @bitCast(c_endif))) {
+        if (@as(c_int, @bitCast(@as(c_uint, line.*))) != @as(c_int, '\x00')) {
+            @"error"(flocp, strlen(cmdname), gettext("extraneous text after '%s' directive"), cmdname);
+        }
+        if (!(conditionals.*.if_cmds != 0)) {
+            fatal(flocp, strlen(cmdname), gettext("extraneous '%s'"), cmdname);
+        }
+        conditionals.*.if_cmds -%= 1;
+        {
+            {
+                i = 0;
+                while (i < conditionals.*.if_cmds) : (i +%= 1) if (conditionals.*.ignoring[i] != 0) return 1;
+            }
+            return 0;
+        }
+    }
+    if (cmdtype == @as(c_uint, @bitCast(c_else))) {
+        var p: [*c]const u8 = undefined;
+        _ = &p;
+        if (!(conditionals.*.if_cmds != 0)) {
+            fatal(flocp, strlen(cmdname), gettext("extraneous '%s'"), cmdname);
+        }
+        o = conditionals.*.if_cmds -% @as(c_uint, @bitCast(@as(c_int, 1)));
+        if (conditionals.*.seen_else[o] != 0) {
+            fatal(flocp, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("only one 'else' per conditional"));
+        }
+        while (true) {
+            switch (@as(c_int, @bitCast(@as(c_uint, conditionals.*.ignoring[o])))) {
+                @as(c_int, 0) => {
+                    conditionals.*.ignoring[o] = 2;
+                    break;
+                },
+                @as(c_int, 1) => {
+                    conditionals.*.ignoring[o] = 0;
+                    break;
+                },
+                else => {},
+            }
+            break;
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, line.*))) == @as(c_int, '\x00')) {
+            conditionals.*.seen_else[o] = 1;
+            {
+                {
+                    i = 0;
+                    while (i < conditionals.*.if_cmds) : (i +%= 1) if (conditionals.*.ignoring[i] != 0) return 1;
+                }
+                return 0;
+            }
+        }
+        {
+            p = line + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+            while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & ((@as(c_int, 2) | @as(c_int, 4)) | @as(c_int, 1))) != @as(c_int, 0))) : (p += 1) {}
+        }
+        len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(line))), @sizeOf(u8))));
+        if ((((len == (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (strncmp("else", line, @sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) or ((len == (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (strncmp("endif", line, @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)))) or (conditional_line(line, len, flocp) < @as(c_int, 0))) {
+            @"error"(flocp, strlen(cmdname), gettext("extraneous text after '%s' directive"), cmdname);
+        } else {
+            if (@as(c_int, @bitCast(@as(c_uint, conditionals.*.ignoring[o]))) < @as(c_int, 2)) {
+                conditionals.*.ignoring[o] = conditionals.*.ignoring[o +% @as(c_uint, @bitCast(@as(c_int, 1)))];
+            }
+            conditionals.*.if_cmds -%= 1;
+        }
+        {
+            {
+                i = 0;
+                while (i < conditionals.*.if_cmds) : (i +%= 1) if (conditionals.*.ignoring[i] != 0) return 1;
+            }
+            return 0;
+        }
+    }
+    if (conditionals.*.allocated == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+        conditionals.*.allocated = 5;
+        conditionals.*.ignoring = @as([*c]u8, @ptrCast(@alignCast(xmalloc(@as(usize, @bitCast(@as(c_ulong, conditionals.*.allocated)))))));
+        conditionals.*.seen_else = @as([*c]u8, @ptrCast(@alignCast(xmalloc(@as(usize, @bitCast(@as(c_ulong, conditionals.*.allocated)))))));
+    }
+    o = blk: {
+        const ref = &conditionals.*.if_cmds;
+        const tmp = ref.*;
+        ref.* +%= 1;
+        break :blk tmp;
+    };
+    if (conditionals.*.if_cmds > conditionals.*.allocated) {
+        conditionals.*.allocated +%= @as(c_uint, @bitCast(@as(c_int, 5)));
+        conditionals.*.ignoring = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(conditionals.*.ignoring)), @as(usize, @bitCast(@as(c_ulong, conditionals.*.allocated)))))));
+        conditionals.*.seen_else = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(conditionals.*.seen_else)), @as(usize, @bitCast(@as(c_ulong, conditionals.*.allocated)))))));
+    }
+    conditionals.*.seen_else[o] = 0;
+    {
+        i = 0;
+        while (i < o) : (i +%= 1) if (conditionals.*.ignoring[i] != 0) {
+            conditionals.*.ignoring[o] = 1;
+            return 1;
+        };
+    }
+    if ((cmdtype == @as(c_uint, @bitCast(c_ifdef))) or (cmdtype == @as(c_uint, @bitCast(c_ifndef)))) {
+        var l: usize = undefined;
+        _ = &l;
+        var @"var": [*c]u8 = undefined;
+        _ = &@"var";
+        var v: [*c]struct_variable = undefined;
+        _ = &v;
+        var p: [*c]u8 = undefined;
+        _ = &p;
+        @"var" = allocated_variable_expand_for_file(line, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+        p = end_of_token(@"var");
+        l = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(@"var"))), @sizeOf(u8))));
+        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+            p += 1;
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) return -@as(c_int, 1);
+        @"var"[l] = '\x00';
+        v = lookup_variable(@"var", l);
+        conditionals.*.ignoring[o] = @as(u8, @intFromBool(@intFromBool((v != null) and (@as(c_int, @bitCast(@as(c_uint, v.*.value.*))) != @as(c_int, '\x00'))) == @intFromBool(cmdtype == @as(c_uint, @bitCast(c_ifndef)))));
+        free(@as(?*anyopaque, @ptrCast(@"var")));
+    } else {
+        var s1: [*c]u8 = undefined;
+        _ = &s1;
+        var s2: [*c]u8 = undefined;
+        _ = &s2;
+        var l: usize = undefined;
+        _ = &l;
+        var termin: u8 = @as(u8, @bitCast(@as(i8, @truncate(if (@as(c_int, @bitCast(@as(c_uint, line.*))) == @as(c_int, '(')) @as(c_int, ',') else @as(c_int, @bitCast(@as(c_uint, line.*)))))));
+        _ = &termin;
+        if (((@as(c_int, @bitCast(@as(c_uint, termin))) != @as(c_int, ',')) and (@as(c_int, @bitCast(@as(c_uint, termin))) != @as(c_int, '"'))) and (@as(c_int, @bitCast(@as(c_uint, termin))) != @as(c_int, '\''))) return -@as(c_int, 1);
+        s1 = blk: {
+            const ref = &line;
+            ref.* += 1;
+            break :blk ref.*;
+        };
+        if (@as(c_int, @bitCast(@as(c_uint, termin))) == @as(c_int, ',')) {
+            var count: c_int = 0;
+            _ = &count;
+            while (@as(c_int, @bitCast(@as(c_uint, line.*))) != @as(c_int, '\x00')) : (line += 1) if (@as(c_int, @bitCast(@as(c_uint, line.*))) == @as(c_int, '(')) {
+                count += 1;
+            } else if (@as(c_int, @bitCast(@as(c_uint, line.*))) == @as(c_int, ')')) {
+                count -= 1;
+            } else if ((@as(c_int, @bitCast(@as(c_uint, line.*))) == @as(c_int, ',')) and (count <= @as(c_int, 0))) break;
+        } else while ((@as(c_int, @bitCast(@as(c_uint, line.*))) != @as(c_int, '\x00')) and (@as(c_int, @bitCast(@as(c_uint, line.*))) != @as(c_int, @bitCast(@as(c_uint, termin))))) {
+            line += 1;
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, line.*))) == @as(c_int, '\x00')) return -@as(c_int, 1);
+        if (@as(c_int, @bitCast(@as(c_uint, termin))) == @as(c_int, ',')) {
+            var p: [*c]u8 = blk: {
+                const ref = &line;
+                const tmp = ref.*;
+                ref.* += 1;
+                break :blk tmp;
+            };
+            _ = &p;
+            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast((blk: {
+                    const tmp = -@as(c_int, 1);
+                    if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+                }).*))]))) & @as(c_int, 2)) != @as(c_int, 0))
+            {
+                p -= 1;
+            }
+            p.* = '\x00';
+        } else {
+            (blk: {
+                const ref = &line;
+                const tmp = ref.*;
+                ref.* += 1;
+                break :blk tmp;
+            }).* = '\x00';
+        }
+        s2 = variable_expand(s1);
+        l = strlen(s2);
+        s1 = @as([*c]u8, @ptrCast(@alignCast(malloc(l +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        _ = memcpy(@as(?*anyopaque, @ptrCast(s1)), @as(?*const anyopaque, @ptrCast(s2)), l +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        if (@as(c_int, @bitCast(@as(c_uint, termin))) != @as(c_int, ',')) while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(line.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+            line += 1;
+        };
+        termin = @as(u8, @bitCast(@as(i8, @truncate(if (@as(c_int, @bitCast(@as(c_uint, termin))) == @as(c_int, ',')) @as(c_int, ')') else @as(c_int, @bitCast(@as(c_uint, line.*)))))));
+        if (((@as(c_int, @bitCast(@as(c_uint, termin))) != @as(c_int, ')')) and (@as(c_int, @bitCast(@as(c_uint, termin))) != @as(c_int, '"'))) and (@as(c_int, @bitCast(@as(c_uint, termin))) != @as(c_int, '\''))) return -@as(c_int, 1);
+        if (@as(c_int, @bitCast(@as(c_uint, termin))) == @as(c_int, ')')) {
+            var count: c_int = 0;
+            _ = &count;
+            s2 = next_token(line);
+            {
+                line = s2;
+                while (@as(c_int, @bitCast(@as(c_uint, line.*))) != @as(c_int, '\x00')) : (line += 1) {
+                    if (@as(c_int, @bitCast(@as(c_uint, line.*))) == @as(c_int, '(')) {
+                        count += 1;
+                    } else if (@as(c_int, @bitCast(@as(c_uint, line.*))) == @as(c_int, ')')) {
+                        if (count <= @as(c_int, 0)) break else {
+                            count -= 1;
+                        }
+                    }
+                }
+            }
+        } else {
+            line += 1;
+            s2 = line;
+            while ((@as(c_int, @bitCast(@as(c_uint, line.*))) != @as(c_int, '\x00')) and (@as(c_int, @bitCast(@as(c_uint, line.*))) != @as(c_int, @bitCast(@as(c_uint, termin))))) {
+                line += 1;
+            }
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, line.*))) == @as(c_int, '\x00')) return -@as(c_int, 1);
+        (blk: {
+            const ref = &line;
+            const tmp = ref.*;
+            ref.* += 1;
+            break :blk tmp;
+        }).* = '\x00';
+        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(line.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+            line += 1;
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, line.*))) != @as(c_int, '\x00')) {
+            @"error"(flocp, strlen(cmdname), gettext("extraneous text after '%s' directive"), cmdname);
+        }
+        s2 = variable_expand(s2);
+        conditionals.*.ignoring[o] = @as(u8, @intFromBool(@intFromBool((s1 == s2) or ((@as(c_int, @bitCast(@as(c_uint, s1.*))) == @as(c_int, @bitCast(@as(c_uint, s2.*)))) and ((@as(c_int, @bitCast(@as(c_uint, s1.*))) == @as(c_int, '\x00')) or !(strcmp(s1 + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), s2 + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) == @intFromBool(cmdtype == @as(c_uint, @bitCast(c_ifneq)))));
+    }
+    {
+        i = 0;
+        while (i < conditionals.*.if_cmds) : (i +%= 1) if (conditionals.*.ignoring[i] != 0) return 1;
+    }
+    return 0;
+}
 pub fn check_specials(arg_files: [*c]struct_nameseq, arg_set_default: c_int) callconv(.C) void {
     var files = arg_files;
     _ = &files;
@@ -4545,10 +4912,277 @@ pub fn record_target_var(arg_filenames: [*c]struct_nameseq, arg_defn: [*c]u8, ar
         }
     }
 }
-// src/read.c:2794:7: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/read.c:2776:1: warning: unable to translate function, demoted to extern
-pub extern fn get_next_mword(arg_buffer: [*c]u8, arg_startp: [*c][*c]u8, arg_length: [*c]usize) callconv(.C) enum_make_word_type;
+pub fn get_next_mword(arg_buffer: [*c]u8, arg_startp: [*c][*c]u8, arg_length: [*c]usize) callconv(.C) enum_make_word_type {
+    var buffer = arg_buffer;
+    _ = &buffer;
+    var startp = arg_startp;
+    _ = &startp;
+    var length = arg_length;
+    _ = &length;
+    var wtype: enum_make_word_type = undefined;
+    _ = &wtype;
+    var p: [*c]u8 = buffer;
+    _ = &p;
+    var beg: [*c]u8 = undefined;
+    _ = &beg;
+    var c: u8 = undefined;
+    _ = &c;
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+        p += 1;
+    }
+    beg = p;
+    c = (blk: {
+        const ref = &p;
+        const tmp = ref.*;
+        ref.* += 1;
+        break :blk tmp;
+    }).*;
+    while (true) {
+        switch (@as(c_int, @bitCast(@as(c_uint, c)))) {
+            @as(c_int, 0) => {
+                wtype = @as(c_uint, @bitCast(w_eol));
+                {
+                    if (startp != null) {
+                        startp.* = beg;
+                    }
+                    if (length != null) {
+                        length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                    }
+                    return wtype;
+                }
+            },
+            @as(c_int, 59) => {
+                wtype = @as(c_uint, @bitCast(w_semicolon));
+                {
+                    if (startp != null) {
+                        startp.* = beg;
+                    }
+                    if (length != null) {
+                        length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                    }
+                    return wtype;
+                }
+            },
+            @as(c_int, 61) => {
+                wtype = @as(c_uint, @bitCast(w_varassign));
+                {
+                    if (startp != null) {
+                        startp.* = beg;
+                    }
+                    if (length != null) {
+                        length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                    }
+                    return wtype;
+                }
+            },
+            @as(c_int, 58) => {
+                if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '=')) {
+                    p += 1;
+                    wtype = @as(c_uint, @bitCast(w_varassign));
+                } else if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, ':')) {
+                    p += 1;
+                    if (@as(c_int, @bitCast(@as(c_uint, p[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '=')) {
+                        p += 1;
+                        wtype = @as(c_uint, @bitCast(w_varassign));
+                    } else {
+                        wtype = @as(c_uint, @bitCast(w_dcolon));
+                    }
+                } else {
+                    wtype = @as(c_uint, @bitCast(w_colon));
+                }
+                {
+                    if (startp != null) {
+                        startp.* = beg;
+                    }
+                    if (length != null) {
+                        length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                    }
+                    return wtype;
+                }
+            },
+            @as(c_int, 38) => {
+                if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, ':')) {
+                    p += 1;
+                    if (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, ':')) {
+                        wtype = @as(c_uint, @bitCast(w_ampcolon));
+                    } else {
+                        p += 1;
+                        wtype = @as(c_uint, @bitCast(w_ampdcolon));
+                    }
+                    {
+                        if (startp != null) {
+                            startp.* = beg;
+                        }
+                        if (length != null) {
+                            length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                        }
+                        return wtype;
+                    }
+                }
+                break;
+            },
+            @as(c_int, 43), @as(c_int, 63), @as(c_int, 33) => {
+                if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '=')) {
+                    p += 1;
+                    wtype = @as(c_uint, @bitCast(w_varassign));
+                    {
+                        if (startp != null) {
+                            startp.* = beg;
+                        }
+                        if (length != null) {
+                            length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                        }
+                        return wtype;
+                    }
+                }
+                break;
+            },
+            else => break,
+        }
+        break;
+    }
+    wtype = @as(c_uint, @bitCast(w_static));
+    while (true) {
+        var closeparen: u8 = undefined;
+        _ = &closeparen;
+        var count: c_int = undefined;
+        _ = &count;
+        if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(c))]))) & ((@as(c_int, 2) | @as(c_int, 4)) | @as(c_int, 1))) != @as(c_int, 0)) {
+            p -= 1;
+            if (startp != null) {
+                startp.* = beg;
+            }
+            if (length != null) {
+                length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+            }
+            return wtype;
+        }
+        while (true) {
+            switch (@as(c_int, @bitCast(@as(c_uint, c)))) {
+                @as(c_int, 61) => {
+                    {
+                        p -= 1;
+                        if (startp != null) {
+                            startp.* = beg;
+                        }
+                        if (length != null) {
+                            length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                        }
+                        return wtype;
+                    }
+                },
+                @as(c_int, 58) => {
+                    {
+                        p -= 1;
+                        if (startp != null) {
+                            startp.* = beg;
+                        }
+                        if (length != null) {
+                            length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                        }
+                        return wtype;
+                    }
+                },
+                @as(c_int, 36) => {
+                    c = (blk: {
+                        const ref = &p;
+                        const tmp = ref.*;
+                        ref.* += 1;
+                        break :blk tmp;
+                    }).*;
+                    if (@as(c_int, @bitCast(@as(c_uint, c))) == @as(c_int, '$')) break;
+                    if (@as(c_int, @bitCast(@as(c_uint, c))) == @as(c_int, '\x00')) {
+                        p -= 1;
+                        if (startp != null) {
+                            startp.* = beg;
+                        }
+                        if (length != null) {
+                            length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                        }
+                        return wtype;
+                    }
+                    wtype = @as(c_uint, @bitCast(w_variable));
+                    if (@as(c_int, @bitCast(@as(c_uint, c))) == @as(c_int, '(')) {
+                        closeparen = ')';
+                    } else if (@as(c_int, @bitCast(@as(c_uint, c))) == @as(c_int, '{')) {
+                        closeparen = '}';
+                    } else break;
+                    {
+                        count = 0;
+                        while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) : (p += 1) {
+                            if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, @bitCast(@as(c_uint, c)))) {
+                                count += 1;
+                            } else if ((@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, @bitCast(@as(c_uint, closeparen)))) and ((blk: {
+                                const ref = &count;
+                                ref.* -= 1;
+                                break :blk ref.*;
+                            }) < @as(c_int, 0))) {
+                                p += 1;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                },
+                @as(c_int, 63), @as(c_int, 43) => {
+                    if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '=')) {
+                        p -= 1;
+                        if (startp != null) {
+                            startp.* = beg;
+                        }
+                        if (length != null) {
+                            length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                        }
+                        return wtype;
+                    }
+                    break;
+                },
+                @as(c_int, 92) => {
+                    while (true) {
+                        switch (@as(c_int, @bitCast(@as(c_uint, p.*)))) {
+                            @as(c_int, 58), @as(c_int, 59), @as(c_int, 61), @as(c_int, 92) => {
+                                p += 1;
+                                break;
+                            },
+                            else => {},
+                        }
+                        break;
+                    }
+                    break;
+                },
+                @as(c_int, 38) => {
+                    if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, ':')) {
+                        p -= 1;
+                        if (startp != null) {
+                            startp.* = beg;
+                        }
+                        if (length != null) {
+                            length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+                        }
+                        return wtype;
+                    }
+                    break;
+                },
+                else => break,
+            }
+            break;
+        }
+        c = (blk: {
+            const ref = &p;
+            const tmp = ref.*;
+            ref.* += 1;
+            break :blk tmp;
+        }).*;
+    }
+    p -= 1;
+    if (startp != null) {
+        startp.* = beg;
+    }
+    if (length != null) {
+        length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(beg))), @sizeOf(u8))));
+    }
+    return wtype;
+}
 pub fn remove_comments(arg_line: [*c]u8) callconv(.C) void {
     var line = arg_line;
     _ = &line;
@@ -8156,7 +8790,7 @@ pub const EXTRATEXT = @compileError("unable to translate macro: undefined identi
 pub const EXTRACMD = @compileError("unable to translate macro: undefined identifier `flocp`");
 // src/read.c:1552:9
 pub const NEWELT = @compileError("unable to translate macro: undefined identifier `_ns`");
-// src/read.c:3195:9
+// src/read.c:3202:9
 pub const timeval = struct_timeval;
 pub const timespec = struct_timespec;
 pub const __pthread_internal_list = struct___pthread_internal_list;

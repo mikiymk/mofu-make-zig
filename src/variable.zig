@@ -2632,14 +2632,352 @@ pub export fn merge_variable_set_lists(arg_setlist0: [*c][*c]struct_variable_set
         }
     }
 }
-// src/variable.c:1348:9: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/variable.c:1292:1: warning: unable to translate function, demoted to extern
-pub extern fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]const u8, arg_value: [*c]const u8, arg_origin: enum_variable_origin, arg_flavor: enum_variable_flavor, arg_target_var: c_int) [*c]struct_variable;
-// src/variable.c:1694:15: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/variable.c:1610:1: warning: unable to translate function, demoted to extern
-pub extern fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_variable) [*c]u8;
+pub export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]const u8, arg_value: [*c]const u8, arg_origin: enum_variable_origin, arg_flavor: enum_variable_flavor, arg_target_var: c_int) [*c]struct_variable {
+    var flocp = arg_flocp;
+    _ = &flocp;
+    var varname = arg_varname;
+    _ = &varname;
+    var value = arg_value;
+    _ = &value;
+    var origin = arg_origin;
+    _ = &origin;
+    var flavor = arg_flavor;
+    _ = &flavor;
+    var target_var = arg_target_var;
+    _ = &target_var;
+    var newval: [*c]const u8 = undefined;
+    _ = &newval;
+    var alloc_value: [*c]u8 = null;
+    _ = &alloc_value;
+    var v: [*c]struct_variable = undefined;
+    _ = &v;
+    var append: c_int = 0;
+    _ = &append;
+    var conditional: c_int = 0;
+    _ = &conditional;
+    while (true) {
+        switch (flavor) {
+            @as(c_uint, @bitCast(@as(c_int, 1))) => {
+                newval = blk: {
+                    const tmp = allocated_variable_expand_for_file(value, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+                    alloc_value = tmp;
+                    break :blk tmp;
+                };
+                break;
+            },
+            @as(c_uint, @bitCast(@as(c_int, 3))) => {
+                {
+                    var t: [*c]u8 = allocated_variable_expand_for_file(value, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+                    _ = &t;
+                    var np: [*c]u8 = blk: {
+                        const tmp = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                        alloc_value = tmp;
+                        break :blk tmp;
+                    };
+                    _ = &np;
+                    var op: [*c]u8 = t;
+                    _ = &op;
+                    while (@as(c_int, @bitCast(@as(c_uint, op[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00')) {
+                        if (@as(c_int, @bitCast(@as(c_uint, op[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '$')) {
+                            (blk: {
+                                const ref = &np;
+                                const tmp = ref.*;
+                                ref.* += 1;
+                                break :blk tmp;
+                            }).* = '$';
+                        }
+                        (blk: {
+                            const ref = &np;
+                            const tmp = ref.*;
+                            ref.* += 1;
+                            break :blk tmp;
+                        }).* = (blk: {
+                            const ref = &op;
+                            const tmp = ref.*;
+                            ref.* += 1;
+                            break :blk tmp;
+                        }).*;
+                    }
+                    np.* = '\x00';
+                    free(@as(?*anyopaque, @ptrCast(t)));
+                    newval = alloc_value;
+                    break;
+                }
+            },
+            @as(c_uint, @bitCast(@as(c_int, 6))) => {
+                {
+                    var q: [*c]u8 = allocated_variable_expand_for_file(value, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+                    _ = &q;
+                    alloc_value = shell_result(q);
+                    free(@as(?*anyopaque, @ptrCast(q)));
+                    flavor = @as(c_uint, @bitCast(f_recursive));
+                    newval = alloc_value;
+                    break;
+                }
+            },
+            @as(c_uint, @bitCast(@as(c_int, 5))) => {
+                v = lookup_variable(varname, strlen(varname));
+                if (v != null) {
+                    free(@as(?*anyopaque, @ptrCast(alloc_value)));
+                    return if (v.*.special != 0) set_special_var(v, origin) else v;
+                }
+                conditional = 1;
+                flavor = @as(c_uint, @bitCast(f_recursive));
+                newval = value;
+                break;
+            },
+            @as(c_uint, @bitCast(@as(c_int, 2))) => {
+                newval = value;
+                break;
+            },
+            @as(c_uint, @bitCast(@as(c_int, 4))), @as(c_uint, @bitCast(@as(c_int, 7))) => {
+                {
+                    if (target_var != 0) {
+                        append = 1;
+                        v = lookup_variable_in_set(varname, strlen(varname), current_variable_set_list.*.set);
+                        if ((v != null) and !(v.*.append != 0)) {
+                            append = 0;
+                        }
+                    } else {
+                        v = lookup_variable(varname, strlen(varname));
+                    }
+                    if (v == null) {
+                        newval = value;
+                        flavor = @as(c_uint, @bitCast(f_recursive));
+                    } else {
+                        var oldlen: usize = undefined;
+                        _ = &oldlen;
+                        var vallen: usize = undefined;
+                        _ = &vallen;
+                        var alloclen: usize = undefined;
+                        _ = &alloclen;
+                        var val: [*c]const u8 = undefined;
+                        _ = &val;
+                        var cp: [*c]u8 = undefined;
+                        _ = &cp;
+                        var tp: [*c]u8 = null;
+                        _ = &tp;
+                        val = value;
+                        if (v.*.recursive != 0) {
+                            flavor = @as(c_uint, @bitCast(f_recursive));
+                        } else if (flavor != @as(c_uint, @bitCast(f_append_value))) {
+                            val = blk: {
+                                const tmp = allocated_variable_expand_for_file(val, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+                                tp = tmp;
+                                break :blk tmp;
+                            };
+                        }
+                        vallen = strlen(val);
+                        if (!(vallen != 0)) {
+                            alloc_value = tp;
+                            {
+                                free(@as(?*anyopaque, @ptrCast(alloc_value)));
+                                return if (v.*.special != 0) set_special_var(v, origin) else v;
+                            }
+                        }
+                        oldlen = strlen(v.*.value);
+                        alloclen = ((oldlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) +% vallen) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+                        cp = blk: {
+                            const tmp = @as([*c]u8, @ptrCast(@alignCast(xmalloc(alloclen))));
+                            alloc_value = tmp;
+                            break :blk tmp;
+                        };
+                        if (oldlen != 0) {
+                            var s: [*c]u8 = undefined;
+                            _ = &s;
+                            if (((varname == @as([*c]const u8, @ptrCast(@alignCast("MAKEFLAGS")))) or ((@as(c_int, @bitCast(@as(c_uint, varname.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, varname.*))) == @as(c_int, '\x00')) or !(strcmp(varname + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) and ((blk: {
+                                const tmp = strstr(v.*.value, " -- ");
+                                s = tmp;
+                                break :blk tmp;
+                            }) != null)) {
+                                cp = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(cp)), @as(?*const anyopaque, @ptrCast(v.*.value)), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(s) -% @intFromPtr(v.*.value))), @sizeOf(u8))))))));
+                            } else {
+                                cp = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(cp)), @as(?*const anyopaque, @ptrCast(v.*.value)), oldlen))));
+                            }
+                            (blk: {
+                                const ref = &cp;
+                                const tmp = ref.*;
+                                ref.* += 1;
+                                break :blk tmp;
+                            }).* = ' ';
+                        }
+                        _ = memcpy(@as(?*anyopaque, @ptrCast(cp)), @as(?*const anyopaque, @ptrCast(val)), vallen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                        free(@as(?*anyopaque, @ptrCast(tp)));
+                        newval = alloc_value;
+                    }
+                }
+                break;
+            },
+            else => {
+                abort();
+            },
+        }
+        break;
+    }
+    _ = @as(c_int, 0);
+    v = define_variable_in_set(varname, strlen(varname), newval, origin, @intFromBool((flavor == @as(c_uint, @bitCast(f_recursive))) or (flavor == @as(c_uint, @bitCast(f_expand)))), if (target_var != 0) current_variable_set_list.*.set else null, flocp);
+    v.*.append = @as(c_uint, @bitCast(append));
+    v.*.conditional = @as(c_uint, @bitCast(conditional));
+    free(@as(?*anyopaque, @ptrCast(alloc_value)));
+    return if (v.*.special != 0) set_special_var(v, origin) else v;
+}
+pub export fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_variable) [*c]u8 {
+    var str = arg_str;
+    _ = &str;
+    var @"var" = arg_var;
+    _ = &@"var";
+    var p: [*c]const u8 = str;
+    _ = &p;
+    var end: [*c]const u8 = null;
+    _ = &end;
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+        p += 1;
+    }
+    @"var".*.name = @as([*c]u8, @ptrCast(@volatileCast(@constCast(p))));
+    @"var".*.length = 0;
+    while (true) {
+        var c: c_int = @as(c_int, @bitCast(@as(c_uint, (blk: {
+            const ref = &p;
+            const tmp = ref.*;
+            ref.* += 1;
+            break :blk tmp;
+        }).*)));
+        _ = &c;
+        if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(@as(i8, @truncate(c))))]))) & (@as(c_int, 8) | @as(c_int, 1))) != @as(c_int, 0)) return null;
+        if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(@as(i8, @truncate(c))))]))) & @as(c_int, 2)) != @as(c_int, 0)) {
+            if (end != null) return null;
+            end = p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+                p += 1;
+            }
+            continue;
+        }
+        if (c == @as(c_int, '=')) {
+            if (!(end != null)) {
+                end = p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+            }
+            @"var".*.flavor = @as(c_uint, @bitCast(f_recursive));
+            break;
+        }
+        if (c == @as(c_int, ':')) {
+            if (!(end != null)) {
+                end = p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+            }
+            c = @as(c_int, @bitCast(@as(c_uint, (blk: {
+                const ref = &p;
+                const tmp = ref.*;
+                ref.* += 1;
+                break :blk tmp;
+            }).*)));
+            if (c == @as(c_int, '=')) {
+                @"var".*.flavor = @as(c_uint, @bitCast(f_simple));
+                break;
+            }
+            if (c == @as(c_int, ':')) {
+                c = @as(c_int, @bitCast(@as(c_uint, (blk: {
+                    const ref = &p;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                }).*)));
+                if (c == @as(c_int, '=')) {
+                    @"var".*.flavor = @as(c_uint, @bitCast(f_simple));
+                    break;
+                }
+                if ((c == @as(c_int, ':')) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
+                    const ref = &p;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                }).*))) == @as(c_int, '='))) {
+                    @"var".*.flavor = @as(c_uint, @bitCast(f_expand));
+                    break;
+                }
+            }
+            return null;
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '=')) {
+            var flag_1682: c_int = 0;
+            _ = &flag_1682;
+            while (true) {
+                switch (c) {
+                    @as(c_int, 43) => {
+                        @"var".*.flavor = @as(c_uint, @bitCast(f_append));
+                        break;
+                    },
+                    @as(c_int, 63) => {
+                        @"var".*.flavor = @as(c_uint, @bitCast(f_conditional));
+                        break;
+                    },
+                    @as(c_int, 33) => {
+                        @"var".*.flavor = @as(c_uint, @bitCast(f_shell));
+                        break;
+                    },
+                    else => {
+                        flag_1682 = 1;
+                    },
+                }
+                break;
+            }
+            if (flag_1682 == @as(c_int, 0)) {
+                if (!(end != null)) {
+                    end = p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                }
+                p += 1;
+                break;
+            }
+        }
+        if (end != null) return null;
+        if (c == @as(c_int, '$')) {
+            var closeparen: u8 = undefined;
+            _ = &closeparen;
+            var count: c_uint = undefined;
+            _ = &count;
+            c = @as(c_int, @bitCast(@as(c_uint, (blk: {
+                const ref = &p;
+                const tmp = ref.*;
+                ref.* += 1;
+                break :blk tmp;
+            }).*)));
+            while (true) {
+                switch (c) {
+                    @as(c_int, 40) => {
+                        closeparen = ')';
+                        break;
+                    },
+                    @as(c_int, 123) => {
+                        closeparen = '}';
+                        break;
+                    },
+                    @as(c_int, 0) => return null,
+                    else => {
+                        continue;
+                    },
+                }
+                break;
+            }
+            {
+                count = 1;
+                while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) : (p += 1) {
+                    if ((@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, @bitCast(@as(c_uint, closeparen)))) and ((blk: {
+                        const ref = &count;
+                        ref.* -%= 1;
+                        break :blk ref.*;
+                    }) == @as(c_uint, @bitCast(@as(c_int, 0))))) {
+                        p += 1;
+                        break;
+                    }
+                    if (@as(c_int, @bitCast(@as(c_uint, p.*))) == c) {
+                        count +%= 1;
+                    }
+                }
+            }
+        }
+    }
+    @"var".*.length = @as(c_uint, @bitCast(@as(c_int, @truncate(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(@"var".*.name))), @sizeOf(u8))))));
+    @"var".*.value = next_token(p);
+    return @as([*c]u8, @ptrCast(@volatileCast(@constCast(p))));
+}
 pub export fn assign_variable_definition(arg_v: [*c]struct_variable, arg_line: [*c]const u8) [*c]struct_variable {
     var v = arg_v;
     _ = &v;
@@ -2878,10 +3216,260 @@ pub export fn undefine_variable_in_set(arg_name: [*c]const u8, arg_length: usize
         }
     }
 }
-// src/variable.c:1149:13: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/variable.c:1051:1: warning: unable to translate function, demoted to extern
-pub extern fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) [*c][*c]u8;
+pub export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) [*c][*c]u8 {
+    var file_1 = arg_file_1;
+    _ = &file_1;
+    var recursive = arg_recursive;
+    _ = &recursive;
+    var set_list: [*c]struct_variable_set_list = undefined;
+    _ = &set_list;
+    var s: [*c]struct_variable_set_list = undefined;
+    _ = &s;
+    var table: struct_hash_table = undefined;
+    _ = &table;
+    var v_slot: [*c][*c]struct_variable = undefined;
+    _ = &v_slot;
+    var v_end: [*c][*c]struct_variable = undefined;
+    _ = &v_end;
+    var result_0: [*c][*c]u8 = undefined;
+    _ = &result_0;
+    var result: [*c][*c]u8 = undefined;
+    _ = &result;
+    var invalid: [*c]const u8 = null;
+    _ = &invalid;
+    var added_SHELL: c_int = @intFromBool(shell_var.value == null);
+    _ = &added_SHELL;
+    var found_makelevel: c_int = 0;
+    _ = &found_makelevel;
+    var found_mflags: c_int = 0;
+    _ = &found_mflags;
+    var found_makeflags: c_int = 0;
+    _ = &found_makeflags;
+    if (!(file_1 != null)) {
+        env_recursion +%= 1;
+    }
+    if (!(recursive != 0) and (jobserver_auth != null)) {
+        invalid = jobserver_get_invalid_auth();
+    }
+    if (file_1 != null) {
+        set_list = file_1.*.variables;
+    } else {
+        set_list = current_variable_set_list;
+    }
+    hash_init(&table, @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 523)))), &variable_hash_1, &variable_hash_2, &variable_hash_cmp);
+    {
+        s = set_list;
+        while (s != null) : (s = s.*.next) {
+            var set: [*c]struct_variable_set = s.*.set;
+            _ = &set;
+            const islocal: c_int = @intFromBool(s == set_list);
+            _ = &islocal;
+            const isglobal: c_int = @intFromBool(set == (&global_variable_set));
+            _ = &isglobal;
+            v_slot = @as([*c][*c]struct_variable, @ptrCast(@alignCast(set.*.table.ht_vec)));
+            v_end = v_slot + set.*.table.ht_size;
+            while (v_slot < v_end) : (v_slot += 1) if (!((v_slot.* == null) or (@as(?*anyopaque, @ptrCast(v_slot.*)) == hash_deleted_item))) {
+                var evslot: [*c][*c]struct_variable = undefined;
+                _ = &evslot;
+                var v: [*c]struct_variable = v_slot.*;
+                _ = &v;
+                if (!(islocal != 0) and (v.*.private_var != 0)) continue;
+                evslot = @as([*c][*c]struct_variable, @ptrCast(@alignCast(hash_find_slot(&table, @as(?*const anyopaque, @ptrCast(v))))));
+                if ((evslot.* == null) or (@as(?*anyopaque, @ptrCast(evslot.*)) == hash_deleted_item)) {
+                    if (!(isglobal != 0) or (should_export(v) != 0)) {
+                        _ = hash_insert_at(&table, @as(?*const anyopaque, @ptrCast(v)), @as(?*const anyopaque, @ptrCast(evslot)));
+                    }
+                } else if (evslot.*.*.@"export" == @as(c_uint, @bitCast(v_default))) {
+                    evslot.*.*.@"export" = v.*.@"export";
+                }
+            };
+        }
+    }
+    result = blk: {
+        const tmp = @as([*c][*c]u8, @ptrCast(@alignCast(xmalloc((table.ht_fill +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) *% @sizeOf([*c]u8)))));
+        result_0 = tmp;
+        break :blk tmp;
+    };
+    v_slot = @as([*c][*c]struct_variable, @ptrCast(@alignCast(table.ht_vec)));
+    v_end = v_slot + table.ht_size;
+    while (v_slot < v_end) : (v_slot += 1) if (!((v_slot.* == null) or (@as(?*anyopaque, @ptrCast(v_slot.*)) == hash_deleted_item))) {
+        var v: [*c]struct_variable = v_slot.*;
+        _ = &v;
+        var value: [*c]u8 = v.*.value;
+        _ = &value;
+        var cp: [*c]u8 = null;
+        _ = &cp;
+        if (!(should_export(v) != 0)) continue;
+        if ((v.*.recursive != 0) and (((v.*.origin != @as(c_uint, @bitCast(o_env))) and (v.*.origin != @as(c_uint, @bitCast(o_env_override)))) or ((v.*.name == "MAKEFLAGS") or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))))) {
+            value = blk: {
+                const tmp = recursively_expand_for_file(v, file_1);
+                cp = tmp;
+                break :blk tmp;
+            };
+        }
+        if (!(added_SHELL != 0) and ((v.*.name == "SHELL") or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "SHELL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "SHELL" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+            added_SHELL = 1;
+            {
+                (blk: {
+                    const ref = &result;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                free(@as(?*anyopaque, @ptrCast(cp)));
+                continue;
+            }
+        }
+        if (!(found_makelevel != 0) and ((v.*.name == "MAKELEVEL") or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKELEVEL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKELEVEL" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+            var val: [23]u8 = undefined;
+            _ = &val;
+            _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&val))), "%u", makelevel +% @as(c_uint, @bitCast(@as(c_int, 1))));
+            free(@as(?*anyopaque, @ptrCast(cp)));
+            value = blk: {
+                const tmp = xstrdup(@as([*c]u8, @ptrCast(@alignCast(&val))));
+                cp = tmp;
+                break :blk tmp;
+            };
+            found_makelevel = 1;
+            {
+                (blk: {
+                    const ref = &result;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                free(@as(?*anyopaque, @ptrCast(cp)));
+                continue;
+            }
+        }
+        if (invalid != null) {
+            if (!(found_makeflags != 0) and ((v.*.name == "MAKEFLAGS") or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+                var mf: [*c]u8 = undefined;
+                _ = &mf;
+                var vars: [*c]u8 = undefined;
+                _ = &vars;
+                found_makeflags = 1;
+                if (!(strstr(value, " --jobserver-auth=") != null)) {
+                    (blk: {
+                        const ref = &result;
+                        const tmp = ref.*;
+                        ref.* += 1;
+                        break :blk tmp;
+                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    free(@as(?*anyopaque, @ptrCast(cp)));
+                    continue;
+                }
+                vars = strstr(value, " -- ");
+                if (!(vars != null)) {
+                    mf = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 2))), value, invalid));
+                } else {
+                    var lf: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(vars) -% @intFromPtr(value))), @sizeOf(u8))));
+                    _ = &lf;
+                    var li: usize = strlen(invalid);
+                    _ = &li;
+                    mf = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(value) +% li) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                    _ = strcpy(@as([*c]u8, @ptrCast(@alignCast(mempcpy(mempcpy(@as(?*anyopaque, @ptrCast(mf)), @as(?*const anyopaque, @ptrCast(value)), lf), @as(?*const anyopaque, @ptrCast(invalid)), li)))), vars);
+                }
+                free(@as(?*anyopaque, @ptrCast(cp)));
+                value = blk: {
+                    const tmp = mf;
+                    cp = tmp;
+                    break :blk tmp;
+                };
+                if (found_mflags != 0) {
+                    invalid = null;
+                }
+                {
+                    (blk: {
+                        const ref = &result;
+                        const tmp = ref.*;
+                        ref.* += 1;
+                        break :blk tmp;
+                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    free(@as(?*anyopaque, @ptrCast(cp)));
+                    continue;
+                }
+            }
+            if (!(found_mflags != 0) and ((v.*.name == "MFLAGS") or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+                var mf: [*c]const u8 = undefined;
+                _ = &mf;
+                found_mflags = 1;
+                if (!(strstr(value, " --jobserver-auth=") != null)) {
+                    (blk: {
+                        const ref = &result;
+                        const tmp = ref.*;
+                        ref.* += 1;
+                        break :blk tmp;
+                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    free(@as(?*anyopaque, @ptrCast(cp)));
+                    continue;
+                }
+                if (v.*.origin != @as(c_uint, @bitCast(o_env))) {
+                    (blk: {
+                        const ref = &result;
+                        const tmp = ref.*;
+                        ref.* += 1;
+                        break :blk tmp;
+                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    free(@as(?*anyopaque, @ptrCast(cp)));
+                    continue;
+                }
+                mf = concat(@as(c_uint, @bitCast(@as(c_int, 2))), value, invalid);
+                free(@as(?*anyopaque, @ptrCast(cp)));
+                value = blk: {
+                    const tmp = xstrdup(mf);
+                    cp = tmp;
+                    break :blk tmp;
+                };
+                if (found_makeflags != 0) {
+                    invalid = null;
+                }
+                {
+                    (blk: {
+                        const ref = &result;
+                        const tmp = ref.*;
+                        ref.* += 1;
+                        break :blk tmp;
+                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    free(@as(?*anyopaque, @ptrCast(cp)));
+                    continue;
+                }
+            }
+        }
+        (blk: {
+            const ref = &result;
+            const tmp = ref.*;
+            ref.* += 1;
+            break :blk tmp;
+        }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+        free(@as(?*anyopaque, @ptrCast(cp)));
+    };
+    if (!(added_SHELL != 0)) {
+        (blk: {
+            const ref = &result;
+            const tmp = ref.*;
+            ref.* += 1;
+            break :blk tmp;
+        }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), shell_var.name, "=", shell_var.value));
+    }
+    if (!(found_makelevel != 0)) {
+        var val: [33]u8 = undefined;
+        _ = &val;
+        _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&val))), "%s=%u", "MAKELEVEL", makelevel +% @as(c_uint, @bitCast(@as(c_int, 1))));
+        (blk: {
+            const ref = &result;
+            const tmp = ref.*;
+            ref.* += 1;
+            break :blk tmp;
+        }).* = xstrdup(@as([*c]u8, @ptrCast(@alignCast(&val))));
+    }
+    result.* = null;
+    hash_free(&table, @as(c_int, 0));
+    if (!(file_1 != null)) {
+        env_recursion -%= 1;
+    }
+    return result_0;
+}
 pub export fn create_pattern_var(arg_target: [*c]const u8, arg_suffix: [*c]const u8) [*c]struct_pattern_var {
     var target = arg_target;
     _ = &target;
