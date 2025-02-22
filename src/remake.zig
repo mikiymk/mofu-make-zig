@@ -2302,7 +2302,7 @@ pub extern fn snap_deps() void;
 pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
 pub extern fn rehash_file(file: [*c]struct_file, name: [*c]const u8) void;
 pub extern fn set_command_state(file: [*c]struct_file, state: enum_cmd_state_37) void;
-// src/remake.c:964:15: warning: TODO implement translation of stmt class GotoStmtClass
+// src/remake.c:970:9: warning: TODO implement translation of stmt class LabelStmtClass
 
 // src/remake.c:939:1: warning: unable to translate function, demoted to extern
 pub extern fn notice_finished_file(arg_file_1: [*c]struct_file) void;
@@ -7307,7 +7307,7 @@ pub inline fn MTIME(file_1: anytype) @TypeOf(if (rebuilding_makefiles) file_mtim
     return if (rebuilding_makefiles) file_mtime_no_search(file_1) else file_mtime(file_1);
 }
 pub const TOUCH_ERROR = @compileError("unable to translate C expr: unexpected token 'do'");
-// src/remake.c:1220:9
+// src/remake.c:1222:9
 pub const timeval = struct_timeval;
 pub const timespec = struct_timespec;
 pub const __pthread_internal_list = struct___pthread_internal_list;

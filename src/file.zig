@@ -3034,10 +3034,47 @@ pub export fn file_timestamp_cons(arg_fname: [*c]const u8, arg_stamp: time_t, ar
     }
     return ts;
 }
-// src/file.c:970:9: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/file.c:952:1: warning: unable to translate function, demoted to extern
-pub extern fn file_timestamp_now(arg_resolution: [*c]c_int) uintmax_t;
+pub export fn file_timestamp_now(arg_resolution: [*c]c_int) uintmax_t {
+    var resolution = arg_resolution;
+    _ = &resolution;
+    var r: c_int = undefined;
+    _ = &r;
+    var s: time_t = undefined;
+    _ = &s;
+    var ns: c_int = undefined;
+    _ = &ns;
+    {
+        var timespec_1: struct_timespec = undefined;
+        _ = &timespec_1;
+        if (clock_gettime(@as(c_int, 0), &timespec_1) == @as(c_int, 0)) {
+            r = 1;
+            s = timespec_1.tv_sec;
+            ns = @as(c_int, @bitCast(@as(c_int, @truncate(timespec_1.tv_nsec))));
+            {
+                resolution.* = r;
+                return file_timestamp_cons(null, s, @as(c_long, @bitCast(@as(c_long, ns))));
+            }
+        }
+    }
+    {
+        var timeval_1: struct_timeval = undefined;
+        _ = &timeval_1;
+        if (gettimeofday(&timeval_1, null) == @as(c_int, 0)) {
+            r = 1000;
+            s = timeval_1.tv_sec;
+            ns = @as(c_int, @bitCast(@as(c_int, @truncate(timeval_1.tv_usec * @as(__suseconds_t, @bitCast(@as(c_long, @as(c_int, 1000))))))));
+            {
+                resolution.* = r;
+                return file_timestamp_cons(null, s, @as(c_long, @bitCast(@as(c_long, ns))));
+            }
+        }
+    }
+    r = 1000000000;
+    s = time(@as([*c]time_t, @ptrFromInt(@as(c_int, 0))));
+    ns = 0;
+    resolution.* = r;
+    return file_timestamp_cons(null, s, @as(c_long, @bitCast(@as(c_long, ns))));
+}
 pub export fn file_timestamp_sprintf(arg_p: [*c]u8, arg_ts: uintmax_t) void {
     var p = arg_p;
     _ = &p;

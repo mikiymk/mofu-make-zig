@@ -2653,10 +2653,124 @@ pub const struct_childbase = extern struct {
     environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
     output: struct_output = @import("std").mem.zeroes(struct_output),
 };
-// src/function.c:1908:7: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/function.c:1839:1: warning: unable to translate function, demoted to extern
-pub extern fn func_shell_base(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_trim_newlines: c_int) [*c]u8;
+pub export fn func_shell_base(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_trim_newlines: c_int) [*c]u8 {
+    var o = arg_o;
+    _ = &o;
+    var argv = arg_argv;
+    _ = &argv;
+    var trim_newlines = arg_trim_newlines;
+    _ = &trim_newlines;
+    var child_1: struct_childbase = struct_childbase{
+        .cmd_name = null,
+        .environment = null,
+        .output = @import("std").mem.zeroes(struct_output),
+    };
+    _ = &child_1;
+    var batch_filename: [*c]u8 = null;
+    _ = &batch_filename;
+    var errfd: c_int = undefined;
+    _ = &errfd;
+    var command_argv: [*c][*c]u8 = null;
+    _ = &command_argv;
+    var pipedes: [2]c_int = undefined;
+    _ = &pipedes;
+    var pid: pid_t = undefined;
+    _ = &pid;
+    command_argv = construct_command_argv(argv[@as(c_uint, @intCast(@as(c_int, 0)))], null, null, @as(c_int, 0), &batch_filename);
+    if (command_argv == null) {
+        return o;
+    }
+    output_start();
+    errfd = if ((output_context != null) and (output_context.*.err >= @as(c_int, 0))) output_context.*.err else fileno(stderr);
+    child_1.environment = target_environment(null, @as(c_int, 0));
+    if (pipe(@as([*c]c_int, @ptrCast(@alignCast(&pipedes)))) < @as(c_int, 0)) {
+        @"error"(reading_file, strlen(strerror(__errno_location().*)), "pipe: %s", strerror(__errno_location().*));
+        pid = -@as(c_int, 1);
+        {
+            if (command_argv != null) {
+                free(@as(?*anyopaque, @ptrCast(command_argv[@as(c_uint, @intCast(@as(c_int, 0)))])));
+                free(@as(?*anyopaque, @ptrCast(command_argv)));
+            }
+            free_childbase(&child_1);
+            return o;
+        }
+    }
+    fd_noinherit(pipedes[@as(c_uint, @intCast(@as(c_int, 1)))]);
+    fd_noinherit(pipedes[@as(c_uint, @intCast(@as(c_int, 0)))]);
+    child_1.output.syncout = 1;
+    child_1.output.out = pipedes[@as(c_uint, @intCast(@as(c_int, 1)))];
+    child_1.output.err = errfd;
+    pid = child_execute_job(&child_1, @as(c_int, 1), command_argv);
+    if (pid < @as(c_int, 0)) {
+        shell_completed(@as(c_int, 127), @as(c_int, 0));
+        {
+            if (command_argv != null) {
+                free(@as(?*anyopaque, @ptrCast(command_argv[@as(c_uint, @intCast(@as(c_int, 0)))])));
+                free(@as(?*anyopaque, @ptrCast(command_argv)));
+            }
+            free_childbase(&child_1);
+            return o;
+        }
+    }
+    {
+        var buffer: [*c]u8 = undefined;
+        _ = &buffer;
+        var maxlen: usize = undefined;
+        _ = &maxlen;
+        var i: usize = undefined;
+        _ = &i;
+        var cc: c_int = undefined;
+        _ = &cc;
+        shell_function_pid = pid;
+        shell_function_completed = 0;
+        if (pipedes[@as(c_uint, @intCast(@as(c_int, 1)))] >= @as(c_int, 0)) {
+            _ = close(pipedes[@as(c_uint, @intCast(@as(c_int, 1)))]);
+        }
+        maxlen = 200;
+        buffer = @as([*c]u8, @ptrCast(@alignCast(xmalloc(maxlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        {
+            i = 0;
+            while (true) : (i +%= @as(usize, @bitCast(@as(c_long, cc)))) {
+                if (i == maxlen) {
+                    maxlen +%= @as(usize, @bitCast(@as(c_long, @as(c_int, 512))));
+                    buffer = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(buffer)), maxlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                }
+                while (((blk: {
+                    const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(pipedes[@as(c_uint, @intCast(@as(c_int, 0)))], @as(?*anyopaque, @ptrCast(&buffer[i])), maxlen -% i)))));
+                    cc = tmp;
+                    break :blk tmp;
+                }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+                if (cc <= @as(c_int, 0)) break;
+            }
+        }
+        buffer[i] = '\x00';
+        _ = close(pipedes[@as(c_uint, @intCast(@as(c_int, 0)))]);
+        while (shell_function_completed == @as(c_int, 0)) {
+            reap_children(@as(c_int, 1), @as(c_int, 0));
+        }
+        if (batch_filename != null) {
+            while (true) {
+                if ((@as(c_int, 2) & db_level) != 0) {
+                    _ = printf(gettext("Cleaning up temporary batch file %s\n"), batch_filename);
+                    _ = fflush(stdout);
+                }
+                if (!false) break;
+            }
+            _ = remove(batch_filename);
+            free(@as(?*anyopaque, @ptrCast(batch_filename)));
+        }
+        shell_function_pid = 0;
+        fold_newlines(buffer, &i, trim_newlines);
+        o = variable_buffer_output(o, buffer, i);
+        free(@as(?*anyopaque, @ptrCast(buffer)));
+    }
+    if (command_argv != null) {
+        free(@as(?*anyopaque, @ptrCast(command_argv[@as(c_uint, @intCast(@as(c_int, 0)))])));
+        free(@as(?*anyopaque, @ptrCast(command_argv)));
+    }
+    free_childbase(&child_1);
+    return o;
+}
 pub export fn shell_completed(arg_exit_code: c_int, arg_exit_sig: c_int) void {
     var exit_code = arg_exit_code;
     _ = &exit_code;

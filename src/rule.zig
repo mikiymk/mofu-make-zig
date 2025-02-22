@@ -2874,10 +2874,99 @@ pub fn convert_suffix_rule(arg_target: [*c]const u8, arg_source: [*c]const u8, a
     }
     create_pattern_rule(names, percents, @as(c_ushort, @bitCast(@as(c_short, @truncate(@as(c_int, 1))))), @as(c_int, 0), deps, cmds, @as(c_int, 0));
 }
-// src/rule.c:424:21: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/rule.c:383:1: warning: unable to translate function, demoted to extern
-pub extern fn new_pattern_rule(arg_rule_1: [*c]struct_rule, arg_override: c_int) callconv(.C) c_int;
+pub fn new_pattern_rule(arg_rule_1: [*c]struct_rule, arg_override: c_int) callconv(.C) c_int {
+    var rule_1 = arg_rule_1;
+    _ = &rule_1;
+    var override = arg_override;
+    _ = &override;
+    var r: [*c]struct_rule = undefined;
+    _ = &r;
+    var lastrule: [*c]struct_rule = undefined;
+    _ = &lastrule;
+    var i: c_uint = undefined;
+    _ = &i;
+    var j: c_uint = undefined;
+    _ = &j;
+    rule_1.*.in_use = 0;
+    rule_1.*.terminal = 0;
+    rule_1.*.next = null;
+    lastrule = null;
+    {
+        var flag_395: c_int = 0;
+        _ = &flag_395;
+        {
+            r = pattern_rules;
+            while (r != null) : (_ = blk: {
+                lastrule = r;
+                break :blk blk_1: {
+                    const tmp = r.*.next;
+                    r = tmp;
+                    break :blk_1 tmp;
+                };
+            }) {
+                {
+                    i = 0;
+                    while (i < @as(c_uint, @bitCast(@as(c_uint, rule_1.*.num)))) : (i +%= 1) {
+                        {
+                            j = 0;
+                            while (j < @as(c_uint, @bitCast(@as(c_uint, r.*.num)))) : (j +%= 1) if (!((rule_1.*.targets[i] == r.*.targets[j]) or ((@as(c_int, @bitCast(@as(c_uint, rule_1.*.targets[i].*))) == @as(c_int, @bitCast(@as(c_uint, r.*.targets[j].*)))) and ((@as(c_int, @bitCast(@as(c_uint, rule_1.*.targets[i].*))) == @as(c_int, '\x00')) or !(strcmp(rule_1.*.targets[i] + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), r.*.targets[j] + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) break;
+                        }
+                        if (j == @as(c_uint, @bitCast(@as(c_uint, r.*.num)))) {
+                            var d: [*c]struct_dep = undefined;
+                            _ = &d;
+                            var d2: [*c]struct_dep = undefined;
+                            _ = &d2;
+                            {
+                                _ = blk: {
+                                    d = rule_1.*.deps;
+                                    break :blk blk_1: {
+                                        const tmp = r.*.deps;
+                                        d2 = tmp;
+                                        break :blk_1 tmp;
+                                    };
+                                };
+                                while ((d != null) and (d2 != null)) : (_ = blk: {
+                                    d = d.*.next;
+                                    break :blk blk_1: {
+                                        const tmp = d2.*.next;
+                                        d2 = tmp;
+                                        break :blk_1 tmp;
+                                    };
+                                }) if (!(((if (d.*.name != null) d.*.name else d.*.file.*.name) == (if (d2.*.name != null) d2.*.name else d2.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, @bitCast(@as(c_uint, (if (d2.*.name != null) d2.*.name else d2.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, '\x00')) or !(strcmp((if (d.*.name != null) d.*.name else d.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), (if (d2.*.name != null) d2.*.name else d2.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) break;
+                            }
+                            if ((d == null) and (d2 == null)) {
+                                if (override != 0) {
+                                    freerule(r, lastrule);
+                                    if (pattern_rules == null) {
+                                        pattern_rules = rule_1;
+                                    } else {
+                                        last_pattern_rule.*.next = rule_1;
+                                    }
+                                    last_pattern_rule = rule_1;
+                                    flag_395 = 1;
+                                    break;
+                                } else {
+                                    freerule(rule_1, @as([*c]struct_rule, @ptrFromInt(@as(c_int, 0))));
+                                    return 0;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (flag_395 == @as(c_int, 1)) break;
+            }
+        }
+    }
+    if (r == null) {
+        if (pattern_rules == null) {
+            pattern_rules = rule_1;
+        } else {
+            last_pattern_rule.*.next = rule_1;
+        }
+        last_pattern_rule = rule_1;
+    }
+    return 1;
+}
 pub fn print_rule(arg_r: [*c]struct_rule) callconv(.C) void {
     var r = arg_r;
     _ = &r;

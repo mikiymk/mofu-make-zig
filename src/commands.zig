@@ -2563,10 +2563,125 @@ pub export fn delete_child_targets(arg_child_1: [*c]struct_child) void {
     }
     child_1.*.deleted = 1;
 }
-// src/commands.c:357:9: warning: TODO implement translation of stmt class LabelStmtClass
-
-// src/commands.c:323:1: warning: unable to translate function, demoted to extern
-pub extern fn chop_commands(arg_cmds: [*c]struct_commands) void;
+pub export fn chop_commands(arg_cmds: [*c]struct_commands) void {
+    var cmds = arg_cmds;
+    _ = &cmds;
+    var nlines: c_ushort = undefined;
+    _ = &nlines;
+    var i: c_ushort = undefined;
+    _ = &i;
+    var lines: [*c][*c]u8 = undefined;
+    _ = &lines;
+    if (!(cmds != null) or (cmds.*.command_lines != @as([*c][*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))))) return;
+    if (one_shell != 0) {
+        var l: usize = strlen(cmds.*.commands);
+        _ = &l;
+        nlines = 1;
+        lines = @as([*c][*c]u8, @ptrCast(@alignCast(xmalloc(@as(c_ulong, @bitCast(@as(c_ulong, nlines))) *% @sizeOf([*c]u8)))));
+        lines[@as(c_uint, @intCast(@as(c_int, 0)))] = xstrdup(cmds.*.commands);
+        if ((l > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) and (@as(c_int, @bitCast(@as(c_uint, lines[@as(c_uint, @intCast(@as(c_int, 0)))][l -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]))) == @as(c_int, '\n'))) {
+            lines[@as(c_uint, @intCast(@as(c_int, 0)))][l -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))] = '\x00';
+        }
+    } else {
+        var p: [*c]const u8 = cmds.*.commands;
+        _ = &p;
+        var max: usize = 5;
+        _ = &max;
+        nlines = 0;
+        lines = @as([*c][*c]u8, @ptrCast(@alignCast(xmalloc(max *% @sizeOf([*c]u8)))));
+        while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) {
+            var end: [*c]const u8 = p;
+            _ = &end;
+            while (true) {
+                end = strchr(end, @as(c_int, '\n'));
+                if (end == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+                    end = p + strlen(p);
+                } else if ((end > p) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
+                    const tmp = -@as(c_int, 1);
+                    if (tmp >= 0) break :blk end + @as(usize, @intCast(tmp)) else break :blk end - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+                }).*))) == @as(c_int, '\\'))) {
+                    var backslash: c_int = 1;
+                    _ = &backslash;
+                    if (end > (p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))) {
+                        var b: [*c]const u8 = undefined;
+                        _ = &b;
+                        {
+                            b = end - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));
+                            while ((b >= p) and (@as(c_int, @bitCast(@as(c_uint, b.*))) == @as(c_int, '\\'))) : (b -= 1) {
+                                backslash = @intFromBool(!(backslash != 0));
+                            }
+                        }
+                    }
+                    if (backslash != 0) {
+                        end += 1;
+                        continue;
+                    }
+                }
+                break;
+            }
+            if (@as(c_int, @bitCast(@as(c_uint, nlines))) == ((@as(c_int, 32767) * @as(c_int, 2)) + @as(c_int, 1))) {
+                fatal(&cmds.*.fileinfo, ((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3)))), gettext("Recipe has too many lines (limit %hu)"), @as(c_int, @bitCast(@as(c_uint, nlines))));
+            }
+            if (@as(usize, @bitCast(@as(c_ulong, nlines))) == max) {
+                max +%= @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
+                lines = @as([*c][*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(lines)), max *% @sizeOf([*c]u8)))));
+            }
+            lines[blk: {
+                    const ref = &nlines;
+                    const tmp = ref.*;
+                    ref.* +%= 1;
+                    break :blk tmp;
+                }] = xstrndup(p, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(p))), @sizeOf(u8)))));
+            p = end;
+            if (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) {
+                p += 1;
+            }
+        }
+    }
+    cmds.*.ncommand_lines = nlines;
+    cmds.*.command_lines = lines;
+    cmds.*.any_recurse = 0;
+    cmds.*.lines_flags = @as([*c]u8, @ptrCast(@alignCast(xmalloc(@as(usize, @bitCast(@as(c_ulong, nlines)))))));
+    {
+        i = 0;
+        while (@as(c_int, @bitCast(@as(c_uint, i))) < @as(c_int, @bitCast(@as(c_uint, nlines)))) : (i +%= 1) {
+            var flags: u8 = 0;
+            _ = &flags;
+            var p: [*c]const u8 = lines[i];
+            _ = &p;
+            while (((((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & @as(c_int, 2)) != @as(c_int, 0)) or (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '-'))) or (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '@'))) or (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '+'))) {
+                while (true) {
+                    switch (@as(c_int, @bitCast(@as(c_uint, (blk: {
+                        const ref = &p;
+                        const tmp = ref.*;
+                        ref.* += 1;
+                        break :blk tmp;
+                    }).*)))) {
+                        @as(c_int, 43) => {
+                            flags |= @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1)))));
+                            break;
+                        },
+                        @as(c_int, 64) => {
+                            flags |= @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2)))));
+                            break;
+                        },
+                        @as(c_int, 45) => {
+                            flags |= @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 4)))));
+                            break;
+                        },
+                        else => {},
+                    }
+                    break;
+                }
+            }
+            if (!((@as(c_int, @bitCast(@as(c_uint, flags))) & @as(c_int, 1)) != @as(c_int, 0)) and ((strstr(p, "$(MAKE)") != null) or (strstr(p, "${MAKE}") != null))) {
+                flags |= @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1)))));
+            }
+            cmds.*.lines_flags[i] = flags;
+            cmds.*.any_recurse |= @as(c_uint, @bitCast(if ((@as(c_int, @bitCast(@as(c_uint, flags))) & @as(c_int, 1)) != @as(c_int, 0)) @as(c_int, 1) else @as(c_int, 0)));
+        }
+    }
+}
 pub export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8) void {
     var file_1 = arg_file_1;
     _ = &file_1;

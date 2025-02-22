@@ -2015,10 +2015,6 @@ pub extern fn ar_parse_name([*c]const u8, [*c][*c]u8, [*c][*c]u8) void;
 pub extern fn ar_touch([*c]const u8) c_int;
 pub extern fn ar_member_date([*c]const u8) time_t;
 pub const ar_member_func_t = ?*const fn (c_int, [*c]const u8, c_int, c_long, c_long, c_long, intmax_t, c_int, c_int, c_uint, ?*const anyopaque) callconv(.C) intmax_t;
-// src/arscan.c:463:7: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/arscan.c:442:1: warning: unable to translate function, demoted to extern
-pub extern fn ar_scan(arg_archive: [*c]const u8, arg_function: ar_member_func_t, arg_arg: ?*const anyopaque) intmax_t;
 pub const struct_ar_hdr = extern struct {
     ar_name: [16]u8 = @import("std").mem.zeroes([16]u8),
     ar_date: [12]u8 = @import("std").mem.zeroes([12]u8),
@@ -2028,6 +2024,189 @@ pub const struct_ar_hdr = extern struct {
     ar_size: [10]u8 = @import("std").mem.zeroes([10]u8),
     ar_fmag: [2]u8 = @import("std").mem.zeroes([2]u8),
 };
+pub export fn ar_scan(arg_archive: [*c]const u8, arg_function: ar_member_func_t, arg_arg: ?*const anyopaque) intmax_t {
+    var archive = arg_archive;
+    _ = &archive;
+    var function = arg_function;
+    _ = &function;
+    var arg = arg_arg;
+    _ = &arg;
+    var namemap: [*c]u8 = null;
+    _ = &namemap;
+    var namemap_size: c_uint = 0;
+    _ = &namemap_size;
+    var desc: c_int = open(archive, @as(c_int, 0), @as(c_int, 0));
+    _ = &desc;
+    if (desc < @as(c_int, 0)) return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 1))));
+    {
+        var buf: [8]u8 = undefined;
+        _ = &buf;
+        var nread: c_int = undefined;
+        _ = &nread;
+        nread = @as(c_int, @bitCast(@as(c_int, @truncate(readbuf(desc, @as(?*anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&buf))))), @as(usize, @bitCast(@as(c_long, @as(c_int, 8)))))))));
+        if ((nread != @as(c_int, 8)) or (memcmp(@as(?*const anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&buf))))), @as(?*const anyopaque, @ptrCast("!<arch>\n")), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) != 0)) {
+            _ = close(desc);
+            return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+        }
+    }
+    {
+        var member_offset: c_long = 8;
+        _ = &member_offset;
+        while (true) {
+            var nread: isize = undefined;
+            _ = &nread;
+            var member_header: struct_ar_hdr = undefined;
+            _ = &member_header;
+            var namebuf: [17]u8 = undefined;
+            _ = &namebuf;
+            var name: [*c]u8 = undefined;
+            _ = &name;
+            var is_namemap: c_int = undefined;
+            _ = &is_namemap;
+            var long_name: c_int = 0;
+            _ = &long_name;
+            var eltsize: c_long = undefined;
+            _ = &eltsize;
+            var eltmode: c_uint = undefined;
+            _ = &eltmode;
+            var eltdate: intmax_t = undefined;
+            _ = &eltdate;
+            var eltuid: c_int = undefined;
+            _ = &eltuid;
+            var eltgid: c_int = undefined;
+            _ = &eltgid;
+            var fnval: intmax_t = undefined;
+            _ = &fnval;
+            var o: off_t = undefined;
+            _ = &o;
+            _ = memset(@as(?*anyopaque, @ptrCast(&member_header)), @as(c_int, '\x00'), @sizeOf(struct_ar_hdr));
+            while (((blk: {
+                const tmp = lseek(desc, member_offset, @as(c_int, 0));
+                o = tmp;
+                break :blk tmp;
+            }) == @as(off_t, @bitCast(@as(c_long, -@as(c_int, 1))))) and (__errno_location().* == @as(c_int, 4))) {}
+            if (o < @as(off_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+                _ = close(desc);
+                return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+            }
+            nread = readbuf(desc, @as(?*anyopaque, @ptrCast(&member_header)), @sizeOf(struct_ar_hdr));
+            if (nread == @as(isize, @bitCast(@as(c_long, @as(c_int, 0))))) break;
+            if ((@as(c_ulong, @bitCast(nread)) != @sizeOf(struct_ar_hdr)) or ((memcmp(@as(?*const anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&member_header.ar_fmag))))), @as(?*const anyopaque, @ptrCast("`\n")), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) != 0) and true)) {
+                _ = close(desc);
+                return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+            }
+            name = @as([*c]u8, @ptrCast(@alignCast(&namebuf)));
+            _ = memcpy(@as(?*anyopaque, @ptrCast(name)), @as(?*const anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&member_header.ar_name))))), @sizeOf([16]u8));
+            {
+                var p: [*c]u8 = name + @sizeOf([16]u8);
+                _ = &p;
+                while (true) {
+                    p.* = '\x00';
+                    if (!((p > name) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
+                        const ref = &p;
+                        ref.* -= 1;
+                        break :blk ref.*;
+                    }).*))) == @as(c_int, ' ')))) break;
+                }
+                is_namemap = @intFromBool(!(strcmp(name, "//") != 0) or !(strcmp(name, "ARFILENAMES/") != 0));
+                if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '/')) {
+                    p.* = '\x00';
+                }
+                if ((!(is_namemap != 0) and ((@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, ' ')) or (@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '/')))) and (namemap != null)) {
+                    var err: [*c]const u8 = undefined;
+                    _ = &err;
+                    var name_off: c_uint = make_toui(name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), &err);
+                    _ = &name_off;
+                    var name_len: usize = undefined;
+                    _ = &name_len;
+                    if ((err != null) or (name_off >= namemap_size)) {
+                        _ = close(desc);
+                        return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+                    }
+                    name = namemap + name_off;
+                    name_len = strlen(name);
+                    if (name_len < @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) {
+                        _ = close(desc);
+                        return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+                    }
+                    long_name = 1;
+                } else if (((@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '#')) and (@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '1'))) and (@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 2)))]))) == @as(c_int, '/'))) {
+                    var err: [*c]const u8 = undefined;
+                    _ = &err;
+                    var name_len: c_uint = make_toui(name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 3))))), &err);
+                    _ = &name_len;
+                    if (((err != null) or (name_len == @as(c_uint, @bitCast(@as(c_int, 0))))) or (name_len >= @as(c_uint, @bitCast(if (@as(c_int, 4096) < @as(c_int, 2147483647)) @as(c_int, 4096) else @as(c_int, 2147483647))))) {
+                        _ = close(desc);
+                        return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+                    }
+                    name = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_ulong, name_len +% @as(c_uint, @bitCast(@as(c_int, 1))))))))));
+                    nread = readbuf(desc, @as(?*anyopaque, @ptrCast(name)), @as(usize, @bitCast(@as(c_ulong, name_len))));
+                    if ((nread < @as(isize, @bitCast(@as(c_long, @as(c_int, 0))))) or (@as(c_uint, @bitCast(@as(c_int, @truncate(nread)))) != name_len)) {
+                        _ = close(desc);
+                        return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+                    }
+                    name[name_len] = '\x00';
+                    long_name = 1;
+                }
+            }
+            eltmode = @as(c_uint, @bitCast(@as(c_uint, @truncate(parse_int(@as([*c]u8, @ptrCast(@alignCast(&member_header.ar_mode))), @sizeOf([8]u8), @as(c_int, 8), @as(uintmax_t, @bitCast(@as(c_ulong, if (!!(@as(c_uint, @bitCast(@as(c_int, 0))) < @as(c_uint, @bitCast(-@as(c_int, 1))))) @as(c_uint, @bitCast(-@as(c_int, 1))) else (((@as(c_uint, @bitCast(@as(c_int, 1))) << @intCast((@sizeOf(c_uint) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) -% @as(c_uint, @bitCast(@as(c_int, 1)))) *% @as(c_uint, @bitCast(@as(c_int, 2)))) +% @as(c_uint, @bitCast(@as(c_int, 1)))))), "mode", archive, name)))));
+            eltsize = @as(c_long, @bitCast(parse_int(@as([*c]u8, @ptrCast(@alignCast(&member_header.ar_size))), @sizeOf([10]u8), @as(c_int, 10), @as(uintmax_t, @bitCast(if (!!(@as(c_long, @bitCast(@as(c_long, @as(c_int, 0)))) < @as(c_long, @bitCast(@as(c_long, -@as(c_int, 1)))))) @as(c_long, @bitCast(@as(c_long, -@as(c_int, 1)))) else (((@as(c_long, @bitCast(@as(c_long, @as(c_int, 1)))) << @intCast((@sizeOf(c_long) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) - @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))) * @as(c_long, @bitCast(@as(c_long, @as(c_int, 2))))) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1)))))), "size", archive, name)));
+            eltdate = @as(intmax_t, @bitCast(parse_int(@as([*c]u8, @ptrCast(@alignCast(&member_header.ar_date))), @sizeOf([12]u8), @as(c_int, 10), @as(uintmax_t, @bitCast(if (!!(@as(intmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) < @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))))) @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) else (((@as(intmax_t, @bitCast(@as(c_long, @as(c_int, 1)))) << @intCast((@sizeOf(intmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) - @as(intmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) * @as(intmax_t, @bitCast(@as(c_long, @as(c_int, 2))))) + @as(intmax_t, @bitCast(@as(c_long, @as(c_int, 1)))))), "date", archive, name)));
+            eltuid = @as(c_int, @bitCast(@as(c_uint, @truncate(parse_int(@as([*c]u8, @ptrCast(@alignCast(&member_header.ar_uid))), @sizeOf([6]u8), @as(c_int, 10), @as(uintmax_t, @bitCast(@as(c_long, if (!!(@as(c_int, 0) < -@as(c_int, 1))) -@as(c_int, 1) else (((@as(c_int, 1) << @intCast((@sizeOf(c_int) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) - @as(c_int, 1)) * @as(c_int, 2)) + @as(c_int, 1)))), "uid", archive, name)))));
+            eltgid = @as(c_int, @bitCast(@as(c_uint, @truncate(parse_int(@as([*c]u8, @ptrCast(@alignCast(&member_header.ar_gid))), @sizeOf([6]u8), @as(c_int, 10), @as(uintmax_t, @bitCast(@as(c_long, if (!!(@as(c_int, 0) < -@as(c_int, 1))) -@as(c_int, 1) else (((@as(c_int, 1) << @intCast((@sizeOf(c_int) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) - @as(c_int, 1)) * @as(c_int, 2)) + @as(c_int, 1)))), "gid", archive, name)))));
+            fnval = function.?(desc, name, @intFromBool(!(long_name != 0)), member_offset, @as(c_long, @bitCast(@as(c_ulong, @bitCast(member_offset)) +% @sizeOf(struct_ar_hdr))), eltsize, eltdate, eltuid, eltgid, eltmode, arg);
+            if (fnval != 0) {
+                _ = close(desc);
+                return fnval;
+            }
+            if (is_namemap != 0) {
+                var clear: [*c]u8 = undefined;
+                _ = &clear;
+                var limit: [*c]u8 = undefined;
+                _ = &limit;
+                if (eltsize > @as(c_long, @bitCast(@as(c_long, @as(c_int, 2147483647))))) {
+                    _ = close(desc);
+                    return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+                }
+                namemap = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(eltsize + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))))));
+                nread = readbuf(desc, @as(?*anyopaque, @ptrCast(namemap)), @as(usize, @bitCast(eltsize)));
+                if (nread != eltsize) {
+                    _ = close(desc);
+                    return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+                }
+                namemap_size = @as(c_uint, @bitCast(@as(c_int, @truncate(eltsize))));
+                limit = namemap + @as(usize, @bitCast(@as(isize, @intCast(eltsize))));
+                {
+                    clear = namemap;
+                    while (clear < limit) : (clear += 1) {
+                        if (@as(c_int, @bitCast(@as(c_uint, clear.*))) == @as(c_int, '\n')) {
+                            clear.* = '\x00';
+                            if (@as(c_int, @bitCast(@as(c_uint, (blk: {
+                                const tmp = -@as(c_int, 1);
+                                if (tmp >= 0) break :blk clear + @as(usize, @intCast(tmp)) else break :blk clear - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+                            }).*))) == @as(c_int, '/')) {
+                                (blk: {
+                                    const tmp = -@as(c_int, 1);
+                                    if (tmp >= 0) break :blk clear + @as(usize, @intCast(tmp)) else break :blk clear - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+                                }).* = '\x00';
+                            }
+                        }
+                    }
+                }
+                limit.* = '\x00';
+                is_namemap = 0;
+            }
+            member_offset += @as(c_long, @bitCast(@sizeOf(struct_ar_hdr) +% @as(c_ulong, @bitCast(eltsize))));
+            if (@import("std").zig.c_translation.signedRemainder(member_offset, @as(c_long, @bitCast(@as(c_long, @as(c_int, 2))))) != @as(c_long, @bitCast(@as(c_long, @as(c_int, 0))))) {
+                member_offset += 1;
+            }
+        }
+    }
+    _ = close(desc);
+    return 0;
+    _ = close(desc);
+    return @as(intmax_t, @bitCast(@as(c_long, -@as(c_int, 2))));
+}
 pub export fn ar_name_equal(arg_name: [*c]const u8, arg_mem: [*c]const u8, arg_truncated: c_int) c_int {
     var name = arg_name;
     _ = &name;
@@ -2048,10 +2227,98 @@ pub export fn ar_name_equal(arg_name: [*c]const u8, arg_mem: [*c]const u8, arg_t
     }
     return @intFromBool(!(strcmp(name, mem) != 0));
 }
-// src/arscan.c:947:5: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/arscan.c:923:1: warning: unable to translate function, demoted to extern
-pub extern fn ar_member_touch(arg_arname: [*c]const u8, arg_memname: [*c]const u8) c_int;
+pub export fn ar_member_touch(arg_arname: [*c]const u8, arg_memname: [*c]const u8) c_int {
+    var arname = arg_arname;
+    _ = &arname;
+    var memname = arg_memname;
+    _ = &memname;
+    var pos: intmax_t = ar_scan(arname, &ar_member_pos, @as(?*const anyopaque, @ptrCast(memname)));
+    _ = &pos;
+    var opos: off_t = undefined;
+    _ = &opos;
+    var fd: c_int = undefined;
+    _ = &fd;
+    var ar_hdr_1: struct_ar_hdr = undefined;
+    _ = &ar_hdr_1;
+    var o: off_t = undefined;
+    _ = &o;
+    var r: c_int = undefined;
+    _ = &r;
+    var datelen: c_int = undefined;
+    _ = &datelen;
+    var statbuf: struct_stat = undefined;
+    _ = &statbuf;
+    if (pos < @as(intmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) return @as(c_int, @bitCast(@as(c_int, @truncate(pos))));
+    if (!(pos != 0)) return 1;
+    opos = @as(off_t, @bitCast(pos));
+    while (((blk: {
+        const tmp = open(arname, @as(c_int, 2), @as(c_int, 438));
+        fd = tmp;
+        break :blk tmp;
+    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+    if (fd < @as(c_int, 0)) return -@as(c_int, 3);
+    while (((blk: {
+        const tmp = lseek(fd, opos, @as(c_int, 0));
+        o = tmp;
+        break :blk tmp;
+    }) == @as(off_t, @bitCast(@as(c_long, -@as(c_int, 1))))) and (__errno_location().* == @as(c_int, 4))) {}
+    if (o < @as(off_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+        r = __errno_location().*;
+        _ = close(fd);
+        __errno_location().* = r;
+        return -@as(c_int, 3);
+    }
+    r = @as(c_int, @bitCast(@as(c_int, @truncate(readbuf(fd, @as(?*anyopaque, @ptrCast(&ar_hdr_1)), @sizeOf(struct_ar_hdr))))));
+    if (@as(c_ulong, @bitCast(@as(c_long, r))) != @sizeOf(struct_ar_hdr)) {
+        r = __errno_location().*;
+        _ = close(fd);
+        __errno_location().* = r;
+        return -@as(c_int, 3);
+    }
+    while (((blk: {
+        const tmp = fstat(fd, &statbuf);
+        r = tmp;
+        break :blk tmp;
+    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+    if (r < @as(c_int, 0)) {
+        r = __errno_location().*;
+        _ = close(fd);
+        __errno_location().* = r;
+        return -@as(c_int, 3);
+    }
+    datelen = snprintf(@as([*c]u8, @ptrCast(@alignCast(&ar_hdr_1.ar_date))), @sizeOf([12]u8), "%ld", @as(intmax_t, @bitCast(statbuf.st_mtim.tv_sec)));
+    if (!((@as(c_int, 0) <= datelen) and (datelen < @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8)))))))) {
+        r = __errno_location().*;
+        _ = close(fd);
+        __errno_location().* = r;
+        return -@as(c_int, 3);
+    }
+    _ = memset(@as(?*anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&ar_hdr_1.ar_date))) + @as(usize, @bitCast(@as(isize, @intCast(datelen)))))), @as(c_int, ' '), @sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, datelen))));
+    while (((blk: {
+        const tmp = lseek(fd, opos, @as(c_int, 0));
+        o = tmp;
+        break :blk tmp;
+    }) == @as(off_t, @bitCast(@as(c_long, -@as(c_int, 1))))) and (__errno_location().* == @as(c_int, 4))) {}
+    if (o < @as(off_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+        r = __errno_location().*;
+        _ = close(fd);
+        __errno_location().* = r;
+        return -@as(c_int, 3);
+    }
+    r = @as(c_int, @bitCast(@as(c_int, @truncate(writebuf(fd, @as(?*const anyopaque, @ptrCast(&ar_hdr_1)), @sizeOf(struct_ar_hdr))))));
+    if (@as(c_ulong, @bitCast(@as(c_long, r))) != @sizeOf(struct_ar_hdr)) {
+        r = __errno_location().*;
+        _ = close(fd);
+        __errno_location().* = r;
+        return -@as(c_int, 3);
+    }
+    _ = close(fd);
+    return 0;
+    r = __errno_location().*;
+    _ = close(fd);
+    __errno_location().* = r;
+    return -@as(c_int, 3);
+}
 pub extern fn dir_file_exists_p([*c]const u8, [*c]const u8) c_int;
 pub extern fn file_exists_p([*c]const u8) c_int;
 pub extern fn file_impossible_p([*c]const u8) c_int;

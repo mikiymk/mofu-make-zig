@@ -2448,10 +2448,66 @@ pub export fn output_tmpfd() c_int {
     fd_set_append(fd);
     return fd;
 }
-// src/output.c:220:7: warning: TODO implement translation of stmt class GotoStmtClass
-
-// src/output.c:203:1: warning: unable to translate function, demoted to extern
-pub extern fn setup_tmpfile(arg_out: [*c]struct_output) callconv(.C) void;
+pub fn setup_tmpfile(arg_out: [*c]struct_output) callconv(.C) void {
+    var out = arg_out;
+    _ = &out;
+    const in_setup = struct {
+        var static: c_uint = 0;
+    };
+    _ = &in_setup;
+    var io_state: c_uint = undefined;
+    _ = &io_state;
+    if (in_setup.static != 0) return;
+    in_setup.static = 1;
+    io_state = check_io_state();
+    if (!((io_state & @as(c_uint, @bitCast(@as(c_int, 8) | @as(c_int, 16)))) != @as(c_uint, @bitCast(@as(c_int, 0))))) {
+        perror_with_name("output-sync suppressed: ", "stderr");
+        {
+            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("cannot open output-sync lock file, suppressing output-sync."));
+            output_close(out);
+            output_sync = 0;
+            osync_clear();
+            in_setup.static = 0;
+        }
+    }
+    if ((io_state & @as(c_uint, @bitCast(@as(c_int, 8)))) != @as(c_uint, @bitCast(@as(c_int, 0)))) {
+        var fd: c_int = output_tmpfd();
+        _ = &fd;
+        if (fd < @as(c_int, 0)) {
+            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("cannot open output-sync lock file, suppressing output-sync."));
+            output_close(out);
+            output_sync = 0;
+            osync_clear();
+            in_setup.static = 0;
+        }
+        fd_noinherit(fd);
+        out.*.out = fd;
+    }
+    if ((io_state & @as(c_uint, @bitCast(@as(c_int, 16)))) != @as(c_uint, @bitCast(@as(c_int, 0)))) {
+        if ((out.*.out != -@as(c_int, 1)) and ((io_state & @as(c_uint, @bitCast(@as(c_int, 2)))) != @as(c_uint, @bitCast(@as(c_int, 0))))) {
+            out.*.err = out.*.out;
+        } else {
+            var fd: c_int = output_tmpfd();
+            _ = &fd;
+            if (fd < @as(c_int, 0)) {
+                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("cannot open output-sync lock file, suppressing output-sync."));
+                output_close(out);
+                output_sync = 0;
+                osync_clear();
+                in_setup.static = 0;
+            }
+            fd_noinherit(fd);
+            out.*.err = fd;
+        }
+    }
+    in_setup.static = 0;
+    return;
+    @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("cannot open output-sync lock file, suppressing output-sync."));
+    output_close(out);
+    output_sync = 0;
+    osync_clear();
+    in_setup.static = 0;
+}
 pub const struct_fmtstring = extern struct {
     buffer: [*c]u8 = @import("std").mem.zeroes([*c]u8),
     size: usize = @import("std").mem.zeroes(usize),
