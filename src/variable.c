@@ -1146,7 +1146,7 @@ target_environment (struct file *file, int recursive)
         if (!added_SHELL && streq (v->name, "SHELL"))
           {
             added_SHELL = 1;
-            goto setit;
+            {/* goto setit; */ *result++ = xstrdup (concat (3, v->name, "=", value)); free (cp); continue;}
           }
 
         /* If this is MAKELEVEL, update it.  */
@@ -1157,7 +1157,7 @@ target_environment (struct file *file, int recursive)
             free (cp);
             value = cp = xstrdup (val);
             found_makelevel = 1;
-            goto setit;
+            {/* goto setit; */ *result++ = xstrdup (concat (3, v->name, "=", value)); free (cp); continue;}
           }
 
         /* If we need to reset jobserver, check for MAKEFLAGS / MFLAGS.  */
@@ -1170,7 +1170,7 @@ target_environment (struct file *file, int recursive)
                 found_makeflags = 1;
 
                 if (!strstr (value, " --" JOBSERVER_AUTH_OPT "="))
-                  goto setit;
+                  {/* goto setit; */ *result++ = xstrdup (concat (3, v->name, "=", value)); free (cp); continue;}
 
                 /* The invalid option must come before variable overrides.  */
                 vars = strstr (value, " -- ");
@@ -1188,7 +1188,7 @@ target_environment (struct file *file, int recursive)
                 value = cp = mf;
                 if (found_mflags)
                   invalid = NULL;
-                goto setit;
+                {/* goto setit; */ *result++ = xstrdup (concat (3, v->name, "=", value)); free (cp); continue;}
               }
 
             if (!found_mflags && streq (v->name, "MFLAGS"))
@@ -1197,16 +1197,16 @@ target_environment (struct file *file, int recursive)
                 found_mflags = 1;
 
                 if (!strstr (value, " --" JOBSERVER_AUTH_OPT "="))
-                  goto setit;
+                  {/* goto setit; */ *result++ = xstrdup (concat (3, v->name, "=", value)); free (cp); continue;}
 
                 if (v->origin != o_env)
-                  goto setit;
+                  {/* goto setit; */ *result++ = xstrdup (concat (3, v->name, "=", value)); free (cp); continue;}
                 mf = concat (2, value, invalid);
                 free (cp);
                 value = cp = xstrdup (mf);
                 if (found_makeflags)
                   invalid = NULL;
-                goto setit;
+                {/* goto setit; */ *result++ = xstrdup (concat (3, v->name, "=", value)); free (cp); continue;}
               }
           }
 
@@ -1216,11 +1216,11 @@ target_environment (struct file *file, int recursive)
             if (!cp)
               cp = xstrdup (value);
             value = convert_Path_to_windows32 (cp, ';');
-            goto setit;
+            {/* goto setit; */ *result++ = xstrdup (concat (3, v->name, "=", value)); free (cp); continue;}
           }
 #endif
 
-      setit:
+      /* setit: */
         *result++ = xstrdup (concat (3, v->name, "=", value));
         free (cp);
       }
@@ -1345,7 +1345,7 @@ do_variable_definition (const floc *flocp, const char *varname,
          The value is set IFF the variable is not defined yet. */
       v = lookup_variable (varname, strlen (varname));
       if (v)
-        goto done;
+        {/* goto done; */ free (alloc_value); return v->special ? set_special_var (v, origin) : v;}
 
       conditional = 1;
       flavor = f_recursive;
@@ -1408,7 +1408,7 @@ do_variable_definition (const floc *flocp, const char *varname,
             if (!vallen)
               {
                 alloc_value = tp;
-                goto done;
+                {/* goto done; */ free (alloc_value); return v->special ? set_special_var (v, origin) : v;}
               }
 
             oldlen = strlen (v->value);
@@ -1587,7 +1587,7 @@ do_variable_definition (const floc *flocp, const char *varname,
   v->append = append;
   v->conditional = conditional;
 
- done:
+ /* done: */
   free (alloc_value);
   return v->special ? set_special_var (v, origin) : v;
 }
@@ -1679,6 +1679,7 @@ parse_variable_definition (const char *str, struct variable *var)
       /* See if it's one of the other two-byte operators.  */
       if (*p == '=')
         {
+          int flag_1682 = 0;
           switch (c)
             {
             case '+':
@@ -1691,16 +1692,16 @@ parse_variable_definition (const char *str, struct variable *var)
               var->flavor = f_shell;
               break;
             default:
-              goto other;
+              /* goto other; */ flag_1682 = 1;
             }
 
-          if (!end)
+          if (flag_1682 == 0) {if (!end)
             end = p - 1;
           ++p;
-          break;
+          break;}
         }
 
-    other:
+    /* other: */
       /* We found a char which is not part of an assignment operator.
          If we've seen whitespace, then we know this is not a variable
          assignment since variable names cannot contain whitespace.  */

@@ -967,7 +967,7 @@ notice_finished_file (struct file *file)
       else {flag_957 = 1;}
       if (flag_957 == 1)
         {
-        have_nonrecursing:
+        /* have_nonrecursing: */
           if (file->phony)
             file->update_status = us_success;
           /* According to POSIX, -t doesn't affect targets with no cmds.  */

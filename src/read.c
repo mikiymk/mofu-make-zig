@@ -1562,7 +1562,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
 
       --conditionals->if_cmds;
 
-      goto DONE;
+      {/* goto DONE; */ for (i = 0; i < conditionals->if_cmds; ++i) if (conditionals->ignoring[i]) return 1; return 0;}
     }
 
   /* An 'else' statement can either be simple, or it can have another
@@ -1596,7 +1596,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
       if (*line == '\0')
         {
           conditionals->seen_else[o] = 1;
-          goto DONE;
+          {/* goto DONE; */ for (i = 0; i < conditionals->if_cmds; ++i) if (conditionals->ignoring[i]) return 1; return 0;}
         }
 
       /* The 'else' has extra text.  That text must be another conditional
@@ -1620,7 +1620,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
           --conditionals->if_cmds;
         }
 
-      goto DONE;
+      {/* goto DONE; */ for (i = 0; i < conditionals->if_cmds; ++i) if (conditionals->ignoring[i]) return 1; return 0;}
     }
 
   if (conditionals->allocated == 0)
@@ -1774,7 +1774,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
       conditionals->ignoring[o] = (streq (s1, s2) == (cmdtype == c_ifneq));
     }
 
- DONE:
+ /* DONE: */
   /* Search through the stack to see if we're ignoring.  */
   for (i = 0; i < conditionals->if_cmds; ++i)
     if (conditionals->ignoring[i])
@@ -2694,7 +2694,14 @@ readline (struct ebuffer *ebuf)
       /* If the last char isn't a newline, the whole line didn't fit into the
          buffer.  Get some more buffer and try again.  */
       if (p[-1] != '\n')
-        goto more_buffer;
+        {/* goto more_buffer; */ {
+        size_t off = p - start;
+        ebuf->size *= 2;
+        start = ebuf->buffer = ebuf->bufstart = xrealloc (start, ebuf->size);
+        p = start + off;
+        end = start + ebuf->size;
+        *p = '\0';
+      } continue;}
 
       /* We got a newline, so add one to the count of lines.  */
       ++nlines;
@@ -2730,7 +2737,7 @@ readline (struct ebuffer *ebuf)
 
       /* We need more space at the end of our buffer, so realloc it.
          Make sure to preserve the current offset of p.  */
-    more_buffer:
+    /* more_buffer: */
       {
         size_t off = p - start;
         ebuf->size *= 2;
@@ -2791,15 +2798,15 @@ get_next_mword (char *buffer, char **startp, size_t *length)
     {
     case '\0':
       wtype = w_eol;
-      goto done;
+      {/* goto done; */ if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
 
     case ';':
       wtype = w_semicolon;
-      goto done;
+      {/* goto done; */ if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
 
     case '=':
       wtype = w_varassign;
-      goto done;
+      {/* goto done; */ if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
 
     case ':':
       if (*p == '=')
@@ -2820,7 +2827,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
         }
       else
         wtype = w_colon;
-      goto done;
+      {/* goto done; */ if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
 
     case '&':
       if (*p == ':')
@@ -2833,7 +2840,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
               ++p;
               wtype = w_ampdcolon; /* &:: */
             }
-          goto done;
+          {/* goto done; */ if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
         }
       break;
 
@@ -2844,7 +2851,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
         {
           ++p;
           wtype = w_varassign; /* += or ?= or != */
-          goto done;
+          {/* goto done; */ if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
         }
       break;
 
@@ -2867,12 +2874,12 @@ get_next_mword (char *buffer, char **startp, size_t *length)
       int count;
 
       if (END_OF_TOKEN (c))
-        goto done_word;
+        {/* goto done_word; */ --p; if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
 
       switch (c)
         {
         case '=':
-          goto done_word;
+          {/* goto done_word; */ --p; if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
 
         case ':':
 #ifdef HAVE_DOS_PATHS
@@ -2883,14 +2890,14 @@ get_next_mword (char *buffer, char **startp, size_t *length)
               && isalpha ((unsigned char)p[-2]))
             break;
 #endif
-          goto done_word;
+          {/* goto done_word; */ --p; if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
 
         case '$':
           c = *(p++);
           if (c == '$')
             break;
           if (c == '\0')
-            goto done_word;
+            {/* goto done_word; */ --p; if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
 
           /* This is a variable reference, so note that it's expandable.
              Then read it to the matching close paren.  */
@@ -2919,7 +2926,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
         case '?':
         case '+':
           if (*p == '=')
-            goto done_word;
+            {/* goto done_word; */ --p; if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
           break;
 
         case '\\':
@@ -2936,7 +2943,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
 
         case '&':
           if (*p == ':')
-            goto done_word;
+            {/* goto done_word; */ --p; if (startp) *startp = beg; if (length) *length = p - beg; return wtype;}
           break;
 
         default:
@@ -2945,10 +2952,10 @@ get_next_mword (char *buffer, char **startp, size_t *length)
 
       c = *(p++);
     }
- done_word:
+ /* done_word: */
   --p;
 
- done:
+ /* done: */
   if (startp)
     *startp = beg;
   if (length)

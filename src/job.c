@@ -1185,7 +1185,21 @@ start_job_command (struct child *child)
 
   /* If we have a completely empty commandset, stop now.  */
   if (!child->command_ptr)
-    goto next_command;
+    {/* goto next_command; */
+#ifdef __MSDOS__
+      execute_by_shell = 0;
+#endif
+      if (job_next_command (child))
+        start_job_command (child);
+      else
+        {
+          set_command_state (child->file, cs_running);
+          child->file->update_status = us_success;
+          notice_finished_file (child->file);
+        }
+
+      OUTPUT_UNSET();
+      return;}
 
   /* Combine the flags parsed for the line itself with
      the flags specified globally for this target.  */
@@ -1320,7 +1334,7 @@ start_job_command (struct child *child)
 
   if (argv == 0)
     {
-    next_command:
+    /* next_command: */
 #ifdef __MSDOS__
       execute_by_shell = 0;   /* in case construct_command_argv sets it */
 #endif
@@ -1389,7 +1403,21 @@ start_job_command (struct child *child)
       && argv[3] == NULL)
     {
       FREE_ARGV (argv);
-      goto next_command;
+      {/* goto next_command; */
+#ifdef __MSDOS__
+execute_by_shell = 0;
+#endif
+if (job_next_command (child))
+  start_job_command (child);
+else
+  {
+    set_command_state (child->file, cs_running);
+    child->file->update_status = us_success;
+    notice_finished_file (child->file);
+  }
+
+OUTPUT_UNSET();
+return;}
     }
 #endif  /* !VMS && !_AMIGA */
 
@@ -1398,7 +1426,21 @@ start_job_command (struct child *child)
   if (just_print_flag && NONE_SET (flags, COMMANDS_RECURSE))
     {
       FREE_ARGV (argv);
-      goto next_command;
+      {/* goto next_command; */
+#ifdef __MSDOS__
+execute_by_shell = 0;
+#endif
+if (job_next_command (child))
+  start_job_command (child);
+else
+  {
+    set_command_state (child->file, cs_running);
+    child->file->update_status = us_success;
+    notice_finished_file (child->file);
+  }
+
+OUTPUT_UNSET();
+return;}
     }
 
   /* We're sure we're going to invoke a command: set up the output.  */
@@ -2370,12 +2412,12 @@ child_execute_job (struct childbase *child, int good_stdin, char **argv)
 #else /* USE_POSIX_SPAWN */
 
   if ((r = posix_spawnattr_init (&attr)) != 0)
-    goto done;
+    {/* goto done; */  if (r != 0) pid = -1; if (pid < 0) OSS (error, NILF, "%s: %s", argv[0], strerror (r)); return pid;}
 
   if ((r = posix_spawn_file_actions_init (&fa)) != 0)
     {
       posix_spawnattr_destroy (&attr);
-      goto done;
+      {/* goto done; */  if (r != 0) pid = -1; if (pid < 0) OSS (error, NILF, "%s: %s", argv[0], strerror (r)); return pid;}
     }
 
   /* Unblock all signals.  */
@@ -2491,7 +2533,7 @@ child_execute_job (struct childbase *child, int good_stdin, char **argv)
   posix_spawn_file_actions_destroy (&fa);
   posix_spawnattr_destroy (&attr);
 
- done:
+ /* done: */
   if (r != 0)
     pid = -1;
 
