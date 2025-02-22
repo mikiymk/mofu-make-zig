@@ -1965,8 +1965,21 @@ pub extern fn globfree(__pglob: [*c]glob_t) void;
 pub extern fn glob64(noalias __pattern: [*c]const u8, __flags: c_int, __errfunc: ?*const fn ([*c]const u8, c_int) callconv(.C) c_int, noalias __pglob: [*c]glob64_t) c_int;
 pub extern fn globfree64(__pglob: [*c]glob64_t) void;
 pub extern fn glob_pattern_p(__pattern: [*c]const u8, __quote: c_int) c_int;
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_dep = opaque {};
+pub const struct_dep = extern struct {
+    next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+};
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 pub const struct_commands = opaque {};
 pub const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
@@ -2006,10 +2019,10 @@ pub const struct_file = extern struct {
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
     stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    also_make: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    also_make: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     last: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     renamed: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
@@ -2412,10 +2425,10 @@ pub extern var hash_deleted_item: ?*anyopaque;
 pub extern var default_file: [*c]struct_file;
 pub extern fn lookup_file(name: [*c]const u8) [*c]struct_file;
 pub extern fn enter_file(name: [*c]const u8) [*c]struct_file;
-pub extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
-pub extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
+pub extern fn split_prereqs(prereqstr: [*c]u8) [*c]struct_dep;
+pub extern fn enter_prereqs(prereqs: [*c]struct_dep, stem: [*c]const u8) [*c]struct_dep;
 pub extern fn expand_deps(f: [*c]struct_file) void;
-pub extern fn expand_extra_prereqs(extra: [*c]const struct_variable) ?*struct_dep;
+pub extern fn expand_extra_prereqs(extra: [*c]const struct_variable) [*c]struct_dep;
 pub extern fn remove_intermediates(sig: c_int) void;
 pub extern fn snap_deps() void;
 pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
@@ -2425,7 +2438,7 @@ pub extern fn notice_finished_file(file: [*c]struct_file) void;
 pub extern fn init_hash_files() void;
 pub extern fn verify_file_data_base() void;
 pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;
-pub extern fn print_prereqs(deps: ?*const struct_dep) void;
+pub extern fn print_prereqs(deps: [*c]const struct_dep) void;
 pub extern fn print_file_data_base() void;
 pub extern fn try_implicit_rule(file: [*c]struct_file, depth: c_uint) c_int;
 pub extern fn stemlen_compare(v1: ?*const anyopaque, v2: ?*const anyopaque) c_int;
@@ -2438,8 +2451,23 @@ pub const struct_nameseq = extern struct {
     next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
 };
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_goaldep = opaque {};
+pub const struct_goaldep = extern struct {
+    next: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+    @"error": c_int = @import("std").mem.zeroes(c_int),
+    floc: floc = @import("std").mem.zeroes(floc),
+};
 pub export fn parse_file_seq(arg_stringp: [*c][*c]u8, arg_size: usize, arg_stopmap: c_int, arg_prefix: [*c]const u8, arg_flags: c_int) ?*anyopaque {
     var stringp = arg_stringp;
     _ = &stringp;
@@ -2596,7 +2624,7 @@ pub export fn parse_file_seq(arg_stringp: [*c][*c]u8, arg_size: usize, arg_stopm
                 _ = &__n;
                 _ns.*.name = if (cachep != 0) strcache_add(__n) else @as([*c]const u8, @ptrCast(@alignCast(xstrdup(__n))));
                 if (found_wait != 0) {
-                    @as(?*struct_dep, @ptrCast(_ns)).*.wait_here = 1;
+                    @as([*c]struct_dep, @ptrCast(@alignCast(_ns))).*.wait_here = 1;
                     found_wait = 0;
                 }
                 newp.* = _ns;
@@ -2671,7 +2699,7 @@ pub export fn parse_file_seq(arg_stringp: [*c][*c]u8, arg_size: usize, arg_stopm
                         _ = &__n;
                         _ns.*.name = if (cachep != 0) strcache_add(__n) else @as([*c]const u8, @ptrCast(@alignCast(xstrdup(__n))));
                         if (found_wait != 0) {
-                            @as(?*struct_dep, @ptrCast(_ns)).*.wait_here = 1;
+                            @as([*c]struct_dep, @ptrCast(@alignCast(_ns))).*.wait_here = 1;
                             found_wait = 0;
                         }
                         newp.* = _ns;
@@ -2705,7 +2733,7 @@ pub export fn parse_file_seq(arg_stringp: [*c][*c]u8, arg_size: usize, arg_stopm
                 _ = &__n;
                 _ns.*.name = if (cachep != 0) strcache_add(__n) else @as([*c]const u8, @ptrCast(@alignCast(xstrdup(__n))));
                 if (found_wait != 0) {
-                    @as(?*struct_dep, @ptrCast(_ns)).*.wait_here = 1;
+                    @as([*c]struct_dep, @ptrCast(@alignCast(_ns))).*.wait_here = 1;
                     found_wait = 0;
                 }
                 newp.* = _ns;
@@ -2792,8 +2820,8 @@ pub export fn tilde_expand(arg_name: [*c]const u8) [*c]u8 {
 }
 pub extern fn ar_glob(arname: [*c]const u8, member_pattern: [*c]const u8, size: usize) [*c]struct_nameseq;
 pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
-pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
-pub export fn read_all_makefiles(arg_makefiles: [*c][*c]const u8) ?*struct_goaldep {
+pub extern fn copy_dep_chain(d: [*c]const struct_dep) [*c]struct_dep;
+pub export fn read_all_makefiles(arg_makefiles: [*c][*c]const u8) [*c]struct_goaldep {
     var makefiles = arg_makefiles;
     _ = &makefiles;
     var num_makefiles: c_uint = 0;
@@ -2835,7 +2863,7 @@ pub export fn read_all_makefiles(arg_makefiles: [*c][*c]const u8) ?*struct_goald
         free(@as(?*anyopaque, @ptrCast(value)));
     }
     if (makefiles != null) while (makefiles.* != null) {
-        var d: ?*struct_goaldep = eval_makefile(makefiles.*, @as(c_ushort, @bitCast(@as(c_short, @truncate(@as(c_int, 0))))));
+        var d: [*c]struct_goaldep = eval_makefile(makefiles.*, @as(c_ushort, @bitCast(@as(c_short, @truncate(@as(c_int, 0))))));
         _ = &d;
         if (__errno_location().* != 0) {
             perror_with_name("", makefiles.*);
@@ -2868,7 +2896,7 @@ pub export fn read_all_makefiles(arg_makefiles: [*c][*c]const u8) ?*struct_goald
             {
                 p = @as([*c][*c]const u8, @ptrCast(@alignCast(&default_makefiles.static)));
                 while (p.* != null) : (p += 1) {
-                    var d: ?*struct_goaldep = @as(?*struct_goaldep, @ptrCast(xcalloc(@sizeOf(struct_goaldep))));
+                    var d: [*c]struct_goaldep = @as([*c]struct_goaldep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_goaldep)))));
                     _ = &d;
                     d.*.file = enter_file(strcache_add(p.*));
                     d.*.flags = @as(c_uint, @bitCast(@as(c_int, 1) << @intCast(2)));
@@ -2934,7 +2962,7 @@ pub export fn eval_buffer(arg_buffer: [*c]u8, arg_flocp: [*c]const floc) void {
     restore_conditionals(saved);
     reading_file = curfile;
 }
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_36;
+pub extern fn update_goal_chain(goals: [*c]struct_goaldep) enum_update_status_36;
 pub const struct_output = extern struct {
     out: c_int = @import("std").mem.zeroes(c_int),
     err: c_int = @import("std").mem.zeroes(c_int),
@@ -3059,7 +3087,7 @@ pub const struct_rule = extern struct {
     targets: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
     lens: [*c]c_uint = @import("std").mem.zeroes([*c]c_uint),
     suffixes: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
-    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
     _defn: [*c]u8 = @import("std").mem.zeroes([*c]u8),
     num: c_ushort = @import("std").mem.zeroes(c_ushort),
@@ -3081,7 +3109,7 @@ pub extern var suffix_file: [*c]struct_file;
 pub extern fn snap_implicit_rules() void;
 pub extern fn convert_to_pattern() void;
 pub extern fn install_pattern_rule(p: [*c]struct_pspec, terminal: c_int) void;
-pub extern fn create_pattern_rule(targets: [*c][*c]const u8, target_percents: [*c][*c]const u8, num: c_ushort, terminal: c_int, deps: ?*struct_dep, commands: ?*struct_commands, override: c_int) void;
+pub extern fn create_pattern_rule(targets: [*c][*c]const u8, target_percents: [*c][*c]const u8, num: c_ushort, terminal: c_int, deps: [*c]struct_dep, commands: ?*struct_commands, override: c_int) void;
 pub extern fn get_rule_defn(rule: [*c]struct_rule) [*c]const u8;
 pub extern fn print_rule_data_base() void;
 pub extern var db_level: c_int;
@@ -3097,8 +3125,14 @@ pub extern fn getpwuid_r(__uid: __uid_t, noalias __resultbuf: [*c]struct_passwd,
 pub extern fn getpwnam_r(noalias __name: [*c]const u8, noalias __resultbuf: [*c]struct_passwd, noalias __buffer: [*c]u8, __buflen: usize, noalias __result: [*c][*c]struct_passwd) c_int;
 pub extern fn fgetpwent_r(noalias __stream: [*c]FILE, noalias __resultbuf: [*c]struct_passwd, noalias __buffer: [*c]u8, __buflen: usize, noalias __result: [*c][*c]struct_passwd) c_int;
 pub extern fn getpw(__uid: __uid_t, __buffer: [*c]u8) c_int;
-// src/read.c:63:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_vmodifiers = opaque {};
+pub const struct_vmodifiers = extern struct {
+    assign_v: c_uint = @import("std").mem.zeroes(c_uint),
+    define_v: c_uint = @import("std").mem.zeroes(c_uint),
+    undefine_v: c_uint = @import("std").mem.zeroes(c_uint),
+    override_v: c_uint = @import("std").mem.zeroes(c_uint),
+    private_v: c_uint = @import("std").mem.zeroes(c_uint),
+    export_v: enum_variable_export = @import("std").mem.zeroes(enum_variable_export),
+};
 pub const w_bogus: c_int = 0;
 pub const w_eol: c_int = 1;
 pub const w_static: c_int = 2;
@@ -3120,13 +3154,13 @@ pub var default_include_directories: [4][*c]const u8 = [4][*c]const u8{
 };
 pub var include_directories: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8);
 pub var max_incl_len: usize = @import("std").mem.zeroes(usize);
-pub var read_files: ?*struct_goaldep = null;
-pub fn eval_makefile(arg_filename: [*c]const u8, arg_flags: c_ushort) callconv(.C) ?*struct_goaldep {
+pub var read_files: [*c]struct_goaldep = null;
+pub fn eval_makefile(arg_filename: [*c]const u8, arg_flags: c_ushort) callconv(.C) [*c]struct_goaldep {
     var filename = arg_filename;
     _ = &filename;
     var flags = arg_flags;
     _ = &flags;
-    var deps: ?*struct_goaldep = undefined;
+    var deps: [*c]struct_goaldep = undefined;
     _ = &deps;
     var ebuf: struct_ebuffer = undefined;
     _ = &ebuf;
@@ -3134,7 +3168,7 @@ pub fn eval_makefile(arg_filename: [*c]const u8, arg_flags: c_ushort) callconv(.
     _ = &curfile;
     var expanded: [*c]u8 = null;
     _ = &expanded;
-    deps = @as(?*struct_goaldep, @ptrCast(xcalloc(@sizeOf(struct_goaldep))));
+    deps = @as([*c]struct_goaldep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_goaldep)))));
     deps.*.next = read_files;
     read_files = deps;
     ebuf.floc.filenm = filename;
@@ -3246,10 +3280,708 @@ pub fn eval_makefile(arg_filename: [*c]const u8, arg_flags: c_ushort) callconv(.
     __errno_location().* = 0;
     return deps;
 }
-// src/read.c:634:25: warning: local variable has opaque type
-
-// src/read.c:570:1: warning: unable to translate function, demoted to extern
-pub extern fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) void;
+pub fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) void {
+    var ebuf = arg_ebuf;
+    _ = &ebuf;
+    var set_default = arg_set_default;
+    _ = &set_default;
+    var collapsed: [*c]u8 = null;
+    _ = &collapsed;
+    var collapsed_length: usize = 0;
+    _ = &collapsed_length;
+    var commands_len: usize = 200;
+    _ = &commands_len;
+    var commands_1: [*c]u8 = undefined;
+    _ = &commands_1;
+    var commands_idx: usize = 0;
+    _ = &commands_idx;
+    var cmds_started: c_uint = undefined;
+    _ = &cmds_started;
+    var tgts_started: c_uint = undefined;
+    _ = &tgts_started;
+    var ignoring: c_int = 0;
+    _ = &ignoring;
+    var in_ignored_define: c_int = 0;
+    _ = &in_ignored_define;
+    var no_targets: c_int = 0;
+    _ = &no_targets;
+    var also_make_targets: c_int = 0;
+    _ = &also_make_targets;
+    var filenames: [*c]struct_nameseq = null;
+    _ = &filenames;
+    var depstr: [*c]u8 = null;
+    _ = &depstr;
+    var nlines: c_long = 0;
+    _ = &nlines;
+    var two_colon: c_int = 0;
+    _ = &two_colon;
+    var prefix: u8 = cmd_prefix;
+    _ = &prefix;
+    var pattern: [*c]const u8 = null;
+    _ = &pattern;
+    var pattern_percent: [*c]const u8 = undefined;
+    _ = &pattern_percent;
+    var fstart: [*c]floc = undefined;
+    _ = &fstart;
+    var fi: floc = undefined;
+    _ = &fi;
+    pattern_percent = null;
+    cmds_started = blk: {
+        const tmp = @as(c_uint, @bitCast(@as(c_int, 1)));
+        tgts_started = tmp;
+        break :blk tmp;
+    };
+    fstart = &ebuf.*.floc;
+    fi.filenm = ebuf.*.floc.filenm;
+    commands_1 = @as([*c]u8, @ptrCast(@alignCast(xmalloc(@as(usize, @bitCast(@as(c_long, @as(c_int, 200))))))));
+    while (true) {
+        var linelen: usize = undefined;
+        _ = &linelen;
+        var line: [*c]u8 = undefined;
+        _ = &line;
+        var wlen: usize = undefined;
+        _ = &wlen;
+        var p: [*c]u8 = undefined;
+        _ = &p;
+        var p2: [*c]u8 = undefined;
+        _ = &p2;
+        var vmod: struct_vmodifiers = undefined;
+        _ = &vmod;
+        ebuf.*.floc.lineno +%= @as(c_ulong, @bitCast(nlines));
+        nlines = readline(ebuf);
+        if (nlines < @as(c_long, @bitCast(@as(c_long, @as(c_int, 0))))) break;
+        line = ebuf.*.buffer;
+        if (ebuf.*.floc.lineno == @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) {
+            var ul: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(line)));
+            _ = &ul;
+            if (((@as(c_int, @bitCast(@as(c_uint, ul[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, 239)) and (@as(c_int, @bitCast(@as(c_uint, ul[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, 187))) and (@as(c_int, @bitCast(@as(c_uint, ul[@as(c_uint, @intCast(@as(c_int, 2)))]))) == @as(c_int, 191))) {
+                line += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 3)))));
+                if ((@as(c_int, 1) & db_level) != 0) {
+                    if (ebuf.*.floc.filenm != null) {
+                        _ = printf(gettext("Skipping UTF-8 BOM in makefile '%s'\n"), ebuf.*.floc.filenm);
+                    } else {
+                        _ = printf(gettext("Skipping UTF-8 BOM in makefile buffer\n"));
+                    }
+                }
+            }
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, line[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) continue;
+        linelen = strlen(line);
+        if (@as(c_int, @bitCast(@as(c_uint, line[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, @bitCast(@as(c_uint, cmd_prefix)))) {
+            if (no_targets != 0) continue;
+            if (filenames != null) {
+                if (ignoring != 0) continue;
+                if (commands_idx == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
+                    cmds_started = @as(c_uint, @bitCast(@as(c_uint, @truncate(ebuf.*.floc.lineno))));
+                }
+                if ((linelen +% commands_idx) > commands_len) {
+                    commands_len = (linelen +% commands_idx) *% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
+                    commands_1 = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(commands_1)), commands_len))));
+                }
+                _ = memcpy(@as(?*anyopaque, @ptrCast(&commands_1[commands_idx])), @as(?*const anyopaque, @ptrCast(line + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), linelen -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                commands_idx +%= linelen -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+                commands_1[blk: {
+                        const ref = &commands_idx;
+                        const tmp = ref.*;
+                        ref.* +%= 1;
+                        break :blk tmp;
+                    }] = '\n';
+                continue;
+            }
+        }
+        if (collapsed_length < (linelen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))))) {
+            collapsed_length = linelen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+            free(@as(?*anyopaque, @ptrCast(collapsed)));
+            collapsed = @as([*c]u8, @ptrCast(@alignCast(xmalloc(collapsed_length))));
+        }
+        _ = strcpy(collapsed, line);
+        collapse_continuations(collapsed);
+        remove_comments(collapsed);
+        p = collapsed;
+        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+            p += 1;
+        }
+        p = parse_var_assignment(p, @as(c_int, 0), &vmod);
+        if (vmod.assign_v != 0) {
+            var v: [*c]struct_variable = undefined;
+            _ = &v;
+            var origin: enum_variable_origin = @as(c_uint, @bitCast(if (vmod.override_v != 0) o_override else o_file));
+            _ = &origin;
+            if (ignoring != 0) {
+                if (vmod.define_v != 0) {
+                    in_ignored_define = 1;
+                }
+                continue;
+            }
+            while (true) {
+                if (filenames != null) {
+                    fi.lineno = @as(c_ulong, @bitCast(@as(c_ulong, tgts_started)));
+                    fi.offset = 0;
+                    record_files(filenames, also_make_targets, pattern, pattern_percent, depstr, cmds_started, commands_1, commands_idx, two_colon, prefix, &fi);
+                    filenames = null;
+                }
+                commands_idx = 0;
+                no_targets = 0;
+                pattern = null;
+                also_make_targets = 0;
+                if (!false) break;
+            }
+            if (vmod.undefine_v != 0) {
+                do_undefine(p, origin, ebuf);
+                continue;
+            } else if (vmod.define_v != 0) {
+                v = do_define(p, origin, ebuf);
+            } else {
+                v = try_variable_definition(fstart, p, origin, @as(c_int, 0));
+            }
+            _ = @as(c_int, 0);
+            if (vmod.export_v != @as(c_uint, @bitCast(v_default))) {
+                v.*.@"export" = vmod.export_v;
+            }
+            if (vmod.private_v != 0) {
+                v.*.private_var = 1;
+            }
+            continue;
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '\x00')) continue;
+        p2 = end_of_token(p);
+        wlen = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p2) -% @intFromPtr(p))), @sizeOf(u8))));
+        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p2.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+            p2 += 1;
+        }
+        if (in_ignored_define != 0) {
+            if (((wlen == (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("endef")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p2.*))]))) & (@as(c_int, 8) | @as(c_int, 1))) != @as(c_int, 0))) {
+                in_ignored_define = 0;
+            }
+            continue;
+        }
+        {
+            var i: c_int = conditional_line(p, wlen, fstart);
+            _ = &i;
+            if (i != -@as(c_int, 2)) {
+                if (i == -@as(c_int, 1)) {
+                    fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("invalid syntax in conditional"));
+                }
+                ignoring = i;
+                continue;
+            }
+        }
+        if (ignoring != 0) continue;
+        if (((wlen == (@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("export")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) or ((wlen == (@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("unexport")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)))) {
+            var exporting: c_int = if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, 'u')) @as(c_int, 0) else @as(c_int, 1);
+            _ = &exporting;
+            while (true) {
+                if (filenames != null) {
+                    fi.lineno = @as(c_ulong, @bitCast(@as(c_ulong, tgts_started)));
+                    fi.offset = 0;
+                    record_files(filenames, also_make_targets, pattern, pattern_percent, depstr, cmds_started, commands_1, commands_idx, two_colon, prefix, &fi);
+                    filenames = null;
+                }
+                commands_idx = 0;
+                no_targets = 0;
+                pattern = null;
+                also_make_targets = 0;
+                if (!false) break;
+            }
+            if (@as(c_int, @bitCast(@as(c_uint, p2.*))) == @as(c_int, '\x00')) {
+                export_all_variables = exporting;
+            } else {
+                var l: usize = undefined;
+                _ = &l;
+                var cp: [*c]const u8 = undefined;
+                _ = &cp;
+                var ap: [*c]u8 = undefined;
+                _ = &ap;
+                cp = blk: {
+                    const tmp = allocated_variable_expand_for_file(p2, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+                    ap = tmp;
+                    break :blk tmp;
+                };
+                {
+                    p = find_next_token(&cp, &l);
+                    while (p != null) : (p = find_next_token(&cp, &l)) {
+                        var v: [*c]struct_variable = lookup_variable(p, l);
+                        _ = &v;
+                        if (v == null) {
+                            v = define_variable_in_set(p, l, "", @as(c_uint, @bitCast(o_file)), @as(c_int, 0), null, fstart);
+                        }
+                        v.*.@"export" = @as(c_uint, @bitCast(if (exporting != 0) v_export else v_noexport));
+                    }
+                }
+                free(@as(?*anyopaque, @ptrCast(ap)));
+            }
+            continue;
+        }
+        if ((wlen == (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("vpath")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) {
+            var cp: [*c]const u8 = undefined;
+            _ = &cp;
+            var vpat: [*c]u8 = undefined;
+            _ = &vpat;
+            var l: usize = undefined;
+            _ = &l;
+            while (true) {
+                if (filenames != null) {
+                    fi.lineno = @as(c_ulong, @bitCast(@as(c_ulong, tgts_started)));
+                    fi.offset = 0;
+                    record_files(filenames, also_make_targets, pattern, pattern_percent, depstr, cmds_started, commands_1, commands_idx, two_colon, prefix, &fi);
+                    filenames = null;
+                }
+                commands_idx = 0;
+                no_targets = 0;
+                pattern = null;
+                also_make_targets = 0;
+                if (!false) break;
+            }
+            cp = variable_expand(p2);
+            p = find_next_token(&cp, &l);
+            if (p != null) {
+                vpat = xstrndup(p, l);
+                p = find_next_token(&cp, &l);
+            } else {
+                vpat = null;
+            }
+            construct_vpath_list(vpat, p);
+            free(@as(?*anyopaque, @ptrCast(vpat)));
+            continue;
+        }
+        if ((((wlen == (@sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("include")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) or ((wlen == (@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("-include")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)))) or ((wlen == (@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("sinclude")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)))) {
+            var save: [*c]struct_conditionals = undefined;
+            _ = &save;
+            var new_conditionals: struct_conditionals = undefined;
+            _ = &new_conditionals;
+            var files: [*c]struct_nameseq = undefined;
+            _ = &files;
+            var noerror: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, p[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, 'i'));
+            _ = &noerror;
+            while (true) {
+                if (filenames != null) {
+                    fi.lineno = @as(c_ulong, @bitCast(@as(c_ulong, tgts_started)));
+                    fi.offset = 0;
+                    record_files(filenames, also_make_targets, pattern, pattern_percent, depstr, cmds_started, commands_1, commands_idx, two_colon, prefix, &fi);
+                    filenames = null;
+                }
+                commands_idx = 0;
+                no_targets = 0;
+                pattern = null;
+                also_make_targets = 0;
+                if (!false) break;
+            }
+            p = allocated_variable_expand_for_file(p2, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+            if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '\x00')) {
+                free(@as(?*anyopaque, @ptrCast(p)));
+                continue;
+            }
+            p2 = p;
+            files = @as([*c]struct_nameseq, @ptrCast(@alignCast(parse_file_seq(&p2, @sizeOf(struct_nameseq), @as(c_int, 1), null, @as(c_int, 2)))));
+            free(@as(?*anyopaque, @ptrCast(p)));
+            save = install_conditionals(&new_conditionals);
+            while (true) {
+                if (filenames != null) {
+                    fi.lineno = @as(c_ulong, @bitCast(@as(c_ulong, tgts_started)));
+                    fi.offset = 0;
+                    record_files(filenames, also_make_targets, pattern, pattern_percent, depstr, cmds_started, commands_1, commands_idx, two_colon, prefix, &fi);
+                    filenames = null;
+                }
+                commands_idx = 0;
+                no_targets = 0;
+                pattern = null;
+                also_make_targets = 0;
+                if (!false) break;
+            }
+            while (files != null) {
+                var next: [*c]struct_nameseq = files.*.next;
+                _ = &next;
+                var flags: c_ushort = @as(c_ushort, @bitCast(@as(c_short, @truncate((((@as(c_int, 1) << @intCast(1)) | (@as(c_int, 1) << @intCast(3))) | (if (noerror != 0) @as(c_int, 1) << @intCast(2) else @as(c_int, 0))) | (if (set_default != 0) @as(c_int, 0) else @as(c_int, 1) << @intCast(0))))));
+                _ = &flags;
+                var d: [*c]struct_goaldep = eval_makefile(files.*.name, flags);
+                _ = &d;
+                d.*.floc = fstart.*;
+                free(@as(?*anyopaque, @ptrCast(files)));
+                files = next;
+            }
+            restore_conditionals(save);
+            continue;
+        }
+        if (((wlen == (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("load")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) or ((wlen == (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("-load")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)))) {
+            var files: [*c]struct_nameseq = undefined;
+            _ = &files;
+            var noerror: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, p[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '-'));
+            _ = &noerror;
+            while (true) {
+                if (filenames != null) {
+                    fi.lineno = @as(c_ulong, @bitCast(@as(c_ulong, tgts_started)));
+                    fi.offset = 0;
+                    record_files(filenames, also_make_targets, pattern, pattern_percent, depstr, cmds_started, commands_1, commands_idx, two_colon, prefix, &fi);
+                    filenames = null;
+                }
+                commands_idx = 0;
+                no_targets = 0;
+                pattern = null;
+                also_make_targets = 0;
+                if (!false) break;
+            }
+            p = allocated_variable_expand_for_file(p2, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+            if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '\x00')) {
+                free(@as(?*anyopaque, @ptrCast(p)));
+                continue;
+            }
+            p2 = p;
+            files = @as([*c]struct_nameseq, @ptrCast(@alignCast(parse_file_seq(&p2, @sizeOf(struct_nameseq), @as(c_int, 1), null, @as(c_int, 2)))));
+            free(@as(?*anyopaque, @ptrCast(p)));
+            while (files != null) {
+                var next: [*c]struct_nameseq = files.*.next;
+                _ = &next;
+                var name: [*c]const u8 = files.*.name;
+                _ = &name;
+                var deps: [*c]struct_goaldep = undefined;
+                _ = &deps;
+                var f: [*c]struct_file = undefined;
+                _ = &f;
+                var r: c_int = undefined;
+                _ = &r;
+                {
+                    var file_1: struct_file = struct_file{
+                        .name = null,
+                        .hname = null,
+                        .vpath = null,
+                        .deps = null,
+                        .cmds = null,
+                        .stem = null,
+                        .also_make = null,
+                        .prev = null,
+                        .last = null,
+                        .renamed = null,
+                        .variables = null,
+                        .pat_variables = null,
+                        .parent = null,
+                        .double_colon = null,
+                        .last_mtime = @import("std").mem.zeroes(uintmax_t),
+                        .mtime_before_update = @import("std").mem.zeroes(uintmax_t),
+                        .considered = 0,
+                        .command_flags = 0,
+                        .update_status = @import("std").mem.zeroes(enum_update_status_36),
+                        .command_state = @import("std").mem.zeroes(enum_cmd_state_37),
+                        .builtin = 0,
+                        .precious = 0,
+                        .loaded = 0,
+                        .unloaded = 0,
+                        .low_resolution_time = 0,
+                        .tried_implicit = 0,
+                        .updating = 0,
+                        .updated = 0,
+                        .is_target = 0,
+                        .cmd_target = 0,
+                        .phony = 0,
+                        .intermediate = 0,
+                        .is_explicit = 0,
+                        .secondary = 0,
+                        .notintermediate = 0,
+                        .dontcare = 0,
+                        .ignore_vpath = 0,
+                        .pat_searched = 0,
+                        .no_diag = 0,
+                        .was_shuffled = 0,
+                        .snapped = 0,
+                    };
+                    _ = &file_1;
+                    file_1.name = name;
+                    r = load_file(&ebuf.*.floc, &file_1, noerror);
+                    if (!(r != 0) and !(noerror != 0)) {
+                        fatal(&ebuf.*.floc, strlen(name), gettext("%s: failed to load"), name);
+                    }
+                    name = file_1.name;
+                }
+                f = lookup_file(name);
+                if (!(f != null)) {
+                    f = enter_file(name);
+                }
+                f.*.loaded = 1;
+                f.*.unloaded = 0;
+                free(@as(?*anyopaque, @ptrCast(files)));
+                files = next;
+                if (r == -@as(c_int, 1)) continue;
+                deps = @as([*c]struct_goaldep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_goaldep)))));
+                deps.*.next = read_files;
+                deps.*.floc = ebuf.*.floc;
+                read_files = deps;
+                deps.*.file = f;
+            }
+            continue;
+        }
+        if (@as(c_int, @bitCast(@as(c_uint, line[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, @bitCast(@as(c_uint, cmd_prefix)))) {
+            fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("recipe commences before first target"));
+        }
+        {
+            var wtype: enum_make_word_type = undefined;
+            _ = &wtype;
+            var cmdleft: [*c]u8 = undefined;
+            _ = &cmdleft;
+            var semip: [*c]u8 = null;
+            _ = &semip;
+            var lb_next: [*c]u8 = undefined;
+            _ = &lb_next;
+            var plen: usize = 0;
+            _ = &plen;
+            var colonp: [*c]u8 = undefined;
+            _ = &colonp;
+            var end: [*c]const u8 = undefined;
+            _ = &end;
+            var beg: [*c]const u8 = undefined;
+            _ = &beg;
+            while (true) {
+                if (filenames != null) {
+                    fi.lineno = @as(c_ulong, @bitCast(@as(c_ulong, tgts_started)));
+                    fi.offset = 0;
+                    record_files(filenames, also_make_targets, pattern, pattern_percent, depstr, cmds_started, commands_1, commands_idx, two_colon, prefix, &fi);
+                    filenames = null;
+                }
+                commands_idx = 0;
+                no_targets = 0;
+                pattern = null;
+                also_make_targets = 0;
+                if (!false) break;
+            }
+            tgts_started = @as(c_uint, @bitCast(@as(c_uint, @truncate(fstart.*.lineno))));
+            cmdleft = find_map_unquote(line, (@as(c_int, 16) | @as(c_int, 8)) | @as(c_int, 16384));
+            if ((cmdleft != null) and (@as(c_int, @bitCast(@as(c_uint, cmdleft.*))) == @as(c_int, '#'))) {
+                cmdleft.* = '\x00';
+                cmdleft = null;
+            } else if (cmdleft != null) {
+                semip = blk: {
+                    const ref = &cmdleft;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                };
+                semip.* = '\x00';
+            }
+            collapse_continuations(line);
+            wtype = get_next_mword(line, &lb_next, &wlen);
+            while (true) {
+                switch (wtype) {
+                    @as(c_uint, @bitCast(@as(c_int, 1))) => {
+                        if (cmdleft != null) {
+                            fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("missing rule before recipe"));
+                        }
+                        continue;
+                        no_targets = 1;
+                        continue;
+                        break;
+                    },
+                    @as(c_uint, @bitCast(@as(c_int, 4))), @as(c_uint, @bitCast(@as(c_int, 5))), @as(c_uint, @bitCast(@as(c_int, 8))), @as(c_uint, @bitCast(@as(c_int, 9))) => {
+                        no_targets = 1;
+                        continue;
+                        break;
+                    },
+                    else => break,
+                }
+                break;
+            }
+            p2 = variable_expand_string(null, lb_next, wlen);
+            while (true) {
+                lb_next += @as([*c]u8, @ptrFromInt(wlen));
+                if (cmdleft == null) {
+                    cmdleft = find_char_unquote(p2, @as(c_int, ';'));
+                    if (cmdleft != null) {
+                        var p2_off: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p2) -% @intFromPtr(variable_buffer))), @sizeOf(u8))));
+                        _ = &p2_off;
+                        var cmd_off: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(cmdleft) -% @intFromPtr(variable_buffer))), @sizeOf(u8))));
+                        _ = &cmd_off;
+                        var pend: [*c]u8 = p2 + strlen(p2);
+                        _ = &pend;
+                        cmdleft.* = '\x00';
+                        _ = variable_expand_string(pend, lb_next, @as(c_ulong, 18446744073709551615));
+                        lb_next += @as([*c]u8, @ptrFromInt(strlen(lb_next)));
+                        p2 = variable_buffer + p2_off;
+                        cmdleft = (variable_buffer + cmd_off) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                    }
+                }
+                colonp = find_char_unquote(p2, @as(c_int, ':'));
+                if (colonp != null) {
+                    if ((colonp > p2) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
+                        const tmp = -@as(c_int, 1);
+                        if (tmp >= 0) break :blk colonp + @as(usize, @intCast(tmp)) else break :blk colonp - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+                    }).*))) == @as(c_int, '&'))) {
+                        colonp -= 1;
+                    }
+                    break;
+                }
+                wtype = get_next_mword(lb_next, &lb_next, &wlen);
+                if (wtype == @as(c_uint, @bitCast(w_eol))) break;
+                p2 += @as([*c]u8, @ptrFromInt(strlen(p2)));
+                (blk: {
+                    const ref = &p2;
+                    const tmp = ref.*;
+                    ref.* += 1;
+                    break :blk tmp;
+                }).* = ' ';
+                p2 = variable_expand_string(p2, lb_next, wlen);
+            }
+            p2 = next_token(variable_buffer);
+            if (wtype == @as(c_uint, @bitCast(w_eol))) {
+                if (@as(c_int, @bitCast(@as(c_uint, p2.*))) == @as(c_int, '\x00')) continue;
+                if ((@as(c_int, @bitCast(@as(c_uint, cmd_prefix))) == @as(c_int, '\t')) and (strncmp(line, "        ", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) == @as(c_int, 0))) {
+                    fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("missing separator (did you mean TAB instead of 8 spaces?)"));
+                }
+                p2 = next_token(line);
+                if ((strncmp(p2, "if", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) == @as(c_int, 0)) and (((strncmp(&p2[@as(c_uint, @intCast(@as(c_int, 2)))], "neq", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) == @as(c_int, 0)) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p2[@as(c_uint, @intCast(@as(c_int, 5)))]))]))) & @as(c_int, 2)) != @as(c_int, 0))) or ((strncmp(&p2[@as(c_uint, @intCast(@as(c_int, 2)))], "eq", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) == @as(c_int, 0)) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p2[@as(c_uint, @intCast(@as(c_int, 4)))]))]))) & @as(c_int, 2)) != @as(c_int, 0))))) {
+                    fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("missing separator (ifeq/ifneq must be followed by whitespace)"));
+                }
+                fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("missing separator"));
+            }
+            {
+                var save: u8 = colonp.*;
+                _ = &save;
+                if (@as(c_int, @bitCast(@as(c_uint, save))) == @as(c_int, '&')) {
+                    also_make_targets = 1;
+                }
+                colonp.* = '\x00';
+                filenames = @as([*c]struct_nameseq, @ptrCast(@alignCast(parse_file_seq(&p2, @sizeOf(struct_nameseq), @as(c_int, 1), null, @as(c_int, 0)))));
+                colonp.* = save;
+                p2 = colonp + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, @bitCast(@as(c_uint, save))) == @as(c_int, '&')))));
+            }
+            if (!(filenames != null)) {
+                no_targets = 1;
+                continue;
+            }
+            _ = @as(c_int, 0);
+            p2 += 1;
+            two_colon = @intFromBool(@as(c_int, @bitCast(@as(c_uint, p2.*))) == @as(c_int, ':'));
+            if (two_colon != 0) {
+                p2 += 1;
+            }
+            if (@as(c_int, @bitCast(@as(c_uint, lb_next.*))) != @as(c_int, '\x00')) {
+                var l: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p2) -% @intFromPtr(variable_buffer))), @sizeOf(u8))));
+                _ = &l;
+                plen = strlen(p2);
+                _ = variable_buffer_output(p2 + plen, lb_next, strlen(lb_next) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+                p2 = variable_buffer + l;
+            }
+            p2 = parse_var_assignment(p2, @as(c_int, 1), &vmod);
+            if (vmod.assign_v != 0) {
+                if (semip != null) {
+                    var l: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p2) -% @intFromPtr(variable_buffer))), @sizeOf(u8))));
+                    _ = &l;
+                    semip.* = ';';
+                    collapse_continuations(semip);
+                    _ = variable_buffer_output(p2 + strlen(p2), semip, strlen(semip) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+                    p2 = variable_buffer + l;
+                }
+                record_target_var(filenames, p2, @as(c_uint, @bitCast(if (vmod.override_v != 0) o_override else o_file)), &vmod, fstart);
+                filenames = null;
+                continue;
+            }
+            _ = find_char_unquote(lb_next, @as(c_int, '='));
+            prefix = cmd_prefix;
+            no_targets = 0;
+            if (@as(c_int, @bitCast(@as(c_uint, lb_next.*))) != @as(c_int, '\x00')) {
+                var l: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p2) -% @intFromPtr(variable_buffer))), @sizeOf(u8))));
+                _ = &l;
+                _ = variable_expand_string(p2 + plen, lb_next, @as(c_ulong, 18446744073709551615));
+                p2 = variable_buffer + l;
+                if (cmdleft == null) {
+                    cmdleft = find_char_unquote(p2, @as(c_int, ';'));
+                    if (cmdleft != null) {
+                        (blk: {
+                            const ref = &cmdleft;
+                            const tmp = ref.*;
+                            ref.* += 1;
+                            break :blk tmp;
+                        }).* = '\x00';
+                    }
+                }
+            }
+            p = strchr(p2, @as(c_int, ':'));
+            while ((p != null) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
+                const tmp = -@as(c_int, 1);
+                if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+            }).*))) == @as(c_int, '\\'))) {
+                var q: [*c]u8 = &(blk: {
+                    const tmp = -@as(c_int, 1);
+                    if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
+                }).*;
+                _ = &q;
+                var backslash: c_int = 0;
+                _ = &backslash;
+                while (@as(c_int, @bitCast(@as(c_uint, (blk: {
+                    const ref = &q;
+                    const tmp = ref.*;
+                    ref.* -= 1;
+                    break :blk tmp;
+                }).*))) == @as(c_int, '\\')) {
+                    backslash = @intFromBool(!(backslash != 0));
+                }
+                if (backslash != 0) {
+                    p = strchr(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), @as(c_int, ':'));
+                } else break;
+            }
+            if (p != null) {
+                var target: [*c]struct_nameseq = undefined;
+                _ = &target;
+                target = @as([*c]struct_nameseq, @ptrCast(@alignCast(parse_file_seq(&p2, @sizeOf(struct_nameseq), @as(c_int, 64), null, @as(c_int, 4)))));
+                p2 += 1;
+                if (target == null) {
+                    fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("missing target pattern"));
+                } else if (target.*.next != null) {
+                    fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("multiple target patterns"));
+                }
+                pattern_percent = find_percent_cached(&target.*.name);
+                pattern = target.*.name;
+                if (pattern_percent == null) {
+                    fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("target pattern contains no '%%'"));
+                }
+                free(@as(?*anyopaque, @ptrCast(target)));
+            } else {
+                pattern = null;
+            }
+            beg = p2;
+            end = (beg + strlen(beg)) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+            _ = strip_whitespace(&beg, &end);
+            if ((beg <= end) and (@as(c_int, @bitCast(@as(c_uint, beg.*))) != @as(c_int, '\x00'))) {
+                depstr = xstrndup(beg, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(beg))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1)))))));
+            } else {
+                depstr = null;
+            }
+            commands_idx = 0;
+            if (cmdleft != null) {
+                var l: usize = strlen(cmdleft);
+                _ = &l;
+                cmds_started = @as(c_uint, @bitCast(@as(c_uint, @truncate(fstart.*.lineno))));
+                if ((l +% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))) > commands_len) {
+                    commands_len = (l +% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))) *% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
+                    commands_1 = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(commands_1)), commands_len))));
+                }
+                _ = memcpy(@as(?*anyopaque, @ptrCast(commands_1)), @as(?*const anyopaque, @ptrCast(cmdleft)), l);
+                commands_idx +%= l;
+                commands_1[blk: {
+                        const ref = &commands_idx;
+                        const tmp = ref.*;
+                        ref.* +%= 1;
+                        break :blk tmp;
+                    }] = '\n';
+            }
+            check_specials(filenames, set_default);
+        }
+    }
+    if (conditionals.*.if_cmds != 0) {
+        fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("missing 'endif'"));
+    }
+    while (true) {
+        if (filenames != null) {
+            fi.lineno = @as(c_ulong, @bitCast(@as(c_ulong, tgts_started)));
+            fi.offset = 0;
+            record_files(filenames, also_make_targets, pattern, pattern_percent, depstr, cmds_started, commands_1, commands_idx, two_colon, prefix, &fi);
+            filenames = null;
+        }
+        commands_idx = 0;
+        no_targets = 0;
+        pattern = null;
+        also_make_targets = 0;
+        if (!false) break;
+    }
+    free(@as(?*anyopaque, @ptrCast(collapsed)));
+    free(@as(?*anyopaque, @ptrCast(commands_1)));
+}
 // src/read.c:2697:9: warning: TODO implement translation of stmt class GotoStmtClass
 
 // src/read.c:2651:1: warning: unable to translate function, demoted to extern
@@ -3414,7 +4146,7 @@ pub fn check_specials(arg_files: [*c]struct_nameseq, arg_set_default: c_int) cal
                 continue;
             }
             if ((set_default != 0) and (@as(c_int, @bitCast(@as(c_uint, default_goal_var.*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00'))) {
-                var d: ?*struct_dep = undefined;
+                var d: [*c]struct_dep = undefined;
                 _ = &d;
                 var reject: c_int = 0;
                 _ = &reject;
@@ -3423,7 +4155,7 @@ pub fn check_specials(arg_files: [*c]struct_nameseq, arg_set_default: c_int) cal
                 {
                     d = suffix_file.*.deps;
                     while (d != null) : (d = d.*.next) {
-                        var d2: ?*struct_dep = undefined;
+                        var d2: [*c]struct_dep = undefined;
                         _ = &d2;
                         if ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) != @as(c_int, '.')) and ((nm == (if (d.*.name != null) d.*.name else d.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, nm.*))) == @as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, nm.*))) == @as(c_int, '\x00')) or !(strcmp(nm + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), (if (d.*.name != null) d.*.name else d.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
                             reject = 1;
@@ -3501,9 +4233,9 @@ pub fn record_files(arg_filenames: [*c]struct_nameseq, arg_are_also_makes: c_int
     _ = &flocp;
     var cmds: ?*struct_commands = undefined;
     _ = &cmds;
-    var deps: ?*struct_dep = undefined;
+    var deps: [*c]struct_dep = undefined;
     _ = &deps;
-    var also_make: ?*struct_dep = null;
+    var also_make: [*c]struct_dep = null;
     _ = &also_make;
     var implicit_percent: [*c]const u8 = undefined;
     _ = &implicit_percent;
@@ -3532,7 +4264,7 @@ pub fn record_files(arg_filenames: [*c]struct_nameseq, arg_are_also_makes: c_int
     } else {
         depstr = unescape_char(depstr, @as(c_int, ':'));
         if ((second_expansion != 0) and (strchr(depstr, @as(c_int, '$')) != null)) {
-            deps = @as(?*struct_dep, @ptrCast(xcalloc(@sizeOf(struct_dep))));
+            deps = @as([*c]struct_dep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_dep)))));
             deps.*.name = depstr;
             deps.*.need_2nd_expansion = 1;
             deps.*.staticpattern = @as(c_uint, @intFromBool(pattern != null));
@@ -3596,7 +4328,7 @@ pub fn record_files(arg_filenames: [*c]struct_nameseq, arg_are_also_makes: c_int
         _ = &nextf;
         var f: [*c]struct_file = undefined;
         _ = &f;
-        var this: ?*struct_dep = null;
+        var this: [*c]struct_dep = null;
         _ = &this;
         free(@as(?*anyopaque, @ptrCast(filenames)));
         if ((pattern != null) and !(pattern_matches(pattern, pattern_percent, name) != 0)) {
@@ -3640,7 +4372,7 @@ pub fn record_files(arg_filenames: [*c]struct_nameseq, arg_are_also_makes: c_int
             f.*.cmds = cmds;
         }
         if (are_also_makes != 0) {
-            var also: ?*struct_dep = @as(?*struct_dep, @ptrCast(xcalloc(@sizeOf(struct_dep))));
+            var also: [*c]struct_dep = @as([*c]struct_dep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_dep)))));
             _ = &also;
             also.*.name = f.*.name;
             also.*.file = f;
@@ -3668,7 +4400,7 @@ pub fn record_files(arg_filenames: [*c]struct_nameseq, arg_are_also_makes: c_int
             if (f.*.deps == null) {
                 f.*.deps = this;
             } else if (cmds != null) {
-                var d: ?*struct_dep = this;
+                var d: [*c]struct_dep = this;
                 _ = &d;
                 while (d.*.next != null) {
                     d = d.*.next;
@@ -3676,7 +4408,7 @@ pub fn record_files(arg_filenames: [*c]struct_nameseq, arg_are_also_makes: c_int
                 d.*.next = f.*.deps;
                 f.*.deps = this;
             } else {
-                var d: ?*struct_dep = f.*.deps;
+                var d: [*c]struct_dep = f.*.deps;
                 _ = &d;
                 while (d.*.next != null) {
                     d = d.*.next;
@@ -3694,14 +4426,14 @@ pub fn record_files(arg_filenames: [*c]struct_nameseq, arg_are_also_makes: c_int
         }
     }
     {
-        var i: ?*struct_dep = undefined;
+        var i: [*c]struct_dep = undefined;
         _ = &i;
         {
             i = also_make;
-            while (i != @as(?*struct_dep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) : (i = i.*.next) {
+            while (i != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (i = i.*.next) {
                 var f: [*c]struct_file = i.*.file;
                 _ = &f;
-                var cpy: ?*struct_dep = if (i.*.next != null) copy_dep_chain(also_make) else also_make;
+                var cpy: [*c]struct_dep = if (i.*.next != null) copy_dep_chain(also_make) else also_make;
                 _ = &cpy;
                 if (f.*.also_make != null) {
                     @"error"(&cmds.*.fileinfo, strlen(f.*.name), gettext("warning: overriding group membership for target '%s'"), f.*.name);
@@ -3712,7 +4444,7 @@ pub fn record_files(arg_filenames: [*c]struct_nameseq, arg_are_also_makes: c_int
         }
     }
 }
-pub fn record_target_var(arg_filenames: [*c]struct_nameseq, arg_defn: [*c]u8, arg_origin: enum_variable_origin, arg_vmod: ?*struct_vmodifiers, arg_flocp: [*c]const floc) callconv(.C) void {
+pub fn record_target_var(arg_filenames: [*c]struct_nameseq, arg_defn: [*c]u8, arg_origin: enum_variable_origin, arg_vmod: [*c]struct_vmodifiers, arg_flocp: [*c]const floc) callconv(.C) void {
     var filenames = arg_filenames;
     _ = &filenames;
     var defn = arg_defn;
@@ -3770,7 +4502,7 @@ pub fn record_target_var(arg_filenames: [*c]struct_nameseq, arg_defn: [*c]u8, ar
         }
         v.*.per_target = 1;
         v.*.private_var = vmod.*.private_v;
-        if (@as(c_int, @bitCast(vmod.*.export_v)) != v_default) {
+        if (vmod.*.export_v != @as(c_uint, @bitCast(v_default))) {
             v.*.@"export" = vmod.*.export_v;
         }
         if (v.*.origin != @as(c_uint, @bitCast(o_override))) {
@@ -3989,7 +4721,7 @@ pub fn restore_conditionals(arg_saved: [*c]struct_conditionals) callconv(.C) voi
     free(@as(?*anyopaque, @ptrCast(conditionals.*.seen_else)));
     conditionals = saved;
 }
-pub fn parse_var_assignment(arg_line: [*c]const u8, arg_targvar: c_int, arg_vmod: ?*struct_vmodifiers) callconv(.C) [*c]u8 {
+pub fn parse_var_assignment(arg_line: [*c]const u8, arg_targvar: c_int, arg_vmod: [*c]struct_vmodifiers) callconv(.C) [*c]u8 {
     var line = arg_line;
     _ = &line;
     var targvar = arg_targvar;

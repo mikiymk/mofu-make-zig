@@ -1965,8 +1965,21 @@ pub extern fn globfree(__pglob: [*c]glob_t) void;
 pub extern fn glob64(noalias __pattern: [*c]const u8, __flags: c_int, __errfunc: ?*const fn ([*c]const u8, c_int) callconv(.C) c_int, noalias __pglob: [*c]glob64_t) c_int;
 pub extern fn globfree64(__pglob: [*c]glob64_t) void;
 pub extern fn glob_pattern_p(__pattern: [*c]const u8, __quote: c_int) c_int;
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_dep = opaque {};
+pub const struct_dep = extern struct {
+    next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+};
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 pub const struct_commands = opaque {};
 pub const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
@@ -2006,10 +2019,10 @@ pub const struct_file = extern struct {
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
     stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    also_make: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    also_make: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     last: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     renamed: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
@@ -2718,10 +2731,10 @@ pub extern var hash_deleted_item: ?*anyopaque;
 pub extern var default_file: [*c]struct_file;
 pub extern fn lookup_file(name: [*c]const u8) [*c]struct_file;
 pub extern fn enter_file(name: [*c]const u8) [*c]struct_file;
-pub extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
-pub extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
+pub extern fn split_prereqs(prereqstr: [*c]u8) [*c]struct_dep;
+pub extern fn enter_prereqs(prereqs: [*c]struct_dep, stem: [*c]const u8) [*c]struct_dep;
 pub extern fn expand_deps(f: [*c]struct_file) void;
-pub extern fn expand_extra_prereqs(extra: [*c]const struct_variable) ?*struct_dep;
+pub extern fn expand_extra_prereqs(extra: [*c]const struct_variable) [*c]struct_dep;
 pub extern fn remove_intermediates(sig: c_int) void;
 pub extern fn snap_deps() void;
 pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
@@ -2731,7 +2744,7 @@ pub extern fn notice_finished_file(file: [*c]struct_file) void;
 pub extern fn init_hash_files() void;
 pub extern fn verify_file_data_base() void;
 pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;
-pub extern fn print_prereqs(deps: ?*const struct_dep) void;
+pub extern fn print_prereqs(deps: [*c]const struct_dep) void;
 pub extern fn print_file_data_base() void;
 pub extern fn try_implicit_rule(file: [*c]struct_file, depth: c_uint) c_int;
 pub extern fn stemlen_compare(v1: ?*const anyopaque, v2: ?*const anyopaque) c_int;
@@ -2744,16 +2757,31 @@ pub const struct_nameseq = extern struct {
     next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
 };
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_goaldep = opaque {};
+pub const struct_goaldep = extern struct {
+    next: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+    @"error": c_int = @import("std").mem.zeroes(c_int),
+    floc: floc = @import("std").mem.zeroes(floc),
+};
 pub extern fn parse_file_seq(stringp: [*c][*c]u8, size: usize, stopmap: c_int, prefix: [*c]const u8, flags: c_int) ?*anyopaque;
 pub extern fn tilde_expand(name: [*c]const u8) [*c]u8;
 pub extern fn ar_glob(arname: [*c]const u8, member_pattern: [*c]const u8, size: usize) [*c]struct_nameseq;
 pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
-pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
-pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) ?*struct_goaldep;
+pub extern fn copy_dep_chain(d: [*c]const struct_dep) [*c]struct_dep;
+pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) [*c]struct_goaldep;
 pub extern fn eval_buffer(buffer: [*c]u8, floc: [*c]const floc) void;
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_36;
+pub extern fn update_goal_chain(goals: [*c]struct_goaldep) enum_update_status_36;
 pub const struct_pattern_var = extern struct {
     next: [*c]struct_pattern_var = @import("std").mem.zeroes([*c]struct_pattern_var),
     suffix: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
@@ -2852,7 +2880,7 @@ pub const struct_rule = extern struct {
     targets: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
     lens: [*c]c_uint = @import("std").mem.zeroes([*c]c_uint),
     suffixes: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
-    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
     _defn: [*c]u8 = @import("std").mem.zeroes([*c]u8),
     num: c_ushort = @import("std").mem.zeroes(c_ushort),
@@ -2874,7 +2902,7 @@ pub extern var suffix_file: [*c]struct_file;
 pub extern fn snap_implicit_rules() void;
 pub extern fn convert_to_pattern() void;
 pub extern fn install_pattern_rule(p: [*c]struct_pspec, terminal: c_int) void;
-pub extern fn create_pattern_rule(targets: [*c][*c]const u8, target_percents: [*c][*c]const u8, num: c_ushort, terminal: c_int, deps: ?*struct_dep, commands: ?*struct_commands, override: c_int) void;
+pub extern fn create_pattern_rule(targets: [*c][*c]const u8, target_percents: [*c][*c]const u8, num: c_ushort, terminal: c_int, deps: [*c]struct_dep, commands: ?*struct_commands, override: c_int) void;
 pub extern fn get_rule_defn(rule: [*c]struct_rule) [*c]const u8;
 pub extern fn print_rule_data_base() void;
 pub extern var db_level: c_int;
@@ -2889,7 +2917,7 @@ pub extern fn getopt_long_only(argc: c_int, argv: [*c]const [*c]u8, shortopts: [
 pub extern fn _getopt_internal(argc: c_int, argv: [*c]const [*c]u8, shortopts: [*c]const u8, longopts: [*c]const struct_option, longind: [*c]c_int, long_only: c_int) c_int;
 pub extern fn shuffle_set_mode(cmdarg: [*c]const u8) void;
 pub extern fn shuffle_get_mode() [*c]const u8;
-pub extern fn shuffle_deps_recursive(g: ?*struct_dep) void;
+pub extern fn shuffle_deps_recursive(g: [*c]struct_dep) void;
 pub const struct_flock = extern struct {
     l_type: c_short = @import("std").mem.zeroes(c_short),
     l_whence: c_short = @import("std").mem.zeroes(c_short),
@@ -4030,8 +4058,8 @@ pub var long_option_aliases: [9]struct_option = [9]struct_option{
         .val = @as(c_int, 'f'),
     },
 };
-pub var goals: ?*struct_goaldep = @import("std").mem.zeroes(?*struct_goaldep);
-pub var lastgoal: ?*struct_goaldep = @import("std").mem.zeroes(?*struct_goaldep);
+pub var goals: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep);
+pub var lastgoal: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep);
 pub const struct_command_variable = extern struct {
     next: [*c]struct_command_variable = @import("std").mem.zeroes([*c]struct_command_variable),
     variable: [*c]struct_variable = @import("std").mem.zeroes([*c]struct_variable),
@@ -4280,7 +4308,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
     _ = &envp;
     var makefile_status: c_int = 0;
     _ = &makefile_status;
-    var read_files: ?*struct_goaldep = undefined;
+    var read_files: [*c]struct_goaldep = undefined;
     _ = &read_files;
     var current_directory: [4097]u8 = undefined;
     _ = &current_directory;
@@ -4865,7 +4893,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
     if (read_files != null) {
         var makefile_mtimes: [*c]uintmax_t = undefined;
         _ = &makefile_mtimes;
-        var skipped_makefiles: ?*struct_goaldep = null;
+        var skipped_makefiles: [*c]struct_goaldep = null;
         _ = &skipped_makefiles;
         var nargv: [*c][*c]const u8 = @as([*c][*c]const u8, @ptrCast(@alignCast(argv)));
         _ = &nargv;
@@ -4883,11 +4911,11 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         {
             var num_mkfiles: c_uint = 0;
             _ = &num_mkfiles;
-            var d: ?*struct_goaldep = read_files;
+            var d: [*c]struct_goaldep = read_files;
             _ = &d;
             read_files = null;
-            while (d != @as(?*struct_goaldep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) {
-                var t: ?*struct_goaldep = d;
+            while (d != @as([*c]struct_goaldep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+                var t: [*c]struct_goaldep = d;
                 _ = &t;
                 d = d.*.next;
                 t.*.next = read_files;
@@ -4897,9 +4925,9 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
             makefile_mtimes = @as([*c]uintmax_t, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_ulong, num_mkfiles))) *% @sizeOf(uintmax_t)))));
         }
         {
-            var d: ?*struct_goaldep = read_files;
+            var d: [*c]struct_goaldep = read_files;
             _ = &d;
-            var last: ?*struct_goaldep = null;
+            var last: [*c]struct_goaldep = null;
             _ = &last;
             var mm_idx: c_uint = 0;
             _ = &mm_idx;
@@ -4912,7 +4940,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                     skip = 1;
                 } else {
                     f = f.*.double_colon;
-                    while (f != @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (f = f.*.prev) if ((f.*.deps == @as(?*struct_dep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) and (f.*.cmds != @as(?*struct_commands, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+                    while (f != @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (f = f.*.prev) if ((f.*.deps == @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) and (f.*.cmds != @as(?*struct_commands, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
                         skip = 1;
                         break;
                     };
@@ -4939,7 +4967,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                     } else {
                         read_files = d.*.next;
                     }
-                    if ((d.*.@"error" != 0) and !((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(2))) != 0)) {
+                    if ((d.*.@"error" != 0) and !((d.*.flags & @as(c_uint, @bitCast(@as(c_int, 1) << @intCast(2)))) != 0)) {
                         d.*.next = skipped_makefiles;
                         skipped_makefiles = d;
                         any_failed = 1;
@@ -4962,8 +4990,8 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
             rebuilding_makefiles = 0;
             db_level = orig_db_level;
         }
-        while (skipped_makefiles != @as(?*struct_goaldep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) {
-            var d: ?*struct_goaldep = skipped_makefiles;
+        while (skipped_makefiles != @as([*c]struct_goaldep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+            var d: [*c]struct_goaldep = skipped_makefiles;
             _ = &d;
             var err: [*c]const u8 = strerror(d.*.@"error");
             _ = &err;
@@ -4979,7 +5007,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                 @as(c_uint, @bitCast(@as(c_int, 2))) => break,
                 @as(c_uint, @bitCast(@as(c_int, 1))) => {
                     {
-                        var d: ?*struct_goaldep = undefined;
+                        var d: [*c]struct_goaldep = undefined;
                         _ = &d;
                         {
                             d = read_files;
@@ -4995,11 +5023,11 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                         }
                     }
                     if (false) {
-                        var d: ?*struct_goaldep = undefined;
+                        var d: [*c]struct_goaldep = undefined;
                         _ = &d;
                         {
                             d = read_files;
-                            while (d != null) : (d = d.*.next) if ((d.*.@"error" != 0) and !((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(2))) != 0)) {
+                            while (d != null) : (d = d.*.next) if ((d.*.@"error" != 0) and !((d.*.flags & @as(c_uint, @bitCast(@as(c_int, 1) << @intCast(2)))) != 0)) {
                                 var err: [*c]const u8 = strerror(d.*.@"error");
                                 _ = &err;
                                 @"error"(&d.*.floc, strlen(if (d.*.name != null) d.*.name else d.*.file.*.name) +% strlen(err), gettext("%s: %s"), if (d.*.name != null) d.*.name else d.*.file.*.name, err);
@@ -5015,7 +5043,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                         _ = &any_remade;
                         var i: c_uint = undefined;
                         _ = &i;
-                        var d: ?*struct_goaldep = undefined;
+                        var d: [*c]struct_goaldep = undefined;
                         _ = &d;
                         {
                             _ = blk: {
@@ -5037,7 +5065,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                                 if (d.*.file.*.updated != 0) {
                                     if (d.*.file.*.update_status == @as(c_uint, @bitCast(us_success))) {
                                         any_remade |= (if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 0)) else d.*.file.*.last_mtime) != makefile_mtimes[i];
-                                    } else if (!((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(2))) != 0)) {
+                                    } else if (!((d.*.flags & @as(c_uint, @bitCast(@as(c_int, 1) << @intCast(2)))) != 0)) {
                                         var mtime: uintmax_t = undefined;
                                         _ = &mtime;
                                         @"error"(&d.*.floc, strlen(d.*.file.*.name), gettext("Failed to remake makefile '%s'."), d.*.file.*.name);
@@ -5046,10 +5074,10 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                                         makefile_status = 2;
                                         any_failed = 1;
                                     }
-                                } else if (!((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(2))) != 0)) {
+                                } else if (!((d.*.flags & @as(c_uint, @bitCast(@as(c_int, 1) << @intCast(2)))) != 0)) {
                                     var dnm: [*c]const u8 = if (d.*.name != null) d.*.name else d.*.file.*.name;
                                     _ = &dnm;
-                                    if ((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(1))) != 0) {
+                                    if ((d.*.flags & @as(c_uint, @bitCast(@as(c_int, 1) << @intCast(1)))) != 0) {
                                         @"error"(&d.*.floc, strlen(dnm), gettext("Included makefile '%s' was not found."), dnm);
                                     } else {
                                         @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(dnm), gettext("Makefile '%s' was not found"), dnm);
@@ -5285,7 +5313,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                 }
             }
             if (f != null) {
-                goals = @as(?*struct_goaldep, @ptrCast(xcalloc(@sizeOf(struct_goaldep))));
+                goals = @as([*c]struct_goaldep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_goaldep)))));
                 goals.*.file = f;
             }
         }
@@ -5301,7 +5329,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("No targets specified and no makefile found"));
     }
     while (true) {
-        shuffle_deps_recursive(@as(?*struct_dep, @ptrCast(goals)));
+        shuffle_deps_recursive(@as([*c]struct_dep, @ptrCast(@alignCast(goals))));
         if (!false) break;
     }
     while (true) {
@@ -5443,10 +5471,10 @@ pub fn handle_non_switch_argument(arg_arg: [*c]const u8, arg_origin: enum_variab
         _ = &f;
         f.*.cmd_target = 1;
         if (goals == null) {
-            goals = @as(?*struct_goaldep, @ptrCast(xcalloc(@sizeOf(struct_goaldep))));
+            goals = @as([*c]struct_goaldep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_goaldep)))));
             lastgoal = goals;
         } else {
-            lastgoal.*.next = @as(?*struct_goaldep, @ptrCast(xcalloc(@sizeOf(struct_goaldep))));
+            lastgoal.*.next = @as([*c]struct_goaldep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_goaldep)))));
             lastgoal = lastgoal.*.next;
         }
         lastgoal.*.file = f;

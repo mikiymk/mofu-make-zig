@@ -1965,8 +1965,21 @@ pub extern fn globfree(__pglob: [*c]glob_t) void;
 pub extern fn glob64(noalias __pattern: [*c]const u8, __flags: c_int, __errfunc: ?*const fn ([*c]const u8, c_int) callconv(.C) c_int, noalias __pglob: [*c]glob64_t) c_int;
 pub extern fn globfree64(__pglob: [*c]glob64_t) void;
 pub extern fn glob_pattern_p(__pattern: [*c]const u8, __quote: c_int) c_int;
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_dep = opaque {};
+pub const struct_dep = extern struct {
+    next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+};
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 pub const struct_commands = opaque {};
 pub const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
@@ -2006,10 +2019,10 @@ pub const struct_file = extern struct {
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
     stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    also_make: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    also_make: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     last: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     renamed: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
@@ -2242,10 +2255,10 @@ pub extern var hash_deleted_item: ?*anyopaque;
 pub extern var default_file: [*c]struct_file;
 pub extern fn lookup_file(name: [*c]const u8) [*c]struct_file;
 pub extern fn enter_file(name: [*c]const u8) [*c]struct_file;
-pub extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
-pub extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
+pub extern fn split_prereqs(prereqstr: [*c]u8) [*c]struct_dep;
+pub extern fn enter_prereqs(prereqs: [*c]struct_dep, stem: [*c]const u8) [*c]struct_dep;
 pub extern fn expand_deps(f: [*c]struct_file) void;
-pub extern fn expand_extra_prereqs(extra: [*c]const struct_variable) ?*struct_dep;
+pub extern fn expand_extra_prereqs(extra: [*c]const struct_variable) [*c]struct_dep;
 pub extern fn remove_intermediates(sig: c_int) void;
 pub extern fn snap_deps() void;
 pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
@@ -2255,7 +2268,7 @@ pub extern fn notice_finished_file(file: [*c]struct_file) void;
 pub extern fn init_hash_files() void;
 pub extern fn verify_file_data_base() void;
 pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;
-pub extern fn print_prereqs(deps: ?*const struct_dep) void;
+pub extern fn print_prereqs(deps: [*c]const struct_dep) void;
 pub extern fn print_file_data_base() void;
 pub extern fn try_implicit_rule(file: [*c]struct_file, depth: c_uint) c_int;
 pub extern fn stemlen_compare(v1: ?*const anyopaque, v2: ?*const anyopaque) c_int;
@@ -2268,16 +2281,31 @@ pub const struct_nameseq = extern struct {
     next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
 };
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_goaldep = opaque {};
+pub const struct_goaldep = extern struct {
+    next: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+    @"error": c_int = @import("std").mem.zeroes(c_int),
+    floc: floc = @import("std").mem.zeroes(floc),
+};
 pub extern fn parse_file_seq(stringp: [*c][*c]u8, size: usize, stopmap: c_int, prefix: [*c]const u8, flags: c_int) ?*anyopaque;
 pub extern fn tilde_expand(name: [*c]const u8) [*c]u8;
 pub extern fn ar_glob(arname: [*c]const u8, member_pattern: [*c]const u8, size: usize) [*c]struct_nameseq;
 pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
-pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
-pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) ?*struct_goaldep;
+pub extern fn copy_dep_chain(d: [*c]const struct_dep) [*c]struct_dep;
+pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) [*c]struct_goaldep;
 pub extern fn eval_buffer(buffer: [*c]u8, floc: [*c]const floc) void;
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_36;
+pub extern fn update_goal_chain(goals: [*c]struct_goaldep) enum_update_status_36;
 pub const struct_output = extern struct {
     out: c_int = @import("std").mem.zeroes(c_int),
     err: c_int = @import("std").mem.zeroes(c_int),
@@ -2376,7 +2404,7 @@ pub const struct_rule = extern struct {
     targets: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
     lens: [*c]c_uint = @import("std").mem.zeroes([*c]c_uint),
     suffixes: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
-    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
     _defn: [*c]u8 = @import("std").mem.zeroes([*c]u8),
     num: c_ushort = @import("std").mem.zeroes(c_ushort),
@@ -2402,9 +2430,9 @@ pub export fn snap_implicit_rules() void {
     _ = &namelen;
     var rule_1: [*c]struct_rule = undefined;
     _ = &rule_1;
-    var dep_2: ?*struct_dep = undefined;
+    var dep_2: [*c]struct_dep = undefined;
     _ = &dep_2;
-    var prereqs: ?*struct_dep = expand_extra_prereqs(lookup_variable(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+    var prereqs: [*c]struct_dep = expand_extra_prereqs(lookup_variable(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
     _ = &prereqs;
     var pre_deps: c_uint = 0;
     _ = &pre_deps;
@@ -2444,7 +2472,7 @@ pub export fn snap_implicit_rules() void {
         while (rule_1 != null) : (rule_1 = rule_1.*.next) {
             var ndeps: c_uint = pre_deps;
             _ = &ndeps;
-            var lastdep: ?*struct_dep = null;
+            var lastdep: [*c]struct_dep = null;
             _ = &lastdep;
             num_pattern_rules +%= 1;
             if (@as(c_uint, @bitCast(@as(c_uint, rule_1.*.num))) > max_pattern_targets) {
@@ -2503,9 +2531,9 @@ pub export fn snap_implicit_rules() void {
     free_ns_chain(@as([*c]struct_nameseq, @ptrCast(@alignCast(prereqs))));
 }
 pub export fn convert_to_pattern() void {
-    var d: ?*struct_dep = undefined;
+    var d: [*c]struct_dep = undefined;
     _ = &d;
-    var d2: ?*struct_dep = undefined;
+    var d2: [*c]struct_dep = undefined;
     _ = &d2;
     var rulename: [*c]u8 = undefined;
     _ = &rulename;
@@ -2578,7 +2606,7 @@ pub export fn install_pattern_rule(arg_p: [*c]struct_pspec, arg_terminal: c_int)
     _ = @as(c_int, 0);
     r.*.suffixes[@as(c_uint, @intCast(@as(c_int, 0)))] += 1;
     ptr = p.*.dep;
-    r.*.deps = @as(?*struct_dep, @ptrCast(parse_file_seq(@as([*c][*c]u8, @ptrCast(@alignCast(&ptr))), @sizeOf(struct_dep), @as(c_int, 1), null, @as(c_int, 0))));
+    r.*.deps = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(@as([*c][*c]u8, @ptrCast(@alignCast(&ptr))), @sizeOf(struct_dep), @as(c_int, 1), null, @as(c_int, 0)))));
     if (new_pattern_rule(r, @as(c_int, 0)) != 0) {
         r.*.terminal = @as(u8, @bitCast(@as(i8, @truncate(if (terminal != 0) @as(c_int, 1) else @as(c_int, 0)))));
         r.*.cmds = @as(?*struct_commands, @ptrCast(xmalloc(@sizeOf(struct_commands))));
@@ -2590,7 +2618,7 @@ pub export fn install_pattern_rule(arg_p: [*c]struct_pspec, arg_terminal: c_int)
         r.*.cmds.*.recipe_prefix = '\t';
     }
 }
-pub export fn create_pattern_rule(arg_targets: [*c][*c]const u8, arg_target_percents: [*c][*c]const u8, arg_n: c_ushort, arg_terminal: c_int, arg_deps: ?*struct_dep, arg_commands_1: ?*struct_commands, arg_override: c_int) void {
+pub export fn create_pattern_rule(arg_targets: [*c][*c]const u8, arg_target_percents: [*c][*c]const u8, arg_n: c_ushort, arg_terminal: c_int, arg_deps: [*c]struct_dep, arg_commands_1: ?*struct_commands, arg_override: c_int) void {
     var targets = arg_targets;
     _ = &targets;
     var target_percents = arg_target_percents;
@@ -2640,9 +2668,9 @@ pub export fn get_rule_defn(arg_r: [*c]struct_rule) [*c]const u8 {
         _ = &p;
         var sep: [*c]const u8 = "";
         _ = &sep;
-        var dep_1: ?*const struct_dep = undefined;
+        var dep_1: [*c]const struct_dep = undefined;
         _ = &dep_1;
-        var ood: ?*const struct_dep = null;
+        var ood: [*c]const struct_dep = null;
         _ = &ood;
         {
             k = 0;
@@ -2653,7 +2681,7 @@ pub export fn get_rule_defn(arg_r: [*c]struct_rule) [*c]const u8 {
         {
             dep_1 = r.*.deps;
             while (dep_1 != null) : (dep_1 = dep_1.*.next) {
-                len +%= @as(usize, @bitCast((strlen(if (dep_1.*.name != null) dep_1.*.name else dep_1.*.file.*.name) +% (if (@as(c_int, @bitCast(dep_1.*.wait_here)) != 0) @sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))) else @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 0)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+                len +%= @as(usize, @bitCast((strlen(if (dep_1.*.name != null) dep_1.*.name else dep_1.*.file.*.name) +% (if (dep_1.*.wait_here != 0) @sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))) else @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 0)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
             }
         }
         p = blk: {
@@ -2690,7 +2718,7 @@ pub export fn get_rule_defn(arg_r: [*c]struct_rule) [*c]const u8 {
         }
         {
             dep_1 = r.*.deps;
-            while (dep_1 != null) : (dep_1 = dep_1.*.next) if (@as(c_int, @bitCast(dep_1.*.ignore_mtime)) == @as(c_int, 0)) {
+            while (dep_1 != null) : (dep_1 = dep_1.*.next) if (dep_1.*.ignore_mtime == @as(c_uint, @bitCast(@as(c_int, 0)))) {
                 if (dep_1.*.wait_here != 0) {
                     p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(" .WAIT")), @sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
                 }
@@ -2791,7 +2819,7 @@ pub fn convert_suffix_rule(arg_target: [*c]const u8, arg_source: [*c]const u8, a
     _ = &names;
     var percents: [*c][*c]const u8 = undefined;
     _ = &percents;
-    var deps: ?*struct_dep = undefined;
+    var deps: [*c]struct_dep = undefined;
     _ = &deps;
     names = @as([*c][*c]const u8, @ptrCast(@alignCast(xmalloc(@sizeOf([*c]const u8)))));
     percents = @as([*c][*c]const u8, @ptrCast(@alignCast(xmalloc(@sizeOf([*c]const u8)))));
@@ -2817,7 +2845,7 @@ pub fn convert_suffix_rule(arg_target: [*c]const u8, arg_source: [*c]const u8, a
         _ = &p;
         p[@as(c_uint, @intCast(@as(c_int, 0)))] = '%';
         _ = memcpy(@as(?*anyopaque, @ptrCast(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), @as(?*const anyopaque, @ptrCast(source)), len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
-        deps = @as(?*struct_dep, @ptrCast(xcalloc(@sizeOf(struct_dep))));
+        deps = @as([*c]struct_dep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_dep)))));
         deps.*.name = strcache_add_len(p, len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
     }
     create_pattern_rule(names, percents, @as(c_ushort, @bitCast(@as(c_short, @truncate(@as(c_int, 1))))), @as(c_int, 0), deps, cmds, @as(c_int, 0));

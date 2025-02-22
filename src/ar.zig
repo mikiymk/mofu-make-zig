@@ -1965,8 +1965,21 @@ pub extern fn globfree(__pglob: [*c]glob_t) void;
 pub extern fn glob64(noalias __pattern: [*c]const u8, __flags: c_int, __errfunc: ?*const fn ([*c]const u8, c_int) callconv(.C) c_int, noalias __pglob: [*c]glob64_t) c_int;
 pub extern fn globfree64(__pglob: [*c]glob64_t) void;
 pub extern fn glob_pattern_p(__pattern: [*c]const u8, __quote: c_int) c_int;
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_dep = opaque {};
+pub const struct_dep = extern struct {
+    next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+};
 pub const struct_commands = opaque {};
 pub const struct_variable_set_list = opaque {};
 pub const us_success: c_int = 0;
@@ -1983,10 +1996,10 @@ pub const struct_file = extern struct {
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
     stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    also_make: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    also_make: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     last: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     renamed: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
@@ -2305,10 +2318,10 @@ pub extern var hash_deleted_item: ?*anyopaque;
 pub extern var default_file: [*c]struct_file;
 pub extern fn lookup_file(name: [*c]const u8) [*c]struct_file;
 pub extern fn enter_file(name: [*c]const u8) [*c]struct_file;
-pub extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
-pub extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
+pub extern fn split_prereqs(prereqstr: [*c]u8) [*c]struct_dep;
+pub extern fn enter_prereqs(prereqs: [*c]struct_dep, stem: [*c]const u8) [*c]struct_dep;
 pub extern fn expand_deps(f: [*c]struct_file) void;
-pub extern fn expand_extra_prereqs(extra: ?*const struct_variable) ?*struct_dep;
+pub extern fn expand_extra_prereqs(extra: ?*const struct_variable) [*c]struct_dep;
 pub extern fn remove_intermediates(sig: c_int) void;
 pub extern fn snap_deps() void;
 pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
@@ -2318,7 +2331,7 @@ pub extern fn notice_finished_file(file: [*c]struct_file) void;
 pub extern fn init_hash_files() void;
 pub extern fn verify_file_data_base() void;
 pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;
-pub extern fn print_prereqs(deps: ?*const struct_dep) void;
+pub extern fn print_prereqs(deps: [*c]const struct_dep) void;
 pub extern fn print_file_data_base() void;
 pub extern fn try_implicit_rule(file: [*c]struct_file, depth: c_uint) c_int;
 pub extern fn stemlen_compare(v1: ?*const anyopaque, v2: ?*const anyopaque) c_int;
@@ -2331,8 +2344,23 @@ pub const struct_nameseq = extern struct {
     next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
 };
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_goaldep = opaque {};
+pub const struct_goaldep = extern struct {
+    next: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+    @"error": c_int = @import("std").mem.zeroes(c_int),
+    floc: floc = @import("std").mem.zeroes(floc),
+};
 pub extern fn parse_file_seq(stringp: [*c][*c]u8, size: usize, stopmap: c_int, prefix: [*c]const u8, flags: c_int) ?*anyopaque;
 pub extern fn tilde_expand(name: [*c]const u8) [*c]u8;
 pub const struct_ar_glob_state = extern struct {
@@ -2394,10 +2422,10 @@ pub export fn ar_glob(arg_arname: [*c]const u8, arg_member_pattern: [*c]const u8
     return state.chain;
 }
 pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
-pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
-pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) ?*struct_goaldep;
+pub extern fn copy_dep_chain(d: [*c]const struct_dep) [*c]struct_dep;
+pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) [*c]struct_goaldep;
 pub extern fn eval_buffer(buffer: [*c]u8, floc: [*c]const floc) void;
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_36;
+pub extern fn update_goal_chain(goals: [*c]struct_goaldep) enum_update_status_36;
 pub extern fn fnmatch(__pattern: [*c]const u8, __name: [*c]const u8, __flags: c_int) c_int;
 pub fn ar_member_date_1(arg_desc: c_int, arg_mem: [*c]const u8, arg_truncated: c_int, arg_hdrpos: c_long, arg_datapos: c_long, arg_size: c_long, arg_date: intmax_t, arg_uid: c_int, arg_gid: c_int, arg_mode: c_uint, arg_name: ?*const anyopaque) callconv(.C) intmax_t {
     var desc = arg_desc;

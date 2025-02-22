@@ -1965,8 +1965,21 @@ pub extern fn globfree(__pglob: [*c]glob_t) void;
 pub extern fn glob64(noalias __pattern: [*c]const u8, __flags: c_int, __errfunc: ?*const fn ([*c]const u8, c_int) callconv(.C) c_int, noalias __pglob: [*c]glob64_t) c_int;
 pub extern fn globfree64(__pglob: [*c]glob64_t) void;
 pub extern fn glob_pattern_p(__pattern: [*c]const u8, __quote: c_int) c_int;
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_dep = opaque {};
+pub const struct_dep = extern struct {
+    next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+};
 // src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
 pub const struct_commands = opaque {};
 pub const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
@@ -2006,10 +2019,10 @@ pub const struct_file = extern struct {
     name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
     stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
-    also_make: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    also_make: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     last: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
     renamed: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
@@ -2298,47 +2311,47 @@ pub export fn enter_file(arg_name: [*c]const u8) [*c]struct_file {
     }
     return new;
 }
-pub export fn split_prereqs(arg_p: [*c]u8) ?*struct_dep {
+pub export fn split_prereqs(arg_p: [*c]u8) [*c]struct_dep {
     var p = arg_p;
     _ = &p;
-    var new: ?*struct_dep = @as(?*struct_dep, @ptrCast(parse_file_seq(&p, @sizeOf(struct_dep), @as(c_int, 256), null, @as(c_int, 64))));
+    var new: [*c]struct_dep = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(&p, @sizeOf(struct_dep), @as(c_int, 256), null, @as(c_int, 64)))));
     _ = &new;
     if (p.* != 0) {
-        var ood: ?*struct_dep = undefined;
+        var ood: [*c]struct_dep = undefined;
         _ = &ood;
         p += 1;
-        ood = @as(?*struct_dep, @ptrCast(parse_file_seq(&p, @sizeOf(struct_dep), @as(c_int, 1), null, @as(c_int, 64))));
+        ood = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(&p, @sizeOf(struct_dep), @as(c_int, 1), null, @as(c_int, 64)))));
         if (!(new != null)) {
             new = ood;
         } else {
-            var dp: ?*struct_dep = undefined;
+            var dp: [*c]struct_dep = undefined;
             _ = &dp;
             {
                 dp = new;
-                while (dp.*.next != @as(?*struct_dep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) : (dp = dp.*.next) {}
+                while (dp.*.next != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (dp = dp.*.next) {}
             }
             dp.*.next = ood;
         }
-        while (ood != @as(?*struct_dep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) : (ood = ood.*.next) {
+        while (ood != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (ood = ood.*.next) {
             ood.*.ignore_mtime = 1;
         }
     }
     return new;
 }
-pub export fn enter_prereqs(arg_deps: ?*struct_dep, arg_stem: [*c]const u8) ?*struct_dep {
+pub export fn enter_prereqs(arg_deps: [*c]struct_dep, arg_stem: [*c]const u8) [*c]struct_dep {
     var deps = arg_deps;
     _ = &deps;
     var stem = arg_stem;
     _ = &stem;
-    var d1: ?*struct_dep = undefined;
+    var d1: [*c]struct_dep = undefined;
     _ = &d1;
     if (deps == null) return null;
     if (stem != null) {
         var pattern: [*c]const u8 = "%";
         _ = &pattern;
-        var dp: ?*struct_dep = deps;
+        var dp: [*c]struct_dep = deps;
         _ = &dp;
-        var dl: ?*struct_dep = null;
+        var dl: [*c]struct_dep = null;
         _ = &dl;
         while (dp != null) {
             var percent: [*c]u8 = undefined;
@@ -2359,7 +2372,7 @@ pub export fn enter_prereqs(arg_deps: ?*struct_dep, arg_stem: [*c]const u8) ?*st
                     o = patsubst_expand_pat(variable_buffer, stem, pattern, nm, pattern + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), percent + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
                 }
                 if (@as(c_int, @bitCast(@as(c_uint, variable_buffer[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) {
-                    var df: ?*struct_dep = dp;
+                    var df: [*c]struct_dep = dp;
                     _ = &df;
                     if (dp == deps) {
                         dp = blk: {
@@ -2405,9 +2418,9 @@ pub export fn enter_prereqs(arg_deps: ?*struct_dep, arg_stem: [*c]const u8) ?*st
 pub export fn expand_deps(arg_f: [*c]struct_file) void {
     var f = arg_f;
     _ = &f;
-    var d: ?*struct_dep = undefined;
+    var d: [*c]struct_dep = undefined;
     _ = &d;
-    var dp: [*c]?*struct_dep = undefined;
+    var dp: [*c][*c]struct_dep = undefined;
     _ = &dp;
     var fstem: [*c]const u8 = undefined;
     _ = &fstem;
@@ -2422,9 +2435,9 @@ pub export fn expand_deps(arg_f: [*c]struct_file) void {
     while (d != null) {
         var p: [*c]u8 = undefined;
         _ = &p;
-        var new: ?*struct_dep = undefined;
+        var new: [*c]struct_dep = undefined;
         _ = &new;
-        var next: ?*struct_dep = undefined;
+        var next: [*c]struct_dep = undefined;
         _ = &next;
         if (!(d.*.name != null) or !(d.*.need_2nd_expansion != 0)) {
             dp = &d.*.next;
@@ -2535,12 +2548,12 @@ pub export fn expand_deps(arg_f: [*c]struct_file) void {
         shuffle_deps_recursive(f.*.deps);
     }
 }
-pub export fn expand_extra_prereqs(arg_extra: [*c]const struct_variable) ?*struct_dep {
+pub export fn expand_extra_prereqs(arg_extra: [*c]const struct_variable) [*c]struct_dep {
     var extra = arg_extra;
     _ = &extra;
-    var d: ?*struct_dep = undefined;
+    var d: [*c]struct_dep = undefined;
     _ = &d;
-    var prereqs: ?*struct_dep = if (extra != null) split_prereqs(variable_expand(extra.*.value)) else null;
+    var prereqs: [*c]struct_dep = if (extra != null) split_prereqs(variable_expand(extra.*.value)) else null;
     _ = &prereqs;
     {
         d = prereqs;
@@ -2624,7 +2637,7 @@ pub export fn snap_deps() void {
     _ = &f;
     var f2: [*c]struct_file = undefined;
     _ = &f2;
-    var d: ?*struct_dep = undefined;
+    var d: [*c]struct_dep = undefined;
     _ = &d;
     snapped_deps = 1;
     {
@@ -2755,17 +2768,17 @@ pub export fn snap_deps() void {
     }
     f = lookup_file(".NOTPARALLEL");
     if ((f != null) and (f.*.is_target != 0)) {
-        var d2: ?*struct_dep = undefined;
+        var d2: [*c]struct_dep = undefined;
         _ = &d2;
         if (!(f.*.deps != null)) {
             not_parallel = 1;
         } else {
             d = f.*.deps;
-            while (d != @as(?*struct_dep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) : (d = d.*.next) {
+            while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (d = d.*.next) {
                 f2 = d.*.file;
                 while (f2 != @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (f2 = f2.*.prev) if (f2.*.deps != null) {
                     d2 = f2.*.deps.*.next;
-                    while (d2 != @as(?*struct_dep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) : (d2 = d2.*.next) {
+                    while (d2 != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (d2 = d2.*.next) {
                         d2.*.wait_here = 1;
                     }
                 };
@@ -2773,7 +2786,7 @@ pub export fn snap_deps() void {
         }
     }
     {
-        var prereqs: ?*struct_dep = expand_extra_prereqs(lookup_variable(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+        var prereqs: [*c]struct_dep = expand_extra_prereqs(lookup_variable(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
         _ = &prereqs;
         hash_map_arg(&files, &snap_file, @as(?*anyopaque, @ptrCast(prereqs)));
         free_ns_chain(@as([*c]struct_nameseq, @ptrCast(@alignCast(prereqs))));
@@ -2852,7 +2865,7 @@ pub export fn rehash_file(arg_from_file: [*c]struct_file, arg_to_hname: [*c]cons
     if (to_file.*.deps == null) {
         to_file.*.deps = from_file.*.deps;
     } else {
-        var deps: ?*struct_dep = to_file.*.deps;
+        var deps: [*c]struct_dep = to_file.*.deps;
         _ = &deps;
         while (deps.*.next != null) {
             deps = deps.*.next;
@@ -2895,7 +2908,7 @@ pub export fn set_command_state(arg_file_1: [*c]struct_file, arg_state: enum_cmd
     _ = &file_1;
     var state = arg_state;
     _ = &state;
-    var d: ?*struct_dep = undefined;
+    var d: [*c]struct_dep = undefined;
     _ = &d;
     file_1.*.command_state = state;
     {
@@ -2959,22 +2972,22 @@ pub export fn build_target_list(arg_value: [*c]u8) [*c]u8 {
     }
     return value;
 }
-pub export fn print_prereqs(arg_deps: ?*const struct_dep) void {
+pub export fn print_prereqs(arg_deps: [*c]const struct_dep) void {
     var deps = arg_deps;
     _ = &deps;
-    var ood: ?*const struct_dep = null;
+    var ood: [*c]const struct_dep = null;
     _ = &ood;
     while (deps != null) : (deps = deps.*.next) if (!(deps.*.ignore_mtime != 0)) {
-        _ = printf(" %s%s", if (@as(c_int, @bitCast(deps.*.wait_here)) != 0) ".WAIT " else "", if (deps.*.name != null) deps.*.name else deps.*.file.*.name);
+        _ = printf(" %s%s", if (deps.*.wait_here != 0) ".WAIT " else "", if (deps.*.name != null) deps.*.name else deps.*.file.*.name);
     } else if (!(ood != null)) {
         ood = deps;
     };
     if (ood != null) {
-        _ = printf(" | %s%s", if (@as(c_int, @bitCast(ood.*.wait_here)) != 0) ".WAIT " else "", if (ood.*.name != null) ood.*.name else ood.*.file.*.name);
+        _ = printf(" | %s%s", if (ood.*.wait_here != 0) ".WAIT " else "", if (ood.*.name != null) ood.*.name else ood.*.file.*.name);
         {
             ood = ood.*.next;
             while (ood != null) : (ood = ood.*.next) if (ood.*.ignore_mtime != 0) {
-                _ = printf(" %s%s", if (@as(c_int, @bitCast(ood.*.wait_here)) != 0) ".WAIT " else "", if (ood.*.name != null) ood.*.name else ood.*.file.*.name);
+                _ = printf(" %s%s", if (ood.*.wait_here != 0) ".WAIT " else "", if (ood.*.name != null) ood.*.name else ood.*.file.*.name);
             };
         }
     }
@@ -3047,16 +3060,31 @@ pub export fn file_timestamp_sprintf(arg_p: [*c]u8, arg_ts: uintmax_t) void {
 }
 pub extern fn f_mtime(file: [*c]struct_file, search: c_int) uintmax_t;
 pub extern var snapped_deps: c_int;
-// src/dep.h:51:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_goaldep = opaque {};
+pub const struct_goaldep = extern struct {
+    next: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    shuf: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    flags: c_uint = @import("std").mem.zeroes(c_uint),
+    changed: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_mtime: c_uint = @import("std").mem.zeroes(c_uint),
+    staticpattern: c_uint = @import("std").mem.zeroes(c_uint),
+    need_2nd_expansion: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_automatic_vars: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    wait_here: c_uint = @import("std").mem.zeroes(c_uint),
+    @"error": c_int = @import("std").mem.zeroes(c_int),
+    floc: floc = @import("std").mem.zeroes(floc),
+};
 pub extern fn parse_file_seq(stringp: [*c][*c]u8, size: usize, stopmap: c_int, prefix: [*c]const u8, flags: c_int) ?*anyopaque;
 pub extern fn tilde_expand(name: [*c]const u8) [*c]u8;
 pub extern fn ar_glob(arname: [*c]const u8, member_pattern: [*c]const u8, size: usize) [*c]struct_nameseq;
 pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
-pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
-pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) ?*struct_goaldep;
+pub extern fn copy_dep_chain(d: [*c]const struct_dep) [*c]struct_dep;
+pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) [*c]struct_goaldep;
 pub extern fn eval_buffer(buffer: [*c]u8, floc: [*c]const floc) void;
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_36;
+pub extern fn update_goal_chain(goals: [*c]struct_goaldep) enum_update_status_36;
 pub const struct_output = extern struct {
     out: c_int = @import("std").mem.zeroes(c_int),
     err: c_int = @import("std").mem.zeroes(c_int),
@@ -3153,7 +3181,7 @@ pub extern var export_all_variables: c_int;
 pub extern var db_level: c_int;
 pub extern fn shuffle_set_mode(cmdarg: [*c]const u8) void;
 pub extern fn shuffle_get_mode() [*c]const u8;
-pub extern fn shuffle_deps_recursive(g: ?*struct_dep) void;
+pub extern fn shuffle_deps_recursive(g: [*c]struct_dep) void;
 pub fn file_hash_1(arg_key: ?*const anyopaque) callconv(.C) c_ulong {
     var key = arg_key;
     _ = &key;
@@ -3203,7 +3231,7 @@ pub fn snap_file(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C)
     _ = &arg;
     var f: [*c]struct_file = @as([*c]struct_file, @ptrCast(@volatileCast(@constCast(item))));
     _ = &f;
-    var prereqs: ?*struct_dep = null;
+    var prereqs: [*c]struct_dep = null;
     _ = &prereqs;
     if (!(second_expansion != 0)) {
         f.*.updating = 0;
@@ -3217,10 +3245,10 @@ pub fn snap_file(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C)
     if (f.*.variables != null) {
         prereqs = expand_extra_prereqs(lookup_variable_in_set(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), f.*.variables.*.set));
     } else if (f.*.is_target != 0) {
-        prereqs = copy_dep_chain(@as(?*const struct_dep, @ptrCast(arg)));
+        prereqs = copy_dep_chain(@as([*c]const struct_dep, @ptrCast(@alignCast(arg))));
     }
     if (prereqs != null) {
-        var d: ?*struct_dep = undefined;
+        var d: [*c]struct_dep = undefined;
         _ = &d;
         {
             d = prereqs;
@@ -3291,7 +3319,7 @@ pub fn print_file(arg_item: ?*const anyopaque) callconv(.C) void {
         _ = puts(gettext("#  File is secondary (prerequisite of .SECONDARY)."));
     }
     if (f.*.also_make != null) {
-        var d: ?*const struct_dep = undefined;
+        var d: [*c]const struct_dep = undefined;
         _ = &d;
         _ = fputs(gettext("#  Also makes:"), stdout);
         {
@@ -3372,7 +3400,7 @@ pub fn verify_file(arg_item: ?*const anyopaque) callconv(.C) void {
     _ = &item;
     var f: [*c]const struct_file = @as([*c]const struct_file, @ptrCast(@alignCast(item)));
     _ = &f;
-    var d: ?*const struct_dep = undefined;
+    var d: [*c]const struct_dep = undefined;
     _ = &d;
     while (true) {
         if (((f.*.name != null) and (@as(c_int, @bitCast(@as(c_uint, f.*.name[@as(c_uint, @intCast(@as(c_int, 0)))]))) != 0)) and !(strcache_iscached(f.*.name) != 0)) {
