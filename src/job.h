@@ -56,13 +56,13 @@ struct child
 
     pid_t pid;                  /* Child process's ID number.  */
 
-    unsigned int  remote:1;     /* Nonzero if executing remotely.  */
-    unsigned int  noerror:1;    /* Nonzero if commands contained a '-'.  */
-    unsigned int  good_stdin:1; /* Nonzero if this child has a good stdin.  */
-    unsigned int  deleted:1;    /* Nonzero if targets have been deleted.  */
-    unsigned int  recursive:1;  /* Nonzero for recursive command ('+' etc.)  */
-    unsigned int  jobslot:1;    /* Nonzero if it's reserved a job slot.  */
-    unsigned int  dontcare:1;   /* Saved dontcare flag.  */
+    unsigned int  remote/* :1 */;     /* Nonzero if executing remotely.  */
+    unsigned int  noerror/* :1 */;    /* Nonzero if commands contained a '-'.  */
+    unsigned int  good_stdin/* :1 */; /* Nonzero if this child has a good stdin.  */
+    unsigned int  deleted/* :1 */;    /* Nonzero if targets have been deleted.  */
+    unsigned int  recursive/* :1 */;  /* Nonzero for recursive command ('+' etc.)  */
+    unsigned int  jobslot/* :1 */;    /* Nonzero if it's reserved a job slot.  */
+    unsigned int  dontcare/* :1 */;   /* Saved dontcare flag.  */
   };
 
 extern struct child *children;

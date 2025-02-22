@@ -157,10 +157,10 @@ struct patdeps
     const char *name;
     const char *pattern;
     struct file *file;
-    unsigned int ignore_mtime : 1;
-    unsigned int ignore_automatic_vars : 1;
-    unsigned int is_explicit : 1;
-    unsigned int wait_here : 1;
+    unsigned int ignore_mtime /* : 1 */;
+    unsigned int ignore_automatic_vars /* : 1 */;
+    unsigned int is_explicit /* : 1 */;
+    unsigned int wait_here /* : 1 */;
   };
 
 /* This structure stores information about pattern rules that we need
