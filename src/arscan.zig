@@ -2191,16 +2191,19 @@ pub extern fn posix_fadvise(__fd: c_int, __offset: off_t, __len: off_t, __advise
 pub extern fn posix_fadvise64(__fd: c_int, __offset: off64_t, __len: off64_t, __advise: c_int) c_int;
 pub extern fn posix_fallocate(__fd: c_int, __offset: off_t, __len: off_t) c_int;
 pub extern fn posix_fallocate64(__fd: c_int, __offset: off64_t, __len: off64_t) c_int;
-// src/output.h:21:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_output = opaque {};
-pub extern var output_context: ?*struct_output;
+pub const struct_output = extern struct {
+    out: c_int = @import("std").mem.zeroes(c_int),
+    err: c_int = @import("std").mem.zeroes(c_int),
+    syncout: c_uint = @import("std").mem.zeroes(c_uint),
+};
+pub extern var output_context: [*c]struct_output;
 pub extern var stdio_traced: c_uint;
 pub extern fn output_write(fd: c_int, buffer: ?*const anyopaque, len: usize) c_int;
-pub extern fn output_init(out: ?*struct_output) void;
-pub extern fn output_close(out: ?*struct_output) void;
+pub extern fn output_init(out: [*c]struct_output) void;
+pub extern fn output_close(out: [*c]struct_output) void;
 pub extern fn output_start() void;
 pub extern fn outputs(is_err: c_int, msg: [*c]const u8) void;
-pub extern fn output_dump(out: ?*struct_output) void;
+pub extern fn output_dump(out: [*c]struct_output) void;
 pub fn parse_int(arg_ptr: [*c]const u8, len: usize, base: c_int, arg_max: uintmax_t, arg_type: [*c]const u8, arg_archive: [*c]const u8, arg_name: [*c]const u8) callconv(.C) uintmax_t {
     var ptr = arg_ptr;
     _ = &ptr;

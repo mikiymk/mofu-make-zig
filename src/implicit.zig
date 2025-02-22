@@ -1992,8 +1992,59 @@ pub const struct_variable_set_list = extern struct {
     set: [*c]struct_variable_set = @import("std").mem.zeroes([*c]struct_variable_set),
     next_is_parent: c_int = @import("std").mem.zeroes(c_int),
 };
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-pub const struct_file = opaque {};
+pub const us_success: c_int = 0;
+pub const us_none: c_int = 1;
+pub const us_question: c_int = 2;
+pub const us_failed: c_int = 3;
+pub const enum_update_status_36 = c_uint;
+pub const cs_not_started: c_int = 0;
+pub const cs_deps_running: c_int = 1;
+pub const cs_running: c_int = 2;
+pub const cs_finished: c_int = 3;
+pub const enum_cmd_state_37 = c_uint;
+pub const struct_file = extern struct {
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    also_make: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    last: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    renamed: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    variables: [*c]struct_variable_set_list = @import("std").mem.zeroes([*c]struct_variable_set_list),
+    pat_variables: [*c]struct_variable_set_list = @import("std").mem.zeroes([*c]struct_variable_set_list),
+    parent: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    double_colon: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    last_mtime: uintmax_t = @import("std").mem.zeroes(uintmax_t),
+    mtime_before_update: uintmax_t = @import("std").mem.zeroes(uintmax_t),
+    considered: c_uint = @import("std").mem.zeroes(c_uint),
+    command_flags: c_int = @import("std").mem.zeroes(c_int),
+    update_status: enum_update_status_36 = @import("std").mem.zeroes(enum_update_status_36),
+    command_state: enum_cmd_state_37 = @import("std").mem.zeroes(enum_cmd_state_37),
+    builtin: c_uint = @import("std").mem.zeroes(c_uint),
+    precious: c_uint = @import("std").mem.zeroes(c_uint),
+    loaded: c_uint = @import("std").mem.zeroes(c_uint),
+    unloaded: c_uint = @import("std").mem.zeroes(c_uint),
+    low_resolution_time: c_uint = @import("std").mem.zeroes(c_uint),
+    tried_implicit: c_uint = @import("std").mem.zeroes(c_uint),
+    updating: c_uint = @import("std").mem.zeroes(c_uint),
+    updated: c_uint = @import("std").mem.zeroes(c_uint),
+    is_target: c_uint = @import("std").mem.zeroes(c_uint),
+    cmd_target: c_uint = @import("std").mem.zeroes(c_uint),
+    phony: c_uint = @import("std").mem.zeroes(c_uint),
+    intermediate: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    secondary: c_uint = @import("std").mem.zeroes(c_uint),
+    notintermediate: c_uint = @import("std").mem.zeroes(c_uint),
+    dontcare: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_vpath: c_uint = @import("std").mem.zeroes(c_uint),
+    pat_searched: c_uint = @import("std").mem.zeroes(c_uint),
+    no_diag: c_uint = @import("std").mem.zeroes(c_uint),
+    was_shuffled: c_uint = @import("std").mem.zeroes(c_uint),
+    snapped: c_uint = @import("std").mem.zeroes(c_uint),
+};
 pub const floc = extern struct {
     filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
@@ -2013,10 +2064,40 @@ pub const o_override: c_int = 5;
 pub const o_automatic: c_int = 6;
 pub const o_invalid: c_int = 7;
 pub const enum_variable_origin = c_int;
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_variable = opaque {};
+pub const f_bogus: c_int = 0;
+pub const f_simple: c_int = 1;
+pub const f_recursive: c_int = 2;
+pub const f_expand: c_int = 3;
+pub const f_append: c_int = 4;
+pub const f_conditional: c_int = 5;
+pub const f_shell: c_int = 6;
+pub const f_append_value: c_int = 7;
+pub const enum_variable_flavor = c_uint;
+pub const v_default: c_int = 0;
+pub const v_export: c_int = 1;
+pub const v_noexport: c_int = 2;
+pub const v_ifset: c_int = 3;
+pub const enum_variable_export = c_uint;
+pub const struct_variable = extern struct {
+    name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    value: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    fileinfo: floc = @import("std").mem.zeroes(floc),
+    length: c_uint = @import("std").mem.zeroes(c_uint),
+    recursive: c_uint = @import("std").mem.zeroes(c_uint),
+    append: c_uint = @import("std").mem.zeroes(c_uint),
+    conditional: c_uint = @import("std").mem.zeroes(c_uint),
+    per_target: c_uint = @import("std").mem.zeroes(c_uint),
+    special: c_uint = @import("std").mem.zeroes(c_uint),
+    exportable: c_uint = @import("std").mem.zeroes(c_uint),
+    expanding: c_uint = @import("std").mem.zeroes(c_uint),
+    private_var: c_uint = @import("std").mem.zeroes(c_uint),
+    exp_count: c_uint = @import("std").mem.zeroes(c_uint),
+    flavor: enum_variable_flavor = @import("std").mem.zeroes(enum_variable_flavor),
+    origin: enum_variable_origin = @import("std").mem.zeroes(enum_variable_origin),
+    @"export": enum_variable_export = @import("std").mem.zeroes(enum_variable_export),
+};
 pub extern fn reset_makeflags(origin: enum_variable_origin) void;
-pub extern fn define_makeflags(makefile: c_int) ?*struct_variable;
+pub extern fn define_makeflags(makefile: c_int) [*c]struct_variable;
 pub extern fn should_print_dir() c_int;
 pub extern fn temp_stdin_unlink() void;
 pub extern fn die(c_int) noreturn;
@@ -2082,7 +2163,7 @@ pub extern fn strcache_add(str: [*c]const u8) [*c]const u8;
 pub extern fn strcache_add_len(str: [*c]const u8, len: usize) [*c]const u8;
 pub extern fn guile_gmake_setup(flocp: [*c]const floc) c_int;
 pub const load_func_t = ?*const fn ([*c]const floc) callconv(.C) c_int;
-pub extern fn load_file(flocp: [*c]const floc, file: ?*struct_file, noerror: c_int) c_int;
+pub extern fn load_file(flocp: [*c]const floc, file: [*c]struct_file, noerror: c_int) c_int;
 pub extern fn unload_file(name: [*c]const u8) c_int;
 pub extern var reading_file: [*c]const floc;
 pub extern var expanding_var: [*c][*c]const floc;
@@ -2158,30 +2239,25 @@ pub extern fn hash_dump(ht: [*c]struct_hash_table, vector_0: [*c]?*anyopaque, co
 pub extern fn jhash(key: [*c]const u8, n: c_int) c_uint;
 pub extern fn jhash_string(key: [*c]const u8) c_uint;
 pub extern var hash_deleted_item: ?*anyopaque;
-pub extern var default_file: ?*struct_file;
-pub extern fn lookup_file(name: [*c]const u8) ?*struct_file;
-pub extern fn enter_file(name: [*c]const u8) ?*struct_file;
+pub extern var default_file: [*c]struct_file;
+pub extern fn lookup_file(name: [*c]const u8) [*c]struct_file;
+pub extern fn enter_file(name: [*c]const u8) [*c]struct_file;
 pub extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
 pub extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
-pub extern fn expand_deps(f: ?*struct_file) void;
-pub extern fn expand_extra_prereqs(extra: ?*const struct_variable) ?*struct_dep;
+pub extern fn expand_deps(f: [*c]struct_file) void;
+pub extern fn expand_extra_prereqs(extra: [*c]const struct_variable) ?*struct_dep;
 pub extern fn remove_intermediates(sig: c_int) void;
 pub extern fn snap_deps() void;
-pub extern fn rename_file(file: ?*struct_file, name: [*c]const u8) void;
-pub extern fn rehash_file(file: ?*struct_file, name: [*c]const u8) void;
-pub const cs_not_started: c_int = 0;
-pub const cs_deps_running: c_int = 1;
-pub const cs_running: c_int = 2;
-pub const cs_finished: c_int = 3;
-pub const enum_cmd_state_36 = c_uint;
-pub extern fn set_command_state(file: ?*struct_file, state: enum_cmd_state_36) void;
-pub extern fn notice_finished_file(file: ?*struct_file) void;
+pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
+pub extern fn rehash_file(file: [*c]struct_file, name: [*c]const u8) void;
+pub extern fn set_command_state(file: [*c]struct_file, state: enum_cmd_state_37) void;
+pub extern fn notice_finished_file(file: [*c]struct_file) void;
 pub extern fn init_hash_files() void;
 pub extern fn verify_file_data_base() void;
 pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;
 pub extern fn print_prereqs(deps: ?*const struct_dep) void;
 pub extern fn print_file_data_base() void;
-pub export fn try_implicit_rule(arg_file_1: ?*struct_file, arg_depth: c_uint) c_int {
+pub export fn try_implicit_rule(arg_file_1: [*c]struct_file, arg_depth: c_uint) c_int {
     var file_1 = arg_file_1;
     _ = &file_1;
     var depth = arg_depth;
@@ -2251,7 +2327,7 @@ pub export fn stemlen_compare(arg_v1: ?*const anyopaque, arg_v2: ?*const anyopaq
 pub extern fn file_timestamp_cons([*c]const u8, time_t, c_long) uintmax_t;
 pub extern fn file_timestamp_now([*c]c_int) uintmax_t;
 pub extern fn file_timestamp_sprintf(p: [*c]u8, ts: uintmax_t) void;
-pub extern fn f_mtime(file: ?*struct_file, search: c_int) uintmax_t;
+pub extern fn f_mtime(file: [*c]struct_file, search: c_int) uintmax_t;
 pub extern var snapped_deps: c_int;
 pub const struct_pspec = extern struct {
     target: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
@@ -2264,7 +2340,7 @@ pub extern var num_pattern_rules: c_uint;
 pub extern var max_pattern_deps: c_uint;
 pub extern var max_pattern_targets: c_uint;
 pub extern var max_pattern_dep_length: usize;
-pub extern var suffix_file: ?*struct_file;
+pub extern var suffix_file: [*c]struct_file;
 pub extern fn snap_implicit_rules() void;
 pub extern fn convert_to_pattern() void;
 pub extern fn install_pattern_rule(p: [*c]struct_pspec, terminal: c_int) void;
@@ -2284,29 +2360,10 @@ pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
 pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
 pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) ?*struct_goaldep;
 pub extern fn eval_buffer(buffer: [*c]u8, floc: [*c]const floc) void;
-pub const us_success: c_int = 0;
-pub const us_none: c_int = 1;
-pub const us_question: c_int = 2;
-pub const us_failed: c_int = 3;
-pub const enum_update_status_37 = c_uint;
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_37;
+pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_36;
 pub extern var db_level: c_int;
-pub const f_bogus: c_int = 0;
-pub const f_simple: c_int = 1;
-pub const f_recursive: c_int = 2;
-pub const f_expand: c_int = 3;
-pub const f_append: c_int = 4;
-pub const f_conditional: c_int = 5;
-pub const f_shell: c_int = 6;
-pub const f_append_value: c_int = 7;
-pub const enum_variable_flavor = c_uint;
-pub const v_default: c_int = 0;
-pub const v_export: c_int = 1;
-pub const v_noexport: c_int = 2;
-pub const v_ifset: c_int = 3;
-pub const enum_variable_export = c_uint;
 pub const struct_pattern_var = extern struct {
-    next: ?*struct_pattern_var = @import("std").mem.zeroes(?*struct_pattern_var),
+    next: [*c]struct_pattern_var = @import("std").mem.zeroes([*c]struct_pattern_var),
     suffix: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     target: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     len: usize = @import("std").mem.zeroes(usize),
@@ -2315,12 +2372,12 @@ pub const struct_pattern_var = extern struct {
 pub extern var env_recursion: c_ulonglong;
 pub extern var variable_buffer: [*c]u8;
 pub extern var current_variable_set_list: [*c]struct_variable_set_list;
-pub extern var default_goal_var: ?*struct_variable;
+pub extern var default_goal_var: [*c]struct_variable;
 pub extern var shell_var: struct_variable;
 pub extern fn variable_buffer_output(ptr: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
 pub extern fn variable_expand(line: [*c]const u8) [*c]u8;
-pub extern fn variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
-pub extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
+pub extern fn variable_expand_for_file(line: [*c]const u8, file: [*c]struct_file) [*c]u8;
+pub extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: [*c]struct_file) [*c]u8;
 pub extern fn expand_argument(str: [*c]const u8, end: [*c]const u8) [*c]u8;
 pub extern fn variable_expand_string(line: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
 pub extern fn initialize_variable_output() [*c]u8;
@@ -2333,42 +2390,45 @@ pub extern fn patsubst_expand_pat(o: [*c]u8, text: [*c]const u8, pattern: [*c]co
 pub extern fn patsubst_expand(o: [*c]u8, text: [*c]const u8, pattern: [*c]u8, replace: [*c]u8) [*c]u8;
 pub extern fn func_shell_base(o: [*c]u8, argv: [*c][*c]u8, trim_newlines: c_int) [*c]u8;
 pub extern fn shell_completed(exit_code: c_int, exit_sig: c_int) void;
-pub extern fn recursively_expand_for_file(v: ?*struct_variable, file: ?*struct_file) [*c]u8;
+pub extern fn recursively_expand_for_file(v: [*c]struct_variable, file: [*c]struct_file) [*c]u8;
 pub extern fn create_new_variable_set() [*c]struct_variable_set_list;
 pub extern fn free_variable_set([*c]struct_variable_set_list) void;
 pub extern fn push_new_variable_scope() [*c]struct_variable_set_list;
 pub extern fn pop_variable_scope() void;
 pub extern fn define_automatic_variables() void;
-pub extern fn initialize_file_variables(file: ?*struct_file, reading: c_int) void;
-pub extern fn print_file_variables(file: ?*const struct_file) void;
-pub extern fn print_target_variables(file: ?*const struct_file) void;
+pub extern fn initialize_file_variables(file: [*c]struct_file, reading: c_int) void;
+pub extern fn print_file_variables(file: [*c]const struct_file) void;
+pub extern fn print_target_variables(file: [*c]const struct_file) void;
 pub extern fn merge_variable_set_lists(to_list: [*c][*c]struct_variable_set_list, from_list: [*c]struct_variable_set_list) void;
-pub extern fn do_variable_definition(flocp: [*c]const floc, name: [*c]const u8, value: [*c]const u8, origin: enum_variable_origin, flavor: enum_variable_flavor, target_var: c_int) ?*struct_variable;
-pub extern fn parse_variable_definition(line: [*c]const u8, v: ?*struct_variable) [*c]u8;
-pub extern fn assign_variable_definition(v: ?*struct_variable, line: [*c]const u8) ?*struct_variable;
-pub extern fn try_variable_definition(flocp: [*c]const floc, line: [*c]const u8, origin: enum_variable_origin, target_var: c_int) ?*struct_variable;
+pub extern fn do_variable_definition(flocp: [*c]const floc, name: [*c]const u8, value: [*c]const u8, origin: enum_variable_origin, flavor: enum_variable_flavor, target_var: c_int) [*c]struct_variable;
+pub extern fn parse_variable_definition(line: [*c]const u8, v: [*c]struct_variable) [*c]u8;
+pub extern fn assign_variable_definition(v: [*c]struct_variable, line: [*c]const u8) [*c]struct_variable;
+pub extern fn try_variable_definition(flocp: [*c]const floc, line: [*c]const u8, origin: enum_variable_origin, target_var: c_int) [*c]struct_variable;
 pub extern fn init_hash_global_variable_set() void;
 pub extern fn hash_init_function_table() void;
 pub extern fn define_new_function(flocp: [*c]const floc, name: [*c]const u8, min: c_uint, max: c_uint, flags: c_uint, func: gmk_func_ptr) void;
-pub extern fn lookup_variable(name: [*c]const u8, length: usize) ?*struct_variable;
-pub extern fn lookup_variable_for_file(name: [*c]const u8, length: usize, file: ?*struct_file) ?*struct_variable;
-pub extern fn lookup_variable_in_set(name: [*c]const u8, length: usize, set: [*c]const struct_variable_set) ?*struct_variable;
-pub extern fn define_variable_in_set(name: [*c]const u8, length: usize, value: [*c]const u8, origin: enum_variable_origin, recursive: c_int, set: [*c]struct_variable_set, flocp: [*c]const floc) ?*struct_variable;
+pub extern fn lookup_variable(name: [*c]const u8, length: usize) [*c]struct_variable;
+pub extern fn lookup_variable_for_file(name: [*c]const u8, length: usize, file: [*c]struct_file) [*c]struct_variable;
+pub extern fn lookup_variable_in_set(name: [*c]const u8, length: usize, set: [*c]const struct_variable_set) [*c]struct_variable;
+pub extern fn define_variable_in_set(name: [*c]const u8, length: usize, value: [*c]const u8, origin: enum_variable_origin, recursive: c_int, set: [*c]struct_variable_set, flocp: [*c]const floc) [*c]struct_variable;
 pub extern fn warn_undefined(name: [*c]const u8, length: usize) void;
 pub extern fn undefine_variable_in_set(name: [*c]const u8, length: usize, origin: enum_variable_origin, set: [*c]struct_variable_set) void;
-pub extern fn target_environment(file: ?*struct_file, recursive: c_int) [*c][*c]u8;
-pub extern fn create_pattern_var(target: [*c]const u8, suffix: [*c]const u8) ?*struct_pattern_var;
+pub extern fn target_environment(file: [*c]struct_file, recursive: c_int) [*c][*c]u8;
+pub extern fn create_pattern_var(target: [*c]const u8, suffix: [*c]const u8) [*c]struct_pattern_var;
 pub extern var export_all_variables: c_int;
-// src/output.h:21:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_output = opaque {};
-pub extern var output_context: ?*struct_output;
+pub const struct_output = extern struct {
+    out: c_int = @import("std").mem.zeroes(c_int),
+    err: c_int = @import("std").mem.zeroes(c_int),
+    syncout: c_uint = @import("std").mem.zeroes(c_uint),
+};
+pub extern var output_context: [*c]struct_output;
 pub extern var stdio_traced: c_uint;
 pub extern fn output_write(fd: c_int, buffer: ?*const anyopaque, len: usize) c_int;
-pub extern fn output_init(out: ?*struct_output) void;
-pub extern fn output_close(out: ?*struct_output) void;
+pub extern fn output_init(out: [*c]struct_output) void;
+pub extern fn output_close(out: [*c]struct_output) void;
 pub extern fn output_start() void;
 pub extern fn outputs(is_err: c_int, msg: [*c]const u8) void;
-pub extern fn output_dump(out: ?*struct_output) void;
+pub extern fn output_dump(out: [*c]struct_output) void;
 pub const struct_childbase = extern struct {
     cmd_name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
     environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
@@ -2379,22 +2439,22 @@ pub const struct_child = opaque {};
 pub extern var children: ?*struct_child;
 pub extern fn child_handler(sig: c_int) void;
 pub extern fn is_bourne_compatible_shell(path: [*c]const u8) c_int;
-pub extern fn new_job(file: ?*struct_file) void;
+pub extern fn new_job(file: [*c]struct_file) void;
 pub extern fn reap_children(block: c_int, err: c_int) void;
 pub extern fn start_waiting_jobs() void;
-pub extern fn free_childbase(child: ?*struct_childbase) void;
-pub extern fn construct_command_argv(line: [*c]u8, restp: [*c][*c]u8, file: ?*struct_file, cmd_flags: c_int, batch_file: [*c][*c]u8) [*c][*c]u8;
-pub extern fn child_execute_job(child: ?*struct_childbase, good_stdin: c_int, argv: [*c][*c]u8) pid_t;
+pub extern fn free_childbase(child: [*c]struct_childbase) void;
+pub extern fn construct_command_argv(line: [*c]u8, restp: [*c][*c]u8, file: [*c]struct_file, cmd_flags: c_int, batch_file: [*c][*c]u8) [*c][*c]u8;
+pub extern fn child_execute_job(child: [*c]struct_childbase, good_stdin: c_int, argv: [*c][*c]u8) pid_t;
 pub extern fn exec_command(argv: [*c][*c]u8, envp: [*c][*c]u8) pid_t;
 pub extern fn unblock_all_sigs() void;
 pub extern var job_slots_used: c_uint;
 pub extern var jobserver_tokens: c_uint;
 pub extern fn fatal_error_signal(sig: c_int) void;
-pub extern fn execute_file_commands(file: ?*struct_file) void;
+pub extern fn execute_file_commands(file: [*c]struct_file) void;
 pub extern fn print_commands(cmds: ?*const struct_commands) void;
 pub extern fn delete_child_targets(child: ?*struct_child) void;
 pub extern fn chop_commands(cmds: ?*struct_commands) void;
-pub extern fn set_file_variables(file: ?*struct_file, stem: [*c]const u8) void;
+pub extern fn set_file_variables(file: [*c]struct_file, stem: [*c]const u8) void;
 pub extern fn shuffle_set_mode(cmdarg: [*c]const u8) void;
 pub extern fn shuffle_get_mode() [*c]const u8;
 pub extern fn shuffle_deps_recursive(g: ?*struct_dep) void;
@@ -2403,7 +2463,7 @@ pub const struct_patdeps = opaque {};
 // src/implicit.c:426:5: warning: TODO implement translation of stmt class GotoStmtClass
 
 // src/implicit.c:210:1: warning: unable to translate function, demoted to extern
-pub extern fn pattern_search(arg_file_1: ?*struct_file, arg_archive: c_int, arg_depth: c_uint, arg_recursions: c_uint, arg_allow_compat_rules: c_int) callconv(.C) c_int;
+pub extern fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_uint, arg_recursions: c_uint, arg_allow_compat_rules: c_int) callconv(.C) c_int;
 // src/implicit.c:101:11: warning: TODO implement translation of stmt class GotoStmtClass
 
 // src/implicit.c:75:1: warning: unable to translate function, demoted to extern
@@ -5760,14 +5820,14 @@ pub const variable_set = struct_variable_set;
 pub const variable_set_list = struct_variable_set_list;
 pub const file = struct_file;
 pub const variable_origin = enum_variable_origin;
+pub const variable_flavor = enum_variable_flavor;
+pub const variable_export = enum_variable_export;
 pub const variable = struct_variable;
 pub const rule = struct_rule;
 pub const tryrule = struct_tryrule;
 pub const pspec = struct_pspec;
 pub const nameseq = struct_nameseq;
 pub const goaldep = struct_goaldep;
-pub const variable_flavor = enum_variable_flavor;
-pub const variable_export = enum_variable_export;
 pub const pattern_var = struct_pattern_var;
 pub const output = struct_output;
 pub const childbase = struct_childbase;

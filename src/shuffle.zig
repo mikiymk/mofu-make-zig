@@ -1969,8 +1969,59 @@ pub extern fn glob_pattern_p(__pattern: [*c]const u8, __quote: c_int) c_int;
 pub const struct_dep = opaque {};
 pub const struct_commands = opaque {};
 pub const struct_variable_set_list = opaque {};
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-pub const struct_file = opaque {};
+pub const us_success: c_int = 0;
+pub const us_none: c_int = 1;
+pub const us_question: c_int = 2;
+pub const us_failed: c_int = 3;
+pub const enum_update_status_36 = c_uint;
+pub const cs_not_started: c_int = 0;
+pub const cs_deps_running: c_int = 1;
+pub const cs_running: c_int = 2;
+pub const cs_finished: c_int = 3;
+pub const enum_cmd_state_37 = c_uint;
+pub const struct_file = extern struct {
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    also_make: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    last: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    renamed: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    variables: ?*struct_variable_set_list = @import("std").mem.zeroes(?*struct_variable_set_list),
+    pat_variables: ?*struct_variable_set_list = @import("std").mem.zeroes(?*struct_variable_set_list),
+    parent: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    double_colon: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    last_mtime: uintmax_t = @import("std").mem.zeroes(uintmax_t),
+    mtime_before_update: uintmax_t = @import("std").mem.zeroes(uintmax_t),
+    considered: c_uint = @import("std").mem.zeroes(c_uint),
+    command_flags: c_int = @import("std").mem.zeroes(c_int),
+    update_status: enum_update_status_36 = @import("std").mem.zeroes(enum_update_status_36),
+    command_state: enum_cmd_state_37 = @import("std").mem.zeroes(enum_cmd_state_37),
+    builtin: c_uint = @import("std").mem.zeroes(c_uint),
+    precious: c_uint = @import("std").mem.zeroes(c_uint),
+    loaded: c_uint = @import("std").mem.zeroes(c_uint),
+    unloaded: c_uint = @import("std").mem.zeroes(c_uint),
+    low_resolution_time: c_uint = @import("std").mem.zeroes(c_uint),
+    tried_implicit: c_uint = @import("std").mem.zeroes(c_uint),
+    updating: c_uint = @import("std").mem.zeroes(c_uint),
+    updated: c_uint = @import("std").mem.zeroes(c_uint),
+    is_target: c_uint = @import("std").mem.zeroes(c_uint),
+    cmd_target: c_uint = @import("std").mem.zeroes(c_uint),
+    phony: c_uint = @import("std").mem.zeroes(c_uint),
+    intermediate: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    secondary: c_uint = @import("std").mem.zeroes(c_uint),
+    notintermediate: c_uint = @import("std").mem.zeroes(c_uint),
+    dontcare: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_vpath: c_uint = @import("std").mem.zeroes(c_uint),
+    pat_searched: c_uint = @import("std").mem.zeroes(c_uint),
+    no_diag: c_uint = @import("std").mem.zeroes(c_uint),
+    was_shuffled: c_uint = @import("std").mem.zeroes(c_uint),
+    snapped: c_uint = @import("std").mem.zeroes(c_uint),
+};
 pub const floc = extern struct {
     filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
@@ -2050,7 +2101,7 @@ pub extern fn strcache_add(str: [*c]const u8) [*c]const u8;
 pub extern fn strcache_add_len(str: [*c]const u8, len: usize) [*c]const u8;
 pub extern fn guile_gmake_setup(flocp: [*c]const floc) c_int;
 pub const load_func_t = ?*const fn ([*c]const floc) callconv(.C) c_int;
-pub extern fn load_file(flocp: [*c]const floc, file: ?*struct_file, noerror: c_int) c_int;
+pub extern fn load_file(flocp: [*c]const floc, file: [*c]struct_file, noerror: c_int) c_int;
 pub extern fn unload_file(name: [*c]const u8) c_int;
 pub extern var reading_file: [*c]const floc;
 pub extern var expanding_var: [*c][*c]const floc;
@@ -2195,35 +2246,30 @@ pub extern fn hash_dump(ht: [*c]struct_hash_table, vector_0: [*c]?*anyopaque, co
 pub extern fn jhash(key: [*c]const u8, n: c_int) c_uint;
 pub extern fn jhash_string(key: [*c]const u8) c_uint;
 pub extern var hash_deleted_item: ?*anyopaque;
-pub extern var default_file: ?*struct_file;
-pub extern fn lookup_file(name: [*c]const u8) ?*struct_file;
-pub extern fn enter_file(name: [*c]const u8) ?*struct_file;
+pub extern var default_file: [*c]struct_file;
+pub extern fn lookup_file(name: [*c]const u8) [*c]struct_file;
+pub extern fn enter_file(name: [*c]const u8) [*c]struct_file;
 pub extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
 pub extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
-pub extern fn expand_deps(f: ?*struct_file) void;
+pub extern fn expand_deps(f: [*c]struct_file) void;
 pub extern fn expand_extra_prereqs(extra: ?*const struct_variable) ?*struct_dep;
 pub extern fn remove_intermediates(sig: c_int) void;
 pub extern fn snap_deps() void;
-pub extern fn rename_file(file: ?*struct_file, name: [*c]const u8) void;
-pub extern fn rehash_file(file: ?*struct_file, name: [*c]const u8) void;
-pub const cs_not_started: c_int = 0;
-pub const cs_deps_running: c_int = 1;
-pub const cs_running: c_int = 2;
-pub const cs_finished: c_int = 3;
-pub const enum_cmd_state_36 = c_uint;
-pub extern fn set_command_state(file: ?*struct_file, state: enum_cmd_state_36) void;
-pub extern fn notice_finished_file(file: ?*struct_file) void;
+pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
+pub extern fn rehash_file(file: [*c]struct_file, name: [*c]const u8) void;
+pub extern fn set_command_state(file: [*c]struct_file, state: enum_cmd_state_37) void;
+pub extern fn notice_finished_file(file: [*c]struct_file) void;
 pub extern fn init_hash_files() void;
 pub extern fn verify_file_data_base() void;
 pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;
 pub extern fn print_prereqs(deps: ?*const struct_dep) void;
 pub extern fn print_file_data_base() void;
-pub extern fn try_implicit_rule(file: ?*struct_file, depth: c_uint) c_int;
+pub extern fn try_implicit_rule(file: [*c]struct_file, depth: c_uint) c_int;
 pub extern fn stemlen_compare(v1: ?*const anyopaque, v2: ?*const anyopaque) c_int;
 pub extern fn file_timestamp_cons([*c]const u8, time_t, c_long) uintmax_t;
 pub extern fn file_timestamp_now([*c]c_int) uintmax_t;
 pub extern fn file_timestamp_sprintf(p: [*c]u8, ts: uintmax_t) void;
-pub extern fn f_mtime(file: ?*struct_file, search: c_int) uintmax_t;
+pub extern fn f_mtime(file: [*c]struct_file, search: c_int) uintmax_t;
 pub extern var snapped_deps: c_int;
 pub const struct_nameseq = extern struct {
     next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
@@ -2236,12 +2282,7 @@ pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
 pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
 pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) ?*struct_goaldep;
 pub extern fn eval_buffer(buffer: [*c]u8, floc: [*c]const floc) void;
-pub const us_success: c_int = 0;
-pub const us_none: c_int = 1;
-pub const us_question: c_int = 2;
-pub const us_failed: c_int = 3;
-pub const enum_update_status_37 = c_uint;
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_37;
+pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_36;
 pub fn random_shuffle_array(arg_a: [*c]?*anyopaque, arg_len: usize) callconv(.C) void {
     var a = arg_a;
     _ = &a;
@@ -2371,7 +2412,7 @@ pub fn shuffle_deps(arg_deps: ?*struct_dep) callconv(.C) void {
     }
     free(@as(?*anyopaque, @ptrCast(da)));
 }
-pub fn shuffle_file_deps_recursive(arg_f: ?*struct_file) callconv(.C) void {
+pub fn shuffle_file_deps_recursive(arg_f: [*c]struct_file) callconv(.C) void {
     var f = arg_f;
     _ = &f;
     var dep_1: ?*struct_dep = undefined;

@@ -2158,16 +2158,19 @@ pub extern fn posix_fadvise64(__fd: c_int, __offset: off64_t, __len: off64_t, __
 pub extern fn posix_fallocate(__fd: c_int, __offset: off_t, __len: off_t) c_int;
 pub extern fn posix_fallocate64(__fd: c_int, __offset: off64_t, __len: off64_t) c_int;
 pub extern var db_level: c_int;
-// src/output.h:21:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_output = opaque {};
-pub extern var output_context: ?*struct_output;
+pub const struct_output = extern struct {
+    out: c_int = @import("std").mem.zeroes(c_int),
+    err: c_int = @import("std").mem.zeroes(c_int),
+    syncout: c_uint = @import("std").mem.zeroes(c_uint),
+};
+pub extern var output_context: [*c]struct_output;
 pub extern var stdio_traced: c_uint;
 pub extern fn output_write(fd: c_int, buffer: ?*const anyopaque, len: usize) c_int;
-pub extern fn output_init(out: ?*struct_output) void;
-pub extern fn output_close(out: ?*struct_output) void;
+pub extern fn output_init(out: [*c]struct_output) void;
+pub extern fn output_close(out: [*c]struct_output) void;
 pub extern fn output_start() void;
 pub extern fn outputs(is_err: c_int, msg: [*c]const u8) void;
-pub extern fn output_dump(out: ?*struct_output) void;
+pub extern fn output_dump(out: [*c]struct_output) void;
 pub const struct_childbase = extern struct {
     cmd_name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
     environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
@@ -2181,9 +2184,9 @@ pub extern fn is_bourne_compatible_shell(path: [*c]const u8) c_int;
 pub extern fn new_job(file: ?*struct_file) void;
 pub extern fn reap_children(block: c_int, err: c_int) void;
 pub extern fn start_waiting_jobs() void;
-pub extern fn free_childbase(child: ?*struct_childbase) void;
+pub extern fn free_childbase(child: [*c]struct_childbase) void;
 pub extern fn construct_command_argv(line: [*c]u8, restp: [*c][*c]u8, file: ?*struct_file, cmd_flags: c_int, batch_file: [*c][*c]u8) [*c][*c]u8;
-pub extern fn child_execute_job(child: ?*struct_childbase, good_stdin: c_int, argv: [*c][*c]u8) pid_t;
+pub extern fn child_execute_job(child: [*c]struct_childbase, good_stdin: c_int, argv: [*c][*c]u8) pid_t;
 pub extern fn exec_command(argv: [*c][*c]u8, envp: [*c][*c]u8) pid_t;
 pub extern fn unblock_all_sigs() void;
 pub extern var job_slots_used: c_uint;

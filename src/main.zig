@@ -1992,8 +1992,59 @@ pub const struct_variable_set_list = extern struct {
     set: [*c]struct_variable_set = @import("std").mem.zeroes([*c]struct_variable_set),
     next_is_parent: c_int = @import("std").mem.zeroes(c_int),
 };
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-pub const struct_file = opaque {};
+pub const us_success: c_int = 0;
+pub const us_none: c_int = 1;
+pub const us_question: c_int = 2;
+pub const us_failed: c_int = 3;
+pub const enum_update_status_36 = c_uint;
+pub const cs_not_started: c_int = 0;
+pub const cs_deps_running: c_int = 1;
+pub const cs_running: c_int = 2;
+pub const cs_finished: c_int = 3;
+pub const enum_cmd_state_37 = c_uint;
+pub const struct_file = extern struct {
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    also_make: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    last: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    renamed: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    variables: [*c]struct_variable_set_list = @import("std").mem.zeroes([*c]struct_variable_set_list),
+    pat_variables: [*c]struct_variable_set_list = @import("std").mem.zeroes([*c]struct_variable_set_list),
+    parent: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    double_colon: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    last_mtime: uintmax_t = @import("std").mem.zeroes(uintmax_t),
+    mtime_before_update: uintmax_t = @import("std").mem.zeroes(uintmax_t),
+    considered: c_uint = @import("std").mem.zeroes(c_uint),
+    command_flags: c_int = @import("std").mem.zeroes(c_int),
+    update_status: enum_update_status_36 = @import("std").mem.zeroes(enum_update_status_36),
+    command_state: enum_cmd_state_37 = @import("std").mem.zeroes(enum_cmd_state_37),
+    builtin: c_uint = @import("std").mem.zeroes(c_uint),
+    precious: c_uint = @import("std").mem.zeroes(c_uint),
+    loaded: c_uint = @import("std").mem.zeroes(c_uint),
+    unloaded: c_uint = @import("std").mem.zeroes(c_uint),
+    low_resolution_time: c_uint = @import("std").mem.zeroes(c_uint),
+    tried_implicit: c_uint = @import("std").mem.zeroes(c_uint),
+    updating: c_uint = @import("std").mem.zeroes(c_uint),
+    updated: c_uint = @import("std").mem.zeroes(c_uint),
+    is_target: c_uint = @import("std").mem.zeroes(c_uint),
+    cmd_target: c_uint = @import("std").mem.zeroes(c_uint),
+    phony: c_uint = @import("std").mem.zeroes(c_uint),
+    intermediate: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    secondary: c_uint = @import("std").mem.zeroes(c_uint),
+    notintermediate: c_uint = @import("std").mem.zeroes(c_uint),
+    dontcare: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_vpath: c_uint = @import("std").mem.zeroes(c_uint),
+    pat_searched: c_uint = @import("std").mem.zeroes(c_uint),
+    no_diag: c_uint = @import("std").mem.zeroes(c_uint),
+    was_shuffled: c_uint = @import("std").mem.zeroes(c_uint),
+    snapped: c_uint = @import("std").mem.zeroes(c_uint),
+};
 pub const floc = extern struct {
     filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     lineno: c_ulong = @import("std").mem.zeroes(c_ulong),
@@ -2013,8 +2064,38 @@ pub const o_override: c_int = 5;
 pub const o_automatic: c_int = 6;
 pub const o_invalid: c_int = 7;
 pub const enum_variable_origin = c_int;
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_variable = opaque {};
+pub const f_bogus: c_int = 0;
+pub const f_simple: c_int = 1;
+pub const f_recursive: c_int = 2;
+pub const f_expand: c_int = 3;
+pub const f_append: c_int = 4;
+pub const f_conditional: c_int = 5;
+pub const f_shell: c_int = 6;
+pub const f_append_value: c_int = 7;
+pub const enum_variable_flavor = c_uint;
+pub const v_default: c_int = 0;
+pub const v_export: c_int = 1;
+pub const v_noexport: c_int = 2;
+pub const v_ifset: c_int = 3;
+pub const enum_variable_export = c_uint;
+pub const struct_variable = extern struct {
+    name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    value: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    fileinfo: floc = @import("std").mem.zeroes(floc),
+    length: c_uint = @import("std").mem.zeroes(c_uint),
+    recursive: c_uint = @import("std").mem.zeroes(c_uint),
+    append: c_uint = @import("std").mem.zeroes(c_uint),
+    conditional: c_uint = @import("std").mem.zeroes(c_uint),
+    per_target: c_uint = @import("std").mem.zeroes(c_uint),
+    special: c_uint = @import("std").mem.zeroes(c_uint),
+    exportable: c_uint = @import("std").mem.zeroes(c_uint),
+    expanding: c_uint = @import("std").mem.zeroes(c_uint),
+    private_var: c_uint = @import("std").mem.zeroes(c_uint),
+    exp_count: c_uint = @import("std").mem.zeroes(c_uint),
+    flavor: enum_variable_flavor = @import("std").mem.zeroes(enum_variable_flavor),
+    origin: enum_variable_origin = @import("std").mem.zeroes(enum_variable_origin),
+    @"export": enum_variable_export = @import("std").mem.zeroes(enum_variable_export),
+};
 pub export fn reset_makeflags(arg_origin: enum_variable_origin) void {
     var origin = arg_origin;
     _ = &origin;
@@ -2030,15 +2111,26 @@ pub const filename: c_int = 4;
 pub const positive_int: c_int = 5;
 pub const floating: c_int = 6;
 pub const ignore: c_int = 7;
-const enum_unnamed_36 = c_uint;
-// src/main.c:427:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_command_switch = opaque {};
+const enum_unnamed_38 = c_uint;
+pub const struct_command_switch = extern struct {
+    c: c_int = @import("std").mem.zeroes(c_int),
+    type: enum_unnamed_38 = @import("std").mem.zeroes(enum_unnamed_38),
+    value_ptr: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
+    env: c_uint = @import("std").mem.zeroes(c_uint),
+    toenv: c_uint = @import("std").mem.zeroes(c_uint),
+    no_makefile: c_uint = @import("std").mem.zeroes(c_uint),
+    specified: c_uint = @import("std").mem.zeroes(c_uint),
+    noarg_value: ?*const anyopaque = @import("std").mem.zeroes(?*const anyopaque),
+    default_value: ?*const anyopaque = @import("std").mem.zeroes(?*const anyopaque),
+    long_name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    origin: [*c]enum_variable_origin = @import("std").mem.zeroes([*c]enum_variable_origin),
+};
 pub const struct_stringlist = extern struct {
     list: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
     idx: c_uint = @import("std").mem.zeroes(c_uint),
     max: c_uint = @import("std").mem.zeroes(c_uint),
 };
-pub export fn define_makeflags(arg_makefile: c_int) ?*struct_variable {
+pub export fn define_makeflags(arg_makefile: c_int) [*c]struct_variable {
     var makefile = arg_makefile;
     _ = &makefile;
     const ref: [13:0]u8 = "MAKEOVERRIDES".*;
@@ -2047,9 +2139,9 @@ pub export fn define_makeflags(arg_makefile: c_int) ?*struct_variable {
     _ = &posixref;
     const evalref: [19:0]u8 = "$(-*-eval-flags-*-)".*;
     _ = &evalref;
-    var cs: ?*const struct_command_switch = undefined;
+    var cs: [*c]const struct_command_switch = undefined;
     _ = &cs;
-    var v: ?*struct_variable = undefined;
+    var v: [*c]struct_variable = undefined;
     _ = &v;
     var flagstring: [*c]u8 = undefined;
     _ = &flagstring;
@@ -2057,7 +2149,7 @@ pub export fn define_makeflags(arg_makefile: c_int) ?*struct_variable {
     _ = &p;
     const struct_flag = extern struct {
         next: [*c]struct_flag = @import("std").mem.zeroes([*c]struct_flag),
-        cs: ?*const struct_command_switch = @import("std").mem.zeroes(?*const struct_command_switch),
+        cs: [*c]const struct_command_switch = @import("std").mem.zeroes([*c]const struct_command_switch),
         arg: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     };
     _ = &struct_flag;
@@ -2068,13 +2160,13 @@ pub export fn define_makeflags(arg_makefile: c_int) ?*struct_variable {
     var flagslen: usize = 0;
     _ = &flagslen;
     {
-        cs = @as(?*struct_command_switch, @ptrCast(&switches));
-        while (cs.*.c != @as(c_int, '\x00')) : (cs += 1) if ((@as(c_int, @bitCast(cs.*.toenv)) != 0) and (!(makefile != 0) or !(cs.*.no_makefile != 0))) {
+        cs = @as([*c]struct_command_switch, @ptrCast(@alignCast(&switches)));
+        while (cs.*.c != @as(c_int, '\x00')) : (cs += 1) if ((cs.*.toenv != 0) and (!(makefile != 0) or !(cs.*.no_makefile != 0))) {
             while (true) {
                 switch (cs.*.type) {
                     @as(c_uint, @bitCast(@as(c_int, 7))) => break,
                     @as(c_uint, @bitCast(@as(c_int, 0))), @as(c_uint, @bitCast(@as(c_int, 1))) => {
-                        if ((@intFromBool(!(@as([*c]c_int, @ptrCast(@alignCast(cs.*.value_ptr))).* != 0)) == @intFromBool(cs.*.type == @as(c_uint, @bitCast(flag_off)))) and (((cs.*.default_value == @as(?*const anyopaque, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) or (@as(c_int, @bitCast(cs.*.specified)) != 0)) or (@as([*c]c_int, @ptrCast(@alignCast(cs.*.value_ptr))).* != @as([*c]c_int, @ptrCast(@volatileCast(@constCast(cs.*.default_value)))).*))) while (true) {
+                        if ((@intFromBool(!(@as([*c]c_int, @ptrCast(@alignCast(cs.*.value_ptr))).* != 0)) == @intFromBool(cs.*.type == @as(c_uint, @bitCast(flag_off)))) and (((cs.*.default_value == @as(?*const anyopaque, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) or (cs.*.specified != 0)) or (@as([*c]c_int, @ptrCast(@alignCast(cs.*.value_ptr))).* != @as([*c]c_int, @ptrCast(@volatileCast(@constCast(cs.*.default_value)))).*))) while (true) {
                             var new: [*c]struct_flag = @as([*c]struct_flag, @ptrCast(@alignCast(malloc(@sizeOf(struct_flag)))));
                             _ = &new;
                             new.*.cs = cs;
@@ -2521,7 +2613,7 @@ pub extern fn strcache_add(str: [*c]const u8) [*c]const u8;
 pub extern fn strcache_add_len(str: [*c]const u8, len: usize) [*c]const u8;
 pub extern fn guile_gmake_setup(flocp: [*c]const floc) c_int;
 pub const load_func_t = ?*const fn ([*c]const floc) callconv(.C) c_int;
-pub extern fn load_file(flocp: [*c]const floc, file: ?*struct_file, noerror: c_int) c_int;
+pub extern fn load_file(flocp: [*c]const floc, file: [*c]struct_file, noerror: c_int) c_int;
 pub extern fn unload_file(name: [*c]const u8) c_int;
 pub extern var reading_file: [*c]const floc;
 pub extern var expanding_var: [*c][*c]const floc;
@@ -2623,35 +2715,30 @@ pub extern fn hash_dump(ht: [*c]struct_hash_table, vector_0: [*c]?*anyopaque, co
 pub extern fn jhash(key: [*c]const u8, n: c_int) c_uint;
 pub extern fn jhash_string(key: [*c]const u8) c_uint;
 pub extern var hash_deleted_item: ?*anyopaque;
-pub extern var default_file: ?*struct_file;
-pub extern fn lookup_file(name: [*c]const u8) ?*struct_file;
-pub extern fn enter_file(name: [*c]const u8) ?*struct_file;
+pub extern var default_file: [*c]struct_file;
+pub extern fn lookup_file(name: [*c]const u8) [*c]struct_file;
+pub extern fn enter_file(name: [*c]const u8) [*c]struct_file;
 pub extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
 pub extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
-pub extern fn expand_deps(f: ?*struct_file) void;
-pub extern fn expand_extra_prereqs(extra: ?*const struct_variable) ?*struct_dep;
+pub extern fn expand_deps(f: [*c]struct_file) void;
+pub extern fn expand_extra_prereqs(extra: [*c]const struct_variable) ?*struct_dep;
 pub extern fn remove_intermediates(sig: c_int) void;
 pub extern fn snap_deps() void;
-pub extern fn rename_file(file: ?*struct_file, name: [*c]const u8) void;
-pub extern fn rehash_file(file: ?*struct_file, name: [*c]const u8) void;
-pub const cs_not_started: c_int = 0;
-pub const cs_deps_running: c_int = 1;
-pub const cs_running: c_int = 2;
-pub const cs_finished: c_int = 3;
-pub const enum_cmd_state_37 = c_uint;
-pub extern fn set_command_state(file: ?*struct_file, state: enum_cmd_state_37) void;
-pub extern fn notice_finished_file(file: ?*struct_file) void;
+pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
+pub extern fn rehash_file(file: [*c]struct_file, name: [*c]const u8) void;
+pub extern fn set_command_state(file: [*c]struct_file, state: enum_cmd_state_37) void;
+pub extern fn notice_finished_file(file: [*c]struct_file) void;
 pub extern fn init_hash_files() void;
 pub extern fn verify_file_data_base() void;
 pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;
 pub extern fn print_prereqs(deps: ?*const struct_dep) void;
 pub extern fn print_file_data_base() void;
-pub extern fn try_implicit_rule(file: ?*struct_file, depth: c_uint) c_int;
+pub extern fn try_implicit_rule(file: [*c]struct_file, depth: c_uint) c_int;
 pub extern fn stemlen_compare(v1: ?*const anyopaque, v2: ?*const anyopaque) c_int;
 pub extern fn file_timestamp_cons([*c]const u8, time_t, c_long) uintmax_t;
 pub extern fn file_timestamp_now([*c]c_int) uintmax_t;
 pub extern fn file_timestamp_sprintf(p: [*c]u8, ts: uintmax_t) void;
-pub extern fn f_mtime(file: ?*struct_file, search: c_int) uintmax_t;
+pub extern fn f_mtime(file: [*c]struct_file, search: c_int) uintmax_t;
 pub extern var snapped_deps: c_int;
 pub const struct_nameseq = extern struct {
     next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
@@ -2666,28 +2753,9 @@ pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
 pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
 pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) ?*struct_goaldep;
 pub extern fn eval_buffer(buffer: [*c]u8, floc: [*c]const floc) void;
-pub const us_success: c_int = 0;
-pub const us_none: c_int = 1;
-pub const us_question: c_int = 2;
-pub const us_failed: c_int = 3;
-pub const enum_update_status_38 = c_uint;
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_38;
-pub const f_bogus: c_int = 0;
-pub const f_simple: c_int = 1;
-pub const f_recursive: c_int = 2;
-pub const f_expand: c_int = 3;
-pub const f_append: c_int = 4;
-pub const f_conditional: c_int = 5;
-pub const f_shell: c_int = 6;
-pub const f_append_value: c_int = 7;
-pub const enum_variable_flavor = c_uint;
-pub const v_default: c_int = 0;
-pub const v_export: c_int = 1;
-pub const v_noexport: c_int = 2;
-pub const v_ifset: c_int = 3;
-pub const enum_variable_export = c_uint;
+pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_36;
 pub const struct_pattern_var = extern struct {
-    next: ?*struct_pattern_var = @import("std").mem.zeroes(?*struct_pattern_var),
+    next: [*c]struct_pattern_var = @import("std").mem.zeroes([*c]struct_pattern_var),
     suffix: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     target: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     len: usize = @import("std").mem.zeroes(usize),
@@ -2696,12 +2764,12 @@ pub const struct_pattern_var = extern struct {
 pub extern var env_recursion: c_ulonglong;
 pub extern var variable_buffer: [*c]u8;
 pub extern var current_variable_set_list: [*c]struct_variable_set_list;
-pub extern var default_goal_var: ?*struct_variable;
+pub extern var default_goal_var: [*c]struct_variable;
 pub extern var shell_var: struct_variable;
 pub extern fn variable_buffer_output(ptr: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
 pub extern fn variable_expand(line: [*c]const u8) [*c]u8;
-pub extern fn variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
-pub extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
+pub extern fn variable_expand_for_file(line: [*c]const u8, file: [*c]struct_file) [*c]u8;
+pub extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: [*c]struct_file) [*c]u8;
 pub extern fn expand_argument(str: [*c]const u8, end: [*c]const u8) [*c]u8;
 pub extern fn variable_expand_string(line: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
 pub extern fn initialize_variable_output() [*c]u8;
@@ -2714,42 +2782,45 @@ pub extern fn patsubst_expand_pat(o: [*c]u8, text: [*c]const u8, pattern: [*c]co
 pub extern fn patsubst_expand(o: [*c]u8, text: [*c]const u8, pattern: [*c]u8, replace: [*c]u8) [*c]u8;
 pub extern fn func_shell_base(o: [*c]u8, argv: [*c][*c]u8, trim_newlines: c_int) [*c]u8;
 pub extern fn shell_completed(exit_code: c_int, exit_sig: c_int) void;
-pub extern fn recursively_expand_for_file(v: ?*struct_variable, file: ?*struct_file) [*c]u8;
+pub extern fn recursively_expand_for_file(v: [*c]struct_variable, file: [*c]struct_file) [*c]u8;
 pub extern fn create_new_variable_set() [*c]struct_variable_set_list;
 pub extern fn free_variable_set([*c]struct_variable_set_list) void;
 pub extern fn push_new_variable_scope() [*c]struct_variable_set_list;
 pub extern fn pop_variable_scope() void;
 pub extern fn define_automatic_variables() void;
-pub extern fn initialize_file_variables(file: ?*struct_file, reading: c_int) void;
-pub extern fn print_file_variables(file: ?*const struct_file) void;
-pub extern fn print_target_variables(file: ?*const struct_file) void;
+pub extern fn initialize_file_variables(file: [*c]struct_file, reading: c_int) void;
+pub extern fn print_file_variables(file: [*c]const struct_file) void;
+pub extern fn print_target_variables(file: [*c]const struct_file) void;
 pub extern fn merge_variable_set_lists(to_list: [*c][*c]struct_variable_set_list, from_list: [*c]struct_variable_set_list) void;
-pub extern fn do_variable_definition(flocp: [*c]const floc, name: [*c]const u8, value: [*c]const u8, origin: enum_variable_origin, flavor: enum_variable_flavor, target_var: c_int) ?*struct_variable;
-pub extern fn parse_variable_definition(line: [*c]const u8, v: ?*struct_variable) [*c]u8;
-pub extern fn assign_variable_definition(v: ?*struct_variable, line: [*c]const u8) ?*struct_variable;
-pub extern fn try_variable_definition(flocp: [*c]const floc, line: [*c]const u8, origin: enum_variable_origin, target_var: c_int) ?*struct_variable;
+pub extern fn do_variable_definition(flocp: [*c]const floc, name: [*c]const u8, value: [*c]const u8, origin: enum_variable_origin, flavor: enum_variable_flavor, target_var: c_int) [*c]struct_variable;
+pub extern fn parse_variable_definition(line: [*c]const u8, v: [*c]struct_variable) [*c]u8;
+pub extern fn assign_variable_definition(v: [*c]struct_variable, line: [*c]const u8) [*c]struct_variable;
+pub extern fn try_variable_definition(flocp: [*c]const floc, line: [*c]const u8, origin: enum_variable_origin, target_var: c_int) [*c]struct_variable;
 pub extern fn init_hash_global_variable_set() void;
 pub extern fn hash_init_function_table() void;
 pub extern fn define_new_function(flocp: [*c]const floc, name: [*c]const u8, min: c_uint, max: c_uint, flags: c_uint, func: gmk_func_ptr) void;
-pub extern fn lookup_variable(name: [*c]const u8, length: usize) ?*struct_variable;
-pub extern fn lookup_variable_for_file(name: [*c]const u8, length: usize, file: ?*struct_file) ?*struct_variable;
-pub extern fn lookup_variable_in_set(name: [*c]const u8, length: usize, set: [*c]const struct_variable_set) ?*struct_variable;
-pub extern fn define_variable_in_set(name: [*c]const u8, length: usize, value: [*c]const u8, origin: enum_variable_origin, recursive: c_int, set: [*c]struct_variable_set, flocp: [*c]const floc) ?*struct_variable;
+pub extern fn lookup_variable(name: [*c]const u8, length: usize) [*c]struct_variable;
+pub extern fn lookup_variable_for_file(name: [*c]const u8, length: usize, file: [*c]struct_file) [*c]struct_variable;
+pub extern fn lookup_variable_in_set(name: [*c]const u8, length: usize, set: [*c]const struct_variable_set) [*c]struct_variable;
+pub extern fn define_variable_in_set(name: [*c]const u8, length: usize, value: [*c]const u8, origin: enum_variable_origin, recursive: c_int, set: [*c]struct_variable_set, flocp: [*c]const floc) [*c]struct_variable;
 pub extern fn warn_undefined(name: [*c]const u8, length: usize) void;
 pub extern fn undefine_variable_in_set(name: [*c]const u8, length: usize, origin: enum_variable_origin, set: [*c]struct_variable_set) void;
-pub extern fn target_environment(file: ?*struct_file, recursive: c_int) [*c][*c]u8;
-pub extern fn create_pattern_var(target: [*c]const u8, suffix: [*c]const u8) ?*struct_pattern_var;
+pub extern fn target_environment(file: [*c]struct_file, recursive: c_int) [*c][*c]u8;
+pub extern fn create_pattern_var(target: [*c]const u8, suffix: [*c]const u8) [*c]struct_pattern_var;
 pub extern var export_all_variables: c_int;
-// src/output.h:21:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_output = opaque {};
-pub extern var output_context: ?*struct_output;
+pub const struct_output = extern struct {
+    out: c_int = @import("std").mem.zeroes(c_int),
+    err: c_int = @import("std").mem.zeroes(c_int),
+    syncout: c_uint = @import("std").mem.zeroes(c_uint),
+};
+pub extern var output_context: [*c]struct_output;
 pub extern var stdio_traced: c_uint;
 pub extern fn output_write(fd: c_int, buffer: ?*const anyopaque, len: usize) c_int;
-pub extern fn output_init(out: ?*struct_output) void;
-pub extern fn output_close(out: ?*struct_output) void;
+pub extern fn output_init(out: [*c]struct_output) void;
+pub extern fn output_close(out: [*c]struct_output) void;
 pub extern fn output_start() void;
 pub extern fn outputs(is_err: c_int, msg: [*c]const u8) void;
-pub extern fn output_dump(out: ?*struct_output) void;
+pub extern fn output_dump(out: [*c]struct_output) void;
 pub const struct_childbase = extern struct {
     cmd_name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
     environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
@@ -2760,22 +2831,22 @@ pub const struct_child = opaque {};
 pub extern var children: ?*struct_child;
 pub extern fn child_handler(sig: c_int) void;
 pub extern fn is_bourne_compatible_shell(path: [*c]const u8) c_int;
-pub extern fn new_job(file: ?*struct_file) void;
+pub extern fn new_job(file: [*c]struct_file) void;
 pub extern fn reap_children(block: c_int, err: c_int) void;
 pub extern fn start_waiting_jobs() void;
-pub extern fn free_childbase(child: ?*struct_childbase) void;
-pub extern fn construct_command_argv(line: [*c]u8, restp: [*c][*c]u8, file: ?*struct_file, cmd_flags: c_int, batch_file: [*c][*c]u8) [*c][*c]u8;
-pub extern fn child_execute_job(child: ?*struct_childbase, good_stdin: c_int, argv: [*c][*c]u8) pid_t;
+pub extern fn free_childbase(child: [*c]struct_childbase) void;
+pub extern fn construct_command_argv(line: [*c]u8, restp: [*c][*c]u8, file: [*c]struct_file, cmd_flags: c_int, batch_file: [*c][*c]u8) [*c][*c]u8;
+pub extern fn child_execute_job(child: [*c]struct_childbase, good_stdin: c_int, argv: [*c][*c]u8) pid_t;
 pub extern fn exec_command(argv: [*c][*c]u8, envp: [*c][*c]u8) pid_t;
 pub extern fn unblock_all_sigs() void;
 pub extern var job_slots_used: c_uint;
 pub extern var jobserver_tokens: c_uint;
 pub extern fn fatal_error_signal(sig: c_int) void;
-pub extern fn execute_file_commands(file: ?*struct_file) void;
+pub extern fn execute_file_commands(file: [*c]struct_file) void;
 pub extern fn print_commands(cmds: ?*const struct_commands) void;
 pub extern fn delete_child_targets(child: ?*struct_child) void;
 pub extern fn chop_commands(cmds: ?*struct_commands) void;
-pub extern fn set_file_variables(file: ?*struct_file, stem: [*c]const u8) void;
+pub extern fn set_file_variables(file: [*c]struct_file, stem: [*c]const u8) void;
 pub const struct_rule = extern struct {
     next: [*c]struct_rule = @import("std").mem.zeroes([*c]struct_rule),
     targets: [*c][*c]const u8 = @import("std").mem.zeroes([*c][*c]const u8),
@@ -2799,7 +2870,7 @@ pub extern var num_pattern_rules: c_uint;
 pub extern var max_pattern_deps: c_uint;
 pub extern var max_pattern_targets: c_uint;
 pub extern var max_pattern_dep_length: usize;
-pub extern var suffix_file: ?*struct_file;
+pub extern var suffix_file: [*c]struct_file;
 pub extern fn snap_implicit_rules() void;
 pub extern fn convert_to_pattern() void;
 pub extern fn install_pattern_rule(p: [*c]struct_pspec, terminal: c_int) void;
@@ -2940,7 +3011,7 @@ pub fn decode_switches(arg_argc: c_int, arg_argv: [*c][*c]const u8, arg_origin: 
     _ = &origin;
     var bad: c_int = 0;
     _ = &bad;
-    var cs: ?*struct_command_switch = undefined;
+    var cs: [*c]struct_command_switch = undefined;
     _ = &cs;
     var sl: [*c]struct_stringlist = undefined;
     _ = &sl;
@@ -2959,9 +3030,9 @@ pub fn decode_switches(arg_argc: c_int, arg_argv: [*c][*c]const u8, arg_origin: 
         } else if (c == @as(c_int, '?')) {
             bad = 1;
         } else {
-            cs = @as(?*struct_command_switch, @ptrCast(&switches));
+            cs = @as([*c]struct_command_switch, @ptrCast(@alignCast(&switches)));
             while (cs.*.c != @as(c_int, '\x00')) : (cs += 1) if (cs.*.c == c) {
-                var doit: c_int = @intFromBool((origin == @as(c_uint, @bitCast(o_command))) or ((@as(c_int, @bitCast(cs.*.env)) != 0) and ((cs.*.origin == @as([*c]enum_variable_origin, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) or (origin >= cs.*.origin.*))));
+                var doit: c_int = @intFromBool((origin == @as(c_uint, @bitCast(o_command))) or ((cs.*.env != 0) and ((cs.*.origin == @as([*c]enum_variable_origin, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) or (origin >= cs.*.origin.*))));
                 _ = &doit;
                 if (doit != 0) {
                     cs.*.specified = 1;
@@ -3381,10 +3452,528 @@ pub const usage: [36][*c]const u8 = [36][*c]const u8{
     null,
 };
 pub var trace_flag: c_int = 0;
-// src/main.c:449:5: warning: cannot initialize opaque type
-
-// src/main.c:447:30: warning: unable to translate variable initializer, demoted to extern
-pub extern var switches: [40]struct_command_switch;
+pub var switches: [40]struct_command_switch = [40]struct_command_switch{
+    struct_command_switch{
+        .c = @as(c_int, 'b'),
+        .type = @as(c_uint, @bitCast(ignore)),
+        .value_ptr = null,
+        .env = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = null,
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'B'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&always_make_set)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "always-make",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'd'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&debug_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = null,
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'e'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&env_overrides)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "environment-overrides",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'E'),
+        .type = @as(c_uint, @bitCast(strlist)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&eval_strings)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "eval",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'h'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&print_usage_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "help",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'i'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&ignore_errors_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "ignore-errors",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'k'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&keep_going_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = @as(?*const anyopaque, @ptrCast(&default_keep_going_flag)),
+        .long_name = "keep-going",
+        .origin = &keep_going_origin,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'L'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&check_symlink_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "check-symlink-times",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'm'),
+        .type = @as(c_uint, @bitCast(ignore)),
+        .value_ptr = null,
+        .env = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = null,
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'n'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&just_print_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "just-print",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'p'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&print_data_base_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "print-data-base",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'q'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&question_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "question",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'r'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&no_builtin_rules_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "no-builtin-rules",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'R'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&no_builtin_variables_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "no-builtin-variables",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 's'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&silent_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = @as(?*const anyopaque, @ptrCast(&default_silent_flag)),
+        .long_name = "silent",
+        .origin = &silent_origin,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'S'),
+        .type = @as(c_uint, @bitCast(flag_off)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&keep_going_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = @as(?*const anyopaque, @ptrCast(&default_keep_going_flag)),
+        .long_name = "no-keep-going",
+        .origin = &keep_going_origin,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 't'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&touch_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "touch",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'v'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&print_version_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "version",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'w'),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&print_directory_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = @as(?*const anyopaque, @ptrCast(&default_print_directory_flag)),
+        .long_name = "print-directory",
+        .origin = &print_directory_origin,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'C'),
+        .type = @as(c_uint, @bitCast(filename)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&directories)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "directory",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'f'),
+        .type = @as(c_uint, @bitCast(filename)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&makefiles)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "file",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'I'),
+        .type = @as(c_uint, @bitCast(filename)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&include_dirs)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "include-dir",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'j'),
+        .type = @as(c_uint, @bitCast(positive_int)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&arg_job_slots)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = @as(?*const anyopaque, @ptrCast(&inf_jobs)),
+        .default_value = @as(?*const anyopaque, @ptrCast(&default_job_slots)),
+        .long_name = "jobs",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'l'),
+        .type = @as(c_uint, @bitCast(floating)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&max_load_average)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = @as(?*const anyopaque, @ptrCast(&default_load_average)),
+        .default_value = @as(?*const anyopaque, @ptrCast(&default_load_average)),
+        .long_name = "load-average",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'o'),
+        .type = @as(c_uint, @bitCast(filename)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&old_files)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "old-file",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'O'),
+        .type = @as(c_uint, @bitCast(string)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&output_sync_option)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = @as(?*const anyopaque, @ptrCast("target")),
+        .default_value = null,
+        .long_name = "output-sync",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 'W'),
+        .type = @as(c_uint, @bitCast(filename)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&new_files)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "what-if",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 1),
+        .type = @as(c_uint, @bitCast(strlist)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&db_flags)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = @as(?*const anyopaque, @ptrCast("basic")),
+        .default_value = null,
+        .long_name = "debug",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 2),
+        .type = @as(c_uint, @bitCast(string)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&jobserver_auth)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "jobserver-auth",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 3),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&trace_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "trace",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 4),
+        .type = @as(c_uint, @bitCast(flag_off)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&print_directory_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = @as(?*const anyopaque, @ptrCast(&default_print_directory_flag)),
+        .long_name = "no-print-directory",
+        .origin = &print_directory_origin,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 5),
+        .type = @as(c_uint, @bitCast(flag)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&warn_undefined_variables_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "warn-undefined-variables",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 7),
+        .type = @as(c_uint, @bitCast(string)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&sync_mutex)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "sync-mutex",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 8),
+        .type = @as(c_uint, @bitCast(flag_off)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&silent_flag)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = @as(?*const anyopaque, @ptrCast(&default_silent_flag)),
+        .long_name = "no-silent",
+        .origin = &silent_origin,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 9),
+        .type = @as(c_uint, @bitCast(string)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&jobserver_auth)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "jobserver-fds",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 10),
+        .type = @as(c_uint, @bitCast(filename)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&makefiles)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "temp-stdin",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 11),
+        .type = @as(c_uint, @bitCast(string)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&shuffle_mode)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = @as(?*const anyopaque, @ptrCast("random")),
+        .default_value = null,
+        .long_name = "shuffle",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 127) + @as(c_int, 12),
+        .type = @as(c_uint, @bitCast(string)),
+        .value_ptr = @as(?*anyopaque, @ptrCast(&jobserver_style)),
+        .env = @as(c_uint, @bitCast(@as(c_int, 1))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = "jobserver-style",
+        .origin = null,
+    },
+    struct_command_switch{
+        .c = @as(c_int, 0),
+        .type = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .value_ptr = null,
+        .env = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .toenv = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .no_makefile = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .specified = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .noarg_value = null,
+        .default_value = null,
+        .long_name = null,
+        .origin = null,
+    },
+};
 pub var long_option_aliases: [9]struct_option = [9]struct_option{
     struct_option{
         .name = "quiet",
@@ -3445,12 +4034,11 @@ pub var goals: ?*struct_goaldep = @import("std").mem.zeroes(?*struct_goaldep);
 pub var lastgoal: ?*struct_goaldep = @import("std").mem.zeroes(?*struct_goaldep);
 pub const struct_command_variable = extern struct {
     next: [*c]struct_command_variable = @import("std").mem.zeroes([*c]struct_command_variable),
-    variable: ?*struct_variable = @import("std").mem.zeroes(?*struct_variable),
+    variable: [*c]struct_variable = @import("std").mem.zeroes([*c]struct_variable),
 };
 pub var command_variables: [*c]struct_command_variable = @import("std").mem.zeroes([*c]struct_command_variable);
 pub export var directory_before_chdir: [*c]u8 = @import("std").mem.zeroes([*c]u8);
-pub const make_sync = @compileError("non-extern variable has opaque type");
-// src/main.c:608:15
+pub export var make_sync: struct_output = @import("std").mem.zeroes(struct_output);
 pub export var fatal_signal_set: sigset_t = @import("std").mem.zeroes(sigset_t);
 pub const bsd_signal_ret_t = ?*const fn (c_int) callconv(.C) void;
 pub fn bsd_signal(arg_sig: c_int, arg_func: bsd_signal_ret_t) callconv(.C) bsd_signal_ret_t {
@@ -3787,7 +4375,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         {
             i = 0;
             while (envp[i] != null) : (i +%= 1) {
-                var v: ?*struct_variable = undefined;
+                var v: [*c]struct_variable = undefined;
                 _ = &v;
                 var ep: [*c]const u8 = envp[i];
                 _ = &ep;
@@ -3838,7 +4426,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         break :blk tmp;
     };
     while (true) {
-        output_context = if (@as(c_int, @bitCast((&make_sync).*.syncout)) != 0) &make_sync else null;
+        output_context = if ((&make_sync).*.syncout != 0) &make_sync else null;
         if (!false) break;
     }
     {
@@ -3882,16 +4470,16 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         define_variable_in_set("MAKE_TERMERR", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), if (tty != null) tty else "true", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0)))).*.@"export" = @as(c_uint, @bitCast(v_export));
     };
     syncing = @as(c_uint, @intFromBool((output_sync == @as(c_int, 1)) or (output_sync == @as(c_int, 2))));
-    if ((@as(c_int, @bitCast(make_sync.syncout)) != 0) and !(syncing != 0)) {
+    if ((make_sync.syncout != 0) and !(syncing != 0)) {
         output_close(&make_sync);
     }
     make_sync.syncout = syncing;
     while (true) {
-        output_context = if (@as(c_int, @bitCast((&make_sync).*.syncout)) != 0) &make_sync else null;
+        output_context = if ((&make_sync).*.syncout != 0) &make_sync else null;
         if (!false) break;
     }
     {
-        var v: ?*struct_variable = lookup_variable("MAKELEVEL", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+        var v: [*c]struct_variable = lookup_variable("MAKELEVEL", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
         _ = &v;
         if (((v != null) and (@as(c_int, @bitCast(@as(c_uint, v.*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00'))) and (@as(c_int, @bitCast(@as(c_uint, v.*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '-'))) {
             makelevel = make_toui(v.*.value, null);
@@ -3952,7 +4540,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
     if (command_variables != null) {
         var cv: [*c]struct_command_variable = undefined;
         _ = &cv;
-        var v: ?*struct_variable = undefined;
+        var v: [*c]struct_variable = undefined;
         _ = &v;
         var len: usize = 0;
         _ = &len;
@@ -4047,7 +4635,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         }
     }
     if (stdin_offset >= @as(c_int, 0)) {
-        var f: ?*struct_file = enter_file((blk: {
+        var f: [*c]struct_file = enter_file((blk: {
             const tmp = stdin_offset;
             if (tmp >= 0) break :blk makefiles.*.list + @as(usize, @intCast(tmp)) else break :blk makefiles.*.list - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).*);
@@ -4149,12 +4737,12 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
             reset_jobserver();
         }
         syncing = @as(c_uint, @intFromBool((output_sync == @as(c_int, 1)) or (output_sync == @as(c_int, 2))));
-        if ((@as(c_int, @bitCast(make_sync.syncout)) != 0) and !(syncing != 0)) {
+        if ((make_sync.syncout != 0) and !(syncing != 0)) {
             output_close(&make_sync);
         }
         make_sync.syncout = syncing;
         while (true) {
-            output_context = if (@as(c_int, @bitCast((&make_sync).*.syncout)) != 0) &make_sync else null;
+            output_context = if ((&make_sync).*.syncout != 0) &make_sync else null;
             if (!false) break;
         }
         if (no_builtin_variables_flag != 0) {
@@ -4232,7 +4820,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         {
             p = old_files.*.list;
             while (p.* != null) : (p += 1) {
-                var f: ?*struct_file = enter_file(p.*);
+                var f: [*c]struct_file = enter_file(p.*);
                 _ = &f;
                 f.*.last_mtime = blk: {
                     const tmp = @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2))));
@@ -4251,7 +4839,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         {
             p = new_files.*.list;
             while (p.* != null) : (p += 1) {
-                var f: ?*struct_file = enter_file(p.*);
+                var f: [*c]struct_file = enter_file(p.*);
                 _ = &f;
                 f.*.last_mtime = blk: {
                     const tmp = ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
@@ -4283,7 +4871,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         _ = &nargv;
         var any_failed: c_int = 0;
         _ = &any_failed;
-        var status: enum_update_status_38 = undefined;
+        var status: enum_update_status_36 = undefined;
         _ = &status;
         while (true) {
             if ((@as(c_int, 1) & db_level) != 0) {
@@ -4318,13 +4906,13 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
             while (d != null) {
                 var skip: c_int = 0;
                 _ = &skip;
-                var f: ?*struct_file = d.*.file;
+                var f: [*c]struct_file = d.*.file;
                 _ = &f;
                 if (f.*.phony != 0) {
                     skip = 1;
                 } else {
                     f = f.*.double_colon;
-                    while (f != @as(?*struct_file, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) : (f = f.*.prev) if ((f.*.deps == @as(?*struct_dep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) and (f.*.cmds != @as(?*struct_commands, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+                    while (f != @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (f = f.*.prev) if ((f.*.deps == @as(?*struct_dep, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) and (f.*.cmds != @as(?*struct_commands, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
                         skip = 1;
                         break;
                     };
@@ -4396,7 +4984,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                         {
                             d = read_files;
                             while (d != null) : (d = d.*.next) if (d.*.file.*.unloaded != 0) {
-                                var f: ?*struct_file = d.*.file;
+                                var f: [*c]struct_file = d.*.file;
                                 _ = &f;
                                 if (load_file(&d.*.floc, f, @as(c_int, 0)) == @as(c_int, 0)) {
                                     fatal(&d.*.floc, strlen(f.*.name), gettext("%s: failed to load"), f.*.name);
@@ -4447,7 +5035,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
                                 };
                             }) {
                                 if (d.*.file.*.updated != 0) {
-                                    if (@as(c_int, @bitCast(d.*.file.*.update_status)) == us_success) {
+                                    if (d.*.file.*.update_status == @as(c_uint, @bitCast(us_success))) {
                                         any_remade |= (if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 0)) else d.*.file.*.last_mtime) != makefile_mtimes[i];
                                     } else if (!((@as(c_int, @bitCast(d.*.flags)) & (@as(c_int, 1) << @intCast(2))) != 0)) {
                                         var mtime: uintmax_t = undefined;
@@ -4659,7 +5247,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         {
             p = new_files.*.list;
             while (p.* != null) : (p += 1) {
-                var f: ?*struct_file = enter_file(p.*);
+                var f: [*c]struct_file = enter_file(p.*);
                 _ = &f;
                 f.*.last_mtime = blk: {
                     const tmp = ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
@@ -4681,7 +5269,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
             p = variable_buffer;
         }
         if (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) {
-            var f: ?*struct_file = lookup_file(p);
+            var f: [*c]struct_file = lookup_file(p);
             _ = &f;
             if (f == null) {
                 var ns: [*c]struct_nameseq = undefined;
@@ -4705,7 +5293,7 @@ pub export fn main(arg_argc: c_int, arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) 
         lastgoal.*.next = null;
     }
     if (!(goals != null)) {
-        var v: ?*struct_variable = lookup_variable("MAKEFILE_LIST", @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+        var v: [*c]struct_variable = lookup_variable("MAKEFILE_LIST", @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
         _ = &v;
         if (((v != null) and (v.*.value != null)) and (@as(c_int, @bitCast(@as(c_uint, v.*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00'))) {
             fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("No targets"));
@@ -4833,7 +5421,7 @@ pub fn handle_non_switch_argument(arg_arg: [*c]const u8, arg_origin: enum_variab
     _ = &arg;
     var origin = arg_origin;
     _ = &origin;
-    var v: ?*struct_variable = undefined;
+    var v: [*c]struct_variable = undefined;
     _ = &v;
     if ((@as(c_int, @bitCast(@as(c_uint, arg[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '-')) and (@as(c_int, @bitCast(@as(c_uint, arg[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\x00'))) return;
     v = try_variable_definition(null, arg, origin, @as(c_int, 0));
@@ -4851,7 +5439,7 @@ pub fn handle_non_switch_argument(arg_arg: [*c]const u8, arg_origin: enum_variab
             command_variables = cv;
         }
     } else if ((@as(c_int, @bitCast(@as(c_uint, arg[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00')) and (origin == @as(c_uint, @bitCast(o_command)))) {
-        var f: ?*struct_file = enter_file(strcache_add(expand_command_line_file(arg)));
+        var f: [*c]struct_file = enter_file(strcache_add(expand_command_line_file(arg)));
         _ = &f;
         f.*.cmd_target = 1;
         if (goals == null) {
@@ -4863,7 +5451,7 @@ pub fn handle_non_switch_argument(arg_arg: [*c]const u8, arg_origin: enum_variab
         }
         lastgoal.*.file = f;
         {
-            var gv: ?*struct_variable = undefined;
+            var gv: [*c]struct_variable = undefined;
             _ = &gv;
             var value: [*c]const u8 = undefined;
             _ = &value;
@@ -8419,13 +9007,13 @@ pub const variable_set = struct_variable_set;
 pub const variable_set_list = struct_variable_set_list;
 pub const file = struct_file;
 pub const variable_origin = enum_variable_origin;
+pub const variable_flavor = enum_variable_flavor;
+pub const variable_export = enum_variable_export;
 pub const variable = struct_variable;
 pub const command_switch = struct_command_switch;
 pub const stringlist = struct_stringlist;
 pub const nameseq = struct_nameseq;
 pub const goaldep = struct_goaldep;
-pub const variable_flavor = enum_variable_flavor;
-pub const variable_export = enum_variable_export;
 pub const pattern_var = struct_pattern_var;
 pub const output = struct_output;
 pub const childbase = struct_childbase;

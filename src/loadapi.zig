@@ -133,12 +133,63 @@ pub const struct_variable_set_list = extern struct {
 };
 pub const __uintmax_t = c_ulong;
 pub const uintmax_t = __uintmax_t;
-// src/filedef.h:75:9: warning: struct demoted to opaque type - has bitfield
-pub const struct_file = opaque {};
+pub const us_success: c_int = 0;
+pub const us_none: c_int = 1;
+pub const us_question: c_int = 2;
+pub const us_failed: c_int = 3;
+pub const enum_update_status_1 = c_uint;
+pub const cs_not_started: c_int = 0;
+pub const cs_deps_running: c_int = 1;
+pub const cs_running: c_int = 2;
+pub const cs_finished: c_int = 3;
+pub const enum_cmd_state_2 = c_uint;
+pub const struct_file = extern struct {
+    name: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    deps: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
+    stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
+    also_make: ?*struct_dep = @import("std").mem.zeroes(?*struct_dep),
+    prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    last: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    renamed: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    variables: [*c]struct_variable_set_list = @import("std").mem.zeroes([*c]struct_variable_set_list),
+    pat_variables: [*c]struct_variable_set_list = @import("std").mem.zeroes([*c]struct_variable_set_list),
+    parent: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    double_colon: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    last_mtime: uintmax_t = @import("std").mem.zeroes(uintmax_t),
+    mtime_before_update: uintmax_t = @import("std").mem.zeroes(uintmax_t),
+    considered: c_uint = @import("std").mem.zeroes(c_uint),
+    command_flags: c_int = @import("std").mem.zeroes(c_int),
+    update_status: enum_update_status_1 = @import("std").mem.zeroes(enum_update_status_1),
+    command_state: enum_cmd_state_2 = @import("std").mem.zeroes(enum_cmd_state_2),
+    builtin: c_uint = @import("std").mem.zeroes(c_uint),
+    precious: c_uint = @import("std").mem.zeroes(c_uint),
+    loaded: c_uint = @import("std").mem.zeroes(c_uint),
+    unloaded: c_uint = @import("std").mem.zeroes(c_uint),
+    low_resolution_time: c_uint = @import("std").mem.zeroes(c_uint),
+    tried_implicit: c_uint = @import("std").mem.zeroes(c_uint),
+    updating: c_uint = @import("std").mem.zeroes(c_uint),
+    updated: c_uint = @import("std").mem.zeroes(c_uint),
+    is_target: c_uint = @import("std").mem.zeroes(c_uint),
+    cmd_target: c_uint = @import("std").mem.zeroes(c_uint),
+    phony: c_uint = @import("std").mem.zeroes(c_uint),
+    intermediate: c_uint = @import("std").mem.zeroes(c_uint),
+    is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
+    secondary: c_uint = @import("std").mem.zeroes(c_uint),
+    notintermediate: c_uint = @import("std").mem.zeroes(c_uint),
+    dontcare: c_uint = @import("std").mem.zeroes(c_uint),
+    ignore_vpath: c_uint = @import("std").mem.zeroes(c_uint),
+    pat_searched: c_uint = @import("std").mem.zeroes(c_uint),
+    no_diag: c_uint = @import("std").mem.zeroes(c_uint),
+    was_shuffled: c_uint = @import("std").mem.zeroes(c_uint),
+    snapped: c_uint = @import("std").mem.zeroes(c_uint),
+};
 pub export fn gmk_expand(arg_ref: [*c]const u8) [*c]u8 {
     var ref = arg_ref;
     _ = &ref;
-    return allocated_variable_expand_for_file(ref, @as(?*struct_file, @ptrFromInt(@as(c_int, 0))));
+    return allocated_variable_expand_for_file(ref, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
 }
 pub export fn gmk_add_function(arg_name: [*c]const u8, arg_func: gmk_func_ptr, arg_min: c_uint, arg_max: c_uint, arg_flags: c_uint) void {
     var name = arg_name;
@@ -309,13 +360,13 @@ pub const fsfilcnt_t = __fsfilcnt_t;
 pub const blkcnt64_t = __blkcnt64_t;
 pub const fsblkcnt64_t = __fsblkcnt64_t;
 pub const fsfilcnt64_t = __fsfilcnt64_t;
-const struct_unnamed_1 = extern struct {
+const struct_unnamed_3 = extern struct {
     __low: c_uint = @import("std").mem.zeroes(c_uint),
     __high: c_uint = @import("std").mem.zeroes(c_uint),
 };
 pub const __atomic_wide_counter = extern union {
     __value64: c_ulonglong,
-    __value32: struct_unnamed_1,
+    __value32: struct_unnamed_3,
 };
 pub const struct___pthread_internal_list = extern struct {
     __prev: [*c]struct___pthread_internal_list = @import("std").mem.zeroes([*c]struct___pthread_internal_list),
@@ -557,65 +608,65 @@ pub const union_sigval = extern union {
     sival_ptr: ?*anyopaque,
 };
 pub const __sigval_t = union_sigval;
-const struct_unnamed_3 = extern struct {
+const struct_unnamed_5 = extern struct {
     si_pid: __pid_t = @import("std").mem.zeroes(__pid_t),
     si_uid: __uid_t = @import("std").mem.zeroes(__uid_t),
 };
-const struct_unnamed_4 = extern struct {
+const struct_unnamed_6 = extern struct {
     si_tid: c_int = @import("std").mem.zeroes(c_int),
     si_overrun: c_int = @import("std").mem.zeroes(c_int),
     si_sigval: __sigval_t = @import("std").mem.zeroes(__sigval_t),
 };
-const struct_unnamed_5 = extern struct {
+const struct_unnamed_7 = extern struct {
     si_pid: __pid_t = @import("std").mem.zeroes(__pid_t),
     si_uid: __uid_t = @import("std").mem.zeroes(__uid_t),
     si_sigval: __sigval_t = @import("std").mem.zeroes(__sigval_t),
 };
-const struct_unnamed_6 = extern struct {
+const struct_unnamed_8 = extern struct {
     si_pid: __pid_t = @import("std").mem.zeroes(__pid_t),
     si_uid: __uid_t = @import("std").mem.zeroes(__uid_t),
     si_status: c_int = @import("std").mem.zeroes(c_int),
     si_utime: __clock_t = @import("std").mem.zeroes(__clock_t),
     si_stime: __clock_t = @import("std").mem.zeroes(__clock_t),
 };
-const struct_unnamed_9 = extern struct {
+const struct_unnamed_11 = extern struct {
     _lower: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
     _upper: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
 };
-const union_unnamed_8 = extern union {
-    _addr_bnd: struct_unnamed_9,
+const union_unnamed_10 = extern union {
+    _addr_bnd: struct_unnamed_11,
     _pkey: __uint32_t,
 };
-const struct_unnamed_7 = extern struct {
+const struct_unnamed_9 = extern struct {
     si_addr: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
     si_addr_lsb: c_short = @import("std").mem.zeroes(c_short),
-    _bounds: union_unnamed_8 = @import("std").mem.zeroes(union_unnamed_8),
+    _bounds: union_unnamed_10 = @import("std").mem.zeroes(union_unnamed_10),
 };
-const struct_unnamed_10 = extern struct {
+const struct_unnamed_12 = extern struct {
     si_band: c_long = @import("std").mem.zeroes(c_long),
     si_fd: c_int = @import("std").mem.zeroes(c_int),
 };
-const struct_unnamed_11 = extern struct {
+const struct_unnamed_13 = extern struct {
     _call_addr: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
     _syscall: c_int = @import("std").mem.zeroes(c_int),
     _arch: c_uint = @import("std").mem.zeroes(c_uint),
 };
-const union_unnamed_2 = extern union {
+const union_unnamed_4 = extern union {
     _pad: [28]c_int,
-    _kill: struct_unnamed_3,
-    _timer: struct_unnamed_4,
-    _rt: struct_unnamed_5,
-    _sigchld: struct_unnamed_6,
-    _sigfault: struct_unnamed_7,
-    _sigpoll: struct_unnamed_10,
-    _sigsys: struct_unnamed_11,
+    _kill: struct_unnamed_5,
+    _timer: struct_unnamed_6,
+    _rt: struct_unnamed_7,
+    _sigchld: struct_unnamed_8,
+    _sigfault: struct_unnamed_9,
+    _sigpoll: struct_unnamed_12,
+    _sigsys: struct_unnamed_13,
 };
 pub const siginfo_t = extern struct {
     si_signo: c_int = @import("std").mem.zeroes(c_int),
     si_errno: c_int = @import("std").mem.zeroes(c_int),
     si_code: c_int = @import("std").mem.zeroes(c_int),
     __pad0: c_int = @import("std").mem.zeroes(c_int),
-    _sifields: union_unnamed_2 = @import("std").mem.zeroes(union_unnamed_2),
+    _sifields: union_unnamed_4 = @import("std").mem.zeroes(union_unnamed_4),
 };
 pub const SI_ASYNCNL: c_int = -60;
 pub const SI_DETHREAD: c_int = -7;
@@ -627,7 +678,7 @@ pub const SI_TIMER: c_int = -2;
 pub const SI_QUEUE: c_int = -1;
 pub const SI_USER: c_int = 0;
 pub const SI_KERNEL: c_int = 128;
-const enum_unnamed_12 = c_int;
+const enum_unnamed_14 = c_int;
 pub const ILL_ILLOPC: c_int = 1;
 pub const ILL_ILLOPN: c_int = 2;
 pub const ILL_ILLADR: c_int = 3;
@@ -637,7 +688,7 @@ pub const ILL_PRVREG: c_int = 6;
 pub const ILL_COPROC: c_int = 7;
 pub const ILL_BADSTK: c_int = 8;
 pub const ILL_BADIADDR: c_int = 9;
-const enum_unnamed_13 = c_uint;
+const enum_unnamed_15 = c_uint;
 pub const FPE_INTDIV: c_int = 1;
 pub const FPE_INTOVF: c_int = 2;
 pub const FPE_FLTDIV: c_int = 3;
@@ -648,7 +699,7 @@ pub const FPE_FLTINV: c_int = 7;
 pub const FPE_FLTSUB: c_int = 8;
 pub const FPE_FLTUNK: c_int = 14;
 pub const FPE_CONDTRAP: c_int = 15;
-const enum_unnamed_14 = c_uint;
+const enum_unnamed_16 = c_uint;
 pub const SEGV_MAPERR: c_int = 1;
 pub const SEGV_ACCERR: c_int = 2;
 pub const SEGV_BNDERR: c_int = 3;
@@ -659,55 +710,55 @@ pub const SEGV_ADIPERR: c_int = 7;
 pub const SEGV_MTEAERR: c_int = 8;
 pub const SEGV_MTESERR: c_int = 9;
 pub const SEGV_CPERR: c_int = 10;
-const enum_unnamed_15 = c_uint;
+const enum_unnamed_17 = c_uint;
 pub const BUS_ADRALN: c_int = 1;
 pub const BUS_ADRERR: c_int = 2;
 pub const BUS_OBJERR: c_int = 3;
 pub const BUS_MCEERR_AR: c_int = 4;
 pub const BUS_MCEERR_AO: c_int = 5;
-const enum_unnamed_16 = c_uint;
+const enum_unnamed_18 = c_uint;
 pub const TRAP_BRKPT: c_int = 1;
 pub const TRAP_TRACE: c_int = 2;
 pub const TRAP_BRANCH: c_int = 3;
 pub const TRAP_HWBKPT: c_int = 4;
 pub const TRAP_UNK: c_int = 5;
-const enum_unnamed_17 = c_uint;
+const enum_unnamed_19 = c_uint;
 pub const CLD_EXITED: c_int = 1;
 pub const CLD_KILLED: c_int = 2;
 pub const CLD_DUMPED: c_int = 3;
 pub const CLD_TRAPPED: c_int = 4;
 pub const CLD_STOPPED: c_int = 5;
 pub const CLD_CONTINUED: c_int = 6;
-const enum_unnamed_18 = c_uint;
+const enum_unnamed_20 = c_uint;
 pub const POLL_IN: c_int = 1;
 pub const POLL_OUT: c_int = 2;
 pub const POLL_MSG: c_int = 3;
 pub const POLL_ERR: c_int = 4;
 pub const POLL_PRI: c_int = 5;
 pub const POLL_HUP: c_int = 6;
-const enum_unnamed_19 = c_uint;
+const enum_unnamed_21 = c_uint;
 pub const sigval_t = __sigval_t;
-const struct_unnamed_21 = extern struct {
+const struct_unnamed_23 = extern struct {
     _function: ?*const fn (__sigval_t) callconv(.C) void = @import("std").mem.zeroes(?*const fn (__sigval_t) callconv(.C) void),
     _attribute: [*c]pthread_attr_t = @import("std").mem.zeroes([*c]pthread_attr_t),
 };
-const union_unnamed_20 = extern union {
+const union_unnamed_22 = extern union {
     _pad: [12]c_int,
     _tid: __pid_t,
-    _sigev_thread: struct_unnamed_21,
+    _sigev_thread: struct_unnamed_23,
 };
 pub const struct_sigevent = extern struct {
     sigev_value: __sigval_t = @import("std").mem.zeroes(__sigval_t),
     sigev_signo: c_int = @import("std").mem.zeroes(c_int),
     sigev_notify: c_int = @import("std").mem.zeroes(c_int),
-    _sigev_un: union_unnamed_20 = @import("std").mem.zeroes(union_unnamed_20),
+    _sigev_un: union_unnamed_22 = @import("std").mem.zeroes(union_unnamed_22),
 };
 pub const sigevent_t = struct_sigevent;
 pub const SIGEV_SIGNAL: c_int = 0;
 pub const SIGEV_NONE: c_int = 1;
 pub const SIGEV_THREAD: c_int = 2;
 pub const SIGEV_THREAD_ID: c_int = 4;
-const enum_unnamed_22 = c_uint;
+const enum_unnamed_24 = c_uint;
 pub const __sighandler_t = ?*const fn (c_int) callconv(.C) void;
 pub extern fn __sysv_signal(__sig: c_int, __handler: __sighandler_t) __sighandler_t;
 pub extern fn sysv_signal(__sig: c_int, __handler: __sighandler_t) __sighandler_t;
@@ -733,12 +784,12 @@ pub extern fn sigismember(__set: [*c]const sigset_t, __signo: c_int) c_int;
 pub extern fn sigisemptyset(__set: [*c]const sigset_t) c_int;
 pub extern fn sigandset(__set: [*c]sigset_t, __left: [*c]const sigset_t, __right: [*c]const sigset_t) c_int;
 pub extern fn sigorset(__set: [*c]sigset_t, __left: [*c]const sigset_t, __right: [*c]const sigset_t) c_int;
-const union_unnamed_23 = extern union {
+const union_unnamed_25 = extern union {
     sa_handler: __sighandler_t,
     sa_sigaction: ?*const fn (c_int, [*c]siginfo_t, ?*anyopaque) callconv(.C) void,
 };
 pub const struct_sigaction = extern struct {
-    __sigaction_handler: union_unnamed_23 = @import("std").mem.zeroes(union_unnamed_23),
+    __sigaction_handler: union_unnamed_25 = @import("std").mem.zeroes(union_unnamed_25),
     sa_mask: __sigset_t = @import("std").mem.zeroes(__sigset_t),
     sa_flags: c_int = @import("std").mem.zeroes(c_int),
     sa_restorer: ?*const fn () callconv(.C) void = @import("std").mem.zeroes(?*const fn () callconv(.C) void),
@@ -783,7 +834,7 @@ pub const struct__fpstate = extern struct {
     _xmm: [16]struct__xmmreg = @import("std").mem.zeroes([16]struct__xmmreg),
     __glibc_reserved1: [24]__uint32_t = @import("std").mem.zeroes([24]__uint32_t),
 };
-const union_unnamed_24 = extern union {
+const union_unnamed_26 = extern union {
     fpstate: [*c]struct__fpstate,
     __fpstate_word: __uint64_t,
 };
@@ -814,7 +865,7 @@ pub const struct_sigcontext = extern struct {
     trapno: __uint64_t = @import("std").mem.zeroes(__uint64_t),
     oldmask: __uint64_t = @import("std").mem.zeroes(__uint64_t),
     cr2: __uint64_t = @import("std").mem.zeroes(__uint64_t),
-    unnamed_0: union_unnamed_24 = @import("std").mem.zeroes(union_unnamed_24),
+    unnamed_0: union_unnamed_26 = @import("std").mem.zeroes(union_unnamed_26),
     __reserved1: [8]__uint64_t = @import("std").mem.zeroes([8]__uint64_t),
 };
 pub const struct__xsave_hdr = extern struct {
@@ -861,7 +912,7 @@ pub const REG_ERR: c_int = 19;
 pub const REG_TRAPNO: c_int = 20;
 pub const REG_OLDMASK: c_int = 21;
 pub const REG_CR2: c_int = 22;
-const enum_unnamed_25 = c_uint;
+const enum_unnamed_27 = c_uint;
 pub const struct__libc_fpxreg = extern struct {
     significand: [4]c_ushort = @import("std").mem.zeroes([4]c_ushort),
     exponent: c_ushort = @import("std").mem.zeroes(c_ushort),
@@ -968,7 +1019,7 @@ pub const _PC_REC_XFER_ALIGN: c_int = 17;
 pub const _PC_ALLOC_SIZE_MIN: c_int = 18;
 pub const _PC_SYMLINK_MAX: c_int = 19;
 pub const _PC_2_SYMLINKS: c_int = 20;
-const enum_unnamed_26 = c_uint;
+const enum_unnamed_28 = c_uint;
 pub const _SC_ARG_MAX: c_int = 0;
 pub const _SC_CHILD_MAX: c_int = 1;
 pub const _SC_CLK_TCK: c_int = 2;
@@ -1186,7 +1237,7 @@ pub const _SC_THREAD_ROBUST_PRIO_INHERIT: c_int = 247;
 pub const _SC_THREAD_ROBUST_PRIO_PROTECT: c_int = 248;
 pub const _SC_MINSIGSTKSZ: c_int = 249;
 pub const _SC_SIGSTKSZ: c_int = 250;
-const enum_unnamed_27 = c_uint;
+const enum_unnamed_29 = c_uint;
 pub const _CS_PATH: c_int = 0;
 pub const _CS_V6_WIDTH_RESTRICTED_ENVS: c_int = 1;
 pub const _CS_GNU_LIBC_VERSION: c_int = 2;
@@ -1251,7 +1302,7 @@ pub const _CS_POSIX_V7_LPBIG_OFFBIG_LIBS: c_int = 1146;
 pub const _CS_POSIX_V7_LPBIG_OFFBIG_LINTFLAGS: c_int = 1147;
 pub const _CS_V6_ENV: c_int = 1148;
 pub const _CS_V7_ENV: c_int = 1149;
-const enum_unnamed_28 = c_uint;
+const enum_unnamed_30 = c_uint;
 pub extern fn pathconf(__path: [*c]const u8, __name: c_int) c_long;
 pub extern fn fpathconf(__fd: c_int, __name: c_int) c_long;
 pub extern fn sysconf(__name: c_int) c_long;
@@ -1346,7 +1397,7 @@ pub extern fn close_range(__fd: c_uint, __max_fd: c_uint, __flags: c_int) c_int;
 pub extern fn gettid() __pid_t;
 pub const SS_ONSTACK: c_int = 1;
 pub const SS_DISABLE: c_int = 2;
-const enum_unnamed_29 = c_uint;
+const enum_unnamed_31 = c_uint;
 pub extern fn sigaltstack(noalias __ss: [*c]const stack_t, noalias __oss: [*c]stack_t) c_int;
 pub const struct_sigstack = extern struct {
     ss_sp: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
@@ -1363,21 +1414,21 @@ pub extern fn pthread_sigqueue(__threadid: pthread_t, __signo: c_int, __value: u
 pub extern fn __libc_current_sigrtmin() c_int;
 pub extern fn __libc_current_sigrtmax() c_int;
 pub extern fn tgkill(__tgid: __pid_t, __tid: __pid_t, __signal: c_int) c_int;
-pub const struct___va_list_tag_30 = extern struct {
+pub const struct___va_list_tag_32 = extern struct {
     gp_offset: c_uint = @import("std").mem.zeroes(c_uint),
     fp_offset: c_uint = @import("std").mem.zeroes(c_uint),
     overflow_arg_area: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
     reg_save_area: ?*anyopaque = @import("std").mem.zeroes(?*anyopaque),
 };
-pub const __builtin_va_list = [1]struct___va_list_tag_30;
+pub const __builtin_va_list = [1]struct___va_list_tag_32;
 pub const __gnuc_va_list = __builtin_va_list;
-const union_unnamed_31 = extern union {
+const union_unnamed_33 = extern union {
     __wch: c_uint,
     __wchb: [4]u8,
 };
 pub const __mbstate_t = extern struct {
     __count: c_int = @import("std").mem.zeroes(c_int),
-    __value: union_unnamed_31 = @import("std").mem.zeroes(union_unnamed_31),
+    __value: union_unnamed_33 = @import("std").mem.zeroes(union_unnamed_33),
 };
 pub const struct__G_fpos_t = extern struct {
     __pos: __off_t = @import("std").mem.zeroes(__off_t),
@@ -1471,15 +1522,15 @@ pub extern fn setlinebuf(__stream: [*c]FILE) void;
 pub extern fn fprintf(__stream: [*c]FILE, __format: [*c]const u8, ...) c_int;
 pub extern fn printf(__format: [*c]const u8, ...) c_int;
 pub extern fn sprintf(__s: [*c]u8, __format: [*c]const u8, ...) c_int;
-pub extern fn vfprintf(__s: [*c]FILE, __format: [*c]const u8, __arg: [*c]struct___va_list_tag_30) c_int;
-pub extern fn vprintf(__format: [*c]const u8, __arg: [*c]struct___va_list_tag_30) c_int;
-pub extern fn vsprintf(__s: [*c]u8, __format: [*c]const u8, __arg: [*c]struct___va_list_tag_30) c_int;
+pub extern fn vfprintf(__s: [*c]FILE, __format: [*c]const u8, __arg: [*c]struct___va_list_tag_32) c_int;
+pub extern fn vprintf(__format: [*c]const u8, __arg: [*c]struct___va_list_tag_32) c_int;
+pub extern fn vsprintf(__s: [*c]u8, __format: [*c]const u8, __arg: [*c]struct___va_list_tag_32) c_int;
 pub extern fn snprintf(__s: [*c]u8, __maxlen: c_ulong, __format: [*c]const u8, ...) c_int;
-pub extern fn vsnprintf(__s: [*c]u8, __maxlen: c_ulong, __format: [*c]const u8, __arg: [*c]struct___va_list_tag_30) c_int;
-pub extern fn vasprintf(noalias __ptr: [*c][*c]u8, noalias __f: [*c]const u8, __arg: [*c]struct___va_list_tag_30) c_int;
+pub extern fn vsnprintf(__s: [*c]u8, __maxlen: c_ulong, __format: [*c]const u8, __arg: [*c]struct___va_list_tag_32) c_int;
+pub extern fn vasprintf(noalias __ptr: [*c][*c]u8, noalias __f: [*c]const u8, __arg: [*c]struct___va_list_tag_32) c_int;
 pub extern fn __asprintf(noalias __ptr: [*c][*c]u8, noalias __fmt: [*c]const u8, ...) c_int;
 pub extern fn asprintf(noalias __ptr: [*c][*c]u8, noalias __fmt: [*c]const u8, ...) c_int;
-pub extern fn vdprintf(__fd: c_int, noalias __fmt: [*c]const u8, __arg: [*c]struct___va_list_tag_30) c_int;
+pub extern fn vdprintf(__fd: c_int, noalias __fmt: [*c]const u8, __arg: [*c]struct___va_list_tag_32) c_int;
 pub extern fn dprintf(__fd: c_int, noalias __fmt: [*c]const u8, ...) c_int;
 pub extern fn fscanf(noalias __stream: [*c]FILE, noalias __format: [*c]const u8, ...) c_int;
 pub extern fn scanf(noalias __format: [*c]const u8, ...) c_int;
@@ -1488,9 +1539,9 @@ pub const _Float32 = f32;
 pub const _Float64 = f64;
 pub const _Float32x = f64;
 pub const _Float64x = c_longdouble;
-pub extern fn vfscanf(noalias __s: [*c]FILE, noalias __format: [*c]const u8, __arg: [*c]struct___va_list_tag_30) c_int;
-pub extern fn vscanf(noalias __format: [*c]const u8, __arg: [*c]struct___va_list_tag_30) c_int;
-pub extern fn vsscanf(noalias __s: [*c]const u8, noalias __format: [*c]const u8, __arg: [*c]struct___va_list_tag_30) c_int;
+pub extern fn vfscanf(noalias __s: [*c]FILE, noalias __format: [*c]const u8, __arg: [*c]struct___va_list_tag_32) c_int;
+pub extern fn vscanf(noalias __format: [*c]const u8, __arg: [*c]struct___va_list_tag_32) c_int;
+pub extern fn vsscanf(noalias __s: [*c]const u8, noalias __format: [*c]const u8, __arg: [*c]struct___va_list_tag_32) c_int;
 pub extern fn fgetc(__stream: [*c]FILE) c_int;
 pub extern fn getc(__stream: [*c]FILE) c_int;
 pub extern fn getchar() c_int;
@@ -1544,7 +1595,7 @@ pub extern fn ctermid(__s: [*c]u8) [*c]u8;
 pub extern fn cuserid(__s: [*c]u8) [*c]u8;
 pub const struct_obstack = opaque {};
 pub extern fn obstack_printf(noalias __obstack: ?*struct_obstack, noalias __format: [*c]const u8, ...) c_int;
-pub extern fn obstack_vprintf(noalias __obstack: ?*struct_obstack, noalias __format: [*c]const u8, __args: [*c]struct___va_list_tag_30) c_int;
+pub extern fn obstack_vprintf(noalias __obstack: ?*struct_obstack, noalias __format: [*c]const u8, __args: [*c]struct___va_list_tag_32) c_int;
 pub extern fn flockfile(__stream: [*c]FILE) void;
 pub extern fn ftrylockfile(__stream: [*c]FILE) c_int;
 pub extern fn funlockfile(__stream: [*c]FILE) void;
@@ -1562,7 +1613,7 @@ pub const _ISblank: c_int = 1;
 pub const _IScntrl: c_int = 2;
 pub const _ISpunct: c_int = 4;
 pub const _ISalnum: c_int = 8;
-const enum_unnamed_32 = c_uint;
+const enum_unnamed_34 = c_uint;
 pub extern fn __ctype_b_loc() [*c][*c]const c_ushort;
 pub extern fn __ctype_tolower_loc() [*c][*c]const __int32_t;
 pub extern fn __ctype_toupper_loc() [*c][*c]const __int32_t;
@@ -1585,9 +1636,9 @@ pub extern fn isascii(__c: c_int) c_int;
 pub extern fn toascii(__c: c_int) c_int;
 pub extern fn _toupper(c_int) c_int;
 pub extern fn _tolower(c_int) c_int;
-pub const struct___locale_data_33 = opaque {};
+pub const struct___locale_data_35 = opaque {};
 pub const struct___locale_struct = extern struct {
-    __locales: [13]?*struct___locale_data_33 = @import("std").mem.zeroes([13]?*struct___locale_data_33),
+    __locales: [13]?*struct___locale_data_35 = @import("std").mem.zeroes([13]?*struct___locale_data_35),
     __ctype_b: [*c]const c_ushort = @import("std").mem.zeroes([*c]const c_ushort),
     __ctype_tolower: [*c]const c_int = @import("std").mem.zeroes([*c]const c_int),
     __ctype_toupper: [*c]const c_int = @import("std").mem.zeroes([*c]const c_int),
@@ -2016,26 +2067,26 @@ pub extern fn textdomain(__domainname: [*c]const u8) [*c]u8;
 pub extern fn bindtextdomain(__domainname: [*c]const u8, __dirname: [*c]const u8) [*c]u8;
 pub extern fn bind_textdomain_codeset(__domainname: [*c]const u8, __codeset: [*c]const u8) [*c]u8;
 pub const __size_t = c_ulong;
-pub const struct_dirent_34 = opaque {};
+pub const struct_dirent_36 = opaque {};
 pub const glob_t = extern struct {
     gl_pathc: __size_t = @import("std").mem.zeroes(__size_t),
     gl_pathv: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
     gl_offs: __size_t = @import("std").mem.zeroes(__size_t),
     gl_flags: c_int = @import("std").mem.zeroes(c_int),
     gl_closedir: ?*const fn (?*anyopaque) callconv(.C) void = @import("std").mem.zeroes(?*const fn (?*anyopaque) callconv(.C) void),
-    gl_readdir: ?*const fn (?*anyopaque) callconv(.C) ?*struct_dirent_34 = @import("std").mem.zeroes(?*const fn (?*anyopaque) callconv(.C) ?*struct_dirent_34),
+    gl_readdir: ?*const fn (?*anyopaque) callconv(.C) ?*struct_dirent_36 = @import("std").mem.zeroes(?*const fn (?*anyopaque) callconv(.C) ?*struct_dirent_36),
     gl_opendir: ?*const fn ([*c]const u8) callconv(.C) ?*anyopaque = @import("std").mem.zeroes(?*const fn ([*c]const u8) callconv(.C) ?*anyopaque),
     gl_lstat: ?*const fn (noalias [*c]const u8, noalias [*c]struct_stat) callconv(.C) c_int = @import("std").mem.zeroes(?*const fn (noalias [*c]const u8, noalias [*c]struct_stat) callconv(.C) c_int),
     gl_stat: ?*const fn (noalias [*c]const u8, noalias [*c]struct_stat) callconv(.C) c_int = @import("std").mem.zeroes(?*const fn (noalias [*c]const u8, noalias [*c]struct_stat) callconv(.C) c_int),
 };
-pub const struct_dirent64_35 = opaque {};
+pub const struct_dirent64_37 = opaque {};
 pub const glob64_t = extern struct {
     gl_pathc: __size_t = @import("std").mem.zeroes(__size_t),
     gl_pathv: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
     gl_offs: __size_t = @import("std").mem.zeroes(__size_t),
     gl_flags: c_int = @import("std").mem.zeroes(c_int),
     gl_closedir: ?*const fn (?*anyopaque) callconv(.C) void = @import("std").mem.zeroes(?*const fn (?*anyopaque) callconv(.C) void),
-    gl_readdir: ?*const fn (?*anyopaque) callconv(.C) ?*struct_dirent64_35 = @import("std").mem.zeroes(?*const fn (?*anyopaque) callconv(.C) ?*struct_dirent64_35),
+    gl_readdir: ?*const fn (?*anyopaque) callconv(.C) ?*struct_dirent64_37 = @import("std").mem.zeroes(?*const fn (?*anyopaque) callconv(.C) ?*struct_dirent64_37),
     gl_opendir: ?*const fn ([*c]const u8) callconv(.C) ?*anyopaque = @import("std").mem.zeroes(?*const fn ([*c]const u8) callconv(.C) ?*anyopaque),
     gl_lstat: ?*const fn (noalias [*c]const u8, noalias [*c]struct_stat64) callconv(.C) c_int = @import("std").mem.zeroes(?*const fn (noalias [*c]const u8, noalias [*c]struct_stat64) callconv(.C) c_int),
     gl_stat: ?*const fn (noalias [*c]const u8, noalias [*c]struct_stat64) callconv(.C) c_int = @import("std").mem.zeroes(?*const fn (noalias [*c]const u8, noalias [*c]struct_stat64) callconv(.C) c_int),
@@ -2064,10 +2115,40 @@ pub const o_override: c_int = 5;
 pub const o_automatic: c_int = 6;
 pub const o_invalid: c_int = 7;
 pub const enum_variable_origin = c_int;
-// src/variable.h:68:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_variable = opaque {};
+pub const f_bogus: c_int = 0;
+pub const f_simple: c_int = 1;
+pub const f_recursive: c_int = 2;
+pub const f_expand: c_int = 3;
+pub const f_append: c_int = 4;
+pub const f_conditional: c_int = 5;
+pub const f_shell: c_int = 6;
+pub const f_append_value: c_int = 7;
+pub const enum_variable_flavor = c_uint;
+pub const v_default: c_int = 0;
+pub const v_export: c_int = 1;
+pub const v_noexport: c_int = 2;
+pub const v_ifset: c_int = 3;
+pub const enum_variable_export = c_uint;
+pub const struct_variable = extern struct {
+    name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    value: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    fileinfo: floc = @import("std").mem.zeroes(floc),
+    length: c_uint = @import("std").mem.zeroes(c_uint),
+    recursive: c_uint = @import("std").mem.zeroes(c_uint),
+    append: c_uint = @import("std").mem.zeroes(c_uint),
+    conditional: c_uint = @import("std").mem.zeroes(c_uint),
+    per_target: c_uint = @import("std").mem.zeroes(c_uint),
+    special: c_uint = @import("std").mem.zeroes(c_uint),
+    exportable: c_uint = @import("std").mem.zeroes(c_uint),
+    expanding: c_uint = @import("std").mem.zeroes(c_uint),
+    private_var: c_uint = @import("std").mem.zeroes(c_uint),
+    exp_count: c_uint = @import("std").mem.zeroes(c_uint),
+    flavor: enum_variable_flavor = @import("std").mem.zeroes(enum_variable_flavor),
+    origin: enum_variable_origin = @import("std").mem.zeroes(enum_variable_origin),
+    @"export": enum_variable_export = @import("std").mem.zeroes(enum_variable_export),
+};
 pub extern fn reset_makeflags(origin: enum_variable_origin) void;
-pub extern fn define_makeflags(makefile: c_int) ?*struct_variable;
+pub extern fn define_makeflags(makefile: c_int) [*c]struct_variable;
 pub extern fn should_print_dir() c_int;
 pub extern fn temp_stdin_unlink() void;
 pub extern fn die(c_int) noreturn;
@@ -2133,7 +2214,7 @@ pub extern fn strcache_add(str: [*c]const u8) [*c]const u8;
 pub extern fn strcache_add_len(str: [*c]const u8, len: usize) [*c]const u8;
 pub extern fn guile_gmake_setup(flocp: [*c]const floc) c_int;
 pub const load_func_t = ?*const fn ([*c]const floc) callconv(.C) c_int;
-pub extern fn load_file(flocp: [*c]const floc, file: ?*struct_file, noerror: c_int) c_int;
+pub extern fn load_file(flocp: [*c]const floc, file: [*c]struct_file, noerror: c_int) c_int;
 pub extern fn unload_file(name: [*c]const u8) c_int;
 pub extern var reading_file: [*c]const floc;
 pub extern var expanding_var: [*c][*c]const floc;
@@ -2209,52 +2290,33 @@ pub extern fn hash_dump(ht: [*c]struct_hash_table, vector_0: [*c]?*anyopaque, co
 pub extern fn jhash(key: [*c]const u8, n: c_int) c_uint;
 pub extern fn jhash_string(key: [*c]const u8) c_uint;
 pub extern var hash_deleted_item: ?*anyopaque;
-pub extern var default_file: ?*struct_file;
-pub extern fn lookup_file(name: [*c]const u8) ?*struct_file;
-pub extern fn enter_file(name: [*c]const u8) ?*struct_file;
+pub extern var default_file: [*c]struct_file;
+pub extern fn lookup_file(name: [*c]const u8) [*c]struct_file;
+pub extern fn enter_file(name: [*c]const u8) [*c]struct_file;
 pub extern fn split_prereqs(prereqstr: [*c]u8) ?*struct_dep;
 pub extern fn enter_prereqs(prereqs: ?*struct_dep, stem: [*c]const u8) ?*struct_dep;
-pub extern fn expand_deps(f: ?*struct_file) void;
-pub extern fn expand_extra_prereqs(extra: ?*const struct_variable) ?*struct_dep;
+pub extern fn expand_deps(f: [*c]struct_file) void;
+pub extern fn expand_extra_prereqs(extra: [*c]const struct_variable) ?*struct_dep;
 pub extern fn remove_intermediates(sig: c_int) void;
 pub extern fn snap_deps() void;
-pub extern fn rename_file(file: ?*struct_file, name: [*c]const u8) void;
-pub extern fn rehash_file(file: ?*struct_file, name: [*c]const u8) void;
-pub const cs_not_started: c_int = 0;
-pub const cs_deps_running: c_int = 1;
-pub const cs_running: c_int = 2;
-pub const cs_finished: c_int = 3;
-pub const enum_cmd_state_36 = c_uint;
-pub extern fn set_command_state(file: ?*struct_file, state: enum_cmd_state_36) void;
-pub extern fn notice_finished_file(file: ?*struct_file) void;
+pub extern fn rename_file(file: [*c]struct_file, name: [*c]const u8) void;
+pub extern fn rehash_file(file: [*c]struct_file, name: [*c]const u8) void;
+pub extern fn set_command_state(file: [*c]struct_file, state: enum_cmd_state_2) void;
+pub extern fn notice_finished_file(file: [*c]struct_file) void;
 pub extern fn init_hash_files() void;
 pub extern fn verify_file_data_base() void;
 pub extern fn build_target_list(old_list: [*c]u8) [*c]u8;
 pub extern fn print_prereqs(deps: ?*const struct_dep) void;
 pub extern fn print_file_data_base() void;
-pub extern fn try_implicit_rule(file: ?*struct_file, depth: c_uint) c_int;
+pub extern fn try_implicit_rule(file: [*c]struct_file, depth: c_uint) c_int;
 pub extern fn stemlen_compare(v1: ?*const anyopaque, v2: ?*const anyopaque) c_int;
 pub extern fn file_timestamp_cons([*c]const u8, time_t, c_long) uintmax_t;
 pub extern fn file_timestamp_now([*c]c_int) uintmax_t;
 pub extern fn file_timestamp_sprintf(p: [*c]u8, ts: uintmax_t) void;
-pub extern fn f_mtime(file: ?*struct_file, search: c_int) uintmax_t;
+pub extern fn f_mtime(file: [*c]struct_file, search: c_int) uintmax_t;
 pub extern var snapped_deps: c_int;
-pub const f_bogus: c_int = 0;
-pub const f_simple: c_int = 1;
-pub const f_recursive: c_int = 2;
-pub const f_expand: c_int = 3;
-pub const f_append: c_int = 4;
-pub const f_conditional: c_int = 5;
-pub const f_shell: c_int = 6;
-pub const f_append_value: c_int = 7;
-pub const enum_variable_flavor = c_uint;
-pub const v_default: c_int = 0;
-pub const v_export: c_int = 1;
-pub const v_noexport: c_int = 2;
-pub const v_ifset: c_int = 3;
-pub const enum_variable_export = c_uint;
 pub const struct_pattern_var = extern struct {
-    next: ?*struct_pattern_var = @import("std").mem.zeroes(?*struct_pattern_var),
+    next: [*c]struct_pattern_var = @import("std").mem.zeroes([*c]struct_pattern_var),
     suffix: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     target: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     len: usize = @import("std").mem.zeroes(usize),
@@ -2263,12 +2325,12 @@ pub const struct_pattern_var = extern struct {
 pub extern var env_recursion: c_ulonglong;
 pub extern var variable_buffer: [*c]u8;
 pub extern var current_variable_set_list: [*c]struct_variable_set_list;
-pub extern var default_goal_var: ?*struct_variable;
+pub extern var default_goal_var: [*c]struct_variable;
 pub extern var shell_var: struct_variable;
 pub extern fn variable_buffer_output(ptr: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
 pub extern fn variable_expand(line: [*c]const u8) [*c]u8;
-pub extern fn variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
-pub extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: ?*struct_file) [*c]u8;
+pub extern fn variable_expand_for_file(line: [*c]const u8, file: [*c]struct_file) [*c]u8;
+pub extern fn allocated_variable_expand_for_file(line: [*c]const u8, file: [*c]struct_file) [*c]u8;
 pub extern fn expand_argument(str: [*c]const u8, end: [*c]const u8) [*c]u8;
 pub extern fn variable_expand_string(line: [*c]u8, string: [*c]const u8, length: usize) [*c]u8;
 pub extern fn initialize_variable_output() [*c]u8;
@@ -2281,31 +2343,31 @@ pub extern fn patsubst_expand_pat(o: [*c]u8, text: [*c]const u8, pattern: [*c]co
 pub extern fn patsubst_expand(o: [*c]u8, text: [*c]const u8, pattern: [*c]u8, replace: [*c]u8) [*c]u8;
 pub extern fn func_shell_base(o: [*c]u8, argv: [*c][*c]u8, trim_newlines: c_int) [*c]u8;
 pub extern fn shell_completed(exit_code: c_int, exit_sig: c_int) void;
-pub extern fn recursively_expand_for_file(v: ?*struct_variable, file: ?*struct_file) [*c]u8;
+pub extern fn recursively_expand_for_file(v: [*c]struct_variable, file: [*c]struct_file) [*c]u8;
 pub extern fn create_new_variable_set() [*c]struct_variable_set_list;
 pub extern fn free_variable_set([*c]struct_variable_set_list) void;
 pub extern fn push_new_variable_scope() [*c]struct_variable_set_list;
 pub extern fn pop_variable_scope() void;
 pub extern fn define_automatic_variables() void;
-pub extern fn initialize_file_variables(file: ?*struct_file, reading: c_int) void;
-pub extern fn print_file_variables(file: ?*const struct_file) void;
-pub extern fn print_target_variables(file: ?*const struct_file) void;
+pub extern fn initialize_file_variables(file: [*c]struct_file, reading: c_int) void;
+pub extern fn print_file_variables(file: [*c]const struct_file) void;
+pub extern fn print_target_variables(file: [*c]const struct_file) void;
 pub extern fn merge_variable_set_lists(to_list: [*c][*c]struct_variable_set_list, from_list: [*c]struct_variable_set_list) void;
-pub extern fn do_variable_definition(flocp: [*c]const floc, name: [*c]const u8, value: [*c]const u8, origin: enum_variable_origin, flavor: enum_variable_flavor, target_var: c_int) ?*struct_variable;
-pub extern fn parse_variable_definition(line: [*c]const u8, v: ?*struct_variable) [*c]u8;
-pub extern fn assign_variable_definition(v: ?*struct_variable, line: [*c]const u8) ?*struct_variable;
-pub extern fn try_variable_definition(flocp: [*c]const floc, line: [*c]const u8, origin: enum_variable_origin, target_var: c_int) ?*struct_variable;
+pub extern fn do_variable_definition(flocp: [*c]const floc, name: [*c]const u8, value: [*c]const u8, origin: enum_variable_origin, flavor: enum_variable_flavor, target_var: c_int) [*c]struct_variable;
+pub extern fn parse_variable_definition(line: [*c]const u8, v: [*c]struct_variable) [*c]u8;
+pub extern fn assign_variable_definition(v: [*c]struct_variable, line: [*c]const u8) [*c]struct_variable;
+pub extern fn try_variable_definition(flocp: [*c]const floc, line: [*c]const u8, origin: enum_variable_origin, target_var: c_int) [*c]struct_variable;
 pub extern fn init_hash_global_variable_set() void;
 pub extern fn hash_init_function_table() void;
 pub extern fn define_new_function(flocp: [*c]const floc, name: [*c]const u8, min: c_uint, max: c_uint, flags: c_uint, func: gmk_func_ptr) void;
-pub extern fn lookup_variable(name: [*c]const u8, length: usize) ?*struct_variable;
-pub extern fn lookup_variable_for_file(name: [*c]const u8, length: usize, file: ?*struct_file) ?*struct_variable;
-pub extern fn lookup_variable_in_set(name: [*c]const u8, length: usize, set: [*c]const struct_variable_set) ?*struct_variable;
-pub extern fn define_variable_in_set(name: [*c]const u8, length: usize, value: [*c]const u8, origin: enum_variable_origin, recursive: c_int, set: [*c]struct_variable_set, flocp: [*c]const floc) ?*struct_variable;
+pub extern fn lookup_variable(name: [*c]const u8, length: usize) [*c]struct_variable;
+pub extern fn lookup_variable_for_file(name: [*c]const u8, length: usize, file: [*c]struct_file) [*c]struct_variable;
+pub extern fn lookup_variable_in_set(name: [*c]const u8, length: usize, set: [*c]const struct_variable_set) [*c]struct_variable;
+pub extern fn define_variable_in_set(name: [*c]const u8, length: usize, value: [*c]const u8, origin: enum_variable_origin, recursive: c_int, set: [*c]struct_variable_set, flocp: [*c]const floc) [*c]struct_variable;
 pub extern fn warn_undefined(name: [*c]const u8, length: usize) void;
 pub extern fn undefine_variable_in_set(name: [*c]const u8, length: usize, origin: enum_variable_origin, set: [*c]struct_variable_set) void;
-pub extern fn target_environment(file: ?*struct_file, recursive: c_int) [*c][*c]u8;
-pub extern fn create_pattern_var(target: [*c]const u8, suffix: [*c]const u8) ?*struct_pattern_var;
+pub extern fn target_environment(file: [*c]struct_file, recursive: c_int) [*c][*c]u8;
+pub extern fn create_pattern_var(target: [*c]const u8, suffix: [*c]const u8) [*c]struct_pattern_var;
 pub extern var export_all_variables: c_int;
 pub const struct_nameseq = extern struct {
     next: [*c]struct_nameseq = @import("std").mem.zeroes([*c]struct_nameseq),
@@ -2320,12 +2382,7 @@ pub extern fn free_ns_chain(n: [*c]struct_nameseq) void;
 pub extern fn copy_dep_chain(d: ?*const struct_dep) ?*struct_dep;
 pub extern fn read_all_makefiles(makefiles: [*c][*c]const u8) ?*struct_goaldep;
 pub extern fn eval_buffer(buffer: [*c]u8, floc: [*c]const floc) void;
-pub const us_success: c_int = 0;
-pub const us_none: c_int = 1;
-pub const us_question: c_int = 2;
-pub const us_failed: c_int = 3;
-pub const enum_update_status_37 = c_uint;
-pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_37;
+pub extern fn update_goal_chain(goals: ?*struct_goaldep) enum_update_status_1;
 pub const __llvm__ = @as(c_int, 1);
 pub const __clang__ = @as(c_int, 1);
 pub const __clang_major__ = @as(c_int, 18);
@@ -5617,9 +5674,9 @@ pub const random_data = struct_random_data;
 pub const drand48_data = struct_drand48_data;
 pub const lconv = struct_lconv;
 pub const variable_origin = enum_variable_origin;
-pub const variable = struct_variable;
 pub const variable_flavor = enum_variable_flavor;
 pub const variable_export = enum_variable_export;
+pub const variable = struct_variable;
 pub const pattern_var = struct_pattern_var;
 pub const nameseq = struct_nameseq;
 pub const goaldep = struct_goaldep;

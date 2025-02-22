@@ -2147,12 +2147,15 @@ pub extern fn osync_clear() void;
 pub extern fn osync_acquire() c_uint;
 pub extern fn osync_release() void;
 pub extern fn get_bad_stdin() c_int;
-// src/output.h:21:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_output = opaque {};
-pub extern var output_context: ?*struct_output;
+pub const struct_output = extern struct {
+    out: c_int = @import("std").mem.zeroes(c_int),
+    err: c_int = @import("std").mem.zeroes(c_int),
+    syncout: c_uint = @import("std").mem.zeroes(c_uint),
+};
+pub extern var output_context: [*c]struct_output;
 pub extern var stdio_traced: c_uint;
 pub extern fn output_write(fd: c_int, buffer: ?*const anyopaque, len: usize) c_int;
-pub export fn output_init(arg_out: ?*struct_output) void {
+pub export fn output_init(arg_out: [*c]struct_output) void {
     var out = arg_out;
     _ = &out;
     if (out != null) {
@@ -2167,7 +2170,7 @@ pub export fn output_init(arg_out: ?*struct_output) void {
     fd_set_append(fileno(stdout));
     fd_set_append(fileno(stderr));
 }
-pub export fn output_close(arg_out: ?*struct_output) void {
+pub export fn output_close(arg_out: [*c]struct_output) void {
     var out = arg_out;
     _ = &out;
     if (!(out != null)) {
@@ -2186,7 +2189,7 @@ pub export fn output_close(arg_out: ?*struct_output) void {
     output_init(out);
 }
 pub export fn output_start() void {
-    if ((output_context != null) and (@as(c_int, @bitCast(output_context.*.syncout)) != 0)) if (!((output_context.*.out >= @as(c_int, 0)) or (output_context.*.err >= @as(c_int, 0)))) {
+    if ((output_context != null) and (output_context.*.syncout != 0)) if (!((output_context.*.out >= @as(c_int, 0)) or (output_context.*.err >= @as(c_int, 0)))) {
         setup_tmpfile(output_context);
     };
     if ((output_sync == @as(c_int, 0)) or (output_sync == @as(c_int, 3))) if (!(stdio_traced != 0) and (should_print_dir() != 0)) {
@@ -2202,7 +2205,7 @@ pub export fn outputs(arg_is_err: c_int, arg_msg: [*c]const u8) void {
     output_start();
     _outputs(output_context, is_err, msg);
 }
-pub export fn output_dump(arg_out: ?*struct_output) void {
+pub export fn output_dump(arg_out: [*c]struct_output) void {
     var out = arg_out;
     _ = &out;
     var outfd_not_empty: c_int = @intFromBool((out.*.out != -@as(c_int, 1)) and (lseek(out.*.out, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))), @as(c_int, 2)) > @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0))))));
@@ -2308,7 +2311,7 @@ pub extern fn posix_fadvise(__fd: c_int, __offset: off_t, __len: off_t, __advise
 pub extern fn posix_fadvise64(__fd: c_int, __offset: off64_t, __len: off64_t, __advise: c_int) c_int;
 pub extern fn posix_fallocate(__fd: c_int, __offset: off_t, __len: off_t) c_int;
 pub extern fn posix_fallocate64(__fd: c_int, __offset: off64_t, __len: off64_t) c_int;
-pub fn _outputs(arg_out: ?*struct_output, arg_is_err: c_int, arg_msg: [*c]const u8) callconv(.C) void {
+pub fn _outputs(arg_out: [*c]struct_output, arg_is_err: c_int, arg_msg: [*c]const u8) callconv(.C) void {
     var out = arg_out;
     _ = &out;
     var is_err = arg_is_err;
@@ -2317,7 +2320,7 @@ pub fn _outputs(arg_out: ?*struct_output, arg_is_err: c_int, arg_msg: [*c]const 
     _ = &msg;
     var f: [*c]FILE = undefined;
     _ = &f;
-    if ((out != null) and (@as(c_int, @bitCast(out.*.syncout)) != 0)) {
+    if ((out != null) and (out.*.syncout != 0)) {
         var fd: c_int = if (is_err != 0) out.*.err else out.*.out;
         _ = &fd;
         if (fd != -@as(c_int, 1)) {
@@ -2448,7 +2451,7 @@ pub export fn output_tmpfd() c_int {
 // src/output.c:220:7: warning: TODO implement translation of stmt class GotoStmtClass
 
 // src/output.c:203:1: warning: unable to translate function, demoted to extern
-pub extern fn setup_tmpfile(arg_out: ?*struct_output) callconv(.C) void;
+pub extern fn setup_tmpfile(arg_out: [*c]struct_output) callconv(.C) void;
 pub const struct_fmtstring = extern struct {
     buffer: [*c]u8 = @import("std").mem.zeroes([*c]u8),
     size: usize = @import("std").mem.zeroes(usize),
