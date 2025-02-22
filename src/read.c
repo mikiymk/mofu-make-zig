@@ -60,12 +60,12 @@ struct ebuffer
 
 struct vmodifiers
   {
-    unsigned int assign_v:1;
-    unsigned int define_v:1;
-    unsigned int undefine_v:1;
-    unsigned int override_v:1;
-    unsigned int private_v:1;
-    enum variable_export export_v ENUM_BITFIELD (2);
+    unsigned int assign_v/* :1 */;
+    unsigned int define_v/* :1 */;
+    unsigned int undefine_v/* :1 */;
+    unsigned int override_v/* :1 */;
+    unsigned int private_v/* :1 */;
+    enum variable_export export_v /* ENUM_BITFIELD (2) */;
   };
 
 /* Types of "words" that can be read in a makefile.  */

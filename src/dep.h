@@ -48,14 +48,14 @@ struct nameseq
     struct file *file;                          \
     _t *shuf;                                   \
     const char *stem;                           \
-    unsigned int flags : 8;                     \
-    unsigned int changed : 1;                   \
-    unsigned int ignore_mtime : 1;              \
-    unsigned int staticpattern : 1;             \
-    unsigned int need_2nd_expansion : 1;        \
-    unsigned int ignore_automatic_vars : 1;     \
-    unsigned int is_explicit : 1;               \
-    unsigned int wait_here : 1
+    unsigned int flags /* : 8 */;                     \
+    unsigned int changed /*: 1 */;                   \
+    unsigned int ignore_mtime /*: 1 */;              \
+    unsigned int staticpattern /*: 1 */;             \
+    unsigned int need_2nd_expansion /*: 1 */;        \
+    unsigned int ignore_automatic_vars /*: 1 */;     \
+    unsigned int is_explicit /*: 1 */;               \
+    unsigned int wait_here /*: 1 */
 
 struct dep
   {
