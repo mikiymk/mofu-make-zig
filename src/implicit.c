@@ -98,7 +98,7 @@ get_next_word (const char *buffer, size_t *length)
         case '\0':
         case ' ':
         case '\t':
-          goto done_word;
+          {/* goto done_word; */ --p; if (length) *length = p - beg; return beg;}
 
         case '$':
           c = *(p++);
@@ -129,7 +129,7 @@ get_next_word (const char *buffer, size_t *length)
           break;
 
         case '|':
-          goto done;
+          {/* goto done; */ if (length) *length = p - beg; return beg;}
 
         default:
           break;
@@ -137,10 +137,10 @@ get_next_word (const char *buffer, size_t *length)
 
       c = *(p++);
     }
- done_word:
+ /* done_word: */
   --p;
 
- done:
+ /* done: */
   if (length)
     *length = p - beg;
 
@@ -423,7 +423,7 @@ pattern_search (struct file *file, int archive,
 
   /* Bail out early if we haven't found any rules. */
   if (nrules == 0)
-    goto done;
+    {/* goto done; */ free (tryrules); free (deplist); --depth; if (rule) {DBS (DB_IMPLICIT, (_("Found implicit rule '%s' for '%s'.\n"), get_rule_defn (rule), filename)); return 1;} if (found_compat_rule) {DBS (DB_IMPLICIT, (_("Searching for a compatibility rule for '%s'.\n"), filename)); assert (allow_compat_rules == 0); return pattern_search (file, archive, depth, recursions, 1);} DBS (DB_IMPLICIT, (_("No implicit rule found for '%s'.\n"), filename)); return 0;}
 
   /* Sort the rules to place matches with the shortest stem first. This
      way the most specific rules will be tried first. */
@@ -963,7 +963,7 @@ pattern_search (struct file *file, int archive,
 
   /* RULE is nil if the loop went through the list but everything failed.  */
   if (rule == 0)
-    goto done;
+    {/* goto done; */ free (tryrules); free (deplist); --depth; if (rule) {DBS (DB_IMPLICIT, (_("Found implicit rule '%s' for '%s'.\n"), get_rule_defn (rule), filename)); return 1;} if (found_compat_rule) {DBS (DB_IMPLICIT, (_("Searching for a compatibility rule for '%s'.\n"), filename)); assert (allow_compat_rules == 0); return pattern_search (file, archive, depth, recursions, 1);} DBS (DB_IMPLICIT, (_("No implicit rule found for '%s'.\n"), filename)); return 0;}
 
   foundrule = ri;
 
@@ -1137,7 +1137,7 @@ pattern_search (struct file *file, int archive,
           file->also_make = new;
         }
 
- done:
+ /* done: */
   free (tryrules);
   free (deplist);
 

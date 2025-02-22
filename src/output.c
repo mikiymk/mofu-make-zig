@@ -217,14 +217,14 @@ setup_tmpfile (struct output *out)
     {
       /* This is probably useless since stdout/stderr aren't working. */
       perror_with_name ("output-sync suppressed: ", "stderr");
-      goto error;
+      {/* goto error; */   O (error, NILF, _("cannot open output-sync lock file, suppressing output-sync.")); output_close (out); output_sync = OUTPUT_SYNC_NONE; osync_clear (); in_setup = 0;}
     }
 
   if (ANY_SET (io_state, IO_STDOUT_OK))
     {
       int fd = output_tmpfd ();
       if (fd < 0)
-        goto error;
+        {/* goto error; */   O (error, NILF, _("cannot open output-sync lock file, suppressing output-sync.")); output_close (out); output_sync = OUTPUT_SYNC_NONE; osync_clear (); in_setup = 0;}
       fd_noinherit (fd);
       out->out = fd;
     }
@@ -237,7 +237,7 @@ setup_tmpfile (struct output *out)
         {
           int fd = output_tmpfd ();
           if (fd < 0)
-            goto error;
+            {/* goto error; */   O (error, NILF, _("cannot open output-sync lock file, suppressing output-sync.")); output_close (out); output_sync = OUTPUT_SYNC_NONE; osync_clear (); in_setup = 0;}
           fd_noinherit (fd);
           out->err = fd;
         }
@@ -247,7 +247,7 @@ setup_tmpfile (struct output *out)
   return;
 
   /* If we failed to create a temp file, disable output sync going forward.  */
- error:
+ /* error: */
   O (error, NILF,
      _("cannot open output-sync lock file, suppressing output-sync."));
 

@@ -1883,7 +1883,7 @@ func_shell_base (char *o, char **argv, int trim_newlines)
     {
       OS (error, reading_file, "pipe: %s", strerror (errno));
       pid = -1;
-      goto done;
+      {/* goto done; */ if (command_argv) {free (command_argv[0]); free (command_argv);} free_childbase (&child); return o;}
     }
 
 #elif defined(WINDOWS32)
@@ -1897,7 +1897,7 @@ func_shell_base (char *o, char **argv, int trim_newlines)
       shell_completed (127, 0);
       OS (error, reading_file, "pipe: %s", strerror (errno));
       pid = -1;
-      goto done;
+      {/* goto done; */ if (command_argv) {free (command_argv[0]); free (command_argv);} free_childbase (&child); return o;}
     }
 
 #else
@@ -1905,7 +1905,7 @@ func_shell_base (char *o, char **argv, int trim_newlines)
     {
       OS (error, reading_file, "pipe: %s", strerror (errno));
       pid = -1;
-      goto done;
+      {/* goto done; */ if (command_argv) {free (command_argv[0]); free (command_argv);} free_childbase (&child); return o;}
     }
 
   /* Close handles that are unnecessary for the child process.  */
@@ -1921,7 +1921,7 @@ func_shell_base (char *o, char **argv, int trim_newlines)
   if (pid < 0)
     {
       shell_completed (127, 0);
-      goto done;
+      {/* goto done; */ if (command_argv) {free (command_argv[0]); free (command_argv);} free_childbase (&child); return o;}
     }
 #endif
 
@@ -1995,7 +1995,7 @@ func_shell_base (char *o, char **argv, int trim_newlines)
     free (buffer);
   }
 
- done:
+ /* done: */
   if (command_argv)
     {
       /* Free the storage only the child needed.  */

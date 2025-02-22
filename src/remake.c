@@ -954,6 +954,7 @@ notice_finished_file (struct file *file)
          or won when they ran (i.e. status is 0).  */
       && file->update_status == us_success)
     {
+      int flag_957 = 0;
       if (file->cmds != 0 && file->cmds->any_recurse)
         {
           /* If all the command lines were recursive,
@@ -961,9 +962,10 @@ notice_finished_file (struct file *file)
           unsigned int i;
           for (i = 0; i < file->cmds->ncommand_lines; ++i)
             if (NONE_SET (file->cmds->lines_flags[i], COMMANDS_RECURSE))
-              goto have_nonrecursing;
+              /* goto have_nonrecursing; */ flag_957 = 1;
         }
-      else
+      else {flag_957 = 1;}
+      if (flag_957 == 1)
         {
         have_nonrecursing:
           if (file->phony)

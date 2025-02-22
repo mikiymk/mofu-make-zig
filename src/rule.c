@@ -392,8 +392,9 @@ new_pattern_rule (struct rule *rule, int override)
 
   /* Search for an identical rule.  */
   lastrule = 0;
+  {int flag_395 = 0;
   for (r = pattern_rules; r != 0; lastrule = r, r = r->next)
-    for (i = 0; i < rule->num; ++i)
+    {for (i = 0; i < rule->num; ++i)
       {
         for (j = 0; j < r->num; ++j)
           if (!streq (rule->targets[i], r->targets[j]))
@@ -421,7 +422,7 @@ new_pattern_rule (struct rule *rule, int override)
                     last_pattern_rule = rule;
 
                     /* We got one.  Stop looking.  */
-                    goto matched;
+                    /* goto matched; */ flag_395 = 1; break;
                   }
                 else
                   {
@@ -431,9 +432,9 @@ new_pattern_rule (struct rule *rule, int override)
                   }
               }
           }
-      }
+      } if (flag_395 == 1) break;}}
 
- matched:;
+ /* matched:; */
 
   if (r == 0)
     {

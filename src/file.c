@@ -967,7 +967,7 @@ file_timestamp_now (int *resolution)
         r = 1;
         s = timespec.tv_sec;
         ns = timespec.tv_nsec;
-        goto got_time;
+        {/* goto got_time; */ *resolution = r; return file_timestamp_cons (0, s, ns);}
       }
   }
 # endif
@@ -979,7 +979,7 @@ file_timestamp_now (int *resolution)
         r = 1000;
         s = timeval.tv_sec;
         ns = timeval.tv_usec * 1000;
-        goto got_time;
+        {/* goto got_time; */ *resolution = r; return file_timestamp_cons (0, s, ns);}
       }
   }
 # endif
@@ -990,7 +990,7 @@ file_timestamp_now (int *resolution)
   ns = 0;
 
 #if FILE_TIMESTAMP_HI_RES
- got_time:
+ /* got_time: */
 #endif
   *resolution = r;
   return file_timestamp_cons (0, s, ns);

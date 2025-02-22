@@ -260,7 +260,7 @@ find_in_given_path (const char *progname, const char *path,
               {
                 /* errno is set here.  */
                 failure_errno = errno;
-                goto failed;
+                {/* goto failed; */ free (path_copy); errno = failure_errno; return NULL;}
               }
             dir_as_prefix = dir_as_prefix_to_free;
           }
@@ -290,7 +290,7 @@ find_in_given_path (const char *progname, const char *path,
                     /* errno is set here.  */
                     failure_errno = errno;
                     free (dir_as_prefix_to_free);
-                    goto failed;
+                    {/* goto failed; */ free (path_copy); errno = failure_errno; return NULL;}
                   }
 
                 /* On systems which have the eaccess() system call, let's
@@ -323,7 +323,7 @@ find_in_given_path (const char *progname, const char *path,
                                     /* errno is set here.  */
                                     failure_errno = errno;
                                     free (dir_as_prefix_to_free);
-                                    goto failed;
+                                    {/* goto failed; */ free (path_copy); errno = failure_errno; return NULL;}
                                   }
                                 progpathname[0] = '.';
                                 progpathname[1] = NATIVE_SLASH;
@@ -360,7 +360,7 @@ find_in_given_path (const char *progname, const char *path,
                 /* errno is set here.  */
                 failure_errno = errno;
                 free (dir_as_prefix_to_free);
-                goto failed;
+                {/* goto failed; */ free (path_copy); errno = failure_errno; return NULL;}
               }
 
             if (eaccess (progpathname, X_OK) == 0)
@@ -388,7 +388,7 @@ find_in_given_path (const char *progname, const char *path,
           break;
       }
 
-   failed:
+  /* failed: */
     /* Not found in PATH.  */
     free (path_copy);
 
