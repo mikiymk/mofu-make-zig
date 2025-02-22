@@ -1980,8 +1980,15 @@ pub const struct_dep = extern struct {
     is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
     wait_here: c_uint = @import("std").mem.zeroes(c_uint),
 };
-// src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_commands = opaque {};
+pub const struct_commands = extern struct {
+    fileinfo: floc = @import("std").mem.zeroes(floc),
+    commands: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_lines: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    lines_flags: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    ncommand_lines: c_ushort = @import("std").mem.zeroes(c_ushort),
+    recipe_prefix: u8 = @import("std").mem.zeroes(u8),
+    any_recurse: c_uint = @import("std").mem.zeroes(c_uint),
+};
 pub const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
 pub const hash_cmp_func_t = ?*const fn (?*const anyopaque, ?*const anyopaque) callconv(.C) c_int;
 pub const struct_hash_table = extern struct {
@@ -2020,7 +2027,7 @@ pub const struct_file = extern struct {
     hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
-    cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
+    cmds: [*c]struct_commands = @import("std").mem.zeroes([*c]struct_commands),
     stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     also_make: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
@@ -2784,9 +2791,26 @@ pub extern fn output_close(out: [*c]struct_output) void;
 pub extern fn output_start() void;
 pub extern fn outputs(is_err: c_int, msg: [*c]const u8) void;
 pub extern fn output_dump(out: [*c]struct_output) void;
-// src/job.h:59:19: warning: struct demoted to opaque type - has bitfield
-pub const struct_child = opaque {};
-pub extern var children: ?*struct_child;
+pub const struct_child = extern struct {
+    cmd_name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    output: struct_output = @import("std").mem.zeroes(struct_output),
+    next: [*c]struct_child = @import("std").mem.zeroes([*c]struct_child),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    sh_batch_file: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_lines: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    command_ptr: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_line: c_uint = @import("std").mem.zeroes(c_uint),
+    pid: pid_t = @import("std").mem.zeroes(pid_t),
+    remote: c_uint = @import("std").mem.zeroes(c_uint),
+    noerror: c_uint = @import("std").mem.zeroes(c_uint),
+    good_stdin: c_uint = @import("std").mem.zeroes(c_uint),
+    deleted: c_uint = @import("std").mem.zeroes(c_uint),
+    recursive: c_uint = @import("std").mem.zeroes(c_uint),
+    jobslot: c_uint = @import("std").mem.zeroes(c_uint),
+    dontcare: c_uint = @import("std").mem.zeroes(c_uint),
+};
+pub extern var children: [*c]struct_child;
 pub extern fn child_handler(sig: c_int) void;
 pub extern fn is_bourne_compatible_shell(path: [*c]const u8) c_int;
 pub extern fn new_job(file: [*c]struct_file) void;
@@ -2827,9 +2851,9 @@ pub extern fn osync_release() void;
 pub extern fn get_bad_stdin() c_int;
 pub extern fn fatal_error_signal(sig: c_int) void;
 pub extern fn execute_file_commands(file: [*c]struct_file) void;
-pub extern fn print_commands(cmds: ?*const struct_commands) void;
-pub extern fn delete_child_targets(child: ?*struct_child) void;
-pub extern fn chop_commands(cmds: ?*struct_commands) void;
+pub extern fn print_commands(cmds: [*c]const struct_commands) void;
+pub extern fn delete_child_targets(child: [*c]struct_child) void;
+pub extern fn chop_commands(cmds: [*c]struct_commands) void;
 pub extern fn set_file_variables(file: [*c]struct_file, stem: [*c]const u8) void;
 pub extern var db_level: c_int;
 pub fn function_table_entry_hash_1(arg_keyv: ?*const anyopaque) callconv(.C) c_ulong {

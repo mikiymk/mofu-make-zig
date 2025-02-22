@@ -1980,8 +1980,15 @@ pub const struct_dep = extern struct {
     is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
     wait_here: c_uint = @import("std").mem.zeroes(c_uint),
 };
-// src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_commands = opaque {};
+pub const struct_commands = extern struct {
+    fileinfo: floc = @import("std").mem.zeroes(floc),
+    commands: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_lines: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    lines_flags: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    ncommand_lines: c_ushort = @import("std").mem.zeroes(c_ushort),
+    recipe_prefix: u8 = @import("std").mem.zeroes(u8),
+    any_recurse: c_uint = @import("std").mem.zeroes(c_uint),
+};
 pub const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
 pub const hash_cmp_func_t = ?*const fn (?*const anyopaque, ?*const anyopaque) callconv(.C) c_int;
 pub const struct_hash_table = extern struct {
@@ -2020,7 +2027,7 @@ pub const struct_file = extern struct {
     hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
-    cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
+    cmds: [*c]struct_commands = @import("std").mem.zeroes([*c]struct_commands),
     stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     also_make: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
@@ -2404,9 +2411,26 @@ pub const struct_childbase = extern struct {
     environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
     output: struct_output = @import("std").mem.zeroes(struct_output),
 };
-// src/job.h:59:19: warning: struct demoted to opaque type - has bitfield
-pub const struct_child = opaque {};
-pub extern var children: ?*struct_child;
+pub const struct_child = extern struct {
+    cmd_name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    output: struct_output = @import("std").mem.zeroes(struct_output),
+    next: [*c]struct_child = @import("std").mem.zeroes([*c]struct_child),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    sh_batch_file: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_lines: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    command_ptr: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_line: c_uint = @import("std").mem.zeroes(c_uint),
+    pid: pid_t = @import("std").mem.zeroes(pid_t),
+    remote: c_uint = @import("std").mem.zeroes(c_uint),
+    noerror: c_uint = @import("std").mem.zeroes(c_uint),
+    good_stdin: c_uint = @import("std").mem.zeroes(c_uint),
+    deleted: c_uint = @import("std").mem.zeroes(c_uint),
+    recursive: c_uint = @import("std").mem.zeroes(c_uint),
+    jobslot: c_uint = @import("std").mem.zeroes(c_uint),
+    dontcare: c_uint = @import("std").mem.zeroes(c_uint),
+};
+pub extern var children: [*c]struct_child;
 pub extern fn child_handler(sig: c_int) void;
 pub extern fn is_bourne_compatible_shell(path: [*c]const u8) c_int;
 pub extern fn new_job(file: [*c]struct_file) void;
@@ -2428,7 +2452,7 @@ pub export fn fatal_error_signal(arg_sig: c_int) void {
     osync_clear();
     jobserver_clear();
     if (sig == @as(c_int, 15)) {
-        var c: ?*struct_child = undefined;
+        var c: [*c]struct_child = undefined;
         _ = &c;
         {
             c = children;
@@ -2438,11 +2462,11 @@ pub export fn fatal_error_signal(arg_sig: c_int) void {
         }
     }
     if ((((sig == @as(c_int, 15)) or (sig == @as(c_int, 2))) or (sig == @as(c_int, 1))) or (sig == @as(c_int, 3))) {
-        var c: ?*struct_child = undefined;
+        var c: [*c]struct_child = undefined;
         _ = &c;
         {
             c = children;
-            while (c != null) : (c = c.*.next) if ((@as(c_int, @bitCast(c.*.remote)) != 0) and (c.*.pid > @as(c_int, 0))) {
+            while (c != null) : (c = c.*.next) if ((c.*.remote != 0) and (c.*.pid > @as(c_int, 0))) {
                 _ = remote_kill(c.*.pid, sig);
             };
         }
@@ -2489,7 +2513,7 @@ pub export fn execute_file_commands(arg_file_1: [*c]struct_file) void {
     }
     new_job(file_1);
 }
-pub export fn print_commands(arg_cmds: ?*const struct_commands) void {
+pub export fn print_commands(arg_cmds: [*c]const struct_commands) void {
     var cmds = arg_cmds;
     _ = &cmds;
     var s: [*c]const u8 = undefined;
@@ -2524,12 +2548,12 @@ pub export fn print_commands(arg_cmds: ?*const struct_commands) void {
         s = end + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, @bitCast(@as(c_uint, end[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\n')))));
     }
 }
-pub export fn delete_child_targets(arg_child_1: ?*struct_child) void {
+pub export fn delete_child_targets(arg_child_1: [*c]struct_child) void {
     var child_1 = arg_child_1;
     _ = &child_1;
     var d: [*c]struct_dep = undefined;
     _ = &d;
-    if ((@as(c_int, @bitCast(child_1.*.deleted)) != 0) or (child_1.*.pid < @as(c_int, 0))) return;
+    if ((child_1.*.deleted != 0) or (child_1.*.pid < @as(c_int, 0))) return;
     delete_target(child_1.*.file, null);
     {
         d = child_1.*.file.*.also_make;
@@ -2542,7 +2566,7 @@ pub export fn delete_child_targets(arg_child_1: ?*struct_child) void {
 // src/commands.c:357:9: warning: TODO implement translation of stmt class LabelStmtClass
 
 // src/commands.c:323:1: warning: unable to translate function, demoted to extern
-pub extern fn chop_commands(arg_cmds: ?*struct_commands) void;
+pub extern fn chop_commands(arg_cmds: [*c]struct_commands) void;
 pub export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8) void {
     var file_1 = arg_file_1;
     _ = &file_1;

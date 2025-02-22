@@ -1980,8 +1980,15 @@ pub const struct_dep = extern struct {
     is_explicit: c_uint = @import("std").mem.zeroes(c_uint),
     wait_here: c_uint = @import("std").mem.zeroes(c_uint),
 };
-// src/commands.h:28:18: warning: struct demoted to opaque type - has bitfield
-pub const struct_commands = opaque {};
+pub const struct_commands = extern struct {
+    fileinfo: floc = @import("std").mem.zeroes(floc),
+    commands: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_lines: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    lines_flags: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    ncommand_lines: c_ushort = @import("std").mem.zeroes(c_ushort),
+    recipe_prefix: u8 = @import("std").mem.zeroes(u8),
+    any_recurse: c_uint = @import("std").mem.zeroes(c_uint),
+};
 pub const hash_func_t = ?*const fn (?*const anyopaque) callconv(.C) c_ulong;
 pub const hash_cmp_func_t = ?*const fn (?*const anyopaque, ?*const anyopaque) callconv(.C) c_int;
 pub const struct_hash_table = extern struct {
@@ -2020,7 +2027,7 @@ pub const struct_file = extern struct {
     hname: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     vpath: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     deps: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
-    cmds: ?*struct_commands = @import("std").mem.zeroes(?*struct_commands),
+    cmds: [*c]struct_commands = @import("std").mem.zeroes([*c]struct_commands),
     stem: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),
     also_make: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
     prev: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
@@ -2249,9 +2256,26 @@ pub const struct_childbase = extern struct {
     environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
     output: struct_output = @import("std").mem.zeroes(struct_output),
 };
-// src/job.h:59:19: warning: struct demoted to opaque type - has bitfield
-pub const struct_child = opaque {};
-pub extern var children: ?*struct_child;
+pub const struct_child = extern struct {
+    cmd_name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    output: struct_output = @import("std").mem.zeroes(struct_output),
+    next: [*c]struct_child = @import("std").mem.zeroes([*c]struct_child),
+    file: [*c]struct_file = @import("std").mem.zeroes([*c]struct_file),
+    sh_batch_file: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_lines: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    command_ptr: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_line: c_uint = @import("std").mem.zeroes(c_uint),
+    pid: pid_t = @import("std").mem.zeroes(pid_t),
+    remote: c_uint = @import("std").mem.zeroes(c_uint),
+    noerror: c_uint = @import("std").mem.zeroes(c_uint),
+    good_stdin: c_uint = @import("std").mem.zeroes(c_uint),
+    deleted: c_uint = @import("std").mem.zeroes(c_uint),
+    recursive: c_uint = @import("std").mem.zeroes(c_uint),
+    jobslot: c_uint = @import("std").mem.zeroes(c_uint),
+    dontcare: c_uint = @import("std").mem.zeroes(c_uint),
+};
+pub extern var children: [*c]struct_child;
 pub export fn child_handler(arg_sig: c_int) void {
     var sig = arg_sig;
     _ = &sig;
@@ -2296,9 +2320,9 @@ pub export fn is_bourne_compatible_shell(arg_path: [*c]const u8) c_int {
 pub export fn new_job(arg_file_1: [*c]struct_file) void {
     var file_1 = arg_file_1;
     _ = &file_1;
-    var cmds: ?*struct_commands = file_1.*.cmds;
+    var cmds: [*c]struct_commands = file_1.*.cmds;
     _ = &cmds;
-    var c: ?*struct_child = undefined;
+    var c: [*c]struct_child = undefined;
     _ = &c;
     var lines: [*c][*c]u8 = undefined;
     _ = &lines;
@@ -2307,7 +2331,7 @@ pub export fn new_job(arg_file_1: [*c]struct_file) void {
     start_waiting_jobs();
     reap_children(@as(c_int, 0), @as(c_int, 0));
     chop_commands(cmds);
-    c = @as(?*struct_child, @ptrCast(xcalloc(@sizeOf(struct_child))));
+    c = @as([*c]struct_child, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_child)))));
     output_init(&c.*.output);
     c.*.file = file_1;
     c.*.sh_batch_file = null;
@@ -2462,7 +2486,7 @@ pub export fn new_job(arg_file_1: [*c]struct_file) void {
         if (!(children != null)) {
             fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), "INTERNAL: no children as we go to sleep on read");
         }
-        got_token = @as(c_int, @bitCast(jobserver_acquire(@intFromBool(waiting_jobs != @as(?*struct_child, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))))));
+        got_token = @as(c_int, @bitCast(jobserver_acquire(@intFromBool(waiting_jobs != @as([*c]struct_child, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))))));
         if (got_token == @as(c_int, 1)) {
             while (true) {
                 if ((@as(c_int, 4) & db_level) != 0) {
@@ -2550,7 +2574,7 @@ pub export fn new_job(arg_file_1: [*c]struct_file) void {
 // src/job.c:633:1: warning: unable to translate function, demoted to extern
 pub extern fn reap_children(arg_block: c_int, arg_err: c_int) void;
 pub export fn start_waiting_jobs() void {
-    var job: ?*struct_child = undefined;
+    var job: [*c]struct_child = undefined;
     _ = &job;
     if (waiting_jobs == null) return;
     while (true) {
@@ -2749,9 +2773,9 @@ pub extern fn f_mtime(file: [*c]struct_file, search: c_int) uintmax_t;
 pub extern var snapped_deps: c_int;
 pub extern fn fatal_error_signal(sig: c_int) void;
 pub extern fn execute_file_commands(file: [*c]struct_file) void;
-pub extern fn print_commands(cmds: ?*const struct_commands) void;
-pub extern fn delete_child_targets(child: ?*struct_child) void;
-pub extern fn chop_commands(cmds: ?*struct_commands) void;
+pub extern fn print_commands(cmds: [*c]const struct_commands) void;
+pub extern fn delete_child_targets(child: [*c]struct_child) void;
+pub extern fn chop_commands(cmds: [*c]struct_commands) void;
 pub extern fn set_file_variables(file: [*c]struct_file, stem: [*c]const u8) void;
 pub const struct_pattern_var = extern struct {
     next: [*c]struct_pattern_var = @import("std").mem.zeroes([*c]struct_pattern_var),
@@ -3016,7 +3040,7 @@ pub fn pid2str(arg_pid: pid_t) callconv(.C) [*c]const u8 {
     _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&pidstring.static))), "%lu", @as(c_ulong, @bitCast(@as(c_long, pid))));
     return @as([*c]u8, @ptrCast(@alignCast(&pidstring.static)));
 }
-pub fn free_child(arg_child_1: ?*struct_child) callconv(.C) void {
+pub fn free_child(arg_child_1: [*c]struct_child) callconv(.C) void {
     var child_1 = arg_child_1;
     _ = &child_1;
     output_close(&child_1.*.output);
@@ -3052,7 +3076,7 @@ pub fn free_child(arg_child_1: ?*struct_child) callconv(.C) void {
 // src/job.c:1188:5: warning: TODO implement translation of stmt class GotoStmtClass
 
 // src/job.c:1174:1: warning: unable to translate function, demoted to extern
-pub extern fn start_job_command(arg_child_1: ?*struct_child) callconv(.C) void;
+pub extern fn start_job_command(arg_child_1: [*c]struct_child) callconv(.C) void;
 pub fn load_too_high() callconv(.C) c_int {
     const last_sec = struct {
         var static: f64 = @import("std").mem.zeroes(f64);
@@ -3192,7 +3216,7 @@ pub fn load_too_high() callconv(.C) c_int {
     }
     return @intFromBool(guess >= max_load_average);
 }
-pub fn job_next_command(arg_child_1: ?*struct_child) callconv(.C) c_int {
+pub fn job_next_command(arg_child_1: [*c]struct_child) callconv(.C) c_int {
     var child_1 = arg_child_1;
     _ = &child_1;
     while ((child_1.*.command_ptr == null) or (@as(c_int, @bitCast(@as(c_uint, child_1.*.command_ptr.*))) == @as(c_int, '\x00'))) {
@@ -3212,7 +3236,7 @@ pub fn job_next_command(arg_child_1: ?*struct_child) callconv(.C) c_int {
     child_1.*.file.*.cmds.*.fileinfo.offset = @as(c_ulong, @bitCast(@as(c_ulong, child_1.*.command_line -% @as(c_uint, @bitCast(@as(c_int, 1))))));
     return 1;
 }
-pub fn start_waiting_job(arg_c: ?*struct_child) callconv(.C) c_int {
+pub fn start_waiting_job(arg_c: [*c]struct_child) callconv(.C) c_int {
     var c = arg_c;
     _ = &c;
     var f: [*c]struct_file = c.*.file;
@@ -3232,7 +3256,7 @@ pub fn start_waiting_job(arg_c: ?*struct_child) callconv(.C) c_int {
                 if (c.*.pid > @as(c_int, 0)) {
                     while (true) {
                         if ((@as(c_int, 4) & db_level) != 0) {
-                            _ = printf(gettext("Putting child %p (%s) PID %s%s on the chain.\n"), c, c.*.file.*.name, pid2str(c.*.pid), if (@as(c_int, @bitCast(c.*.remote)) != 0) gettext(" (remote)") else "");
+                            _ = printf(gettext("Putting child %p (%s) PID %s%s on the chain.\n"), c, c.*.file.*.name, pid2str(c.*.pid), if (c.*.remote != 0) gettext(" (remote)") else "");
                             _ = fflush(stdout);
                         }
                         if (!false) break;
@@ -3266,7 +3290,7 @@ pub fn start_waiting_job(arg_c: ?*struct_child) callconv(.C) c_int {
     return 1;
 }
 pub var good_stdin_used: c_int = 0;
-pub var waiting_jobs: ?*struct_child = null;
+pub var waiting_jobs: [*c]struct_child = null;
 pub export var unixy_shell: c_int = 1;
 pub export var job_counter: c_ulong = 0;
 pub extern var fatal_signal_set: sigset_t;
@@ -3276,7 +3300,7 @@ pub fn block_sigs() callconv(.C) void {
 pub fn unblock_sigs() callconv(.C) void {
     _ = sigprocmask(@as(c_int, 1), &fatal_signal_set, @as([*c]sigset_t, @ptrFromInt(@as(c_int, 0))));
 }
-pub fn child_error(arg_child_1: ?*struct_child, arg_exit_code: c_int, arg_exit_sig: c_int, arg_coredump: c_int, arg_ignored: c_int) callconv(.C) void {
+pub fn child_error(arg_child_1: [*c]struct_child, arg_exit_code: c_int, arg_exit_sig: c_int, arg_coredump: c_int, arg_ignored: c_int) callconv(.C) void {
     var child_1 = arg_child_1;
     _ = &child_1;
     var exit_code = arg_exit_code;

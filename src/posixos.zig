@@ -2176,9 +2176,26 @@ pub const struct_childbase = extern struct {
     environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
     output: struct_output = @import("std").mem.zeroes(struct_output),
 };
-// src/job.h:59:19: warning: struct demoted to opaque type - has bitfield
-pub const struct_child = opaque {};
-pub extern var children: ?*struct_child;
+pub const struct_child = extern struct {
+    cmd_name: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    environment: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    output: struct_output = @import("std").mem.zeroes(struct_output),
+    next: [*c]struct_child = @import("std").mem.zeroes([*c]struct_child),
+    file: ?*struct_file = @import("std").mem.zeroes(?*struct_file),
+    sh_batch_file: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_lines: [*c][*c]u8 = @import("std").mem.zeroes([*c][*c]u8),
+    command_ptr: [*c]u8 = @import("std").mem.zeroes([*c]u8),
+    command_line: c_uint = @import("std").mem.zeroes(c_uint),
+    pid: pid_t = @import("std").mem.zeroes(pid_t),
+    remote: c_uint = @import("std").mem.zeroes(c_uint),
+    noerror: c_uint = @import("std").mem.zeroes(c_uint),
+    good_stdin: c_uint = @import("std").mem.zeroes(c_uint),
+    deleted: c_uint = @import("std").mem.zeroes(c_uint),
+    recursive: c_uint = @import("std").mem.zeroes(c_uint),
+    jobslot: c_uint = @import("std").mem.zeroes(c_uint),
+    dontcare: c_uint = @import("std").mem.zeroes(c_uint),
+};
+pub extern var children: [*c]struct_child;
 pub extern fn child_handler(sig: c_int) void;
 pub extern fn is_bourne_compatible_shell(path: [*c]const u8) c_int;
 pub extern fn new_job(file: ?*struct_file) void;
