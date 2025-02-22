@@ -441,7 +441,6 @@ parse_int (const char *ptr, const size_t len, const int base, uintmax_t max,
 intmax_t
 ar_scan (const char *archive, ar_member_func_t function, const void *arg)
 {
-  invalid: while (1) {
 #ifdef AIAMAG
   FL_HDR fl_header;
 # ifdef AIAMAGBIG
@@ -461,7 +460,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
     int nread;
     nread = readbuf (desc, buf, SARMAG);
     if (nread != SARMAG || memcmp (buf, ARMAG, SARMAG))
-      break invalid;
+      goto invalid;
   }
 #else
 #ifdef AIAMAG
@@ -469,7 +468,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
     int nread;
     nread = readbuf (desc, &fl_header, FL_HSZ);
     if (nread != FL_HSZ)
-      break invalid;
+      goto invalid;
 
 #ifdef AIAMAGBIG
     /* If this is a "big" archive, then set the flag and
@@ -483,18 +482,18 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
         /* seek back to beginning of archive */
         EINTRLOOP (o, lseek (desc, 0, 0));
         if (o < 0)
-          break invalid;
+          goto invalid;
 
         /* re-read the header into the "big" structure */
         nread = readbuf (desc, &fl_header_big, FL_HSZ_BIG);
         if (nread != FL_HSZ_BIG)
-          break invalid;
+          goto invalid;
       }
     else
 #endif
        /* Check to make sure this is a "normal" archive. */
       if (memcmp (fl_header.fl_magic, AIAMAG, SAIAMAG))
-        break invalid;
+        goto invalid;
   }
 #else
   {
@@ -506,7 +505,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
     int nread;
     nread = readbuf (desc, &buf, sizeof (buf));
     if (nread != sizeof (buf) || buf != ARMAG)
-      break invalid;
+      goto invalid;
   }
 #endif
 #endif
@@ -580,7 +579,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
 
         EINTRLOOP (o, lseek (desc, member_offset, 0));
         if (o < 0)
-          break invalid;
+          goto invalid;
 
 #ifdef AIAMAG
 #define       AR_MEMHDR_SZ(x) (sizeof(x) - sizeof (x._ar_name))
@@ -592,15 +591,15 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
                              AR_MEMHDR_SZ(member_header_big));
 
             if (nread != AR_MEMHDR_SZ(member_header_big))
-              break invalid;
+              goto invalid;
 
             sscanf (member_header_big.ar_namlen, "%4d", &name_len);
             if (name_len < 1 || name_len > ARNAME_MAX)
-              break invalid;
+              goto invalid;
 
             nread = readbuf (desc, name, name_len);
             if (nread != name_len)
-              break invalid;
+              goto invalid;
 
             name[name_len] = '\0';
 
@@ -620,15 +619,15 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
                              AR_MEMHDR_SZ(member_header));
 
             if (nread != AR_MEMHDR_SZ(member_header))
-              break invalid;
+              goto invalid;
 
             sscanf (member_header.ar_namlen, "%4d", &name_len);
             if (name_len < 1 || name_len > ARNAME_MAX)
-              break invalid;
+              goto invalid;
 
             nread = readbuf (desc, name, name_len);
             if (nread != name_len)
-              break invalid;
+              goto invalid;
 
             name[name_len] = '\0';
 
@@ -672,7 +671,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
                )
 #endif
             )
-          break invalid;
+          goto invalid;
 
         name = namebuf;
         memcpy (name, member_header.ar_name, sizeof member_header.ar_name);
@@ -712,12 +711,12 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
               size_t name_len;
 
               if (err|| name_off >= namemap_size)
-                break invalid;
+                goto invalid;
 
               name = namemap + name_off;
               name_len = strlen (name);
               if (name_len < 1)
-                break invalid;
+                goto invalid;
               long_name = 1;
             }
           else if (name[0] == '#'
@@ -728,12 +727,12 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
               unsigned int name_len = make_toui (name + 3, &err);
 
               if (err || name_len == 0 || name_len >= MIN (PATH_MAX, INT_MAX))
-                break invalid;
+                goto invalid;
 
               name = /* */ malloc /* from alloca */ (name_len + 1);
               nread = readbuf (desc, name, name_len);
               if (nread < 0 || (unsigned int) nread != name_len)
-                break invalid;
+                goto invalid;
 
               name[name_len] = '\0';
 
@@ -791,7 +790,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
           sscanf (member_header.ar_nxtmem, "%12ld", &member_offset);
 
         if (lseek (desc, member_offset, 0) != member_offset)
-          break invalid;
+          goto invalid;
 #else
 
         /* If this member maps archive names, we must read it in.  The
@@ -803,11 +802,11 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
             char *limit;
 
             if (eltsize > INT_MAX)
-              break invalid;
+              goto invalid;
             namemap = /* */ malloc /* from alloca */ (eltsize + 1);
             nread = readbuf (desc, namemap, eltsize);
             if (nread != eltsize)
-              break invalid;
+              goto invalid;
             namemap_size = eltsize;
 
             /* The names are separated by newlines.  Some formats have
@@ -838,7 +837,7 @@ ar_scan (const char *archive, ar_member_func_t function, const void *arg)
   close (desc);
   return 0;
 
- }/* invalid: */
+ invalid:
   close (desc);
   return -2;
 }
@@ -923,7 +922,6 @@ ar_member_pos (int desc UNUSED, const char *mem, int truncated,
 int
 ar_member_touch (const char *arname, const char *memname)
 {
-  lose: while (1) {
   intmax_t pos = ar_scan (arname, ar_member_pos, memname);
   off_t opos;
   int fd;
@@ -946,20 +944,20 @@ ar_member_touch (const char *arname, const char *memname)
   /* Read in this member's header */
   EINTRLOOP (o, lseek (fd, opos, 0));
   if (o < 0)
-    break lose;
+    goto lose;
   r = readbuf (fd, &ar_hdr, AR_HDR_SIZE);
   if (r != AR_HDR_SIZE)
-    break lose;
+    goto lose;
   /* The file's mtime is the time we we want.  */
   EINTRLOOP (r, fstat (fd, &statbuf));
   if (r < 0)
-    break lose;
+    goto lose;
   /* Advance member's time to that time */
 #if defined(ARFMAG) || defined(ARFZMAG) || defined(AIAMAG) || defined(WINDOWS32)
   datelen = snprintf (TOCHAR (ar_hdr.ar_date), sizeof ar_hdr.ar_date,
                       "%" PRIdMAX, (intmax_t) statbuf.st_mtime);
   if (! (0 <= datelen && datelen < (int) sizeof ar_hdr.ar_date))
-    break lose;
+    goto lose;
   memset (ar_hdr.ar_date + datelen, ' ', sizeof ar_hdr.ar_date - datelen);
 #else
   ar_hdr.ar_date = statbuf.st_mtime;
@@ -967,14 +965,14 @@ ar_member_touch (const char *arname, const char *memname)
   /* Write back this member's header */
   EINTRLOOP (o, lseek (fd, opos, 0));
   if (o < 0)
-    break lose;
+    goto lose;
   r = writebuf (fd, &ar_hdr, AR_HDR_SIZE);
   if (r != AR_HDR_SIZE)
-    break lose;
+    goto lose;
   close (fd);
   return 0;
 
- }/* lose: */
+ lose:
   r = errno;
   close (fd);
   errno = r;

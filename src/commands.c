@@ -354,7 +354,7 @@ chop_commands (struct commands *cmds)
       while (*p != '\0')
         {
           const char *end = p;
-        find_end: while (1) {
+        find_end:;
           end = strchr (end, '\n');
           if (end == NULL)
             end = p + strlen (p);
@@ -370,10 +370,9 @@ chop_commands (struct commands *cmds)
               if (backslash)
                 {
                   ++end;
-                  continue find_end;
+                  goto find_end;
                 }
             }
-        break; }
 
           if (nlines == USHRT_MAX)
             ON (fatal, &cmds->fileinfo,

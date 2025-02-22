@@ -1525,7 +1525,6 @@ do_define (char *name, enum variable_origin origin, struct ebuffer *ebuf)
 static int
 conditional_line (char *line, size_t len, const floc *flocp)
 {
-  DONE: while (1) {
   const char *cmdname;
   enum { c_ifdef, c_ifndef, c_ifeq, c_ifneq, c_else, c_endif } cmdtype;
   unsigned int i;
@@ -1563,7 +1562,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
 
       --conditionals->if_cmds;
 
-      break DONE;
+      goto DONE;
     }
 
   /* An 'else' statement can either be simple, or it can have another
@@ -1597,7 +1596,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
       if (*line == '\0')
         {
           conditionals->seen_else[o] = 1;
-          break DONE;
+          goto DONE;
         }
 
       /* The 'else' has extra text.  That text must be another conditional
@@ -1621,7 +1620,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
           --conditionals->if_cmds;
         }
 
-      break DONE;
+      goto DONE;
     }
 
   if (conditionals->allocated == 0)
@@ -1775,7 +1774,7 @@ conditional_line (char *line, size_t len, const floc *flocp)
       conditionals->ignoring[o] = (streq (s1, s2) == (cmdtype == c_ifneq));
     }
 
- break; }/* DONE: */
+ DONE:
   /* Search through the stack to see if we're ignoring.  */
   for (i = 0; i < conditionals->if_cmds; ++i)
     if (conditionals->ignoring[i])
@@ -2669,9 +2668,8 @@ readline (struct ebuffer *ebuf)
   end = p + ebuf->size;
   *p = '\0';
 
-  outer_while_2672: while (fgets (p, (int) (end - p), ebuf->fp) != 0)
+  while (fgets (p, (int) (end - p), ebuf->fp) != 0)
     {
-      more_buffer: while (1) {
       char *p2;
       size_t len;
       int backslash;
@@ -2696,7 +2694,7 @@ readline (struct ebuffer *ebuf)
       /* If the last char isn't a newline, the whole line didn't fit into the
          buffer.  Get some more buffer and try again.  */
       if (p[-1] != '\n')
-        break more_buffer;
+        goto more_buffer;
 
       /* We got a newline, so add one to the count of lines.  */
       ++nlines;
@@ -2722,17 +2720,17 @@ readline (struct ebuffer *ebuf)
       if (!backslash)
         {
           p[-1] = '\0';
-          break outer_while_2672;
+          break;
         }
 
       /* It was a backslash/newline combo.  If we have more space, read
          another line.  */
       if (end - p >= 80)
-        continue outer_while_2672;
+        continue;
 
       /* We need more space at the end of our buffer, so realloc it.
          Make sure to preserve the current offset of p.  */
-    break; }/* more_buffer: */
+    more_buffer:
       {
         size_t off = p - start;
         ebuf->size *= 2;
@@ -2777,8 +2775,6 @@ readline (struct ebuffer *ebuf)
 static enum make_word_type
 get_next_mword (char *buffer, char **startp, size_t *length)
 {
-  done: while (1) {
-  done_word: while (1) {
   enum make_word_type wtype;
   char *p = buffer, *beg;
   char c;
@@ -2795,15 +2791,15 @@ get_next_mword (char *buffer, char **startp, size_t *length)
     {
     case '\0':
       wtype = w_eol;
-      break done;
+      goto done;
 
     case ';':
       wtype = w_semicolon;
-      break done;
+      goto done;
 
     case '=':
       wtype = w_varassign;
-      break done;
+      goto done;
 
     case ':':
       if (*p == '=')
@@ -2824,7 +2820,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
         }
       else
         wtype = w_colon;
-      break done;
+      goto done;
 
     case '&':
       if (*p == ':')
@@ -2837,7 +2833,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
               ++p;
               wtype = w_ampdcolon; /* &:: */
             }
-          break done;
+          goto done;
         }
       break;
 
@@ -2848,7 +2844,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
         {
           ++p;
           wtype = w_varassign; /* += or ?= or != */
-          break done;
+          goto done;
         }
       break;
 
@@ -2871,12 +2867,12 @@ get_next_mword (char *buffer, char **startp, size_t *length)
       int count;
 
       if (END_OF_TOKEN (c))
-        break done_word;
+        goto done_word;
 
       switch (c)
         {
         case '=':
-          break done_word;
+          goto done_word;
 
         case ':':
 #ifdef HAVE_DOS_PATHS
@@ -2887,14 +2883,14 @@ get_next_mword (char *buffer, char **startp, size_t *length)
               && isalpha ((unsigned char)p[-2]))
             break;
 #endif
-          break done_word;
+          goto done_word;
 
         case '$':
           c = *(p++);
           if (c == '$')
             break;
           if (c == '\0')
-            break done_word;
+            goto done_word;
 
           /* This is a variable reference, so note that it's expandable.
              Then read it to the matching close paren.  */
@@ -2923,7 +2919,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
         case '?':
         case '+':
           if (*p == '=')
-            break done_word;
+            goto done_word;
           break;
 
         case '\\':
@@ -2940,7 +2936,7 @@ get_next_mword (char *buffer, char **startp, size_t *length)
 
         case '&':
           if (*p == ':')
-            break done_word;
+            goto done_word;
           break;
 
         default:
@@ -2949,10 +2945,10 @@ get_next_mword (char *buffer, char **startp, size_t *length)
 
       c = *(p++);
     }
- break; }/* done_word: */
+ done_word:
   --p;
 
- break; }/* done: */
+ done:
   if (startp)
     *startp = beg;
   if (length)
