@@ -959,6 +959,7 @@ file_timestamp_now (int *resolution)
      only one-second resolution.  The code below should work, but it's
      not worth the hassle of debugging it on hosts where it fails.  */
 #if FILE_TIMESTAMP_HI_RES
+  got_time: while (1) {
 # if HAVE_CLOCK_GETTIME && defined CLOCK_REALTIME
   {
     struct timespec timespec;
@@ -967,7 +968,7 @@ file_timestamp_now (int *resolution)
         r = 1;
         s = timespec.tv_sec;
         ns = timespec.tv_nsec;
-        goto got_time;
+        break got_time;
       }
   }
 # endif
@@ -979,7 +980,7 @@ file_timestamp_now (int *resolution)
         r = 1000;
         s = timeval.tv_sec;
         ns = timeval.tv_usec * 1000;
-        goto got_time;
+        break got_time;
       }
   }
 # endif
@@ -990,7 +991,7 @@ file_timestamp_now (int *resolution)
   ns = 0;
 
 #if FILE_TIMESTAMP_HI_RES
- got_time:
+ break; }/* got_time: */
 #endif
   *resolution = r;
   return file_timestamp_cons (0, s, ns);

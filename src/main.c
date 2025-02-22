@@ -424,10 +424,10 @@ struct command_switch
 
     void *value_ptr;              /* Pointer to the value-holding variable.  */
 
-    unsigned int env:1;           /* Can come from MAKEFLAGS.  */
-    unsigned int toenv:1;         /* Should be put in MAKEFLAGS.  */
-    unsigned int no_makefile:1;   /* Don't propagate when remaking makefiles. */
-    unsigned int specified:1;     /* Set if the switch was specified somewhere.
+    unsigned int env /* :1 */;             /* Can come from MAKEFLAGS.  */
+    unsigned int toenv /* :1 */;           /* Should be put in MAKEFLAGS.  */
+    unsigned int no_makefile /* :1 */;     /* Don't propagate when remaking makefiles. */
+    unsigned int specified /* :1 */;       /* Set if the switch was specified somewhere.
                                      Allows switches that are ON by default to
                                      appear in MAKEFLAGS when set explicitly. */
 

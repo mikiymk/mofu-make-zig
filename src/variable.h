@@ -65,26 +65,26 @@ struct variable
     char *value;                /* Variable value.  */
     floc fileinfo;              /* Where the variable was defined.  */
     unsigned int length;        /* strlen (name) */
-    unsigned int recursive:1;   /* Gets recursively re-evaluated.  */
-    unsigned int append:1;      /* Nonzero if an appending target-specific
+    unsigned int recursive/* :1 */;   /* Gets recursively re-evaluated.  */
+    unsigned int append/* :1 */;      /* Nonzero if an appending target-specific
                                    variable.  */
-    unsigned int conditional:1; /* Nonzero if set with a ?=. */
-    unsigned int per_target:1;  /* Nonzero if a target-specific variable.  */
-    unsigned int special:1;     /* Nonzero if this is a special variable.  */
-    unsigned int exportable:1;  /* Nonzero if the variable _could_ be
+    unsigned int conditional/* :1 */; /* Nonzero if set with a ?=. */
+    unsigned int per_target/* :1 */;  /* Nonzero if a target-specific variable.  */
+    unsigned int special/* :1 */;     /* Nonzero if this is a special variable.  */
+    unsigned int exportable/* :1 */;  /* Nonzero if the variable _could_ be
                                    exported.  */
-    unsigned int expanding:1;   /* Nonzero if currently being expanded.  */
-    unsigned int private_var:1; /* Nonzero avoids inheritance of this
+    unsigned int expanding/* :1 */;   /* Nonzero if currently being expanded.  */
+    unsigned int private_var/* :1 */; /* Nonzero avoids inheritance of this
                                    target-specific variable.  */
-    unsigned int exp_count:EXP_COUNT_BITS;
+    unsigned int exp_count/* :EXP_COUNT_BITS */;
                                 /* If >1, allow this many self-referential
                                    expansions.  */
     enum variable_flavor
-      flavor ENUM_BITFIELD (3); /* Variable flavor.  */
+      flavor /* ENUM_BITFIELD (3) */; /* Variable flavor.  */
     enum variable_origin
-      origin ENUM_BITFIELD (3); /* Variable origin.  */
+      origin /* ENUM_BITFIELD (3) */; /* Variable origin.  */
     enum variable_export
-      export ENUM_BITFIELD (2); /* Export control. */
+      export /* ENUM_BITFIELD (2) */; /* Export control. */
   };
 
 /* Structure that represents a variable set.  */

@@ -74,6 +74,8 @@ try_implicit_rule (struct file *file, unsigned int depth)
 static const char *
 get_next_word (const char *buffer, size_t *length)
 {
+  done: while (1) {
+  done_word: while (1) {
   const char *p = buffer, *beg;
   char c;
 
@@ -98,7 +100,7 @@ get_next_word (const char *buffer, size_t *length)
         case '\0':
         case ' ':
         case '\t':
-          goto done_word;
+          break done_word;
 
         case '$':
           c = *(p++);
@@ -129,7 +131,7 @@ get_next_word (const char *buffer, size_t *length)
           break;
 
         case '|':
-          goto done;
+          break done;
 
         default:
           break;
@@ -137,10 +139,10 @@ get_next_word (const char *buffer, size_t *length)
 
       c = *(p++);
     }
- done_word:
+  break; }/* done_word: */
   --p;
 
- done:
+ break; }/* done: */
   if (length)
     *length = p - beg;
 
@@ -211,6 +213,7 @@ pattern_search (struct file *file, int archive,
                 unsigned int depth, unsigned int recursions,
                 int allow_compat_rules)
 {
+  done: while (1) {
   /* Filename we are searching for a rule for.  */
   const char *filename = archive ? strchr (file->name, '(') : file->name;
 
@@ -423,7 +426,7 @@ pattern_search (struct file *file, int archive,
 
   /* Bail out early if we haven't found any rules. */
   if (nrules == 0)
-    goto done;
+    break done;
 
   /* Sort the rules to place matches with the shortest stem first. This
      way the most specific rules will be tried first. */
@@ -963,7 +966,7 @@ pattern_search (struct file *file, int archive,
 
   /* RULE is nil if the loop went through the list but everything failed.  */
   if (rule == 0)
-    goto done;
+    break done;
 
   foundrule = ri;
 
@@ -1137,7 +1140,7 @@ pattern_search (struct file *file, int archive,
           file->also_make = new;
         }
 
- done:
+ break; }/* done: */
   free (tryrules);
   free (deplist);
 

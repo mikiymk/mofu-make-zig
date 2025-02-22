@@ -72,46 +72,46 @@ struct file
         us_none,                /* No attempt to update has been made.  */
         us_question,            /* Needs to be updated (-q is is set).  */
         us_failed               /* Update failed.  */
-      } update_status ENUM_BITFIELD (2);
+      } update_status /* ENUM_BITFIELD (2) */;
     enum cmd_state              /* State of commands.  ORDER IS IMPORTANT!  */
       {
         cs_not_started = 0,     /* Not yet started.  Must be 0!  */
         cs_deps_running,        /* Dep commands running.  */
         cs_running,             /* Commands running.  */
         cs_finished             /* Commands finished.  */
-      } command_state ENUM_BITFIELD (2);
+      } command_state /* ENUM_BITFIELD (2) */;
 
-    unsigned int builtin:1;     /* True if the file is a builtin rule. */
-    unsigned int precious:1;    /* Non-0 means don't delete file on quit */
-    unsigned int loaded:1;      /* True if the file is a loaded object. */
-    unsigned int unloaded:1;    /* True if this loaded object was unloaded. */
-    unsigned int low_resolution_time:1; /* Nonzero if this file's time stamp
+    unsigned int builtin /* :1 */;     /* True if the file is a builtin rule. */
+    unsigned int precious /* :1 */;    /* Non-0 means don't delete file on quit */
+    unsigned int loaded /* :1 */;      /* True if the file is a loaded object. */
+    unsigned int unloaded /* :1 */;    /* True if this loaded object was unloaded. */
+    unsigned int low_resolution_time /* :1 */; /* Nonzero if this file's time stamp
                                            has only one-second resolution.  */
-    unsigned int tried_implicit:1; /* Nonzero if have searched
+    unsigned int tried_implicit /* :1 */; /* Nonzero if have searched
                                       for implicit rule for making
                                       this file; don't search again.  */
-    unsigned int updating:1;    /* Nonzero while updating deps of this file */
-    unsigned int updated:1;     /* Nonzero if this file has been remade.  */
-    unsigned int is_target:1;   /* Nonzero if file is described as target.  */
-    unsigned int cmd_target:1;  /* Nonzero if file was given on cmd line.  */
-    unsigned int phony:1;       /* Nonzero if this is a phony file
+    unsigned int updating /* :1 */;    /* Nonzero while updating deps of this file */
+    unsigned int updated /* :1 */;     /* Nonzero if this file has been remade.  */
+    unsigned int is_target /* :1 */;   /* Nonzero if file is described as target.  */
+    unsigned int cmd_target /* :1 */;  /* Nonzero if file was given on cmd line.  */
+    unsigned int phony /* :1 */;       /* Nonzero if this is a phony file
                                    i.e., a prerequisite of .PHONY.  */
-    unsigned int intermediate:1;/* Nonzero if this is an intermediate file.  */
-    unsigned int is_explicit:1; /* Nonzero if explicitly mentioned. */
-    unsigned int secondary:1;   /* Nonzero means remove_intermediates should
+    unsigned int intermediate /* :1 */;/* Nonzero if this is an intermediate file.  */
+    unsigned int is_explicit /* :1 */; /* Nonzero if explicitly mentioned. */
+    unsigned int secondary /* :1 */;   /* Nonzero means remove_intermediates should
                                    not delete it.  */
-    unsigned int notintermediate:1; /* Nonzero means a file is a prereq to
+    unsigned int notintermediate /* :1 */; /* Nonzero means a file is a prereq to
                                        .NOTINTERMEDIATE.  */
-    unsigned int dontcare:1;    /* Nonzero if no complaint is to be made if
+    unsigned int dontcare /* :1 */;    /* Nonzero if no complaint is to be made if
                                    this target cannot be remade.  */
-    unsigned int ignore_vpath:1;/* Nonzero if we threw out VPATH name.  */
-    unsigned int pat_searched:1;/* Nonzero if we already searched for
+    unsigned int ignore_vpath /* :1 */;/* Nonzero if we threw out VPATH name.  */
+    unsigned int pat_searched /* :1 */;/* Nonzero if we already searched for
                                    pattern-specific variables.  */
-    unsigned int no_diag:1;     /* True if the file failed to update and no
+    unsigned int no_diag /* :1 */;     /* True if the file failed to update and no
                                    diagnostics has been issued (dontcare). */
-    unsigned int was_shuffled:1; /* Did we already shuffle 'deps'? used when
+    unsigned int was_shuffled /* :1 */; /* Did we already shuffle 'deps'? used when
                                     --shuffle passes through the graph.  */
-    unsigned int snapped:1;     /* True if the deps of this file have been
+    unsigned int snapped /* :1 */;     /* True if the deps of this file have been
                                    secondary expanded.  */
   };
 

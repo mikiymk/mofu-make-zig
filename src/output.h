@@ -18,7 +18,7 @@ struct output
   {
     int out;
     int err;
-    unsigned int syncout:1;     /* True if we want to synchronize output.  */
+    unsigned int syncout /* :1 */;     /* True if we want to synchronize output.  */
  };
 
 extern struct output *output_context;
