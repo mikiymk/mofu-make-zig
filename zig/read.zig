@@ -374,9 +374,9 @@ const floc = extern struct {
 };
 extern fn concat(c_uint, ...) [*c]const u8;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
-extern fn out_of_memory() noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
+const out_of_memory = @import("output.zig").out_of_memory;
 const o_default: c_int = 0;
 
 const o_file: c_int = 2;
@@ -500,7 +500,7 @@ extern fn file_exists_p([*c]const u8) c_int;
 
 extern fn dir_setup_glob([*c]glob_t) void;
 
-extern fn construct_vpath_list(pattern: [*c]u8, dirpath: [*c]u8) void;
+const construct_vpath_list = @import("vpath.zig").construct_vpath_list;
 
 export fn construct_include_path(arg_arg_dirs: [*c][*c]const u8) void {
     var arg_dirs = arg_arg_dirs;
@@ -537,13 +537,13 @@ export fn construct_include_path(arg_arg_dirs: [*c][*c]const u8) void {
         _ = &expanded;
         var e: c_int = undefined;
         _ = &e;
-        if ((@as(c_int, @bitCast(@as(c_uint, dir[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '-')) and (@as(c_int, @bitCast(@as(c_uint, dir[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\x00'))) {
+        if ((@as(c_int, @bitCast(@as(c_uint, dir[0]))) == @as(c_int, '-')) and (@as(c_int, @bitCast(@as(c_uint, dir[1]))) == @as(c_int, '\x00'))) {
             disable = 1;
             idx = 0;
             max_incl_len = 0;
             continue;
         }
-        if (@as(c_int, @bitCast(@as(c_uint, dir[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '~')) {
+        if (@as(c_int, @bitCast(@as(c_uint, dir[0]))) == @as(c_int, '~')) {
             expanded = tilde_expand(dir);
             if (expanded != null) {
                 dir = expanded;
@@ -787,23 +787,23 @@ export fn parse_file_seq(arg_stringp: [*c][*c]u8, arg_size: usize, arg_stopmap: 
             found_wait = 1;
             continue;
         }
-        if (!((flags & @as(c_int, 1)) != @as(c_int, 0))) while (((@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(s))), @sizeOf(u8)) > @as(c_long, @bitCast(@as(c_long, @as(c_int, 2))))) and (@as(c_int, @bitCast(@as(c_uint, s[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '.'))) and (@as(c_int, @bitCast(@as(c_uint, s[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '/'))) {
+        if (!((flags & @as(c_int, 1)) != @as(c_int, 0))) while (((@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(s))), @sizeOf(u8)) > @as(c_long, @bitCast(@as(c_long, @as(c_int, 2))))) and (@as(c_int, @bitCast(@as(c_uint, s[0]))) == @as(c_int, '.'))) and (@as(c_int, @bitCast(@as(c_uint, s[1]))) == @as(c_int, '/'))) {
             s += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));
             while (@as(c_int, @bitCast(@as(c_uint, s.*))) == @as(c_int, '/')) {
                 s += 1;
             }
         };
         if (s == p) {
-            tp[@as(c_uint, @intCast(@as(c_int, 0)))] = '.';
-            tp[@as(c_uint, @intCast(@as(c_int, 1)))] = '/';
-            tp[@as(c_uint, @intCast(@as(c_int, 2)))] = '\x00';
+            tp[0] = '.';
+            tp[1] = '/';
+            tp[2] = '\x00';
             nlen = 2;
         } else {
             nlen = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(s))), @sizeOf(u8))));
             _ = memcpy(@as(?*anyopaque, @ptrCast(tp)), @as(?*const anyopaque, @ptrCast(s)), nlen);
             tp[nlen] = '\x00';
         }
-        if (((!((flags & @as(c_int, 2)) != @as(c_int, 0)) and (tp == tmpbuf.static)) and (@as(c_int, @bitCast(@as(c_uint, tp[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '('))) and (@as(c_int, @bitCast(@as(c_uint, tp[nlen -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]))) != @as(c_int, ')'))) {
+        if (((!((flags & @as(c_int, 2)) != @as(c_int, 0)) and (tp == tmpbuf.static)) and (@as(c_int, @bitCast(@as(c_uint, tp[0]))) != @as(c_int, '('))) and (@as(c_int, @bitCast(@as(c_uint, tp[nlen -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]))) != @as(c_int, ')'))) {
             var n: [*c]u8 = strchr(tp, @as(c_int, '('));
             _ = &n;
             if (n != null) {
@@ -866,7 +866,7 @@ export fn parse_file_seq(arg_stringp: [*c][*c]u8, arg_size: usize, arg_stopmap: 
             continue;
         }
         name = tmpbuf.static;
-        if (@as(c_int, @bitCast(@as(c_uint, tmpbuf.static[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '~')) {
+        if (@as(c_int, @bitCast(@as(c_uint, tmpbuf.static[0]))) == @as(c_int, '~')) {
             tildep = tilde_expand(tmpbuf.static);
             if (tildep != null) {
                 name = tildep;
@@ -994,7 +994,7 @@ const struct_passwd = extern struct {
 export fn tilde_expand(arg_name: [*c]const u8) [*c]u8 {
     var name = arg_name;
     _ = &name;
-    if ((@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '/')) or (@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\x00'))) {
+    if ((@as(c_int, @bitCast(@as(c_uint, name[1]))) == @as(c_int, '/')) or (@as(c_int, @bitCast(@as(c_uint, name[1]))) == @as(c_int, '\x00'))) {
         var home_dir: [*c]u8 = undefined;
         _ = &home_dir;
         var is_variable: c_int = undefined;
@@ -1006,12 +1006,12 @@ export fn tilde_expand(arg_name: [*c]const u8) [*c]u8 {
             home_dir = allocated_variable_expand_for_file("$(HOME)", @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
             warn_undefined_variables_flag = save;
         }
-        is_variable = @intFromBool(@as(c_int, @bitCast(@as(c_uint, home_dir[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00'));
+        is_variable = @intFromBool(@as(c_int, @bitCast(@as(c_uint, home_dir[0]))) != @as(c_int, '\x00'));
         if (!(is_variable != 0)) {
             free(@as(?*anyopaque, @ptrCast(home_dir)));
             home_dir = getenv("HOME");
         }
-        if ((home_dir == null) or (@as(c_int, @bitCast(@as(c_uint, home_dir[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00'))) {
+        if ((home_dir == null) or (@as(c_int, @bitCast(@as(c_uint, home_dir[0]))) == @as(c_int, '\x00'))) {
             var logname: [*c]u8 = getlogin();
             _ = &logname;
             home_dir = null;
@@ -1359,7 +1359,7 @@ fn eval_makefile(arg_filename: [*c]const u8, arg_flags: c_ushort) callconv(.C) [
         }
         _ = puts("...");
     }
-    if (!((@as(c_int, @bitCast(@as(c_uint, flags))) & (@as(c_int, 1) << @intCast(3))) != 0) and (@as(c_int, @bitCast(@as(c_uint, filename[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '~'))) {
+    if (!((@as(c_int, @bitCast(@as(c_uint, flags))) & (@as(c_int, 1) << @intCast(3))) != 0) and (@as(c_int, @bitCast(@as(c_uint, filename[0]))) == @as(c_int, '~'))) {
         expanded = tilde_expand(filename);
         if (expanded != null) {
             filename = expanded;
@@ -1523,7 +1523,7 @@ fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) void 
         if (ebuf.*.floc.lineno == @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) {
             var ul: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(line)));
             _ = &ul;
-            if (((@as(c_int, @bitCast(@as(c_uint, ul[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, 239)) and (@as(c_int, @bitCast(@as(c_uint, ul[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, 187))) and (@as(c_int, @bitCast(@as(c_uint, ul[@as(c_uint, @intCast(@as(c_int, 2)))]))) == @as(c_int, 191))) {
+            if (((@as(c_int, @bitCast(@as(c_uint, ul[0]))) == @as(c_int, 239)) and (@as(c_int, @bitCast(@as(c_uint, ul[1]))) == @as(c_int, 187))) and (@as(c_int, @bitCast(@as(c_uint, ul[2]))) == @as(c_int, 191))) {
                 line += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 3)))));
                 if ((@as(c_int, 1) & db_level) != 0) {
                     if (ebuf.*.floc.filenm != null) {
@@ -1534,9 +1534,9 @@ fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) void 
                 }
             }
         }
-        if (@as(c_int, @bitCast(@as(c_uint, line[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) continue;
+        if (@as(c_int, @bitCast(@as(c_uint, line[0]))) == @as(c_int, '\x00')) continue;
         linelen = strlen(line);
-        if (@as(c_int, @bitCast(@as(c_uint, line[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, @bitCast(@as(c_uint, cmd_prefix)))) {
+        if (@as(c_int, @bitCast(@as(c_uint, line[0]))) == @as(c_int, @bitCast(@as(c_uint, cmd_prefix)))) {
             if (no_targets != 0) continue;
             if (filenames != null) {
                 if (ignoring != 0) continue;
@@ -1722,7 +1722,7 @@ fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) void 
             _ = &new_conditionals;
             var files: [*c]struct_nameseq = undefined;
             _ = &files;
-            var noerror: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, p[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, 'i'));
+            var noerror: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, p[0]))) != @as(c_int, 'i'));
             _ = &noerror;
             while (true) {
                 if (filenames != null) {
@@ -1776,7 +1776,7 @@ fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) void 
         if (((wlen == (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("load")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0))) or ((wlen == (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) and (memcmp(@as(?*const anyopaque, @ptrCast("-load")), @as(?*const anyopaque, @ptrCast(p)), @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)))) {
             var files: [*c]struct_nameseq = undefined;
             _ = &files;
-            var noerror: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, p[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '-'));
+            var noerror: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, p[0]))) == @as(c_int, '-'));
             _ = &noerror;
             while (true) {
                 if (filenames != null) {
@@ -1879,7 +1879,7 @@ fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) void 
             }
             continue;
         }
-        if (@as(c_int, @bitCast(@as(c_uint, line[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, @bitCast(@as(c_uint, cmd_prefix)))) {
+        if (@as(c_int, @bitCast(@as(c_uint, line[0]))) == @as(c_int, @bitCast(@as(c_uint, cmd_prefix)))) {
             fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("recipe commences before first target"));
         }
         {
@@ -1991,7 +1991,7 @@ fn eval(arg_ebuf: [*c]struct_ebuffer, arg_set_default: c_int) callconv(.C) void 
                     fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("missing separator (did you mean TAB instead of 8 spaces?)"));
                 }
                 p2 = next_token(line);
-                if ((strncmp(p2, "if", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) == @as(c_int, 0)) and (((strncmp(&p2[@as(c_uint, @intCast(@as(c_int, 2)))], "neq", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) == @as(c_int, 0)) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p2[@as(c_uint, @intCast(@as(c_int, 5)))]))]))) & @as(c_int, 2)) != @as(c_int, 0))) or ((strncmp(&p2[@as(c_uint, @intCast(@as(c_int, 2)))], "eq", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) == @as(c_int, 0)) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p2[@as(c_uint, @intCast(@as(c_int, 4)))]))]))) & @as(c_int, 2)) != @as(c_int, 0))))) {
+                if ((strncmp(p2, "if", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) == @as(c_int, 0)) and (((strncmp(&p2[2], "neq", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) == @as(c_int, 0)) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p2[5]))]))) & @as(c_int, 2)) != @as(c_int, 0))) or ((strncmp(&p2[2], "eq", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) == @as(c_int, 0)) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p2[4]))]))) & @as(c_int, 2)) != @as(c_int, 0))))) {
                     fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("missing separator (ifeq/ifneq must be followed by whitespace)"));
                 }
                 fatal(fstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("missing separator"));
@@ -2180,7 +2180,7 @@ fn readline(arg_ebuf: [*c]struct_ebuffer) callconv(.C) c_long {
         len = strlen(p);
         if (len == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
             @"error"(&ebuf.*.floc, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("warning: NUL character seen; rest of line ignored"));
-            p[@as(c_uint, @intCast(@as(c_int, 0)))] = '\n';
+            p[0] = '\n';
             len = 1;
         }
         p += @as([*c]u8, @ptrFromInt(len));
@@ -2274,7 +2274,7 @@ fn do_undefine(arg_name: [*c]u8, arg_origin: enum_variable_origin, arg_ebuf: [*c
     while ((p > name) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & @as(c_int, 2)) != @as(c_int, 0))) {
         p -= 1;
     }
-    p[@as(c_uint, @intCast(@as(c_int, 1)))] = '\x00';
+    p[1] = '\x00';
     undefine_variable_in_set(name, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(name))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1)))))), origin, null);
     free(@as(?*anyopaque, @ptrCast(@"var")));
 }
@@ -2308,21 +2308,21 @@ fn do_define(arg_name: [*c]u8, arg_origin: enum_variable_origin, arg_ebuf: [*c]s
     if (p == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
         @"var".flavor = @as(c_uint, @bitCast(f_recursive));
     } else {
-        if (@as(c_int, @bitCast(@as(c_uint, @"var".value[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00')) {
+        if (@as(c_int, @bitCast(@as(c_uint, @"var".value[0]))) != @as(c_int, '\x00')) {
             @"error"(&defstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("extraneous text after 'define' directive"));
         }
         @"var".name[@"var".length] = '\x00';
     }
     n = allocated_variable_expand_for_file(name, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
     name = next_token(n);
-    if (@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) {
+    if (@as(c_int, @bitCast(@as(c_uint, name[0]))) == @as(c_int, '\x00')) {
         fatal(&defstart, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("empty variable name"));
     }
     p = (name + strlen(name)) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
     while ((p > name) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & @as(c_int, 2)) != @as(c_int, 0))) {
         p -= 1;
     }
-    p[@as(c_uint, @intCast(@as(c_int, 1)))] = '\x00';
+    p[1] = '\x00';
     while (true) {
         var len: usize = undefined;
         _ = &len;
@@ -2336,12 +2336,12 @@ fn do_define(arg_name: [*c]u8, arg_origin: enum_variable_origin, arg_ebuf: [*c]s
         ebuf.*.floc.lineno +%= @as(c_ulong, @bitCast(nlines));
         line = ebuf.*.buffer;
         collapse_continuations(line);
-        if (@as(c_int, @bitCast(@as(c_uint, line[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, @bitCast(@as(c_uint, cmd_prefix)))) {
+        if (@as(c_int, @bitCast(@as(c_uint, line[0]))) != @as(c_int, @bitCast(@as(c_uint, cmd_prefix)))) {
             p = next_token(line);
             len = strlen(p);
-            if (((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 6))))) or ((len > @as(usize, @bitCast(@as(c_long, @as(c_int, 6))))) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p[@as(c_uint, @intCast(@as(c_int, 6)))]))]))) & @as(c_int, 2)) != @as(c_int, 0)))) and (strncmp(p, "define", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 6))))) == @as(c_int, 0))) {
+            if (((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 6))))) or ((len > @as(usize, @bitCast(@as(c_long, @as(c_int, 6))))) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p[6]))]))) & @as(c_int, 2)) != @as(c_int, 0)))) and (strncmp(p, "define", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 6))))) == @as(c_int, 0))) {
                 nlevels += 1;
-            } else if (((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 5))))) or ((len > @as(usize, @bitCast(@as(c_long, @as(c_int, 5))))) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p[@as(c_uint, @intCast(@as(c_int, 5)))]))]))) & @as(c_int, 2)) != @as(c_int, 0)))) and (strncmp(p, "endef", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 5))))) == @as(c_int, 0))) {
+            } else if (((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 5))))) or ((len > @as(usize, @bitCast(@as(c_long, @as(c_int, 5))))) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p[5]))]))) & @as(c_int, 2)) != @as(c_int, 0)))) and (strncmp(p, "endef", @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 5))))) == @as(c_int, 0))) {
                 p += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 5)))));
                 remove_comments(p);
                 if (@as(c_int, @bitCast(@as(c_uint, next_token(p).*))) != @as(c_int, '\x00')) {
@@ -2371,7 +2371,7 @@ fn do_define(arg_name: [*c]u8, arg_origin: enum_variable_origin, arg_ebuf: [*c]s
         ] = '\n';
     }
     if (idx == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
-        definition[@as(c_uint, @intCast(@as(c_int, 0)))] = '\x00';
+        definition[0] = '\x00';
     } else {
         definition[idx -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))] = '\x00';
     }
@@ -2684,7 +2684,7 @@ fn check_specials(arg_files: [*c]struct_nameseq, arg_set_default: c_int) callcon
                 one_shell = 1;
                 continue;
             }
-            if ((set_default != 0) and (@as(c_int, @bitCast(@as(c_uint, default_goal_var.*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00'))) {
+            if ((set_default != 0) and (@as(c_int, @bitCast(@as(c_uint, default_goal_var.*.value[0]))) == @as(c_int, '\x00'))) {
                 var d: [*c]struct_dep = undefined;
                 _ = &d;
                 var reject: c_int = 0;
@@ -2843,8 +2843,8 @@ fn record_files(arg_filenames: [*c]struct_nameseq, arg_are_also_makes: c_int, ar
         }
         targets = @as([*c][*c]const u8, @ptrCast(@alignCast(xmalloc(@as(c_ulong, @bitCast(@as(c_ulong, c))) *% @sizeOf([*c]const u8)))));
         target_pats = @as([*c][*c]const u8, @ptrCast(@alignCast(xmalloc(@as(c_ulong, @bitCast(@as(c_ulong, c))) *% @sizeOf([*c]const u8)))));
-        targets[@as(c_uint, @intCast(@as(c_int, 0)))] = name;
-        target_pats[@as(c_uint, @intCast(@as(c_int, 0)))] = implicit_percent;
+        targets[0] = name;
+        target_pats[0] = implicit_percent;
         c = 1;
         while (filenames != null) {
             name = filenames.*.name;
@@ -3129,7 +3129,7 @@ fn get_next_mword(arg_buffer: [*c]u8, arg_startp: [*c][*c]u8, arg_length: [*c]us
                     wtype = @as(c_uint, @bitCast(w_varassign));
                 } else if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, ':')) {
                     p += 1;
-                    if (@as(c_int, @bitCast(@as(c_uint, p[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '=')) {
+                    if (@as(c_int, @bitCast(@as(c_uint, p[1]))) == @as(c_int, '=')) {
                         p += 1;
                         wtype = @as(c_uint, @bitCast(w_varassign));
                     } else {
@@ -3357,7 +3357,7 @@ fn find_map_unquote(arg_string: [*c]u8, arg_stopmap: c_int) callconv(.C) [*c]u8 
         }
         if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '\x00')) break;
         if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '$')) {
-            var openparen: u8 = p[@as(c_uint, @intCast(@as(c_int, 1)))];
+            var openparen: u8 = p[1];
             _ = &openparen;
             if (@as(c_int, @bitCast(@as(c_uint, openparen))) == @as(c_int, '\x00')) break;
             p += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));

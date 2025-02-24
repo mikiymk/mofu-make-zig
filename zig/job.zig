@@ -323,9 +323,9 @@ const floc = extern struct {
     offset: c_ulong = @import("std").mem.zeroes(c_ulong),
 };
 
-extern fn message(prefix: c_int, length: usize, fmt: [*c]const u8, ...) void;
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const message = @import("output.zig").message;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 const o_default: c_int = 0;
 
@@ -473,16 +473,16 @@ export fn is_bourne_compatible_shell(arg_path: [*c]const u8) c_int {
     _ = &cp;
     while ((cp > path) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
         @as(u8, @bitCast((blk: {
-            const tmp = -@as(c_int, 1);
+            const tmp = -1;
             if (tmp >= 0) break :blk cp + @as(usize, @intCast(tmp)) else break :blk cp - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).*))
-    ]))) & @as(c_int, 32768)) != @as(c_int, 0))) {
+    ]))) & @as(c_int, 32768)) != 0)) {
         cp -= 1;
     }
     {
         s = @as([*c][*c]const u8, @ptrCast(@alignCast(&unix_shells.static)));
-        while (s.* != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (s += 1) {
-            if (strcmp(cp, s.*) == @as(c_int, 0)) return 1;
+        while (s.* != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (s += 1) {
+            if (strcmp(cp, s.*) == 0) return 1;
         }
     }
     return 0;
@@ -499,7 +499,7 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
     var i: c_uint = undefined;
     _ = &i;
     start_waiting_jobs();
-    reap_children(@as(c_int, 0), @as(c_int, 0));
+    reap_children(0, 0);
     chop_commands(cmds);
     c = @as([*c]struct_child, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_child)))));
     output_init(&c.*.output);
@@ -565,11 +565,11 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
                             const ref_1 = &count;
                             ref_1.* -= 1;
                             break :blk ref_1.*;
-                        }) < @as(c_int, 0))) break else if ((@as(c_int, @bitCast(@as(c_uint, in.*))) == @as(c_int, '\\')) and (@as(c_int, @bitCast(@as(c_uint, in[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\n'))) {
+                        }) < 0)) break else if ((@as(c_int, @bitCast(@as(c_uint, in.*))) == @as(c_int, '\\')) and (@as(c_int, @bitCast(@as(c_uint, in[1]))) == @as(c_int, '\n'))) {
                             var quoted: c_int = 0;
                             _ = &quoted;
                             {
-                                p = in - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                                p = in - @as(usize, @bitCast(@as(isize, @intCast(1))));
                                 while ((p > ref) and (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '\\'))) : (p -= 1) {
                                     quoted = @intFromBool(!(quoted != 0));
                                 }
@@ -587,16 +587,16 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
                                     break :blk tmp;
                                 }).*;
                             } else {
-                                in += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));
-                                while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(in.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+                                in += @as(usize, @bitCast(@as(isize, @intCast(2))));
+                                while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(in.*))]))) & (2 | 4)) != 0) {
                                     in += 1;
                                 }
                                 while ((out > outref) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
                                     @as(u8, @bitCast((blk: {
-                                        const tmp = -@as(c_int, 1);
+                                        const tmp = -1;
                                         if (tmp >= 0) break :blk out + @as(usize, @intCast(tmp)) else break :blk out - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                                     }).*))
-                                ]))) & @as(c_int, 2)) != @as(c_int, 0))) {
+                                ]))) & 2) != 0)) {
                                     out -= 1;
                                 }
                                 (blk: {
@@ -626,7 +626,7 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
                 }
             }
             if (out != in) {
-                _ = memmove(@as(?*anyopaque, @ptrCast(out)), @as(?*const anyopaque, @ptrCast(in)), strlen(in) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+                _ = memmove(@as(?*anyopaque, @ptrCast(out)), @as(?*const anyopaque, @ptrCast(in)), strlen(in) +% @as(c_ulong, 1));
             }
             cmds.*.fileinfo.offset = @as(c_ulong, @bitCast(@as(c_ulong, i)));
             lines[i] = allocated_variable_expand_for_file(cmds.*.command_lines[i], file_1);
@@ -635,15 +635,15 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
     cmds.*.fileinfo.offset = 0;
     c.*.command_lines = lines;
     _ = job_next_command(c);
-    if (job_slots != @as(c_uint, @bitCast(@as(c_int, 0)))) {
+    if (job_slots != @as(c_uint, 0)) {
         while (job_slots_used == job_slots) {
-            reap_children(@as(c_int, 1), @as(c_int, 0));
+            reap_children(1, 0);
         }
     } else if (jobserver_enabled() != 0) while (true) {
         var got_token: c_int = undefined;
         _ = &got_token;
         while (true) {
-            if ((@as(c_int, 4) & db_level) != 0) {
+            if ((4 & db_level) != 0) {
                 _ = printf("Need a job token; we %shave children\n", if (children != null) "" else "don't ");
                 _ = fflush(stdout);
             }
@@ -651,16 +651,16 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
         }
         if (!(jobserver_tokens != 0)) break;
         jobserver_pre_acquire();
-        reap_children(@as(c_int, 0), @as(c_int, 0));
+        reap_children(0, 0);
         start_waiting_jobs();
         if (!(jobserver_tokens != 0)) break;
         if (!(children != null)) {
-            fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), "INTERNAL: no children as we go to sleep on read");
+            fatal(@as([*c]floc, @ptrFromInt(0)), @as(usize, 0), "INTERNAL: no children as we go to sleep on read");
         }
-        got_token = @as(c_int, @bitCast(jobserver_acquire(@intFromBool(waiting_jobs != @as([*c]struct_child, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))))));
-        if (got_token == @as(c_int, 1)) {
+        got_token = @as(c_int, @bitCast(jobserver_acquire(@intFromBool(waiting_jobs != @as([*c]struct_child, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))))));
+        if (got_token == 1) {
             while (true) {
-                if ((@as(c_int, 4) & db_level) != 0) {
+                if ((4 & db_level) != 0) {
                     _ = printf(gettext("Obtained token for child %p (%s).\n"), c, c.*.file.*.name);
                     _ = fflush(stdout);
                 }
@@ -676,20 +676,20 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
         if (!(cmds.*.fileinfo.filenm != null)) {
             nm = gettext("<builtin>");
         } else {
-            var n: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(((strlen(cmds.*.fileinfo.filenm) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 11))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+            var n: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(((strlen(cmds.*.fileinfo.filenm) +% @as(c_ulong, 1)) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 11))))) +% @as(c_ulong, 1)))));
             _ = &n;
             _ = sprintf(n, "%s:%lu", cmds.*.fileinfo.filenm, cmds.*.fileinfo.lineno);
             nm = n;
         }
         if (c.*.file.*.phony != 0) {
-            message(@as(c_int, 0), strlen(nm) +% strlen(c.*.file.*.name), gettext("%s: update target '%s' due to: target is .PHONY"), nm, c.*.file.*.name);
-        } else if (c.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) {
-            message(@as(c_int, 0), strlen(nm) +% strlen(c.*.file.*.name), gettext("%s: update target '%s' due to: target does not exist"), nm, c.*.file.*.name);
+            message(0, strlen(nm) +% strlen(c.*.file.*.name), gettext("%s: update target '%s' due to: target is .PHONY"), nm, c.*.file.*.name);
+        } else if (c.*.file.*.last_mtime == @as(uintmax_t, 1)) {
+            message(0, strlen(nm) +% strlen(c.*.file.*.name), gettext("%s: update target '%s' due to: target does not exist"), nm, c.*.file.*.name);
         } else {
             var newer: [*c]u8 = allocated_variable_expand_for_file("$?", c.*.file);
             _ = &newer;
-            if (@as(c_int, @bitCast(@as(c_uint, newer[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00')) {
-                message(@as(c_int, 0), (strlen(nm) +% strlen(c.*.file.*.name)) +% strlen(newer), gettext("%s: update target '%s' due to: %s"), nm, c.*.file.*.name, newer);
+            if (@as(c_int, @bitCast(@as(c_uint, newer[0]))) != @as(c_int, '\x00')) {
+                message(0, (strlen(nm) +% strlen(c.*.file.*.name)) +% strlen(newer), gettext("%s: update target '%s' due to: %s"), nm, c.*.file.*.name, newer);
                 free(@as(?*anyopaque, @ptrCast(newer)));
             } else {
                 var len: usize = 0;
@@ -698,12 +698,12 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
                 _ = &d;
                 {
                     d = c.*.file.*.deps;
-                    while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (d = d.*.next) if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) {
-                        len +%= @as(usize, @bitCast(strlen(d.*.file.*.name) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+                    while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (d = d.*.next) if (d.*.file.*.last_mtime == @as(uintmax_t, 1)) {
+                        len +%= @as(usize, @bitCast(strlen(d.*.file.*.name) +% @as(c_ulong, 1)));
                     };
                 }
                 if (!(len != 0)) {
-                    message(@as(c_int, 0), strlen(nm) +% strlen(c.*.file.*.name), gettext("%s: update target '%s' due to: unknown reasons"), nm, c.*.file.*.name);
+                    message(0, strlen(nm) +% strlen(c.*.file.*.name), gettext("%s: update target '%s' due to: unknown reasons"), nm, c.*.file.*.name);
                 } else {
                     var cp: [*c]u8 = blk: {
                         const tmp = @as([*c]u8, @ptrCast(@alignCast(malloc(len))));
@@ -713,7 +713,7 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
                     _ = &cp;
                     {
                         d = c.*.file.*.deps;
-                        while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (d = d.*.next) if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) {
+                        while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (d = d.*.next) if (d.*.file.*.last_mtime == @as(uintmax_t, 1)) {
                             if (cp > newer) {
                                 (blk: {
                                     const ref = &cp;
@@ -725,14 +725,14 @@ export fn new_job(arg_file_1: [*c]struct_file) void {
                             cp = stpcpy(cp, d.*.file.*.name);
                         };
                     }
-                    message(@as(c_int, 0), (strlen(nm) +% strlen(c.*.file.*.name)) +% strlen(newer), gettext("%s: update target '%s' due to: %s"), nm, c.*.file.*.name, newer);
+                    message(0, (strlen(nm) +% strlen(c.*.file.*.name)) +% strlen(newer), gettext("%s: update target '%s' due to: %s"), nm, c.*.file.*.name, newer);
                 }
             }
         }
     }
     _ = start_waiting_job(c);
-    if ((job_slots == @as(c_uint, @bitCast(@as(c_int, 1)))) or (not_parallel != 0)) while (file_1.*.command_state == @as(c_uint, @bitCast(cs_running))) {
-        reap_children(@as(c_int, 1), @as(c_int, 0));
+    if ((job_slots == @as(c_uint, 1)) or (not_parallel != 0)) while (file_1.*.command_state == @as(c_uint, @bitCast(cs_running))) {
+        reap_children(1, 0);
     };
     while (true) {
         output_context = null;
@@ -749,7 +749,7 @@ export fn start_waiting_jobs() void {
     _ = &job;
     if (waiting_jobs == null) return;
     while (true) {
-        reap_children(@as(c_int, 0), @as(c_int, 0));
+        reap_children(0, 0);
         job = waiting_jobs;
         waiting_jobs = job.*.next;
         if (!((start_waiting_job(job) != 0) and (waiting_jobs != null))) break;
@@ -800,11 +800,11 @@ export fn construct_command_argv(arg_line: [*c]u8, arg_restp: [*c][*c]u8, arg_fi
         _ = &save;
         warn_undefined_variables_flag = 0;
         shell = allocated_variable_expand_for_file("$(SHELL)", file_1);
-        @"var" = lookup_variable_for_file(".SHELLFLAGS", @sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), file_1);
+        @"var" = lookup_variable_for_file(".SHELLFLAGS", @sizeOf([12]u8) -% @as(c_ulong, 1), file_1);
         if (!(@"var" != null)) {
             shellflags = xstrdup("");
         } else if ((posix_pedantic != 0) and (@"var".*.origin == @as(c_uint, @bitCast(o_default)))) {
-            shellflags = xstrdup(if ((cmd_flags & @as(c_int, 4)) != @as(c_int, 0)) "-c" else "-ec");
+            shellflags = xstrdup(if ((cmd_flags & 4) != 0) "-c" else "-ec");
         } else {
             shellflags = allocated_variable_expand_for_file(@"var".*.value, file_1);
         }
@@ -826,17 +826,17 @@ export fn exec_command(arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) pid_t {
     _ = &argv;
     var envp = arg_envp;
     _ = &envp;
-    var pid: pid_t = -@as(c_int, 1);
+    var pid: pid_t = -1;
     _ = &pid;
     environ = envp;
-    _ = execvp(argv[@as(c_uint, @intCast(@as(c_int, 0)))], argv);
+    _ = execvp(argv[0], argv);
     while (true) {
         switch (__errno_location().*) {
-            @as(c_int, 2) => {
-                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]) +% strlen(strerror(__errno_location().*)), "%s: %s", argv[@as(c_uint, @intCast(@as(c_int, 0)))], strerror(__errno_location().*));
+            2 => {
+                @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(argv[0]) +% strlen(strerror(__errno_location().*)), "%s: %s", argv[0], strerror(__errno_location().*));
                 break;
             },
-            @as(c_int, 8) => {
+            8 => {
                 {
                     var shell: [*c]const u8 = undefined;
                     _ = &shell;
@@ -857,13 +857,13 @@ export fn exec_command(arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) pid_t {
                     }).* != null) {
                         argc += 1;
                     }
-                    new_argv = @as([*c][*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_long, (@as(c_int, 1) + argc) + @as(c_int, 1)))) *% @sizeOf([*c]u8)))));
-                    new_argv[@as(c_uint, @intCast(@as(c_int, 0)))] = @as([*c]u8, @ptrCast(@volatileCast(@constCast(shell))));
+                    new_argv = @as([*c][*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_long, (1 + argc) + 1))) *% @sizeOf([*c]u8)))));
+                    new_argv[0] = @as([*c]u8, @ptrCast(@volatileCast(@constCast(shell))));
                     (blk: {
                         const tmp = i;
                         if (tmp >= 0) break :blk new_argv + @as(usize, @intCast(tmp)) else break :blk new_argv - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-                    }).* = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
-                    while (argc > @as(c_int, 0)) {
+                    }).* = argv[0];
+                    while (argc > 0) {
                         (blk: {
                             const tmp = i + argc;
                             if (tmp >= 0) break :blk new_argv + @as(usize, @intCast(tmp)) else break :blk new_argv - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
@@ -874,12 +874,12 @@ export fn exec_command(arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8) pid_t {
                         argc -= 1;
                     }
                     _ = execvp(shell, new_argv);
-                    @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(new_argv[@as(c_uint, @intCast(@as(c_int, 0)))]) +% strlen(strerror(__errno_location().*)), "%s: %s", new_argv[@as(c_uint, @intCast(@as(c_int, 0)))], strerror(__errno_location().*));
+                    @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(new_argv[0]) +% strlen(strerror(__errno_location().*)), "%s: %s", new_argv[0], strerror(__errno_location().*));
                     break;
                 }
             },
             else => {
-                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]) +% strlen(strerror(__errno_location().*)), "%s: %s", argv[@as(c_uint, @intCast(@as(c_int, 0)))], strerror(__errno_location().*));
+                @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(argv[0]) +% strlen(strerror(__errno_location().*)), "%s: %s", argv[0], strerror(__errno_location().*));
                 break;
             },
         }
@@ -891,7 +891,7 @@ export fn unblock_all_sigs() void {
     var empty: sigset_t = undefined;
     _ = &empty;
     _ = sigemptyset(&empty);
-    _ = sigprocmask(@as(c_int, 2), &empty, @as([*c]sigset_t, @ptrFromInt(@as(c_int, 0))));
+    _ = sigprocmask(2, &empty, @as([*c]sigset_t, @ptrFromInt(0)));
 }
 extern var job_slots_used: c_uint;
 extern var jobserver_tokens: c_uint;
@@ -977,12 +977,12 @@ fn free_child(arg_child_1: [*c]struct_child) callconv(.C) void {
     _ = &child_1;
     output_close(&child_1.*.output);
     if (!(jobserver_tokens != 0)) {
-        fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) +% strlen(child_1.*.file.*.name), "INTERNAL: Freeing child %p (%s) but no tokens left", child_1, child_1.*.file.*.name);
+        fatal(@as([*c]floc, @ptrFromInt(0)), (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3)) +% strlen(child_1.*.file.*.name), "INTERNAL: Freeing child %p (%s) but no tokens left", child_1, child_1.*.file.*.name);
     }
-    if ((jobserver_enabled() != 0) and (jobserver_tokens > @as(c_uint, @bitCast(@as(c_int, 1))))) {
-        jobserver_release(@as(c_int, 1));
+    if ((jobserver_enabled() != 0) and (jobserver_tokens > @as(c_uint, 1))) {
+        jobserver_release(1);
         while (true) {
-            if ((@as(c_int, 4) & db_level) != 0) {
+            if ((4 & db_level) != 0) {
                 _ = printf(gettext("Released token for child %p (%s).\n"), child_1, child_1.*.file.*.name);
                 _ = fflush(stdout);
             }
@@ -1019,7 +1019,7 @@ fn load_too_high() callconv(.C) c_int {
     };
     _ = &last_now;
     const proc_fd = struct {
-        var static: c_int = -@as(c_int, 2);
+        var static: c_int = -2;
     };
     _ = &proc_fd;
     var load: f64 = undefined;
@@ -1028,16 +1028,16 @@ fn load_too_high() callconv(.C) c_int {
     _ = &guess;
     var now: time_t = undefined;
     _ = &now;
-    if (max_load_average < @as(f64, @floatFromInt(@as(c_int, 0)))) return 0;
-    if (proc_fd.static == -@as(c_int, 2)) {
+    if (max_load_average < @as(f64, @floatFromInt(0))) return 0;
+    if (proc_fd.static == -2) {
         while (((blk: {
-            const tmp = open("/proc/loadavg", @as(c_int, 0));
+            const tmp = open("/proc/loadavg", 0);
             proc_fd.static = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (proc_fd.static < @as(c_int, 0)) {
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (proc_fd.static < 0) {
             while (true) {
-                if ((@as(c_int, 4) & db_level) != 0) {
+                if ((4 & db_level) != 0) {
                     _ = printf("Using system load detection method.\n");
                     _ = fflush(stdout);
                 }
@@ -1045,7 +1045,7 @@ fn load_too_high() callconv(.C) c_int {
             }
         } else {
             while (true) {
-                if ((@as(c_int, 4) & db_level) != 0) {
+                if ((4 & db_level) != 0) {
                     _ = printf("Using /proc/loadavg load detection method.\n");
                     _ = fflush(stdout);
                 }
@@ -1054,38 +1054,38 @@ fn load_too_high() callconv(.C) c_int {
             fd_noinherit(proc_fd.static);
         }
     }
-    if (proc_fd.static >= @as(c_int, 0)) {
+    if (proc_fd.static >= 0) {
         var r: c_int = undefined;
         _ = &r;
         while (((blk: {
-            const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(lseek(proc_fd.static, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))), @as(c_int, 0))))));
+            const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(lseek(proc_fd.static, @as(__off_t, 0), 0)))));
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r >= @as(c_int, 0)) {
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (r >= 0) {
             var avg: [65]u8 = undefined;
             _ = &avg;
             while (((blk: {
                 const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(proc_fd.static, @as(?*anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&avg))))), @as(usize, @bitCast(@as(c_long, @as(c_int, 64)))))))));
                 r = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-            if (r >= @as(c_int, 0)) {
+            }) == -1) and (__errno_location().* == 4)) {}
+            if (r >= 0) {
                 var p: [*c]const u8 = undefined;
                 _ = &p;
                 avg[@as(c_uint, @intCast(r))] = '\x00';
                 p = strchr(@as([*c]u8, @ptrCast(@alignCast(&avg))), @as(c_int, ' '));
                 if (p != null) {
-                    p = strchr(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), @as(c_int, ' '));
+                    p = strchr(p + @as(usize, @bitCast(@as(isize, @intCast(1)))), @as(c_int, ' '));
                 }
                 if (p != null) {
-                    p = strchr(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), @as(c_int, ' '));
+                    p = strchr(p + @as(usize, @bitCast(@as(isize, @intCast(1)))), @as(c_int, ' '));
                 }
-                if ((p != null) and ((@as(c_uint, @bitCast(@as(c_uint, p[@as(c_uint, @intCast(@as(c_int, 1)))]))) -% @as(c_uint, @bitCast(@as(c_int, '0')))) <= @as(c_uint, @bitCast(@as(c_int, 9))))) {
-                    var cnt: c_uint = make_toui(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), null);
+                if ((p != null) and ((@as(c_uint, @bitCast(@as(c_uint, p[1]))) -% @as(c_uint, @bitCast(@as(c_int, '0')))) <= @as(c_uint, 9))) {
+                    var cnt: c_uint = make_toui(p + @as(usize, @bitCast(@as(isize, @intCast(1)))), null);
                     _ = &cnt;
                     while (true) {
-                        if ((@as(c_int, 4) & db_level) != 0) {
+                        if ((4 & db_level) != 0) {
                             _ = printf("Running: system = %u / make = %u (max requested = %f)\n", cnt, job_slots_used, max_load_average);
                             _ = fflush(stdout);
                         }
@@ -1094,7 +1094,7 @@ fn load_too_high() callconv(.C) c_int {
                     return @intFromBool(@as(f64, @floatFromInt(cnt)) > max_load_average);
                 }
                 while (true) {
-                    if ((@as(c_int, 4) & db_level) != 0) {
+                    if ((4 & db_level) != 0) {
                         _ = printf("Failed to parse /proc/loadavg: %s\n", @as([*c]u8, @ptrCast(@alignCast(&avg))));
                         _ = fflush(stdout);
                     }
@@ -1102,25 +1102,25 @@ fn load_too_high() callconv(.C) c_int {
                 }
             }
         }
-        if (r < @as(c_int, 0)) while (true) {
-            if ((@as(c_int, 4) & db_level) != 0) {
+        if (r < 0) while (true) {
+            if ((4 & db_level) != 0) {
                 _ = printf("Failed to read /proc/loadavg: %s\n", strerror(__errno_location().*));
                 _ = fflush(stdout);
             }
             if (!false) break;
         };
         _ = close(proc_fd.static);
-        proc_fd.static = -@as(c_int, 1);
+        proc_fd.static = -1;
     }
     __errno_location().* = 0;
-    if (getloadavg(&load, @as(c_int, 1)) != @as(c_int, 1)) {
+    if (getloadavg(&load, 1) != 1) {
         const lossage = struct {
-            var static: c_int = -@as(c_int, 1);
+            var static: c_int = -1;
         };
         _ = &lossage;
-        if ((lossage.static == -@as(c_int, 1)) or (__errno_location().* != lossage.static)) {
-            if (__errno_location().* == @as(c_int, 0)) {
-                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("cannot enforce load limits on this operating system"));
+        if ((lossage.static == -1) or (__errno_location().* != lossage.static)) {
+            if (__errno_location().* == 0) {
+                @"error"(@as([*c]floc, @ptrFromInt(0)), @as(usize, 0), gettext("cannot enforce load limits on this operating system"));
             } else {
                 perror_with_name(gettext("cannot enforce load limit: "), "getloadavg");
             }
@@ -1130,7 +1130,7 @@ fn load_too_high() callconv(.C) c_int {
     }
     now = time(null);
     if (last_now.static < now) {
-        if (last_now.static == (now - @as(time_t, @bitCast(@as(c_long, @as(c_int, 1)))))) {
+        if (last_now.static == (now - @as(time_t, 1))) {
             last_sec.static = 0.25 * @as(f64, @floatFromInt(job_counter));
         } else {
             last_sec.static = 0.0;
@@ -1140,7 +1140,7 @@ fn load_too_high() callconv(.C) c_int {
     }
     guess = load + (0.25 * (@as(f64, @floatFromInt(job_counter)) + last_sec.static));
     while (true) {
-        if ((@as(c_int, 4) & db_level) != 0) {
+        if ((4 & db_level) != 0) {
             _ = printf("Estimated system load = %f (actual = %f) (max requested = %f)\n", guess, load, max_load_average);
             _ = fflush(stdout);
         }
@@ -1167,7 +1167,7 @@ fn job_next_command(arg_child_1: [*c]struct_child) callconv(.C) c_int {
             ];
         }
     }
-    child_1.*.file.*.cmds.*.fileinfo.offset = @as(c_ulong, @bitCast(@as(c_ulong, child_1.*.command_line -% @as(c_uint, @bitCast(@as(c_int, 1))))));
+    child_1.*.file.*.cmds.*.fileinfo.offset = @as(c_ulong, @bitCast(@as(c_ulong, child_1.*.command_line -% @as(c_uint, 1))));
     return 1;
 }
 fn start_waiting_job(arg_c: [*c]struct_child) callconv(.C) c_int {
@@ -1175,8 +1175,8 @@ fn start_waiting_job(arg_c: [*c]struct_child) callconv(.C) c_int {
     _ = &c;
     var f: [*c]struct_file = c.*.file;
     _ = &f;
-    c.*.remote = @as(c_uint, @bitCast(start_remote_job_p(@as(c_int, 1))));
-    if (!(c.*.remote != 0) and ((job_slots_used > @as(c_uint, @bitCast(@as(c_int, 0)))) and (load_too_high() != 0))) {
+    c.*.remote = @as(c_uint, @bitCast(start_remote_job_p(1)));
+    if (!(c.*.remote != 0) and ((job_slots_used > @as(c_uint, 0)) and (load_too_high() != 0))) {
         set_command_state(f, @as(c_uint, @bitCast(cs_running)));
         c.*.next = waiting_jobs;
         waiting_jobs = c;
@@ -1185,37 +1185,37 @@ fn start_waiting_job(arg_c: [*c]struct_child) callconv(.C) c_int {
     start_job_command(c);
     while (true) {
         switch (f.*.command_state) {
-            @as(c_uint, @bitCast(@as(c_int, 2))) => {
+            @as(c_uint, 2) => {
                 c.*.next = children;
-                if (c.*.pid > @as(c_int, 0)) {
+                if (c.*.pid > 0) {
                     while (true) {
-                        if ((@as(c_int, 4) & db_level) != 0) {
+                        if ((4 & db_level) != 0) {
                             _ = printf(gettext("Putting child %p (%s) PID %s%s on the chain.\n"), c, c.*.file.*.name, pid2str(c.*.pid), if (c.*.remote != 0) gettext(" (remote)") else "");
                             _ = fflush(stdout);
                         }
                         if (!false) break;
                     }
                     job_slots_used +%= 1;
-                    _ = @as(c_int, 0);
+                    _ = 0;
                     c.*.jobslot = 1;
                 }
                 children = c;
                 unblock_sigs();
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 0))) => {
+            @as(c_uint, 0) => {
                 f.*.update_status = @as(c_uint, @bitCast(us_success));
                 notice_finished_file(f);
                 free_child(c);
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 3))) => {
+            @as(c_uint, 3) => {
                 notice_finished_file(f);
                 free_child(c);
                 break;
             },
             else => {
-                _ = @as(c_int, 0);
+                _ = 0;
                 break;
             },
         }
@@ -1229,10 +1229,10 @@ export var unixy_shell: c_int = 1;
 export var job_counter: c_ulong = 0;
 extern var fatal_signal_set: sigset_t;
 fn block_sigs() callconv(.C) void {
-    _ = sigprocmask(@as(c_int, 0), &fatal_signal_set, @as([*c]sigset_t, @ptrFromInt(@as(c_int, 0))));
+    _ = sigprocmask(0, &fatal_signal_set, @as([*c]sigset_t, @ptrFromInt(0)));
 }
 fn unblock_sigs() callconv(.C) void {
-    _ = sigprocmask(@as(c_int, 1), &fatal_signal_set, @as([*c]sigset_t, @ptrFromInt(@as(c_int, 0))));
+    _ = sigprocmask(1, &fatal_signal_set, @as([*c]sigset_t, @ptrFromInt(0)));
 }
 fn child_error(arg_child_1: [*c]struct_child, arg_exit_code: c_int, arg_exit_sig: c_int, arg_coredump: c_int, arg_ignored: c_int) callconv(.C) void {
     var child_1 = arg_child_1;
@@ -1272,7 +1272,7 @@ fn child_error(arg_child_1: [*c]struct_child, arg_exit_code: c_int, arg_exit_sig
     if (!(flocp.*.filenm != null)) {
         nm = gettext("<builtin>");
     } else {
-        var a: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(((strlen(flocp.*.filenm) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 6))))) +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        var a: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(((strlen(flocp.*.filenm) +% @as(c_ulong, 6)) +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3))) +% @as(c_ulong, 1)))));
         _ = &a;
         _ = sprintf(a, "%s:%lu", flocp.*.filenm, flocp.*.lineno +% flocp.*.offset);
         nm = a;
@@ -1280,7 +1280,7 @@ fn child_error(arg_child_1: [*c]struct_child, arg_exit_code: c_int, arg_exit_sig
     l = ((strlen(pre) +% strlen(nm)) +% strlen(f.*.name)) +% strlen(post);
     smode = shuffle_get_mode();
     if (smode != null) {
-        var a: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(((@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% strlen(smode)) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        var a: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(((@sizeOf([10]u8) -% @as(c_ulong, 1)) +% strlen(smode)) +% @as(c_ulong, 1)))));
         _ = &a;
         _ = sprintf(a, " shuffle=%s", smode);
         smode = a;
@@ -1291,12 +1291,12 @@ fn child_error(arg_child_1: [*c]struct_child, arg_exit_code: c_int, arg_exit_sig
         if (!false) break;
     }
     show_goal_error();
-    if (exit_sig == @as(c_int, 0)) {
-        @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), l +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))), gettext("%s[%s: %s] Error %d%s%s"), pre, nm, f.*.name, exit_code, post, if (smode != null) smode else "");
+    if (exit_sig == 0) {
+        @"error"(@as([*c]floc, @ptrFromInt(0)), l +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3)), gettext("%s[%s: %s] Error %d%s%s"), pre, nm, f.*.name, exit_code, post, if (smode != null) smode else "");
     } else {
         var s: [*c]const u8 = strsignal(exit_sig);
         _ = &s;
-        @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), (l +% strlen(s)) +% strlen(dump), "%s[%s: %s] %s%s%s%s", pre, nm, f.*.name, s, dump, post, if (smode != null) smode else "");
+        @"error"(@as([*c]floc, @ptrFromInt(0)), (l +% strlen(s)) +% strlen(dump), "%s[%s: %s] %s%s%s%s", pre, nm, f.*.name, s, dump, post, if (smode != null) smode else "");
     }
     while (true) {
         output_context = null;

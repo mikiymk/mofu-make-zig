@@ -350,8 +350,8 @@ const floc = extern struct {
     offset: c_ulong = @import("std").mem.zeroes(c_ulong),
 };
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 const enum_variable_origin = c_int;
 
@@ -460,10 +460,10 @@ export fn lookup_file(arg_name: [*c]const u8) [*c]struct_file {
     _ = &f;
     var file_key: struct_file = undefined;
     _ = &file_key;
-    _ = @as(c_int, 0);
-    while (((@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '.')) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(name[@as(c_uint, @intCast(@as(c_int, 1)))]))]))) & @as(c_int, 32768)) != @as(c_int, 0))) and (@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 2)))]))) != @as(c_int, '\x00'))) {
-        name += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));
-        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(name.*))]))) & @as(c_int, 32768)) != @as(c_int, 0)) {
+    _ = 0;
+    while (((@as(c_int, @bitCast(@as(c_uint, name[0]))) == @as(c_int, '.')) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(name[1]))]))) & @as(c_int, 32768)) != 0)) and (@as(c_int, @bitCast(@as(c_uint, name[2]))) != @as(c_int, '\x00'))) {
+        name += @as(usize, @bitCast(@as(isize, @intCast(2))));
+        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(name.*))]))) & @as(c_int, 32768)) != 0) {
             name += 1;
         }
     }
@@ -485,8 +485,8 @@ export fn enter_file(arg_name: [*c]const u8) [*c]struct_file {
     _ = &file_slot;
     var file_key: struct_file = undefined;
     _ = &file_key;
-    _ = @as(c_int, 0);
-    _ = @as(c_int, 0);
+    _ = 0;
+    _ = 0;
     file_key.hname = name;
     file_slot = @as([*c][*c]struct_file, @ptrCast(@alignCast(hash_find_slot(&files, @as(?*const anyopaque, @ptrCast(&file_key))))));
     f = file_slot.*;
@@ -520,7 +520,7 @@ export fn split_prereqs(arg_p: [*c]u8) [*c]struct_dep {
         var ood: [*c]struct_dep = undefined;
         _ = &ood;
         p += 1;
-        ood = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(&p, @sizeOf(struct_dep), @as(c_int, 1), null, @as(c_int, 64)))));
+        ood = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(&p, @sizeOf(struct_dep), 1, null, @as(c_int, 64)))));
         if (!(new != null)) {
             new = ood;
         } else {
@@ -528,11 +528,11 @@ export fn split_prereqs(arg_p: [*c]u8) [*c]struct_dep {
             _ = &dp;
             {
                 dp = new;
-                while (dp.*.next != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (dp = dp.*.next) {}
+                while (dp.*.next != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (dp = dp.*.next) {}
             }
             dp.*.next = ood;
         }
-        while (ood != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (ood = ood.*.next) {
+        while (ood != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (ood = ood.*.next) {
             ood.*.ignore_mtime = 1;
         }
     }
@@ -556,7 +556,7 @@ export fn enter_prereqs(arg_deps: [*c]struct_dep, arg_stem: [*c]const u8) [*c]st
         while (dp != null) {
             var percent: [*c]u8 = undefined;
             _ = &percent;
-            var nl: usize = strlen(dp.*.name) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+            var nl: usize = strlen(dp.*.name) +% @as(c_ulong, 1);
             _ = &nl;
             var nm: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(nl))));
             _ = &nm;
@@ -565,13 +565,13 @@ export fn enter_prereqs(arg_deps: [*c]struct_dep, arg_stem: [*c]const u8) [*c]st
             if (percent != null) {
                 var o: [*c]u8 = undefined;
                 _ = &o;
-                if (@as(c_int, @bitCast(@as(c_uint, stem[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) {
-                    _ = memmove(@as(?*anyopaque, @ptrCast(percent)), @as(?*const anyopaque, @ptrCast(percent + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), strlen(percent));
-                    o = variable_buffer_output(variable_buffer, nm, strlen(nm) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+                if (@as(c_int, @bitCast(@as(c_uint, stem[0]))) == @as(c_int, '\x00')) {
+                    _ = memmove(@as(?*anyopaque, @ptrCast(percent)), @as(?*const anyopaque, @ptrCast(percent + @as(usize, @bitCast(@as(isize, @intCast(1)))))), strlen(percent));
+                    o = variable_buffer_output(variable_buffer, nm, strlen(nm) +% @as(c_ulong, 1));
                 } else {
-                    o = patsubst_expand_pat(variable_buffer, stem, pattern, nm, pattern + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), percent + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
+                    o = patsubst_expand_pat(variable_buffer, stem, pattern, nm, pattern + @as(usize, @bitCast(@as(isize, @intCast(1)))), percent + @as(usize, @bitCast(@as(isize, @intCast(1)))));
                 }
-                if (@as(c_int, @bitCast(@as(c_uint, variable_buffer[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) {
+                if (@as(c_int, @bitCast(@as(c_uint, variable_buffer[0]))) == @as(c_int, '\x00')) {
                     var df: [*c]struct_dep = dp;
                     _ = &df;
                     if (dp == deps) {
@@ -653,12 +653,12 @@ export fn expand_deps(arg_f: [*c]struct_file) void {
                 const tmp = strchr(cs, @as(c_int, '%'));
                 cs = tmp;
                 break :blk tmp;
-            }) != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+            }) != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
                 nperc +%= 1;
                 cs += 1;
             }
             if (nperc != 0) {
-                var slen: usize = (strlen(d.*.name) +% nperc) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+                var slen: usize = (strlen(d.*.name) +% nperc) +% @as(c_ulong, 1);
                 _ = &slen;
                 var pcs: [*c]const u8 = d.*.name;
                 _ = &pcs;
@@ -694,7 +694,7 @@ export fn expand_deps(arg_f: [*c]struct_file) void {
             }
         }
         if (!(initialized != 0)) {
-            initialize_file_variables(f, @as(c_int, 0));
+            initialize_file_variables(f, 0);
             initialized = 1;
         }
         set_file_variables(f, if (d.*.stem != null) d.*.stem else f.*.stem);
@@ -792,14 +792,14 @@ export fn remove_intermediates(arg_sig: c_int) void {
                 status = 0;
             } else {
                 status = unlink(f.*.name);
-                if ((status < @as(c_int, 0)) and (__errno_location().* == @as(c_int, 2))) continue;
+                if ((status < 0) and (__errno_location().* == 2)) continue;
             }
             if (!(f.*.dontcare != 0)) {
                 if (sig != 0) {
-                    @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(f.*.name), gettext("*** Deleting intermediate file '%s'"), f.*.name);
+                    @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(f.*.name), gettext("*** Deleting intermediate file '%s'"), f.*.name);
                 } else {
                     if (!(doneany != 0)) while (true) {
-                        if ((@as(c_int, 1) & db_level) != 0) {
+                        if ((1 & db_level) != 0) {
                             _ = printf(gettext("Removing intermediate files...\n"));
                             _ = fflush(stdout);
                         }
@@ -816,7 +816,7 @@ export fn remove_intermediates(arg_sig: c_int) void {
                         _ = fflush(stdout);
                     }
                 }
-                if (status < @as(c_int, 0)) {
+                if (status < 0) {
                     perror_with_name("\nunlink: ", f.*.name);
                     doneany = 0;
                 }
@@ -902,7 +902,7 @@ export fn snap_deps() void {
             while (d != null) : (d = d.*.next) {
                 f2 = d.*.file;
                 while (f2 != null) : (f2 = f2.*.prev) if (f2.*.notintermediate != 0) {
-                    fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(f2.*.name), gettext("%s cannot be both .NOTINTERMEDIATE and .INTERMEDIATE"), f2.*.name);
+                    fatal(@as([*c]floc, @ptrFromInt(0)), strlen(f2.*.name), gettext("%s cannot be both .NOTINTERMEDIATE and .INTERMEDIATE"), f2.*.name);
                 } else {
                     f2.*.intermediate = 1;
                 };
@@ -917,10 +917,10 @@ export fn snap_deps() void {
                 while (d != null) : (d = d.*.next) {
                     f2 = d.*.file;
                     while (f2 != null) : (f2 = f2.*.prev) if (f2.*.notintermediate != 0) {
-                        fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(f2.*.name), gettext("%s cannot be both .NOTINTERMEDIATE and .SECONDARY"), f2.*.name);
+                        fatal(@as([*c]floc, @ptrFromInt(0)), strlen(f2.*.name), gettext("%s cannot be both .NOTINTERMEDIATE and .SECONDARY"), f2.*.name);
                     } else {
                         f2.*.intermediate = blk: {
-                            const tmp = @as(c_uint, @bitCast(@as(c_int, 1)));
+                            const tmp = @as(c_uint, 1);
                             f2.*.secondary = tmp;
                             break :blk tmp;
                         };
@@ -932,7 +932,7 @@ export fn snap_deps() void {
         };
     }
     if ((no_intermediates != 0) and (all_secondary != 0)) {
-        fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext(".NOTINTERMEDIATE and .SECONDARY are mutually exclusive"));
+        fatal(@as([*c]floc, @ptrFromInt(0)), @as(usize, 0), gettext(".NOTINTERMEDIATE and .SECONDARY are mutually exclusive"));
     }
     f = lookup_file(".EXPORT_ALL_VARIABLES");
     if ((f != null) and (f.*.is_target != 0)) {
@@ -947,7 +947,7 @@ export fn snap_deps() void {
             while (d != null) : (d = d.*.next) {
                 f2 = d.*.file;
                 while (f2 != null) : (f2 = f2.*.prev) {
-                    f2.*.command_flags |= @as(c_int, 4);
+                    f2.*.command_flags |= 4;
                 }
             }
         }
@@ -961,7 +961,7 @@ export fn snap_deps() void {
             while (d != null) : (d = d.*.next) {
                 f2 = d.*.file;
                 while (f2 != null) : (f2 = f2.*.prev) {
-                    f2.*.command_flags |= @as(c_int, 2);
+                    f2.*.command_flags |= 2;
                 }
             }
         }
@@ -974,11 +974,11 @@ export fn snap_deps() void {
             not_parallel = 1;
         } else {
             d = f.*.deps;
-            while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (d = d.*.next) {
+            while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (d = d.*.next) {
                 f2 = d.*.file;
-                while (f2 != @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (f2 = f2.*.prev) if (f2.*.deps != null) {
+                while (f2 != @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (f2 = f2.*.prev) if (f2.*.deps != null) {
                     d2 = f2.*.deps.*.next;
-                    while (d2 != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (d2 = d2.*.next) {
+                    while (d2 != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (d2 = d2.*.next) {
                         d2.*.wait_here = 1;
                     }
                 };
@@ -986,7 +986,7 @@ export fn snap_deps() void {
         }
     }
     {
-        var prereqs: [*c]struct_dep = expand_extra_prereqs(lookup_variable(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+        var prereqs: [*c]struct_dep = expand_extra_prereqs(lookup_variable(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, 1)));
         _ = &prereqs;
         hash_map_arg(&files, &snap_file, @as(?*anyopaque, @ptrCast(prereqs)));
         free_ns_chain(@as([*c]struct_nameseq, @ptrCast(@alignCast(prereqs))));
@@ -1053,7 +1053,7 @@ export fn rehash_file(arg_from_file: [*c]struct_file, arg_to_hname: [*c]const u8
             var l: usize = strlen(from_file.*.name);
             _ = &l;
             if (to_file.*.cmds.*.fileinfo.filenm != null) {
-                @"error"(&from_file.*.cmds.*.fileinfo, (l +% strlen(to_file.*.cmds.*.fileinfo.filenm)) +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))), gettext("Recipe was specified for file '%s' at %s:%lu,"), from_file.*.name, from_file.*.cmds.*.fileinfo.filenm, from_file.*.cmds.*.fileinfo.lineno);
+                @"error"(&from_file.*.cmds.*.fileinfo, (l +% strlen(to_file.*.cmds.*.fileinfo.filenm)) +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3)), gettext("Recipe was specified for file '%s' at %s:%lu,"), from_file.*.name, from_file.*.cmds.*.fileinfo.filenm, from_file.*.cmds.*.fileinfo.lineno);
             } else {
                 @"error"(&from_file.*.cmds.*.fileinfo, l, gettext("Recipe for file '%s' was found by implicit rule search,"), from_file.*.name);
             }
@@ -1074,11 +1074,11 @@ export fn rehash_file(arg_from_file: [*c]struct_file, arg_to_hname: [*c]const u8
     }
     merge_variable_set_lists(&to_file.*.variables, from_file.*.variables);
     if (((to_file.*.double_colon != null) and (from_file.*.is_target != 0)) and !(from_file.*.double_colon != null)) {
-        fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(from_file.*.name) +% strlen(to_hname), gettext("can't rename single-colon '%s' to double-colon '%s'"), from_file.*.name, to_hname);
+        fatal(@as([*c]floc, @ptrFromInt(0)), strlen(from_file.*.name) +% strlen(to_hname), gettext("can't rename single-colon '%s' to double-colon '%s'"), from_file.*.name, to_hname);
     }
     if (!(to_file.*.double_colon != null) and (from_file.*.double_colon != null)) {
         if (to_file.*.is_target != 0) {
-            fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(from_file.*.name) +% strlen(to_hname), gettext("can't rename double-colon '%s' to single-colon '%s'"), from_file.*.name, to_hname);
+            fatal(@as([*c]floc, @ptrFromInt(0)), strlen(from_file.*.name) +% strlen(to_hname), gettext("can't rename double-colon '%s' to single-colon '%s'"), from_file.*.name, to_hname);
         } else {
             to_file.*.double_colon = from_file.*.double_colon;
         }
@@ -1133,7 +1133,7 @@ export fn build_target_list(arg_value: [*c]u8) [*c]u8 {
     };
     _ = &last_targ_count;
     if (files.ht_fill != last_targ_count.static) {
-        var max: usize = ((strlen(value) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))));
+        var max: usize = ((strlen(value) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))))) +% @as(c_ulong, 1)) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))));
         _ = &max;
         var len: usize = undefined;
         _ = &len;
@@ -1151,11 +1151,11 @@ export fn build_target_list(arg_value: [*c]u8) [*c]u8 {
             _ = &f;
             var l: usize = strlen(f.*.name);
             _ = &l;
-            len +%= l +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+            len +%= l +% @as(usize, 1);
             if (len > max) {
                 var off: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(value))), @sizeOf(u8))));
                 _ = &off;
-                max +%= (((l +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) / @as(usize, @bitCast(@as(c_long, @as(c_int, 500))))) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) *% @as(usize, @bitCast(@as(c_long, @as(c_int, 500))));
+                max +%= (((l +% @as(usize, 1)) / @as(usize, @bitCast(@as(c_long, @as(c_int, 500))))) +% @as(usize, 1)) *% @as(usize, @bitCast(@as(c_long, @as(c_int, 500))));
                 value = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(value)), max))));
                 p = &value[off];
             }
@@ -1167,7 +1167,7 @@ export fn build_target_list(arg_value: [*c]u8) [*c]u8 {
                 break :blk tmp;
             }).* = ' ';
         };
-        (p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))).* = '\x00';
+        (p - @as(usize, @bitCast(@as(isize, @intCast(1))))).* = '\x00';
         last_targ_count.static = files.ht_fill;
     }
     return value;
@@ -1207,22 +1207,22 @@ export fn file_timestamp_cons(arg_fname: [*c]const u8, arg_stamp: time_t, arg_ns
     _ = &stamp;
     var ns = arg_ns;
     _ = &ns;
-    var offset: c_int = @as(c_int, @bitCast(@as(c_int, @truncate(@as(c_long, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1)))) + (if (true) ns else @as(c_long, @bitCast(@as(c_long, @as(c_int, 0)))))))));
+    var offset: c_int = @as(c_int, @bitCast(@as(c_int, @truncate(@as(c_long, @bitCast(@as(c_long, 2 + 1))) + (if (true) ns else @as(c_long, 0))))));
     _ = &offset;
     var s: uintmax_t = @as(uintmax_t, @bitCast(stamp));
     _ = &s;
-    var product: uintmax_t = s << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0));
+    var product: uintmax_t = s << @intCast(if (true) @as(c_int, 30) else 0);
     _ = &product;
     var ts: uintmax_t = product +% @as(uintmax_t, @bitCast(@as(c_long, offset)));
     _ = &ts;
-    if (!(((s <= (((((((((~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) +% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else @as(c_int, 1))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0)))) and (product <= ts)) and (ts <= (((((((~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) +% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else @as(c_int, 1))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1)))))))) {
+    if (!(((s <= (((((((((~@as(uintmax_t, 0) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -1))) <= @as(uintmax_t, 0))) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, 8)) -% @as(c_ulong, 1)))) -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0)) << @intCast(if (true) @as(c_int, 30) else 0)) +% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else 1)))) -% @as(uintmax_t, 1)) -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0))) and (product <= ts)) and (ts <= (((((((~@as(uintmax_t, 0) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -1))) <= @as(uintmax_t, 0))) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, 8)) -% @as(c_ulong, 1)))) -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0)) << @intCast(if (true) @as(c_int, 30) else 0)) +% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else 1)))) -% @as(uintmax_t, 1))))) {
         var buf: [43]u8 = undefined;
         _ = &buf;
         var f: [*c]const u8 = if (fname != null) fname else @as([*c]const u8, @ptrCast(@alignCast(gettext("Current time"))));
         _ = &f;
-        ts = if (s <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1)))) else ((((((~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) +% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else @as(c_int, 1))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))));
+        ts = if (s <= @as(uintmax_t, 2)) @as(uintmax_t, @bitCast(@as(c_long, 2 + 1))) else ((((((~@as(uintmax_t, 0) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -1))) <= @as(uintmax_t, 0))) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, 8)) -% @as(c_ulong, 1)))) -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0)) << @intCast(if (true) @as(c_int, 30) else 0)) +% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else 1)))) -% @as(uintmax_t, 1);
         file_timestamp_sprintf(@as([*c]u8, @ptrCast(@alignCast(&buf))), ts);
-        @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(f) +% strlen(@as([*c]u8, @ptrCast(@alignCast(&buf)))), gettext("%s: Timestamp out of range; substituting %s"), f, @as([*c]u8, @ptrCast(@alignCast(&buf))));
+        @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(f) +% strlen(@as([*c]u8, @ptrCast(@alignCast(&buf)))), gettext("%s: Timestamp out of range; substituting %s"), f, @as([*c]u8, @ptrCast(@alignCast(&buf))));
     }
     return ts;
 }
@@ -1238,7 +1238,7 @@ export fn file_timestamp_now(arg_resolution: [*c]c_int) uintmax_t {
     {
         var timespec_1: struct_timespec = undefined;
         _ = &timespec_1;
-        if (clock_gettime(@as(c_int, 0), &timespec_1) == @as(c_int, 0)) {
+        if (clock_gettime(0, &timespec_1) == 0) {
             r = 1;
             s = timespec_1.tv_sec;
             ns = @as(c_int, @bitCast(@as(c_int, @truncate(timespec_1.tv_nsec))));
@@ -1251,7 +1251,7 @@ export fn file_timestamp_now(arg_resolution: [*c]c_int) uintmax_t {
     {
         var timeval_1: struct_timeval = undefined;
         _ = &timeval_1;
-        if (gettimeofday(&timeval_1, null) == @as(c_int, 0)) {
+        if (gettimeofday(&timeval_1, null) == 0) {
             r = 1000;
             s = timeval_1.tv_sec;
             ns = @as(c_int, @bitCast(@as(c_int, @truncate(timeval_1.tv_usec * @as(__suseconds_t, @bitCast(@as(c_long, @as(c_int, 1000))))))));
@@ -1262,7 +1262,7 @@ export fn file_timestamp_now(arg_resolution: [*c]c_int) uintmax_t {
         }
     }
     r = 1000000000;
-    s = time(@as([*c]time_t, @ptrFromInt(@as(c_int, 0))));
+    s = time(@as([*c]time_t, @ptrFromInt(0)));
     ns = 0;
     resolution.* = r;
     return file_timestamp_cons(null, s, @as(c_long, @bitCast(@as(c_long, ns))));
@@ -1272,22 +1272,22 @@ export fn file_timestamp_sprintf(arg_p: [*c]u8, arg_ts: uintmax_t) void {
     _ = &p;
     var ts = arg_ts;
     _ = &ts;
-    var t: time_t = @as(time_t, @bitCast((ts -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))));
+    var t: time_t = @as(time_t, @bitCast((ts -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0)));
     _ = &t;
     var tm_1: [*c]struct_tm = localtime(&t);
     _ = &tm_1;
     if (tm_1 != null) {
         var year: intmax_t = @as(intmax_t, @bitCast(@as(c_long, tm_1.*.tm_year)));
         _ = &year;
-        _ = sprintf(p, "%04ld-%02d-%02d %02d:%02d:%02d", year + @as(intmax_t, @bitCast(@as(c_long, @as(c_int, 1900)))), tm_1.*.tm_mon + @as(c_int, 1), tm_1.*.tm_mday, tm_1.*.tm_hour, tm_1.*.tm_min, tm_1.*.tm_sec);
-    } else if (t < @as(time_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+        _ = sprintf(p, "%04ld-%02d-%02d %02d:%02d:%02d", year + @as(intmax_t, @bitCast(@as(c_long, @as(c_int, 1900)))), tm_1.*.tm_mon + 1, tm_1.*.tm_mday, tm_1.*.tm_hour, tm_1.*.tm_min, tm_1.*.tm_sec);
+    } else if (t < @as(time_t, 0)) {
         _ = sprintf(p, "%ld", @as(intmax_t, @bitCast(t)));
     } else {
         _ = sprintf(p, "%lu", @as(uintmax_t, @bitCast(t)));
     }
     p += @as([*c]u8, @ptrFromInt(strlen(p)));
-    _ = sprintf(p, ".%09d", @as(c_int, @bitCast(@as(c_uint, @truncate((ts -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) & @as(uintmax_t, @bitCast(@as(c_long, (@as(c_int, 1) << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) - @as(c_int, 1)))))))));
-    p += @as([*c]u8, @ptrFromInt(strlen(p) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+    _ = sprintf(p, ".%09d", @as(c_int, @bitCast(@as(c_uint, @truncate((ts -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) & @as(uintmax_t, @bitCast(@as(c_long, (1 << @intCast(if (true) @as(c_int, 30) else 0)) - 1))))))));
+    p += @as([*c]u8, @ptrFromInt(strlen(p) -% @as(c_ulong, 1)));
     while (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '0')) {
         p -= 1;
     }
@@ -1420,7 +1420,7 @@ fn file_hash_cmp(arg_x: ?*const anyopaque, arg_y: ?*const anyopaque) callconv(.C
     var y = arg_y;
     _ = &y;
     while (true) {
-        return if (@as([*c]const struct_file, @ptrCast(@alignCast(x))).*.hname == @as([*c]const struct_file, @ptrCast(@alignCast(y))).*.hname) @as(c_int, 0) else strcmp(@as([*c]const struct_file, @ptrCast(@alignCast(x))).*.hname, @as([*c]const struct_file, @ptrCast(@alignCast(y))).*.hname);
+        return if (@as([*c]const struct_file, @ptrCast(@alignCast(x))).*.hname == @as([*c]const struct_file, @ptrCast(@alignCast(y))).*.hname) 0 else strcmp(@as([*c]const struct_file, @ptrCast(@alignCast(x))).*.hname, @as([*c]const struct_file, @ptrCast(@alignCast(y))).*.hname);
     }
     return 0;
 }
@@ -1445,7 +1445,7 @@ fn snap_file(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C) voi
         f.*.notintermediate = 1;
     }
     if (f.*.variables != null) {
-        prereqs = expand_extra_prereqs(lookup_variable_in_set(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), f.*.variables.*.set));
+        prereqs = expand_extra_prereqs(lookup_variable_in_set(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, 1), f.*.variables.*.set));
     } else if (f.*.is_target != 0) {
         prereqs = copy_dep_chain(@as([*c]const struct_dep, @ptrCast(@alignCast(arg))));
     }
@@ -1454,7 +1454,7 @@ fn snap_file(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C) voi
         _ = &d;
         {
             d = prereqs;
-            while (d != null) : (d = d.*.next) if ((f.*.name == (if (d.*.name != null) d.*.name else d.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, f.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, f.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(f.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), (if (d.*.name != null) d.*.name else d.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) break;
+            while (d != null) : (d = d.*.next) if ((f.*.name == (if (d.*.name != null) d.*.name else d.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, f.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, f.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(f.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), (if (d.*.name != null) d.*.name else d.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))) break;
         }
         if (d != null) {
             free_ns_chain(@as([*c]struct_nameseq, @ptrCast(@alignCast(prereqs))));
@@ -1532,11 +1532,11 @@ fn print_file(arg_item: ?*const anyopaque) callconv(.C) void {
         }
         _ = putchar(@as(c_int, '\n'));
     }
-    if (f.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+    if (f.*.last_mtime == @as(uintmax_t, 0)) {
         _ = puts(gettext("#  Modification time never checked."));
-    } else if (f.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) {
+    } else if (f.*.last_mtime == @as(uintmax_t, 1)) {
         _ = puts(gettext("#  File does not exist."));
-    } else if (f.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2))))) {
+    } else if (f.*.last_mtime == @as(uintmax_t, 2)) {
         _ = puts(gettext("#  File is very old."));
     } else {
         var buf: [43]u8 = undefined;
@@ -1547,28 +1547,28 @@ fn print_file(arg_item: ?*const anyopaque) callconv(.C) void {
     _ = puts(if (f.*.updated != 0) gettext("#  File has been updated.") else gettext("#  File has not been updated."));
     while (true) {
         switch (f.*.command_state) {
-            @as(c_uint, @bitCast(@as(c_int, 2))) => {
+            @as(c_uint, 2) => {
                 _ = puts(gettext("#  Recipe currently running (THIS IS A BUG)."));
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 1))) => {
+            @as(c_uint, 1) => {
                 _ = puts(gettext("#  Dependencies recipe running (THIS IS A BUG)."));
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 0))), @as(c_uint, @bitCast(@as(c_int, 3))) => {
+            @as(c_uint, 0), @as(c_uint, 3) => {
                 while (true) {
                     switch (f.*.update_status) {
-                        @as(c_uint, @bitCast(@as(c_int, 1))) => break,
-                        @as(c_uint, @bitCast(@as(c_int, 0))) => {
+                        @as(c_uint, 1) => break,
+                        @as(c_uint, 0) => {
                             _ = puts(gettext("#  Successfully updated."));
                             break;
                         },
-                        @as(c_uint, @bitCast(@as(c_int, 2))) => {
-                            _ = @as(c_int, 0);
+                        @as(c_uint, 2) => {
+                            _ = 0;
                             _ = puts(gettext("#  Needs to be updated (-q is set)."));
                             break;
                         },
-                        @as(c_uint, @bitCast(@as(c_int, 3))) => {
+                        @as(c_uint, 3) => {
                             _ = puts(gettext("#  Failed to be updated."));
                             break;
                         },
@@ -1605,26 +1605,26 @@ fn verify_file(arg_item: ?*const anyopaque) callconv(.C) void {
     var d: [*c]const struct_dep = undefined;
     _ = &d;
     while (true) {
-        if (((f.*.name != null) and (@as(c_int, @bitCast(@as(c_uint, f.*.name[@as(c_uint, @intCast(@as(c_int, 0)))]))) != 0)) and !(strcache_iscached(f.*.name) != 0)) {
-            @"error"(null, (strlen(f.*.name) +% (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% strlen(f.*.name), gettext("%s: Field '%s' not cached: %s"), f.*.name, "name", f.*.name);
+        if (((f.*.name != null) and (@as(c_int, @bitCast(@as(c_uint, f.*.name[0]))) != 0)) and !(strcache_iscached(f.*.name) != 0)) {
+            @"error"(null, (strlen(f.*.name) +% (@sizeOf([5]u8) -% @as(c_ulong, 1))) +% strlen(f.*.name), gettext("%s: Field '%s' not cached: %s"), f.*.name, "name", f.*.name);
         }
         if (!false) break;
     }
     while (true) {
-        if (((f.*.hname != null) and (@as(c_int, @bitCast(@as(c_uint, f.*.hname[@as(c_uint, @intCast(@as(c_int, 0)))]))) != 0)) and !(strcache_iscached(f.*.hname) != 0)) {
-            @"error"(null, (strlen(f.*.name) +% (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% strlen(f.*.hname), gettext("%s: Field '%s' not cached: %s"), f.*.name, "hname", f.*.hname);
+        if (((f.*.hname != null) and (@as(c_int, @bitCast(@as(c_uint, f.*.hname[0]))) != 0)) and !(strcache_iscached(f.*.hname) != 0)) {
+            @"error"(null, (strlen(f.*.name) +% (@sizeOf([6]u8) -% @as(c_ulong, 1))) +% strlen(f.*.hname), gettext("%s: Field '%s' not cached: %s"), f.*.name, "hname", f.*.hname);
         }
         if (!false) break;
     }
     while (true) {
-        if (((f.*.vpath != null) and (@as(c_int, @bitCast(@as(c_uint, f.*.vpath[@as(c_uint, @intCast(@as(c_int, 0)))]))) != 0)) and !(strcache_iscached(f.*.vpath) != 0)) {
-            @"error"(null, (strlen(f.*.name) +% (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% strlen(f.*.vpath), gettext("%s: Field '%s' not cached: %s"), f.*.name, "vpath", f.*.vpath);
+        if (((f.*.vpath != null) and (@as(c_int, @bitCast(@as(c_uint, f.*.vpath[0]))) != 0)) and !(strcache_iscached(f.*.vpath) != 0)) {
+            @"error"(null, (strlen(f.*.name) +% (@sizeOf([6]u8) -% @as(c_ulong, 1))) +% strlen(f.*.vpath), gettext("%s: Field '%s' not cached: %s"), f.*.name, "vpath", f.*.vpath);
         }
         if (!false) break;
     }
     while (true) {
-        if (((f.*.stem != null) and (@as(c_int, @bitCast(@as(c_uint, f.*.stem[@as(c_uint, @intCast(@as(c_int, 0)))]))) != 0)) and !(strcache_iscached(f.*.stem) != 0)) {
-            @"error"(null, (strlen(f.*.name) +% (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% strlen(f.*.stem), gettext("%s: Field '%s' not cached: %s"), f.*.name, "stem", f.*.stem);
+        if (((f.*.stem != null) and (@as(c_int, @bitCast(@as(c_uint, f.*.stem[0]))) != 0)) and !(strcache_iscached(f.*.stem) != 0)) {
+            @"error"(null, (strlen(f.*.name) +% (@sizeOf([5]u8) -% @as(c_ulong, 1))) +% strlen(f.*.stem), gettext("%s: Field '%s' not cached: %s"), f.*.name, "stem", f.*.stem);
         }
         if (!false) break;
     }
@@ -1632,14 +1632,14 @@ fn verify_file(arg_item: ?*const anyopaque) callconv(.C) void {
         d = f.*.deps;
         while (d != null) : (d = d.*.next) {
             if (!(d.*.need_2nd_expansion != 0)) while (true) {
-                if (((d.*.name != null) and (@as(c_int, @bitCast(@as(c_uint, d.*.name[@as(c_uint, @intCast(@as(c_int, 0)))]))) != 0)) and !(strcache_iscached(d.*.name) != 0)) {
-                    @"error"(null, (strlen(d.*.name) +% (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% strlen(d.*.name), gettext("%s: Field '%s' not cached: %s"), d.*.name, "name", d.*.name);
+                if (((d.*.name != null) and (@as(c_int, @bitCast(@as(c_uint, d.*.name[0]))) != 0)) and !(strcache_iscached(d.*.name) != 0)) {
+                    @"error"(null, (strlen(d.*.name) +% (@sizeOf([5]u8) -% @as(c_ulong, 1))) +% strlen(d.*.name), gettext("%s: Field '%s' not cached: %s"), d.*.name, "name", d.*.name);
                 }
                 if (!false) break;
             };
             while (true) {
-                if (((d.*.stem != null) and (@as(c_int, @bitCast(@as(c_uint, d.*.stem[@as(c_uint, @intCast(@as(c_int, 0)))]))) != 0)) and !(strcache_iscached(d.*.stem) != 0)) {
-                    @"error"(null, (strlen(d.*.name) +% (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% strlen(d.*.stem), gettext("%s: Field '%s' not cached: %s"), d.*.name, "stem", d.*.stem);
+                if (((d.*.stem != null) and (@as(c_int, @bitCast(@as(c_uint, d.*.stem[0]))) != 0)) and !(strcache_iscached(d.*.stem) != 0)) {
+                    @"error"(null, (strlen(d.*.name) +% (@sizeOf([5]u8) -% @as(c_ulong, 1))) +% strlen(d.*.stem), gettext("%s: Field '%s' not cached: %s"), d.*.name, "stem", d.*.stem);
                 }
                 if (!false) break;
             }

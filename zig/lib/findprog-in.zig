@@ -40,7 +40,7 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
     var optimize_for_exec = arg_optimize_for_exec;
     _ = &optimize_for_exec;
     {
-        var has_slash: bool = @as(c_int, 0) != 0;
+        var has_slash: bool = 0 != 0;
         _ = &has_slash;
         {
             var p: [*c]const u8 = undefined;
@@ -48,7 +48,7 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
             {
                 p = progname;
                 while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) : (p += 1) if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '/')) {
-                    has_slash = @as(c_int, 1) != 0;
+                    has_slash = 1 != 0;
                     break;
                 };
             }
@@ -59,7 +59,7 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
                 _ = &failure_errno;
                 var i: usize = undefined;
                 _ = &i;
-                var directory_as_prefix: [*c]const u8 = if ((directory != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) and !(@as(c_int, @bitCast(@as(c_uint, progname[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '/'))) directory else "";
+                var directory_as_prefix: [*c]const u8 = if ((directory != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) and !(@as(c_int, @bitCast(@as(c_uint, progname[0]))) == @as(c_int, '/'))) directory else "";
                 _ = &directory_as_prefix;
                 failure_errno = 2;
                 {
@@ -70,13 +70,13 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
                         {
                             var progpathname: [*c]u8 = concatenated_filename(directory_as_prefix, progname, suffix);
                             _ = &progpathname;
-                            if (progpathname == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) return null;
-                            if (eaccess(progpathname, @as(c_int, 1)) == @as(c_int, 0)) {
+                            if (progpathname == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) return null;
+                            if (eaccess(progpathname, 1) == 0) {
                                 var statbuf: struct_stat = undefined;
                                 _ = &statbuf;
-                                if (stat(progpathname, &statbuf) >= @as(c_int, 0)) {
+                                if (stat(progpathname, &statbuf) >= 0) {
                                     if (!((statbuf.st_mode & @as(__mode_t, @bitCast(@as(c_int, 61440)))) == @as(__mode_t, @bitCast(@as(c_int, 16384))))) {
-                                        if (strcmp(progpathname, progname) == @as(c_int, 0)) {
+                                        if (strcmp(progpathname, progname) == 0) {
                                             free(@as(?*anyopaque, @ptrCast(progpathname)));
                                             return progname;
                                         } else return progpathname;
@@ -84,7 +84,7 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
                                     __errno_location().* = 13;
                                 }
                             }
-                            if (__errno_location().* != @as(c_int, 2)) {
+                            if (__errno_location().* != 2) {
                                 failure_errno = __errno_location().*;
                             }
                             free(@as(?*anyopaque, @ptrCast(progpathname)));
@@ -96,13 +96,13 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
             }
         }
     }
-    if (path == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (path == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         path = "";
     }
     {
         var path_copy: [*c]u8 = strdup(path);
         _ = &path_copy;
-        if (path_copy == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) return null;
+        if (path_copy == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) return null;
         var failure_errno: c_int = undefined;
         _ = &failure_errno;
         var path_rest: [*c]u8 = undefined;
@@ -112,7 +112,7 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
         failure_errno = 2;
         {
             path_rest = path_copy;
-            while (true) : (path_rest = cp + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) {
+            while (true) : (path_rest = cp + @as(usize, @bitCast(@as(isize, @intCast(1))))) {
                 var dir: [*c]const u8 = undefined;
                 _ = &dir;
                 var last: bool = undefined;
@@ -133,9 +133,9 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
                 if (dir == @as([*c]const u8, @ptrCast(@alignCast(cp)))) {
                     dir = ".";
                 }
-                if ((directory != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) and !(@as(c_int, @bitCast(@as(c_uint, dir[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '/'))) {
+                if ((directory != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) and !(@as(c_int, @bitCast(@as(c_uint, dir[0]))) == @as(c_int, '/'))) {
                     dir_as_prefix_to_free = concatenated_filename(directory, dir, null);
-                    if (dir_as_prefix_to_free == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+                    if (dir_as_prefix_to_free == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
                         failure_errno = __errno_location().*;
                         {
                             free(@as(?*anyopaque, @ptrCast(path_copy)));
@@ -156,7 +156,7 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
                         {
                             var progpathname: [*c]u8 = concatenated_filename(dir_as_prefix, progname, suffix);
                             _ = &progpathname;
-                            if (progpathname == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+                            if (progpathname == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
                                 failure_errno = __errno_location().*;
                                 free(@as(?*anyopaque, @ptrCast(dir_as_prefix_to_free)));
                                 {
@@ -165,15 +165,15 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
                                     return null;
                                 }
                             }
-                            if (eaccess(progpathname, @as(c_int, 1)) == @as(c_int, 0)) {
+                            if (eaccess(progpathname, 1) == 0) {
                                 var statbuf: struct_stat = undefined;
                                 _ = &statbuf;
-                                if (stat(progpathname, &statbuf) >= @as(c_int, 0)) {
+                                if (stat(progpathname, &statbuf) >= 0) {
                                     if (!((statbuf.st_mode & @as(__mode_t, @bitCast(@as(c_int, 61440)))) == @as(__mode_t, @bitCast(@as(c_int, 16384))))) {
-                                        if (strcmp(progpathname, progname) == @as(c_int, 0)) {
+                                        if (strcmp(progpathname, progname) == 0) {
                                             free(@as(?*anyopaque, @ptrCast(progpathname)));
-                                            progpathname = @as([*c]u8, @ptrCast(@alignCast(malloc((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) +% strlen(progname)) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
-                                            if (progpathname == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+                                            progpathname = @as([*c]u8, @ptrCast(@alignCast(malloc((@as(c_ulong, 2) +% strlen(progname)) +% @as(c_ulong, 1)))));
+                                            if (progpathname == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
                                                 failure_errno = __errno_location().*;
                                                 free(@as(?*anyopaque, @ptrCast(dir_as_prefix_to_free)));
                                                 {
@@ -182,9 +182,9 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
                                                     return null;
                                                 }
                                             }
-                                            progpathname[@as(c_uint, @intCast(@as(c_int, 0)))] = '.';
-                                            progpathname[@as(c_uint, @intCast(@as(c_int, 1)))] = '/';
-                                            _ = memcpy(@as(?*anyopaque, @ptrCast(progpathname + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2))))))), @as(?*const anyopaque, @ptrCast(progname)), strlen(progname) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+                                            progpathname[0] = '.';
+                                            progpathname[1] = '/';
+                                            _ = memcpy(@as(?*anyopaque, @ptrCast(progpathname + @as(usize, @bitCast(@as(isize, @intCast(2)))))), @as(?*const anyopaque, @ptrCast(progname)), strlen(progname) +% @as(c_ulong, 1));
                                         }
                                         free(@as(?*anyopaque, @ptrCast(dir_as_prefix_to_free)));
                                         free(@as(?*anyopaque, @ptrCast(path_copy)));
@@ -193,7 +193,7 @@ export fn find_in_given_path(arg_progname: [*c]const u8, arg_path: [*c]const u8,
                                     __errno_location().* = 13;
                                 }
                             }
-                            if (__errno_location().* != @as(c_int, 2)) {
+                            if (__errno_location().* != 2) {
                                 failure_errno = __errno_location().*;
                             }
                             free(@as(?*anyopaque, @ptrCast(progpathname)));

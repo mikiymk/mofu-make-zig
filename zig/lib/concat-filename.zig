@@ -57,20 +57,20 @@ export fn concatenated_filename(arg_directory: [*c]const u8, arg_filename: [*c]c
     _ = &result;
     var p: [*c]u8 = undefined;
     _ = &p;
-    if (strcmp(directory, ".") == @as(c_int, 0)) {
-        result = @as([*c]u8, @ptrCast(@alignCast(malloc((strlen(filename) +% (if (suffix != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) strlen(suffix) else @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 0)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
-        if (result == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) return null;
+    if (strcmp(directory, ".") == 0) {
+        result = @as([*c]u8, @ptrCast(@alignCast(malloc((strlen(filename) +% (if (suffix != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) strlen(suffix) else @as(c_ulong, 0))) +% @as(c_ulong, 1)))));
+        if (result == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) return null;
         p = result;
     } else {
         var directory_len: usize = strlen(directory);
         _ = &directory_len;
         var need_slash: c_int = @intFromBool((directory_len > @as(usize, @bitCast(@as(c_long, blk: {
             _ = &directory;
-            break :blk @as(c_int, 0);
-        })))) and !(@as(c_int, @bitCast(@as(c_uint, directory[directory_len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]))) == @as(c_int, '/')));
+            break :blk 0;
+        })))) and !(@as(c_int, @bitCast(@as(c_uint, directory[directory_len -% @as(usize, 1)]))) == @as(c_int, '/')));
         _ = &need_slash;
-        result = @as([*c]u8, @ptrCast(@alignCast(malloc((((directory_len +% @as(usize, @bitCast(@as(c_long, need_slash)))) +% strlen(filename)) +% (if (suffix != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) strlen(suffix) else @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 0)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
-        if (result == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) return null;
+        result = @as([*c]u8, @ptrCast(@alignCast(malloc((((directory_len +% @as(usize, @bitCast(@as(c_long, need_slash)))) +% strlen(filename)) +% (if (suffix != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) strlen(suffix) else @as(c_ulong, 0))) +% @as(c_ulong, 1)))));
+        if (result == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) return null;
         _ = memcpy(@as(?*anyopaque, @ptrCast(result)), @as(?*const anyopaque, @ptrCast(directory)), directory_len);
         p = result + directory_len;
         if (need_slash != 0) {
@@ -83,7 +83,7 @@ export fn concatenated_filename(arg_directory: [*c]const u8, arg_filename: [*c]c
         }
     }
     p = stpcpy(p, filename);
-    if (suffix != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (suffix != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         _ = stpcpy(p, suffix);
     }
     return result;

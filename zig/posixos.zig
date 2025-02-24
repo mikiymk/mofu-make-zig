@@ -267,8 +267,8 @@ const floc = extern struct {
     offset: c_ulong = @import("std").mem.zeroes(c_ulong),
 };
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 extern fn pfatal_with_name([*c]const u8) noreturn;
 extern fn perror_with_name([*c]const u8, [*c]const u8) void;
@@ -372,23 +372,23 @@ pub fn check_io_state() c_uint {
         var static: c_uint = 1;
     };
     _ = &state;
-    if (state.static != @as(c_uint, @bitCast(@as(c_int, 1)))) return state.static;
-    if ((fcntl(fileno(stdin), @as(c_int, 1)) != -@as(c_int, 1)) or (__errno_location().* != @as(c_int, 9))) {
-        state.static |= @as(c_uint, @bitCast(@as(c_int, 4)));
+    if (state.static != @as(c_uint, 1)) return state.static;
+    if ((fcntl(fileno(stdin), 1) != -1) or (__errno_location().* != 9)) {
+        state.static |= @as(c_uint, 4);
     }
-    if ((fcntl(fileno(stdout), @as(c_int, 1)) != -@as(c_int, 1)) or (__errno_location().* != @as(c_int, 9))) {
-        state.static |= @as(c_uint, @bitCast(@as(c_int, 8)));
+    if ((fcntl(fileno(stdout), 1) != -1) or (__errno_location().* != 9)) {
+        state.static |= @as(c_uint, 8);
     }
-    if ((fcntl(fileno(stderr), @as(c_int, 1)) != -@as(c_int, 1)) or (__errno_location().* != @as(c_int, 9))) {
+    if ((fcntl(fileno(stderr), 1) != -1) or (__errno_location().* != 9)) {
         state.static |= @as(c_uint, @bitCast(@as(c_int, 16)));
     }
-    if ((state.static & @as(c_uint, @bitCast(@as(c_int, 8) | @as(c_int, 16)))) == @as(c_uint, @bitCast(@as(c_int, 8) | @as(c_int, 16)))) {
+    if ((state.static & @as(c_uint, @bitCast(8 | @as(c_int, 16)))) == @as(c_uint, @bitCast(8 | @as(c_int, 16)))) {
         var stbuf_o: struct_stat = undefined;
         _ = &stbuf_o;
         var stbuf_e: struct_stat = undefined;
         _ = &stbuf_e;
-        if ((((fstat(fileno(stdout), &stbuf_o) == @as(c_int, 0)) and (fstat(fileno(stderr), &stbuf_e) == @as(c_int, 0))) and (stbuf_o.st_dev == stbuf_e.st_dev)) and (stbuf_o.st_ino == stbuf_e.st_ino)) {
-            state.static |= @as(c_uint, @bitCast(@as(c_int, 2)));
+        if ((((fstat(fileno(stdout), &stbuf_o) == 0) and (fstat(fileno(stderr), &stbuf_e) == 0)) and (stbuf_o.st_dev == stbuf_e.st_dev)) and (stbuf_o.st_ino == stbuf_e.st_ino)) {
+            state.static |= @as(c_uint, 2);
         }
     }
     return state.static;
@@ -399,19 +399,19 @@ export fn fd_inherit(arg_fd: c_int) void {
     var flags: c_int = undefined;
     _ = &flags;
     while (((blk: {
-        const tmp = fcntl(fd, @as(c_int, 1));
+        const tmp = fcntl(fd, 1);
         flags = tmp;
         break :blk tmp;
-    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-    if (flags >= @as(c_int, 0)) {
+    }) == -1) and (__errno_location().* == 4)) {}
+    if (flags >= 0) {
         var r: c_int = undefined;
         _ = &r;
-        flags &= ~@as(c_int, 1);
+        flags &= ~1;
         while (((blk: {
-            const tmp = fcntl(fd, @as(c_int, 2), flags);
+            const tmp = fcntl(fd, 2, flags);
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+        }) == -1) and (__errno_location().* == 4)) {}
     }
 }
 export fn fd_noinherit(arg_fd: c_int) void {
@@ -420,19 +420,19 @@ export fn fd_noinherit(arg_fd: c_int) void {
     var flags: c_int = undefined;
     _ = &flags;
     while (((blk: {
-        const tmp = fcntl(fd, @as(c_int, 1));
+        const tmp = fcntl(fd, 1);
         flags = tmp;
         break :blk tmp;
-    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-    if (flags >= @as(c_int, 0)) {
+    }) == -1) and (__errno_location().* == 4)) {}
+    if (flags >= 0) {
         var r: c_int = undefined;
         _ = &r;
-        flags |= @as(c_int, 1);
+        flags |= 1;
         while (((blk: {
-            const tmp = fcntl(fd, @as(c_int, 2), flags);
+            const tmp = fcntl(fd, 2, flags);
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+        }) == -1) and (__errno_location().* == 4)) {}
     }
 }
 export fn fd_set_append(arg_fd: c_int) void {
@@ -442,23 +442,23 @@ export fn fd_set_append(arg_fd: c_int) void {
     _ = &stbuf;
     var flags: c_int = undefined;
     _ = &flags;
-    if ((fstat(fd, &stbuf) == @as(c_int, 0)) and ((stbuf.st_mode & @as(__mode_t, @bitCast(@as(c_int, 61440)))) == @as(__mode_t, @bitCast(@as(c_int, 32768))))) {
-        flags = fcntl(fd, @as(c_int, 3), @as(c_int, 0));
-        if (flags >= @as(c_int, 0)) {
+    if ((fstat(fd, &stbuf) == 0) and ((stbuf.st_mode & @as(__mode_t, @bitCast(@as(c_int, 61440)))) == @as(__mode_t, @bitCast(@as(c_int, 32768))))) {
+        flags = fcntl(fd, 3, 0);
+        if (flags >= 0) {
             var r: c_int = undefined;
             _ = &r;
             while (((blk: {
-                const tmp = fcntl(fd, @as(c_int, 4), flags | @as(c_int, 1024));
+                const tmp = fcntl(fd, 4, flags | @as(c_int, 1024));
                 r = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+            }) == -1) and (__errno_location().* == 4)) {}
         }
     }
 }
 export fn os_anontmp() c_int {
     var tdir: [*c]const u8 = get_tmpdir();
     _ = &tdir;
-    var fd: c_int = -@as(c_int, 1);
+    var fd: c_int = -1;
     _ = &fd;
     const tmpfile_works = struct {
         var static: c_uint = 1;
@@ -466,13 +466,13 @@ export fn os_anontmp() c_int {
     _ = &tmpfile_works;
     if (tmpfile_works.static != 0) {
         while (((blk: {
-            const tmp = open(tdir, (@as(c_int, 2) | (@as(c_int, 4194304) | @as(c_int, 65536))) | @as(c_int, 128), @as(c_int, 384));
+            const tmp = open(tdir, (2 | (@as(c_int, 4194304) | @as(c_int, 65536))) | @as(c_int, 128), @as(c_int, 384));
             fd = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (fd >= @as(c_int, 0)) return fd;
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (fd >= 0) return fd;
         while (true) {
-            if ((@as(c_int, 1) & db_level) != 0) {
+            if ((1 & db_level) != 0) {
                 _ = printf(gettext("Cannot open '%s' with O_TMPFILE: %s.\n"), tdir, strerror(__errno_location().*));
                 _ = fflush(stdout);
             }
@@ -480,7 +480,7 @@ export fn os_anontmp() c_int {
         }
         tmpfile_works.static = 0;
     }
-    if ((tdir == @as([*c]const u8, @ptrCast(@alignCast("/tmp")))) or ((@as(c_int, @bitCast(@as(c_uint, tdir.*))) == @as(c_int, @bitCast(@as(c_uint, "/tmp".*)))) and ((@as(c_int, @bitCast(@as(c_uint, tdir.*))) == @as(c_int, '\x00')) or !(strcmp(tdir + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "/tmp" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+    if ((tdir == @as([*c]const u8, @ptrCast(@alignCast("/tmp")))) or ((@as(c_int, @bitCast(@as(c_uint, tdir.*))) == @as(c_int, @bitCast(@as(c_uint, "/tmp".*)))) and ((@as(c_int, @bitCast(@as(c_uint, tdir.*))) == @as(c_int, '\x00')) or !(strcmp(tdir + @as(usize, @bitCast(@as(isize, @intCast(1)))), "/tmp" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))) {
         var mask: mode_t = umask(@as(__mode_t, @bitCast(@as(c_int, 63))));
         _ = &mask;
         var tfile: [*c]FILE = undefined;
@@ -488,20 +488,20 @@ export fn os_anontmp() c_int {
         while (true) {
             __errno_location().* = 0;
             tfile = tmpfile();
-            if (!((tfile == null) and (__errno_location().* == @as(c_int, 4)))) break;
+            if (!((tfile == null) and (__errno_location().* == 4))) break;
         }
         if (!(tfile != null)) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(strerror(__errno_location().*)), "tmpfile: %s", strerror(__errno_location().*));
-            return -@as(c_int, 1);
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(strerror(__errno_location().*)), "tmpfile: %s", strerror(__errno_location().*));
+            return -1;
         }
         _ = umask(mask);
         while (((blk: {
             const tmp = dup(fileno(tfile));
             fd = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (fd < @as(c_int, 0)) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(strerror(__errno_location().*)), "dup: %s", strerror(__errno_location().*));
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (fd < 0) {
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(strerror(__errno_location().*)), "dup: %s", strerror(__errno_location().*));
         }
         _ = fclose(tfile);
     }
@@ -517,57 +517,57 @@ export fn jobserver_setup(arg_slots: c_int, arg_style: [*c]const u8) c_uint {
     _ = &style;
     var r: c_int = undefined;
     _ = &r;
-    if (!(style != null) or (strcmp(style, "fifo") == @as(c_int, 0))) {
+    if (!(style != null) or (strcmp(style, "fifo") == 0)) {
         var tmpdir: [*c]const u8 = get_tmpdir();
         _ = &tmpdir;
-        fifo_name = @as([*c]u8, @ptrCast(@alignCast(xmalloc(((strlen(tmpdir) +% (@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))))));
+        fifo_name = @as([*c]u8, @ptrCast(@alignCast(xmalloc(((strlen(tmpdir) +% (@sizeOf([7]u8) -% @as(c_ulong, 1))) +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3))) +% @as(c_ulong, 2)))));
         _ = sprintf(fifo_name, "%s/GMfifo%lld", tmpdir, @as(c_longlong, @bitCast(@as(c_longlong, make_pid()))));
         while (((blk: {
             const tmp = mkfifo(fifo_name, @as(__mode_t, @bitCast(@as(c_int, 384))));
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r < @as(c_int, 0)) {
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (r < 0) {
             perror_with_name("jobserver mkfifo: ", fifo_name);
             free(@as(?*anyopaque, @ptrCast(fifo_name)));
             fifo_name = null;
         } else {
             while (((blk: {
-                const tmp = open(fifo_name, @as(c_int, 0) | @as(c_int, 2048));
-                job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] = tmp;
+                const tmp = open(fifo_name, 0 | @as(c_int, 2048));
+                job_fds[0] = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-            if (job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] < @as(c_int, 0)) {
-                fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(fifo_name) +% strlen(strerror(__errno_location().*)), gettext("cannot open jobserver %s: %s"), fifo_name, strerror(__errno_location().*));
+            }) == -1) and (__errno_location().* == 4)) {}
+            if (job_fds[0] < 0) {
+                fatal(@as([*c]floc, @ptrFromInt(0)), strlen(fifo_name) +% strlen(strerror(__errno_location().*)), gettext("cannot open jobserver %s: %s"), fifo_name, strerror(__errno_location().*));
             }
             while (((blk: {
-                const tmp = open(fifo_name, @as(c_int, 1));
-                job_fds[@as(c_uint, @intCast(@as(c_int, 1)))] = tmp;
+                const tmp = open(fifo_name, 1);
+                job_fds[1] = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-            if (job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] < @as(c_int, 0)) {
-                fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(fifo_name) +% strlen(strerror(__errno_location().*)), gettext("cannot open jobserver %s: %s"), fifo_name, strerror(__errno_location().*));
+            }) == -1) and (__errno_location().* == 4)) {}
+            if (job_fds[0] < 0) {
+                fatal(@as([*c]floc, @ptrFromInt(0)), strlen(fifo_name) +% strlen(strerror(__errno_location().*)), gettext("cannot open jobserver %s: %s"), fifo_name, strerror(__errno_location().*));
             }
             js_type = @as(c_uint, @bitCast(js_fifo));
         }
     }
     if (js_type == @as(c_uint, @bitCast(js_none))) {
-        if ((style != null) and (strcmp(style, "pipe") != @as(c_int, 0))) {
-            fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(style), gettext("unknown jobserver auth style '%s'"), style);
+        if ((style != null) and (strcmp(style, "pipe") != 0)) {
+            fatal(@as([*c]floc, @ptrFromInt(0)), strlen(style), gettext("unknown jobserver auth style '%s'"), style);
         }
         while (((blk: {
             const tmp = pipe(@as([*c]c_int, @ptrCast(@alignCast(&job_fds))));
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r < @as(c_int, 0)) {
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (r < 0) {
             pfatal_with_name(gettext("creating jobs pipe"));
         }
         js_type = @as(c_uint, @bitCast(js_pipe));
     }
-    fd_noinherit(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))]);
-    fd_noinherit(job_fds[@as(c_uint, @intCast(@as(c_int, 1)))]);
-    if (make_job_rfd() < @as(c_int, 0)) {
+    fd_noinherit(job_fds[0]);
+    fd_noinherit(job_fds[1]);
+    if (make_job_rfd() < 0) {
         pfatal_with_name(gettext("duping jobs pipe"));
     }
     while ((blk: {
@@ -577,15 +577,15 @@ export fn jobserver_setup(arg_slots: c_int, arg_style: [*c]const u8) c_uint {
         break :blk tmp;
     }) != 0) {
         while (((blk: {
-            const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(write(job_fds[@as(c_uint, @intCast(@as(c_int, 1)))], @as(?*const anyopaque, @ptrCast(&token)), @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))))))));
+            const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(write(job_fds[1], @as(?*const anyopaque, @ptrCast(&token)), @as(usize, 1))))));
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r != @as(c_int, 1)) {
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (r != 1) {
             pfatal_with_name(gettext("init jobserver pipe"));
         }
     }
-    set_blocking(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))], @as(c_int, 0));
+    set_blocking(job_fds[0], 0);
     job_root = 1;
     return 1;
 }
@@ -596,58 +596,58 @@ export fn jobserver_parse_auth(arg_auth: [*c]const u8) c_uint {
     _ = &rfd;
     var wfd: c_int = undefined;
     _ = &wfd;
-    if (strncmp(auth, "fifo:", @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)) {
-        fifo_name = xstrdup(auth + (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+    if (strncmp(auth, "fifo:", @sizeOf([6]u8) -% @as(c_ulong, 1)) == 0) {
+        fifo_name = xstrdup(auth + (@sizeOf([6]u8) -% @as(c_ulong, 1)));
         while (((blk: {
-            const tmp = open(fifo_name, @as(c_int, 0));
-            job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] = tmp;
+            const tmp = open(fifo_name, 0);
+            job_fds[0] = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] < @as(c_int, 0)) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(fifo_name) +% strlen(strerror(__errno_location().*)), gettext("cannot open jobserver %s: %s"), fifo_name, strerror(__errno_location().*));
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (job_fds[0] < 0) {
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(fifo_name) +% strlen(strerror(__errno_location().*)), gettext("cannot open jobserver %s: %s"), fifo_name, strerror(__errno_location().*));
             return 0;
         }
         while (((blk: {
-            const tmp = open(fifo_name, @as(c_int, 1));
-            job_fds[@as(c_uint, @intCast(@as(c_int, 1)))] = tmp;
+            const tmp = open(fifo_name, 1);
+            job_fds[1] = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (job_fds[@as(c_uint, @intCast(@as(c_int, 1)))] < @as(c_int, 0)) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(fifo_name) +% strlen(strerror(__errno_location().*)), gettext("cannot open jobserver %s: %s"), fifo_name, strerror(__errno_location().*));
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (job_fds[1] < 0) {
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(fifo_name) +% strlen(strerror(__errno_location().*)), gettext("cannot open jobserver %s: %s"), fifo_name, strerror(__errno_location().*));
             return 0;
         }
         js_type = @as(c_uint, @bitCast(js_fifo));
-    } else if (sscanf(auth, "%d,%d", &rfd, &wfd) == @as(c_int, 2)) {
-        if ((rfd == -@as(c_int, 2)) or (wfd == -@as(c_int, 2))) return 0;
-        if (!(fcntl(rfd, @as(c_int, 1)) != -@as(c_int, 1)) or !(fcntl(wfd, @as(c_int, 1)) != -@as(c_int, 1))) return 0;
-        job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] = rfd;
-        job_fds[@as(c_uint, @intCast(@as(c_int, 1)))] = wfd;
+    } else if (sscanf(auth, "%d,%d", &rfd, &wfd) == 2) {
+        if ((rfd == -2) or (wfd == -2)) return 0;
+        if (!(fcntl(rfd, 1) != -1) or !(fcntl(wfd, 1) != -1)) return 0;
+        job_fds[0] = rfd;
+        job_fds[1] = wfd;
         js_type = @as(c_uint, @bitCast(js_pipe));
     } else {
-        @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(auth), gettext("invalid --jobserver-auth string '%s'"), auth);
+        @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(auth), gettext("invalid --jobserver-auth string '%s'"), auth);
         return 0;
     }
-    if (make_job_rfd() < @as(c_int, 0)) {
-        if (__errno_location().* != @as(c_int, 9)) {
+    if (make_job_rfd() < 0) {
+        if (__errno_location().* != 9) {
             pfatal_with_name("jobserver readfd");
         }
         jobserver_clear();
         return 0;
     }
-    set_blocking(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))], @as(c_int, 0));
-    fd_noinherit(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))]);
-    fd_noinherit(job_fds[@as(c_uint, @intCast(@as(c_int, 1)))]);
+    set_blocking(job_fds[0], 0);
+    fd_noinherit(job_fds[0]);
+    fd_noinherit(job_fds[1]);
     return 1;
 }
 export fn jobserver_get_auth() [*c]u8 {
     var auth: [*c]u8 = undefined;
     _ = &auth;
     if (js_type == @as(c_uint, @bitCast(js_fifo))) {
-        auth = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(fifo_name) +% (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        auth = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(fifo_name) +% (@sizeOf([6]u8) -% @as(c_ulong, 1))) +% @as(c_ulong, 1)))));
         _ = sprintf(auth, "fifo:%s", fifo_name);
     } else {
-        auth = @as([*c]u8, @ptrCast(@alignCast(xmalloc(((((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))))));
-        _ = sprintf(auth, "%d,%d", job_fds[@as(c_uint, @intCast(@as(c_int, 0)))], job_fds[@as(c_uint, @intCast(@as(c_int, 1)))]);
+        auth = @as([*c]u8, @ptrCast(@alignCast(xmalloc(((((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3)) *% @as(c_ulong, 2)) +% @as(c_ulong, 2)))));
+        _ = sprintf(auth, "%d,%d", job_fds[0], job_fds[1]);
     }
     return auth;
 }
@@ -658,22 +658,22 @@ export fn jobserver_get_invalid_auth() [*c]const u8 {
     return " --jobserver-auth=-2,-2";
 }
 export fn jobserver_clear() void {
-    if (job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] >= @as(c_int, 0)) {
-        _ = close(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))]);
+    if (job_fds[0] >= 0) {
+        _ = close(job_fds[0]);
     }
-    if (job_fds[@as(c_uint, @intCast(@as(c_int, 1)))] >= @as(c_int, 0)) {
-        _ = close(job_fds[@as(c_uint, @intCast(@as(c_int, 1)))]);
+    if (job_fds[1] >= 0) {
+        _ = close(job_fds[1]);
     }
-    if (job_rfd >= @as(c_int, 0)) {
+    if (job_rfd >= 0) {
         _ = close(job_rfd);
     }
-    job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] = blk: {
+    job_fds[0] = blk: {
         const tmp = blk_1: {
-            const tmp_2 = -@as(c_int, 1);
+            const tmp_2 = -1;
             job_rfd = tmp_2;
             break :blk_1 tmp_2;
         };
-        job_fds[@as(c_uint, @intCast(@as(c_int, 1)))] = tmp;
+        job_fds[1] = tmp;
         break :blk tmp;
     };
     if (fifo_name != null) {
@@ -684,7 +684,7 @@ export fn jobserver_clear() void {
                 const tmp = unlink(fifo_name);
                 r = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+            }) == -1) and (__errno_location().* == 4)) {}
         }
         if (!(handling_fatal_signal != 0)) {
             free(@as(?*anyopaque, @ptrCast(fifo_name)));
@@ -698,22 +698,22 @@ export fn jobserver_acquire_all() c_uint {
     _ = &r;
     var tokens: c_uint = 0;
     _ = &tokens;
-    set_blocking(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))], @as(c_int, 1));
-    _ = close(job_fds[@as(c_uint, @intCast(@as(c_int, 1)))]);
-    job_fds[@as(c_uint, @intCast(@as(c_int, 1)))] = -@as(c_int, 1);
+    set_blocking(job_fds[0], 1);
+    _ = close(job_fds[1]);
+    job_fds[1] = -1;
     while (true) {
         var intake: u8 = undefined;
         _ = &intake;
         while (((blk: {
-            const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))], @as(?*anyopaque, @ptrCast(&intake)), @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))))))));
+            const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(job_fds[0], @as(?*anyopaque, @ptrCast(&intake)), @as(usize, 1))))));
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r != @as(c_int, 1)) break;
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (r != 1) break;
         tokens +%= 1;
     }
     while (true) {
-        if ((@as(c_int, 4) & db_level) != 0) {
+        if ((4 & db_level) != 0) {
             _ = printf("Acquired all %u jobserver tokens.\n", tokens);
             _ = fflush(stdout);
         }
@@ -728,11 +728,11 @@ export fn jobserver_release(arg_is_fatal: c_int) void {
     var r: c_int = undefined;
     _ = &r;
     while (((blk: {
-        const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(write(job_fds[@as(c_uint, @intCast(@as(c_int, 1)))], @as(?*const anyopaque, @ptrCast(&token)), @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))))))));
+        const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(write(job_fds[1], @as(?*const anyopaque, @ptrCast(&token)), @as(usize, 1))))));
         r = tmp;
         break :blk tmp;
-    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-    if (r != @as(c_int, 1)) {
+    }) == -1) and (__errno_location().* == 4)) {}
+    if (r != 1) {
         if (is_fatal != 0) {
             pfatal_with_name(gettext("write jobserver"));
         }
@@ -740,29 +740,29 @@ export fn jobserver_release(arg_is_fatal: c_int) void {
     }
 }
 export fn jobserver_signal() void {
-    if (job_rfd >= @as(c_int, 0)) {
+    if (job_rfd >= 0) {
         _ = close(job_rfd);
-        job_rfd = -@as(c_int, 1);
+        job_rfd = -1;
     }
 }
 export fn jobserver_pre_child(arg_recursive: c_int) void {
     var recursive = arg_recursive;
     _ = &recursive;
     if ((recursive != 0) and (js_type == @as(c_uint, @bitCast(js_pipe)))) {
-        fd_inherit(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))]);
-        fd_inherit(job_fds[@as(c_uint, @intCast(@as(c_int, 1)))]);
+        fd_inherit(job_fds[0]);
+        fd_inherit(job_fds[1]);
     }
 }
 export fn jobserver_post_child(arg_recursive: c_int) void {
     var recursive = arg_recursive;
     _ = &recursive;
     if ((recursive != 0) and (js_type == @as(c_uint, @bitCast(js_pipe)))) {
-        fd_noinherit(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))]);
-        fd_noinherit(job_fds[@as(c_uint, @intCast(@as(c_int, 1)))]);
+        fd_noinherit(job_fds[0]);
+        fd_noinherit(job_fds[1]);
     }
 }
 export fn jobserver_pre_acquire() void {
-    if (((job_rfd < @as(c_int, 0)) and (job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] >= @as(c_int, 0))) and (make_job_rfd() < @as(c_int, 0))) {
+    if (((job_rfd < 0) and (job_fds[0] >= 0)) and (make_job_rfd() < 0)) {
         pfatal_with_name(gettext("duping jobs pipe"));
     }
 }
@@ -802,17 +802,17 @@ export fn jobserver_acquire(arg_timeout: c_int) c_uint {
             if (!false) break;
         }
         _ = blk: {
-            const ref = &(&readfds).*.fds_bits[@as(c_uint, @intCast(@divTrunc(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))], @as(c_int, 8) * @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf(__fd_mask))))))))];
-            ref.* |= @as(__fd_mask, @bitCast(@as(c_ulong, 1) << @intCast(@import("std").zig.c_translation.signedRemainder(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))], @as(c_int, 8) * @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf(__fd_mask)))))))));
+            const ref = &(&readfds).*.fds_bits[@as(c_uint, @intCast(@divTrunc(job_fds[0], 8 * @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf(__fd_mask))))))))];
+            ref.* |= @as(__fd_mask, @bitCast(@as(c_ulong, 1) << @intCast(@import("std").zig.c_translation.signedRemainder(job_fds[0], 8 * @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf(__fd_mask)))))))));
             break :blk ref.*;
         };
-        r = pselect(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))] + @as(c_int, 1), &readfds, null, null, specp, &empty);
-        if (r < @as(c_int, 0)) {
+        r = pselect(job_fds[0] + 1, &readfds, null, null, specp, &empty);
+        if (r < 0) {
             while (true) {
                 switch (__errno_location().*) {
-                    @as(c_int, 4) => return 0,
-                    @as(c_int, 9) => {
-                        fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("job server shut down"));
+                    4 => return 0,
+                    9 => {
+                        fatal(@as([*c]floc, @ptrFromInt(0)), @as(usize, 0), gettext("job server shut down"));
                         pfatal_with_name(gettext("pselect jobs pipe"));
                     },
                     else => {
@@ -822,22 +822,22 @@ export fn jobserver_acquire(arg_timeout: c_int) c_uint {
                 break;
             }
         }
-        if (r == @as(c_int, 0)) return 0;
+        if (r == 0) return 0;
         while (((blk: {
-            const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(job_fds[@as(c_uint, @intCast(@as(c_int, 0)))], @as(?*anyopaque, @ptrCast(&intake)), @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))))))));
+            const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(job_fds[0], @as(?*anyopaque, @ptrCast(&intake)), @as(usize, 1))))));
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r < @as(c_int, 0)) {
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (r < 0) {
             if (__errno_location().* == @as(c_int, 11)) continue;
             pfatal_with_name(gettext("read jobs pipe"));
         }
-        return @as(c_uint, @intFromBool(r > @as(c_int, 0)));
+        return @as(c_uint, @intFromBool(r > 0));
     }
     return 0;
 }
 export fn osync_enabled() c_uint {
-    return @as(c_uint, @intFromBool(osync_handle >= @as(c_int, 0)));
+    return @as(c_uint, @intFromBool(osync_handle >= 0));
 }
 export fn osync_setup() void {
     osync_handle = get_tmpfd(&osync_tmpfile);
@@ -848,7 +848,7 @@ export fn osync_get_mutex() [*c]u8 {
     var mutex: [*c]u8 = null;
     _ = &mutex;
     if (osync_enabled() != 0) {
-        mutex = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(osync_tmpfile) +% (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        mutex = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(osync_tmpfile) +% (@sizeOf([5]u8) -% @as(c_ulong, 1))) +% @as(c_ulong, 1)))));
         _ = sprintf(mutex, "fnm:%s", osync_tmpfile);
     }
     return mutex;
@@ -856,27 +856,27 @@ export fn osync_get_mutex() [*c]u8 {
 export fn osync_parse_mutex(arg_mutex: [*c]const u8) c_uint {
     var mutex = arg_mutex;
     _ = &mutex;
-    if (strncmp(mutex, "fnm:", @sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) != @as(c_int, 0)) {
-        @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(mutex), gettext("invalid --sync-mutex string '%s'"), mutex);
+    if (strncmp(mutex, "fnm:", @sizeOf([5]u8) -% @as(c_ulong, 1)) != 0) {
+        @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(mutex), gettext("invalid --sync-mutex string '%s'"), mutex);
         return 0;
     }
     free(@as(?*anyopaque, @ptrCast(osync_tmpfile)));
-    osync_tmpfile = xstrdup(mutex + (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+    osync_tmpfile = xstrdup(mutex + (@sizeOf([5]u8) -% @as(c_ulong, 1)));
     while (((blk: {
-        const tmp = open(osync_tmpfile, @as(c_int, 1));
+        const tmp = open(osync_tmpfile, 1);
         osync_handle = tmp;
         break :blk tmp;
-    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-    if (osync_handle < @as(c_int, 0)) {
-        fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(osync_tmpfile) +% strlen(strerror(__errno_location().*)), gettext("cannot open output sync mutex %s: %s"), osync_tmpfile, strerror(__errno_location().*));
+    }) == -1) and (__errno_location().* == 4)) {}
+    if (osync_handle < 0) {
+        fatal(@as([*c]floc, @ptrFromInt(0)), strlen(osync_tmpfile) +% strlen(strerror(__errno_location().*)), gettext("cannot open output sync mutex %s: %s"), osync_tmpfile, strerror(__errno_location().*));
     }
     fd_noinherit(osync_handle);
     return 1;
 }
 export fn osync_clear() void {
-    if (osync_handle >= @as(c_int, 0)) {
+    if (osync_handle >= 0) {
         _ = close(osync_handle);
-        osync_handle = -@as(c_int, 1);
+        osync_handle = -1;
     }
     if ((sync_root != 0) and (osync_tmpfile != null)) {
         var r: c_int = undefined;
@@ -885,7 +885,7 @@ export fn osync_clear() void {
             const tmp = unlink(osync_tmpfile);
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+        }) == -1) and (__errno_location().* == 4)) {}
         free(@as(?*anyopaque, @ptrCast(osync_tmpfile)));
         osync_tmpfile = null;
     }
@@ -898,7 +898,7 @@ export fn osync_acquire() c_uint {
         fl.l_whence = 0;
         fl.l_start = 0;
         fl.l_len = 1;
-        if (fcntl(osync_handle, @as(c_int, 7), &fl) == -@as(c_int, 1)) {
+        if (fcntl(osync_handle, 7, &fl) == -1) {
             perror("fcntl()");
             return 0;
         }
@@ -913,22 +913,22 @@ export fn osync_release() void {
         fl.l_whence = 0;
         fl.l_start = 0;
         fl.l_len = 1;
-        if (fcntl(osync_handle, @as(c_int, 7), &fl) == -@as(c_int, 1)) {
+        if (fcntl(osync_handle, 7, &fl) == -1) {
             perror("fcntl()");
         }
     }
 }
 export fn get_bad_stdin() c_int {
     const bad_stdin = struct {
-        var static: c_int = -@as(c_int, 1);
+        var static: c_int = -1;
     };
     _ = &bad_stdin;
-    if (bad_stdin.static == -@as(c_int, 1)) {
+    if (bad_stdin.static == -1) {
         var pd: [2]c_int = undefined;
         _ = &pd;
-        if (pipe(@as([*c]c_int, @ptrCast(@alignCast(&pd)))) == @as(c_int, 0)) {
-            _ = close(pd[@as(c_uint, @intCast(@as(c_int, 1)))]);
-            bad_stdin.static = pd[@as(c_uint, @intCast(@as(c_int, 0)))];
+        if (pipe(@as([*c]c_int, @ptrCast(@alignCast(&pd)))) == 0) {
+            _ = close(pd[1]);
+            bad_stdin.static = pd[0];
             fd_noinherit(bad_stdin.static);
         }
     }
@@ -936,10 +936,10 @@ export fn get_bad_stdin() c_int {
 }
 var job_root: u8 = 0;
 var job_fds: [2]c_int = [2]c_int{
-    -@as(c_int, 1),
-    -@as(c_int, 1),
+    -1,
+    -1,
 };
-var job_rfd: c_int = -@as(c_int, 1);
+var job_rfd: c_int = -1;
 var token: u8 = '+';
 const js_none: c_int = 0;
 const js_pipe: c_int = 1;
@@ -958,24 +958,24 @@ fn set_blocking(arg_fd: c_int, arg_blocking: c_int) callconv(.C) void {
     var flags: c_int = undefined;
     _ = &flags;
     while (((blk: {
-        const tmp = fcntl(fd, @as(c_int, 3));
+        const tmp = fcntl(fd, 3);
         flags = tmp;
         break :blk tmp;
-    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-    if (flags >= @as(c_int, 0)) {
+    }) == -1) and (__errno_location().* == 4)) {}
+    if (flags >= 0) {
         var r: c_int = undefined;
         _ = &r;
         flags = if (blocking != 0) flags & ~@as(c_int, 2048) else flags | @as(c_int, 2048);
         while (((blk: {
-            const tmp = fcntl(fd, @as(c_int, 4), flags);
+            const tmp = fcntl(fd, 4, flags);
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r < @as(c_int, 0)) {
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (r < 0) {
             pfatal_with_name("fcntl(O_NONBLOCK)");
         }
     }
 }
-var osync_handle: c_int = -@as(c_int, 1);
+var osync_handle: c_int = -1;
 var osync_tmpfile: [*c]u8 = null;
 var sync_root: c_uint = 0;

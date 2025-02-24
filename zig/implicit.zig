@@ -341,7 +341,7 @@ extern fn file_exists_p([*c]const u8) c_int;
 extern fn file_impossible_p([*c]const u8) c_int;
 extern fn file_impossible([*c]const u8) void;
 
-extern fn vpath_search(file: [*c]const u8, mtime_ptr: [*c]uintmax_t, vpath_index: [*c]c_uint, path_index: [*c]c_uint) [*c]const u8;
+const vpath_search = @import("vpath.zig").vpath_search;
 
 extern fn strcache_add(str: [*c]const u8) [*c]const u8;
 extern fn strcache_add_len(str: [*c]const u8, len: usize) [*c]const u8;
@@ -402,26 +402,26 @@ export fn try_implicit_rule(arg_file_1: [*c]struct_file, arg_depth: c_uint) c_in
     var depth = arg_depth;
     _ = &depth;
     while (true) {
-        if ((@as(c_int, 8) & db_level) != 0) {
+        if ((8 & db_level) != 0) {
             print_spaces(depth);
             _ = printf(gettext("Looking for an implicit rule for '%s'.\n"), file_1.*.name);
             _ = fflush(stdout);
         }
         if (!false) break;
     }
-    if (pattern_search(file_1, @as(c_int, 0), depth, @as(c_uint, @bitCast(@as(c_int, 0))), @as(c_int, 0)) != 0) return 1;
+    if (pattern_search(file_1, 0, depth, @as(c_uint, 0), 0) != 0) return 1;
     if (ar_name(file_1.*.name) != 0) {
         while (true) {
-            if ((@as(c_int, 8) & db_level) != 0) {
+            if ((8 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("Looking for archive-member implicit rule for '%s'.\n"), file_1.*.name);
                 _ = fflush(stdout);
             }
             if (!false) break;
         }
-        if (pattern_search(file_1, @as(c_int, 1), depth, @as(c_uint, @bitCast(@as(c_int, 0))), @as(c_int, 0)) != 0) return 1;
+        if (pattern_search(file_1, 1, depth, @as(c_uint, 0), 0) != 0) return 1;
         while (true) {
-            if ((@as(c_int, 8) & db_level) != 0) {
+            if ((8 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("No archive-member implicit rule found for '%s'.\n"), file_1.*.name);
                 _ = fflush(stdout);
@@ -461,7 +461,7 @@ export fn stemlen_compare(arg_v1: ?*const anyopaque, arg_v2: ?*const anyopaque) 
     _ = &r2;
     var r: c_int = @as(c_int, @bitCast(@as(c_uint, @truncate(r1.*.stemlen -% r2.*.stemlen))));
     _ = &r;
-    return if (r != @as(c_int, 0)) r else @as(c_int, @bitCast(r1.*.order -% r2.*.order));
+    return if (r != 0) r else @as(c_int, @bitCast(r1.*.order -% r2.*.order));
 }
 
 extern var snapped_deps: c_int;
@@ -517,7 +517,7 @@ extern var shell_var: struct_variable;
 
 extern fn variable_expand_for_file(line: [*c]const u8, file: [*c]struct_file) [*c]u8;
 
-extern fn free_variable_set([*c]struct_variable_set_list) void;
+const free_variable_set = @import("variable.zig").free_variable_set;
 
 extern fn initialize_file_variables(file: [*c]struct_file, reading: c_int) void;
 
@@ -595,7 +595,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
     _ = &deplist;
     var pat: [*c]struct_patdeps = deplist;
     _ = &pat;
-    var deplen: usize = (namelen +% max_pattern_dep_length) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 4))));
+    var deplen: usize = (namelen +% max_pattern_dep_length) +% @as(usize, 4);
     _ = &deplen;
     var depname: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(deplen))));
     _ = &depname;
@@ -633,9 +633,9 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
     if ((archive != 0) or (ar_name(filename) != 0)) {
         lastslash = null;
     } else {
-        lastslash = @as([*c]const u8, @ptrCast(@alignCast(memrchr(@as(?*const anyopaque, @ptrCast(filename)), @as(c_int, '/'), namelen -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        lastslash = @as([*c]const u8, @ptrCast(@alignCast(memrchr(@as(?*const anyopaque, @ptrCast(filename)), @as(c_int, '/'), namelen -% @as(usize, 1)))));
     }
-    pathlen = @as(usize, @bitCast(if (lastslash != null) @divExact(@as(c_long, @bitCast(@intFromPtr(lastslash) -% @intFromPtr(filename))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1)))) else @as(c_long, @bitCast(@as(c_long, @as(c_int, 0))))));
+    pathlen = @as(usize, @bitCast(if (lastslash != null) @divExact(@as(c_long, @bitCast(@intFromPtr(lastslash) -% @intFromPtr(filename))), @sizeOf(u8)) + @as(c_long, 1) else @as(c_long, 0)));
     nrules = 0;
     {
         rule_2 = pattern_rules;
@@ -645,7 +645,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
             if ((rule_2.*.deps != null) and (rule_2.*.cmds == null)) continue;
             if (rule_2.*.in_use != 0) {
                 while (true) {
-                    if ((@as(c_int, 8) & db_level) != 0) {
+                    if ((8 & db_level) != 0) {
                         print_spaces(depth);
                         _ = printf(gettext("Avoiding implicit rule recursion for rule '%s'.\n"), get_rule_defn(rule_2));
                         _ = fflush(stdout);
@@ -663,10 +663,10 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                     _ = &suffix;
                     var check_lastslash: u8 = undefined;
                     _ = &check_lastslash;
-                    if (((recursions > @as(c_uint, @bitCast(@as(c_int, 0)))) and (@as(c_int, @bitCast(@as(c_uint, target[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\x00'))) and !(rule_2.*.terminal != 0)) continue;
+                    if (((recursions > @as(c_uint, 0)) and (@as(c_int, @bitCast(@as(c_uint, target[1]))) == @as(c_int, '\x00'))) and !(rule_2.*.terminal != 0)) continue;
                     if (@as(usize, @bitCast(@as(c_ulong, rule_2.*.lens[ti]))) > namelen) continue;
-                    stem = filename + @as(usize, @bitCast(@as(isize, @intCast(@divExact(@as(c_long, @bitCast(@intFromPtr(suffix) -% @intFromPtr(target))), @sizeOf(u8)) - @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))));
-                    stemlen = (namelen -% @as(usize, @bitCast(@as(c_ulong, rule_2.*.lens[ti])))) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+                    stem = filename + @as(usize, @bitCast(@as(isize, @intCast(@divExact(@as(c_long, @bitCast(@intFromPtr(suffix) -% @intFromPtr(target))), @sizeOf(u8)) - @as(c_long, 1)))));
+                    stemlen = (namelen -% @as(usize, @bitCast(@as(c_ulong, rule_2.*.lens[ti])))) +% @as(usize, 1);
                     check_lastslash = 0;
                     if (lastslash != null) {
                         check_lastslash = @as(u8, @intFromBool(strchr(target, @as(c_int, '/')) == null));
@@ -677,16 +677,16 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                         stem += @as([*c]const u8, @ptrFromInt(pathlen));
                     }
                     if (check_lastslash != 0) {
-                        if ((stem > (lastslash + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))) and !(strncmp(target, lastslash + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(stem) -% @intFromPtr(lastslash))), @sizeOf(u8)) - @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))) == @as(c_int, 0))) continue;
-                    } else if ((stem > filename) and !(strncmp(target, filename, @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(stem) -% @intFromPtr(filename))), @sizeOf(u8))))) == @as(c_int, 0))) continue;
-                    if ((@as(c_int, @bitCast(@as(c_uint, suffix.*))) != @as(c_int, @bitCast(@as(c_uint, stem[stemlen])))) or ((@as(c_int, @bitCast(@as(c_uint, suffix.*))) != @as(c_int, '\x00')) and !(((&suffix[@as(c_uint, @intCast(@as(c_int, 1)))]) == (&stem[stemlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))])) or ((@as(c_int, @bitCast(@as(c_uint, (&suffix[@as(c_uint, @intCast(@as(c_int, 1)))]).*))) == @as(c_int, @bitCast(@as(c_uint, (&stem[stemlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (&suffix[@as(c_uint, @intCast(@as(c_int, 1)))]).*))) == @as(c_int, '\x00')) or !(strcmp((&suffix[@as(c_uint, @intCast(@as(c_int, 1)))]) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), (&stem[stemlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))))) continue;
-                    if (@as(c_int, @bitCast(@as(c_uint, target[@as(c_uint, @intCast(@as(c_int, 1)))]))) != @as(c_int, '\x00')) {
+                        if ((stem > (lastslash + @as(usize, @bitCast(@as(isize, @intCast(1)))))) and !(strncmp(target, lastslash + @as(usize, @bitCast(@as(isize, @intCast(1)))), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(stem) -% @intFromPtr(lastslash))), @sizeOf(u8)) - @as(c_long, 1)))) == 0)) continue;
+                    } else if ((stem > filename) and !(strncmp(target, filename, @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(stem) -% @intFromPtr(filename))), @sizeOf(u8))))) == 0)) continue;
+                    if ((@as(c_int, @bitCast(@as(c_uint, suffix.*))) != @as(c_int, @bitCast(@as(c_uint, stem[stemlen])))) or ((@as(c_int, @bitCast(@as(c_uint, suffix.*))) != @as(c_int, '\x00')) and !(((&suffix[1]) == (&stem[stemlen +% @as(usize, 1)])) or ((@as(c_int, @bitCast(@as(c_uint, (&suffix[1]).*))) == @as(c_int, @bitCast(@as(c_uint, (&stem[stemlen +% @as(usize, 1)]).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (&suffix[1]).*))) == @as(c_int, '\x00')) or !(strcmp((&suffix[1]) + @as(usize, @bitCast(@as(isize, @intCast(1)))), (&stem[stemlen +% @as(usize, 1)]) + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))))) continue;
+                    if (@as(c_int, @bitCast(@as(c_uint, target[1]))) != @as(c_int, '\x00')) {
                         specific_rule_matched = 1;
                     }
                     if ((rule_2.*.deps == null) and (rule_2.*.cmds == null)) continue;
                     tryrules[nrules].rule = rule_2;
                     tryrules[nrules].matches = ti;
-                    tryrules[nrules].stemlen = stemlen +% (if (@as(c_int, @bitCast(@as(c_uint, check_lastslash))) != 0) pathlen else @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))));
+                    tryrules[nrules].stemlen = stemlen +% (if (@as(c_int, @bitCast(@as(c_uint, check_lastslash))) != 0) pathlen else @as(usize, 0));
                     tryrules[nrules].order = nrules;
                     tryrules[nrules].checked_lastslash = check_lastslash;
                     nrules +%= 1;
@@ -694,13 +694,13 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
             }
         }
     }
-    if (nrules == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+    if (nrules == @as(c_uint, 0)) {
         free(@as(?*anyopaque, @ptrCast(tryrules)));
         free(@as(?*anyopaque, @ptrCast(deplist)));
         depth -%= 1;
         if (rule_2 != null) {
             while (true) {
-                if ((@as(c_int, 8) & db_level) != 0) {
+                if ((8 & db_level) != 0) {
                     print_spaces(depth);
                     _ = printf(gettext("Found implicit rule '%s' for '%s'.\n"), get_rule_defn(rule_2), filename);
                     _ = fflush(stdout);
@@ -711,18 +711,18 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
         }
         if (found_compat_rule != 0) {
             while (true) {
-                if ((@as(c_int, 8) & db_level) != 0) {
+                if ((8 & db_level) != 0) {
                     print_spaces(depth);
                     _ = printf(gettext("Searching for a compatibility rule for '%s'.\n"), filename);
                     _ = fflush(stdout);
                 }
                 if (!false) break;
             }
-            _ = @as(c_int, 0);
-            return pattern_search(file_1, archive, depth, recursions, @as(c_int, 1));
+            _ = 0;
+            return pattern_search(file_1, archive, depth, recursions, 1);
         }
         while (true) {
-            if ((@as(c_int, 8) & db_level) != 0) {
+            if ((8 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("No implicit rule found for '%s'.\n"), filename);
                 _ = fflush(stdout);
@@ -731,7 +731,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
         }
         return 0;
     }
-    if (nrules > @as(c_uint, @bitCast(@as(c_int, 1)))) {
+    if (nrules > @as(c_uint, 1)) {
         qsort(@as(?*anyopaque, @ptrCast(tryrules)), @as(usize, @bitCast(@as(c_ulong, nrules))), @sizeOf(struct_tryrule), &stemlen_compare);
     }
     if (specific_rule_matched != 0) {
@@ -741,7 +741,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
             _ = &j;
             {
                 j = 0;
-                while (j < @as(c_uint, @bitCast(@as(c_uint, tryrules[ri].rule.*.num)))) : (j +%= 1) if (@as(c_int, @bitCast(@as(c_uint, tryrules[ri].rule.*.targets[j][@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\x00')) {
+                while (j < @as(c_uint, @bitCast(@as(c_uint, tryrules[ri].rule.*.num)))) : (j +%= 1) if (@as(c_int, @bitCast(@as(c_uint, tryrules[ri].rule.*.targets[j][1]))) == @as(c_int, '\x00')) {
                     tryrules[ri].rule = null;
                     break;
                 };
@@ -750,10 +750,10 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
     }
     {
         intermed_ok = 0;
-        while (intermed_ok < @as(c_int, 2)) : (intermed_ok += 1) {
+        while (intermed_ok < 2) : (intermed_ok += 1) {
             pat = deplist;
             if (intermed_ok != 0) while (true) {
-                if ((@as(c_int, 8) & db_level) != 0) {
+                if ((8 & db_level) != 0) {
                     print_spaces(depth);
                     _ = printf(gettext("Trying harder.\n"));
                     _ = fflush(stdout);
@@ -783,29 +783,29 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                     if (rule_2 == null) continue;
                     if ((intermed_ok != 0) and (@as(c_int, @bitCast(@as(c_uint, rule_2.*.terminal))) != 0)) continue;
                     matches = tryrules[ri].matches;
-                    stem = (filename + @as(usize, @bitCast(@as(isize, @intCast(@divExact(@as(c_long, @bitCast(@intFromPtr(rule_2.*.suffixes[matches]) -% @intFromPtr(rule_2.*.targets[matches]))), @sizeOf(u8))))))) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
-                    stemlen = (namelen -% @as(usize, @bitCast(@as(c_ulong, rule_2.*.lens[matches])))) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+                    stem = (filename + @as(usize, @bitCast(@as(isize, @intCast(@divExact(@as(c_long, @bitCast(@intFromPtr(rule_2.*.suffixes[matches]) -% @intFromPtr(rule_2.*.targets[matches]))), @sizeOf(u8))))))) - @as(usize, @bitCast(@as(isize, @intCast(1))));
+                    stemlen = (namelen -% @as(usize, @bitCast(@as(c_ulong, rule_2.*.lens[matches])))) +% @as(usize, 1);
                     check_lastslash = tryrules[ri].checked_lastslash;
                     if (check_lastslash != 0) {
                         stem += @as([*c]const u8, @ptrFromInt(pathlen));
                         stemlen -%= pathlen;
                         if (!(pathdir != null)) {
-                            pathdir = @as([*c]u8, @ptrCast(@alignCast(malloc(pathlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                            pathdir = @as([*c]u8, @ptrCast(@alignCast(malloc(pathlen +% @as(usize, 1)))));
                             _ = memcpy(@as(?*anyopaque, @ptrCast(pathdir)), @as(?*const anyopaque, @ptrCast(filename)), pathlen);
                             pathdir[pathlen] = '\x00';
                         }
                     }
                     while (true) {
-                        if ((@as(c_int, 8) & db_level) != 0) {
+                        if ((8 & db_level) != 0) {
                             print_spaces(depth);
                             _ = printf(gettext("Trying pattern rule '%s' with stem '%.*s'.\n"), get_rule_defn(rule_2), @as(c_int, @bitCast(@as(c_uint, @truncate(stemlen)))), stem);
                             _ = fflush(stdout);
                         }
                         if (!false) break;
                     }
-                    if ((stemlen +% (if (@as(c_int, @bitCast(@as(c_uint, check_lastslash))) != 0) pathlen else @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))))) > @as(usize, @bitCast(@as(c_long, @as(c_int, 4096))))) {
+                    if ((stemlen +% (if (@as(c_int, @bitCast(@as(c_uint, check_lastslash))) != 0) pathlen else @as(usize, 0))) > @as(usize, @bitCast(@as(c_long, @as(c_int, 4096))))) {
                         while (true) {
-                            if ((@as(c_int, 8) & db_level) != 0) {
+                            if ((8 & db_level) != 0) {
                                 print_spaces(depth);
                                 _ = printf(gettext("Stem too long: '%s%.*s'.\n"), if (@as(c_int, @bitCast(@as(c_uint, check_lastslash))) != 0) pathdir else "", @as(c_int, @bitCast(@as(c_uint, @truncate(stemlen)))), stem);
                                 _ = fflush(stdout);
@@ -854,14 +854,14 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                 }
                                 o = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(o)), @as(?*const anyopaque, @ptrCast(nptr)), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(cp) -% @intFromPtr(nptr))), @sizeOf(u8))))))));
                                 o = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(o)), @as(?*const anyopaque, @ptrCast(stem)), stemlen))));
-                                _ = strcpy(o, cp + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
+                                _ = strcpy(o, cp + @as(usize, @bitCast(@as(isize, @intCast(1)))));
                                 is_explicit = 0;
                             }
                             p = depname;
-                            dl = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(&p, @sizeOf(struct_dep), @as(c_int, 1), null, @as(c_int, 32) | @as(c_int, 64)))));
+                            dl = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(&p, @sizeOf(struct_dep), 1, null, @as(c_int, 32) | @as(c_int, 64)))));
                             {
                                 d = dl;
-                                while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (d = d.*.next) {
+                                while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (d = d.*.next) {
                                     deps_found +%= 1;
                                     d.*.ignore_mtime = dep_1.*.ignore_mtime;
                                     d.*.ignore_automatic_vars = dep_1.*.ignore_automatic_vars;
@@ -888,7 +888,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                             nptr = get_next_word(nptr, &len);
                             if (nptr == null) continue;
                             end = nptr + len;
-                            if ((!(order_only != 0) and (len == @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))))) and (@as(c_int, @bitCast(@as(c_uint, nptr[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '|'))) {
+                            if ((!(order_only != 0) and (len == @as(usize, 1))) and (@as(c_int, @bitCast(@as(c_uint, nptr[0]))) == @as(c_int, '|'))) {
                                 order_only = 1;
                                 nptr = end;
                                 continue;
@@ -905,22 +905,22 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                 while (true) {
                                     var i: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(cp) -% @intFromPtr(nptr))), @sizeOf(u8))));
                                     _ = &i;
-                                    _ = @as(c_int, 0);
+                                    _ = 0;
                                     o = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(o)), @as(?*const anyopaque, @ptrCast(nptr)), i))));
                                     if (check_lastslash != 0) {
                                         add_dir = 1;
-                                        _ = @as(c_int, 0);
-                                        o = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(o)), @as(?*const anyopaque, @ptrCast("$(*F)")), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 5))))))));
+                                        _ = 0;
+                                        o = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(o)), @as(?*const anyopaque, @ptrCast("$(*F)")), @as(c_ulong, 5)))));
                                     } else {
-                                        _ = @as(c_int, 0);
-                                        o = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(o)), @as(?*const anyopaque, @ptrCast("$*")), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))))));
+                                        _ = 0;
+                                        o = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(o)), @as(?*const anyopaque, @ptrCast("$*")), @as(c_ulong, 2)))));
                                     }
-                                    _ = @as(c_int, 0);
+                                    _ = 0;
                                     cp += 1;
-                                    _ = @as(c_int, 0);
+                                    _ = 0;
                                     nptr = cp;
                                     if (nptr == end) break;
-                                    while ((cp < end) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(cp.*))]))) & ((@as(c_int, 2) | @as(c_int, 4)) | @as(c_int, 1))) != @as(c_int, 0))) {
+                                    while ((cp < end) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(cp.*))]))) & ((2 | 4) | 1)) != 0)) {
                                         cp += 1;
                                     }
                                     cp = lindex(cp, end, @as(c_int, '%'));
@@ -932,22 +932,22 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                             }
                             nptr = end;
                             if (!(file_vars_initialized != 0)) {
-                                initialize_file_variables(file_1, @as(c_int, 0));
+                                initialize_file_variables(file_1, 0);
                                 set_file_variables(file_1, @as([*c]u8, @ptrCast(@alignCast(&stem_str))));
                                 file_vars_initialized = 1;
                             } else if (!(file_variables_set != 0)) {
-                                _ = define_variable_in_set("*", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), @as([*c]u8, @ptrCast(@alignCast(&stem_str))), @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+                                _ = define_variable_in_set("*", @as(usize, 1), @as([*c]u8, @ptrCast(@alignCast(&stem_str))), @as(c_uint, @bitCast(o_automatic)), 0, file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(0)));
                                 file_variables_set = 1;
                             }
                             p = variable_expand_for_file(depname, file_1);
                             dptr = &dl;
                             while (true) {
-                                var dp: [*c]struct_dep = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(&p, @sizeOf(struct_dep), if (order_only != 0) @as(c_int, 1) else @as(c_int, 256), if (add_dir != 0) pathdir else null, @as(c_int, 64)))));
+                                var dp: [*c]struct_dep = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(&p, @sizeOf(struct_dep), if (order_only != 0) 1 else @as(c_int, 256), if (add_dir != 0) pathdir else null, @as(c_int, 64)))));
                                 _ = &dp;
                                 dptr.* = dp;
                                 {
                                     d = dp;
-                                    while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (d = d.*.next) {
+                                    while (d != @as([*c]struct_dep, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (d = d.*.next) {
                                         deps_found +%= 1;
                                         if (order_only != 0) {
                                             d.*.ignore_mtime = 1;
@@ -984,7 +984,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                 _ = &dp;
                                 if (file_impossible_p(d.*.name) != 0) {
                                     while (true) {
-                                        if ((@as(c_int, 8) & db_level) != 0) {
+                                        if ((8 & db_level) != 0) {
                                             print_spaces(depth);
                                             _ = printf(if (is_rule != 0) gettext("Rejecting rule '%s' due to impossible rule prerequisite '%s'.\n") else gettext("Rejecting rule '%s' due to impossible implicit prerequisite '%s'.\n"), get_rule_defn(rule_2), d.*.name);
                                             _ = fflush(stdout);
@@ -1001,7 +1001,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                 pat.*.wait_here = d.*.wait_here;
                                 pat.*.is_explicit = d.*.is_explicit;
                                 while (true) {
-                                    if ((@as(c_int, 8) & db_level) != 0) {
+                                    if ((8 & db_level) != 0) {
                                         print_spaces(depth);
                                         _ = printf(if (is_rule != 0) gettext("Trying rule prerequisite '%s'.\n") else gettext("Trying implicit prerequisite '%s'.\n"), d.*.name);
                                         _ = fflush(stdout);
@@ -1019,7 +1019,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                     explicit = 1;
                                 } else {
                                     dp = file_1.*.deps;
-                                    while (dp != null) : (dp = dp.*.next) if ((d.*.name == (if (dp.*.name != null) dp.*.name else dp.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, d.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, (if (dp.*.name != null) dp.*.name else dp.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, d.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(d.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), (if (dp.*.name != null) dp.*.name else dp.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) break;
+                                    while (dp != null) : (dp = dp.*.next) if ((d.*.name == (if (dp.*.name != null) dp.*.name else dp.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, d.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, (if (dp.*.name != null) dp.*.name else dp.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, d.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(d.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), (if (dp.*.name != null) dp.*.name else dp.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))) break;
                                 }
                                 if ((explicit != 0) or (dp != null)) {
                                     (blk: {
@@ -1029,7 +1029,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                         break :blk tmp;
                                     }).*.name = d.*.name;
                                     while (true) {
-                                        if ((@as(c_int, 8) & db_level) != 0) {
+                                        if ((8 & db_level) != 0) {
                                             print_spaces(depth);
                                             _ = printf(gettext("'%s' ought to exist.\n"), d.*.name);
                                             _ = fflush(stdout);
@@ -1046,7 +1046,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                         break :blk tmp;
                                     }).*.name = d.*.name;
                                     while (true) {
-                                        if ((@as(c_int, 8) & db_level) != 0) {
+                                        if ((8 & db_level) != 0) {
                                             print_spaces(depth);
                                             _ = printf(gettext("Found '%s'.\n"), d.*.name);
                                             _ = fflush(stdout);
@@ -1063,7 +1063,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                         break :blk tmp;
                                     }).*.name = d.*.name;
                                     while (true) {
-                                        if ((@as(c_int, 8) & db_level) != 0) {
+                                        if ((8 & db_level) != 0) {
                                             print_spaces(depth);
                                             _ = printf(gettext("Using compatibility rule '%s' due to '%s'.\n"), get_rule_defn(rule_2), d.*.name);
                                             _ = fflush(stdout);
@@ -1074,7 +1074,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                 }
                                 if (df != null) {
                                     while (true) {
-                                        if ((@as(c_int, 8) & db_level) != 0) {
+                                        if ((8 & db_level) != 0) {
                                             print_spaces(depth);
                                             _ = printf(gettext("Prerequisite '%s' of rule '%s' does not qualify as ought to exist.\n"), d.*.name, get_rule_defn(rule_2));
                                             _ = fflush(stdout);
@@ -1088,7 +1088,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                     _ = &vname;
                                     if (vname != null) {
                                         while (true) {
-                                            if ((@as(c_int, 8) & db_level) != 0) {
+                                            if ((8 & db_level) != 0) {
                                                 print_spaces(depth);
                                                 _ = printf(gettext("Found prerequisite '%s' as VPATH '%s'.\n"), d.*.name, vname);
                                                 _ = fflush(stdout);
@@ -1106,7 +1106,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                 }
                                 if (intermed_ok != 0) {
                                     while (true) {
-                                        if ((@as(c_int, 8) & db_level) != 0) {
+                                        if ((8 & db_level) != 0) {
                                             print_spaces(depth);
                                             _ = printf(if ((d.*.is_explicit != 0) or ((df != null) and (df.*.is_explicit != 0))) gettext("Looking for a rule with explicit file '%s'.\n") else gettext("Looking for a rule with intermediate file '%s'.\n"), d.*.name);
                                             _ = fflush(stdout);
@@ -1118,7 +1118,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                     }
                                     _ = memset(@as(?*anyopaque, @ptrCast(int_file)), @as(c_int, '\x00'), @sizeOf(struct_file));
                                     int_file.*.name = d.*.name;
-                                    if (pattern_search(int_file, @as(c_int, 0), depth, recursions +% @as(c_uint, @bitCast(@as(c_int, 1))), allow_compat_rules) != 0) {
+                                    if (pattern_search(int_file, 0, depth, recursions +% @as(c_uint, 1), allow_compat_rules) != 0) {
                                         pat.*.pattern = int_file.*.name;
                                         int_file.*.name = d.*.name;
                                         pat.*.file = int_file;
@@ -1143,7 +1143,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                 }
                                 if (intermed_ok != 0) {
                                     while (true) {
-                                        if ((@as(c_int, 8) & db_level) != 0) {
+                                        if ((8 & db_level) != 0) {
                                             print_spaces(depth);
                                             _ = printf(gettext("Rejecting rule '%s' due to impossible prerequisite '%s'.\n"), get_rule_defn(rule_2), d.*.name);
                                             _ = fflush(stdout);
@@ -1151,7 +1151,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
                                         if (!false) break;
                                     }
                                 } else while (true) {
-                                    if ((@as(c_int, 8) & db_level) != 0) {
+                                    if ((8 & db_level) != 0) {
                                         print_spaces(depth);
                                         _ = printf(gettext("Not found '%s'.\n"), d.*.name);
                                         _ = fflush(stdout);
@@ -1179,7 +1179,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
         depth -%= 1;
         if (rule_2 != null) {
             while (true) {
-                if ((@as(c_int, 8) & db_level) != 0) {
+                if ((8 & db_level) != 0) {
                     print_spaces(depth);
                     _ = printf(gettext("Found implicit rule '%s' for '%s'.\n"), get_rule_defn(rule_2), filename);
                     _ = fflush(stdout);
@@ -1190,18 +1190,18 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
         }
         if (found_compat_rule != 0) {
             while (true) {
-                if ((@as(c_int, 8) & db_level) != 0) {
+                if ((8 & db_level) != 0) {
                     print_spaces(depth);
                     _ = printf(gettext("Searching for a compatibility rule for '%s'.\n"), filename);
                     _ = fflush(stdout);
                 }
                 if (!false) break;
             }
-            _ = @as(c_int, 0);
-            return pattern_search(file_1, archive, depth, recursions, @as(c_int, 1));
+            _ = 0;
+            return pattern_search(file_1, archive, depth, recursions, 1);
         }
         while (true) {
-            if ((@as(c_int, 8) & db_level) != 0) {
+            if ((8 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("No implicit rule found for '%s'.\n"), filename);
                 _ = fflush(stdout);
@@ -1211,7 +1211,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
         return 0;
     }
     foundrule = ri;
-    if (recursions > @as(c_uint, @bitCast(@as(c_int, 0)))) {
+    if (recursions > @as(c_uint, 0)) {
         file_1.*.name = rule_2.*.targets[tryrules[foundrule].matches];
     }
     while ((blk: {
@@ -1309,10 +1309,10 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
             }
         }
     }
-    if (@as(c_int, @bitCast(@as(c_uint, rule_2.*.num))) > @as(c_int, 1)) {
+    if (@as(c_int, @bitCast(@as(c_uint, rule_2.*.num))) > 1) {
         ri = 0;
         while (ri < @as(c_uint, @bitCast(@as(c_uint, rule_2.*.num)))) : (ri +%= 1) if (ri != tryrules[foundrule].matches) {
-            var nm: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc((@as(usize, @bitCast(@as(c_ulong, rule_2.*.lens[ri]))) +% fullstemlen) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+            var nm: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc((@as(usize, @bitCast(@as(c_ulong, rule_2.*.lens[ri]))) +% fullstemlen) +% @as(usize, 1)))));
             _ = &nm;
             var p: [*c]u8 = nm;
             _ = &p;
@@ -1320,9 +1320,9 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
             _ = &f;
             var new: [*c]struct_dep = @as([*c]struct_dep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_dep)))));
             _ = &new;
-            p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(rule_2.*.targets[ri])), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(rule_2.*.suffixes[ri]) -% @intFromPtr(rule_2.*.targets[ri]))), @sizeOf(u8)) - @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))))));
+            p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(rule_2.*.targets[ri])), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(rule_2.*.suffixes[ri]) -% @intFromPtr(rule_2.*.targets[ri]))), @sizeOf(u8)) - @as(c_long, 1)))))));
             p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(file_1.*.stem)), fullstemlen))));
-            _ = memcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(rule_2.*.suffixes[ri])), @as(c_ulong, @bitCast((@as(c_long, @bitCast(@as(c_ulong, rule_2.*.lens[ri]))) - @divExact(@as(c_long, @bitCast(@intFromPtr(rule_2.*.suffixes[ri]) -% @intFromPtr(rule_2.*.targets[ri]))), @sizeOf(u8))) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1)))))));
+            _ = memcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(rule_2.*.suffixes[ri])), @as(c_ulong, @bitCast((@as(c_long, @bitCast(@as(c_ulong, rule_2.*.lens[ri]))) - @divExact(@as(c_long, @bitCast(@intFromPtr(rule_2.*.suffixes[ri]) -% @intFromPtr(rule_2.*.targets[ri]))), @sizeOf(u8))) + @as(c_long, 1))));
             new.*.name = strcache_add(nm);
             new.*.file = enter_file(new.*.name);
             new.*.next = file_1.*.also_make;
@@ -1344,7 +1344,7 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
     depth -%= 1;
     if (rule_2 != null) {
         while (true) {
-            if ((@as(c_int, 8) & db_level) != 0) {
+            if ((8 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("Found implicit rule '%s' for '%s'.\n"), get_rule_defn(rule_2), filename);
                 _ = fflush(stdout);
@@ -1355,18 +1355,18 @@ fn pattern_search(arg_file_1: [*c]struct_file, arg_archive: c_int, arg_depth: c_
     }
     if (found_compat_rule != 0) {
         while (true) {
-            if ((@as(c_int, 8) & db_level) != 0) {
+            if ((8 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("Searching for a compatibility rule for '%s'.\n"), filename);
                 _ = fflush(stdout);
             }
             if (!false) break;
         }
-        _ = @as(c_int, 0);
-        return pattern_search(file_1, archive, depth, recursions, @as(c_int, 1));
+        _ = 0;
+        return pattern_search(file_1, archive, depth, recursions, 1);
     }
     while (true) {
-        if ((@as(c_int, 8) & db_level) != 0) {
+        if ((8 & db_level) != 0) {
             print_spaces(depth);
             _ = printf(gettext("No implicit rule found for '%s'.\n"), filename);
             _ = fflush(stdout);
@@ -1386,7 +1386,7 @@ fn get_next_word(arg_buffer: [*c]const u8, arg_length: [*c]usize) callconv(.C) [
     _ = &beg;
     var c: u8 = undefined;
     _ = &c;
-    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (2 | 4)) != 0) {
         p += 1;
     }
     beg = p;
@@ -1404,7 +1404,7 @@ fn get_next_word(arg_buffer: [*c]const u8, arg_length: [*c]usize) callconv(.C) [
         _ = &count;
         while (true) {
             switch (@as(c_int, @bitCast(@as(c_uint, c)))) {
-                @as(c_int, 0), @as(c_int, 32), @as(c_int, 9) => {
+                0, @as(c_int, 32), 9 => {
                     {
                         p -= 1;
                         if (length != null) {
@@ -1435,7 +1435,7 @@ fn get_next_word(arg_buffer: [*c]const u8, arg_length: [*c]usize) callconv(.C) [
                                 const ref = &count;
                                 ref.* -= 1;
                                 break :blk ref.*;
-                            }) < @as(c_int, 0))) {
+                            }) < 0)) {
                                 p += 1;
                                 break;
                             }

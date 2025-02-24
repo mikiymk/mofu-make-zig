@@ -310,8 +310,8 @@ export fn define_default_variables() void {
     if (no_builtin_variables_flag != 0) return;
     {
         s = @as([*c][*c]const u8, @ptrCast(@alignCast(&default_variables)));
-        while (s.* != null) : (s += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))))) {
-            _ = define_variable_in_set(s[@as(c_uint, @intCast(@as(c_int, 0)))], strlen(s[@as(c_uint, @intCast(@as(c_int, 0)))]), s[@as(c_uint, @intCast(@as(c_int, 1)))], @as(c_uint, @bitCast(o_default)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        while (s.* != null) : (s += @as(usize, @bitCast(@as(isize, @intCast(2))))) {
+            _ = define_variable_in_set(s[0], strlen(s[0]), s[1], @as(c_uint, @bitCast(o_default)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
         }
     }
 }
@@ -320,8 +320,8 @@ export fn undefine_default_variables() void {
     _ = &s;
     {
         s = @as([*c][*c]const u8, @ptrCast(@alignCast(&default_variables)));
-        while (s.* != null) : (s += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))))) {
-            undefine_variable_in_set(s[@as(c_uint, @intCast(@as(c_int, 0)))], strlen(s[@as(c_uint, @intCast(@as(c_int, 0)))]), @as(c_uint, @bitCast(o_default)), null);
+        while (s.* != null) : (s += @as(usize, @bitCast(@as(isize, @intCast(2))))) {
+            undefine_variable_in_set(s[0], strlen(s[0]), @as(c_uint, @bitCast(o_default)), null);
         }
     }
 }
@@ -329,20 +329,20 @@ export fn set_default_suffixes() void {
     suffix_file = enter_file(strcache_add(".SUFFIXES"));
     suffix_file.*.builtin = 1;
     if (no_builtin_rules_flag != 0) {
-        _ = define_variable_in_set("SUFFIXES", @sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set("SUFFIXES", @sizeOf([9]u8) -% @as(c_ulong, 1), "", @as(c_uint, @bitCast(o_default)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
     } else {
         var d: [*c]struct_dep = undefined;
         _ = &d;
         var p: [*c]const u8 = @as([*c]u8, @ptrCast(@alignCast(&default_suffixes)));
         _ = &p;
-        suffix_file.*.deps = enter_prereqs(@as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(@as([*c][*c]u8, @ptrCast(@alignCast(&p))), @sizeOf(struct_dep), @as(c_int, 1), null, @as(c_int, 0))))), null);
+        suffix_file.*.deps = enter_prereqs(@as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(@as([*c][*c]u8, @ptrCast(@alignCast(&p))), @sizeOf(struct_dep), 1, null, 0)))), null);
         {
             d = suffix_file.*.deps;
             while (d != null) : (d = d.*.next) {
                 d.*.file.*.builtin = 1;
             }
         }
-        _ = define_variable_in_set("SUFFIXES", @sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as([*c]u8, @ptrCast(@alignCast(&default_suffixes))), @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set("SUFFIXES", @sizeOf([9]u8) -% @as(c_ulong, 1), @as([*c]u8, @ptrCast(@alignCast(&default_suffixes))), @as(c_uint, @bitCast(o_default)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
     }
 }
 export fn install_default_suffix_rules() void {
@@ -351,13 +351,13 @@ export fn install_default_suffix_rules() void {
     if (no_builtin_rules_flag != 0) return;
     {
         s = @as([*c][*c]const u8, @ptrCast(@alignCast(&default_suffix_rules)));
-        while (s.* != null) : (s += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))))) {
-            var f: [*c]struct_file = enter_file(strcache_add(s[@as(c_uint, @intCast(@as(c_int, 0)))]));
+        while (s.* != null) : (s += @as(usize, @bitCast(@as(isize, @intCast(2))))) {
+            var f: [*c]struct_file = enter_file(strcache_add(s[0]));
             _ = &f;
             if (!(f.*.cmds != null)) {
                 f.*.cmds = @as([*c]struct_commands, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_commands)))));
                 f.*.cmds.*.fileinfo.filenm = null;
-                f.*.cmds.*.commands = xstrdup(s[@as(c_uint, @intCast(@as(c_int, 1)))]);
+                f.*.cmds.*.commands = xstrdup(s[1]);
                 f.*.cmds.*.command_lines = null;
                 f.*.cmds.*.recipe_prefix = '\t';
                 f.*.builtin = 1;
@@ -377,13 +377,13 @@ export fn install_default_implicit_rules() void {
     {
         p = @as([*c]struct_pspec, @ptrCast(@alignCast(&default_pattern_rules)));
         while (p.*.target != null) : (p += 1) {
-            install_pattern_rule(p, @as(c_int, 0));
+            install_pattern_rule(p, 0);
         }
     }
     {
         p = @as([*c]struct_pspec, @ptrCast(@alignCast(&default_terminal_rules)));
         while (p.*.target != null) : (p += 1) {
-            install_pattern_rule(p, @as(c_int, 1));
+            install_pattern_rule(p, 1);
         }
     }
 }

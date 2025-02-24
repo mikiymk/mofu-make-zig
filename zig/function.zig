@@ -377,8 +377,8 @@ const floc = extern struct {
     offset: c_ulong = @import("std").mem.zeroes(c_ulong),
 };
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 const o_override: c_int = 5;
 const o_automatic: c_int = 6;
@@ -427,10 +427,10 @@ export fn strip_whitespace(arg_begpp: [*c][*c]const u8, arg_endpp: [*c][*c]const
     _ = &begpp;
     var endpp = arg_endpp;
     _ = &endpp;
-    while ((begpp.* <= endpp.*) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(begpp.*.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0))) {
+    while ((begpp.* <= endpp.*) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(begpp.*.*))]))) & (2 | 4)) != 0)) {
         begpp.* += 1;
     }
-    while ((endpp.* >= begpp.*) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(endpp.*.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0))) {
+    while ((endpp.* >= begpp.*) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(endpp.*.*))]))) & (2 | 4)) != 0)) {
         endpp.* -= 1;
     }
     return @as([*c]u8, @ptrCast(@volatileCast(@constCast(begpp.*))));
@@ -538,7 +538,7 @@ export fn handle_function(arg_op: [*c][*c]u8, arg_stringp: [*c][*c]const u8) c_i
     _ = &stringp;
     var entry_p: [*c]const struct_function_table_entry = undefined;
     _ = &entry_p;
-    var openparen: u8 = stringp.*[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var openparen: u8 = stringp.*[0];
     _ = &openparen;
     var closeparen: u8 = @as(u8, @bitCast(@as(i8, @truncate(if (@as(c_int, @bitCast(@as(c_uint, openparen))) == @as(c_int, '(')) @as(c_int, ')') else @as(c_int, '}')))));
     _ = &closeparen;
@@ -556,11 +556,11 @@ export fn handle_function(arg_op: [*c][*c]u8, arg_stringp: [*c][*c]const u8) c_i
     _ = &argvp;
     var nargs: c_uint = undefined;
     _ = &nargs;
-    beg = stringp.* + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+    beg = stringp.* + @as(usize, @bitCast(@as(isize, @intCast(1))));
     entry_p = lookup_function(beg);
     if (!(entry_p != null)) return 0;
     beg += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, @bitCast(@as(c_uint, entry_p.*.len)))))));
-    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(beg.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(beg.*))]))) & (2 | 4)) != 0) {
         beg += 1;
     }
     {
@@ -572,7 +572,7 @@ export fn handle_function(arg_op: [*c][*c]u8, arg_stringp: [*c][*c]const u8) c_i
                 break :blk_1 tmp;
             };
         };
-        while (@as(c_int, @bitCast(@as(c_uint, end.*))) != @as(c_int, '\x00')) : (end += 1) if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(end.*))]))) & (@as(c_int, 128) | @as(c_int, 1024))) != @as(c_int, 0))) continue else if (@as(c_int, @bitCast(@as(c_uint, end.*))) == @as(c_int, ',')) {
+        while (@as(c_int, @bitCast(@as(c_uint, end.*))) != @as(c_int, '\x00')) : (end += 1) if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(end.*))]))) & (@as(c_int, 128) | @as(c_int, 1024))) != 0)) continue else if (@as(c_int, @bitCast(@as(c_uint, end.*))) == @as(c_int, ',')) {
             nargs +%= 1;
         } else if (@as(c_int, @bitCast(@as(c_uint, end.*))) == @as(c_int, @bitCast(@as(c_uint, openparen)))) {
             count += 1;
@@ -580,14 +580,14 @@ export fn handle_function(arg_op: [*c][*c]u8, arg_stringp: [*c][*c]const u8) c_i
             const ref = &count;
             ref.* -= 1;
             break :blk ref.*;
-        }) < @as(c_int, 0))) break;
+        }) < 0)) break;
     }
-    if (count >= @as(c_int, 0)) {
+    if (count >= 0) {
         fatal(expanding_var.*, strlen(entry_p.*.name), gettext("unterminated call to function '%s': missing '%c'"), entry_p.*.name, @as(c_int, @bitCast(@as(c_uint, closeparen))));
     }
     stringp.* = end;
     argvp = blk: {
-        const tmp = @as([*c][*c]u8, @ptrCast(@alignCast(malloc(@sizeOf([*c]u8) *% @as(c_ulong, @bitCast(@as(c_ulong, nargs +% @as(c_uint, @bitCast(@as(c_int, 2))))))))));
+        const tmp = @as([*c][*c]u8, @ptrCast(@alignCast(malloc(@sizeOf([*c]u8) *% @as(c_ulong, @bitCast(@as(c_ulong, nargs +% @as(c_uint, 2))))))));
         argv = tmp;
         break :blk tmp;
     };
@@ -598,7 +598,7 @@ export fn handle_function(arg_op: [*c][*c]u8, arg_stringp: [*c][*c]const u8) c_i
             _ = blk: {
                 p = beg;
                 break :blk blk_1: {
-                    const tmp = @as(c_uint, @bitCast(@as(c_int, 0)));
+                    const tmp = @as(c_uint, 0);
                     nargs = tmp;
                     break :blk_1 tmp;
                 };
@@ -611,11 +611,11 @@ export fn handle_function(arg_op: [*c][*c]u8, arg_stringp: [*c][*c]const u8) c_i
                     const tmp = find_next_argument(openparen, closeparen, p, end);
                     next = tmp;
                     break :blk tmp;
-                }) == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))))) {
+                }) == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0))))))) {
                     next = end;
                 }
                 argvp.* = expand_argument(p, next);
-                p = next + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                p = next + @as(usize, @bitCast(@as(isize, @intCast(1))));
             }
         }
     } else {
@@ -625,14 +625,14 @@ export fn handle_function(arg_op: [*c][*c]u8, arg_stringp: [*c][*c]const u8) c_i
         _ = &p;
         var aend: [*c]u8 = undefined;
         _ = &aend;
-        abeg = @as([*c]u8, @ptrCast(@alignCast(xmalloc(len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        abeg = @as([*c]u8, @ptrCast(@alignCast(xmalloc(len +% @as(usize, 1)))));
         aend = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(abeg)), @as(?*const anyopaque, @ptrCast(beg)), len))));
         aend.* = '\x00';
         {
             _ = blk: {
                 p = abeg;
                 break :blk blk_1: {
-                    const tmp = @as(c_uint, @bitCast(@as(c_int, 0)));
+                    const tmp = @as(c_uint, 0);
                     nargs = tmp;
                     break :blk_1 tmp;
                 };
@@ -645,12 +645,12 @@ export fn handle_function(arg_op: [*c][*c]u8, arg_stringp: [*c][*c]const u8) c_i
                     const tmp = find_next_argument(openparen, closeparen, p, aend);
                     next = tmp;
                     break :blk tmp;
-                }) == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))))) {
+                }) == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0))))))) {
                     next = aend;
                 }
                 argvp.* = p;
                 next.* = '\x00';
-                p = next + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                p = next + @as(usize, @bitCast(@as(isize, @intCast(1))));
             }
         }
     }
@@ -680,19 +680,19 @@ export fn pattern_matches(arg_pattern: [*c]const u8, arg_percent: [*c]const u8, 
     var strlength: usize = undefined;
     _ = &strlength;
     if (percent == null) {
-        var len: usize = strlen(pattern) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+        var len: usize = strlen(pattern) +% @as(c_ulong, 1);
         _ = &len;
         var new_chars: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(len))));
         _ = &new_chars;
         _ = memcpy(@as(?*anyopaque, @ptrCast(new_chars)), @as(?*const anyopaque, @ptrCast(pattern)), len);
         percent = find_percent(new_chars);
-        if (percent == null) return @intFromBool((new_chars == @as([*c]u8, @ptrCast(@volatileCast(@constCast(str))))) or ((@as(c_int, @bitCast(@as(c_uint, new_chars.*))) == @as(c_int, @bitCast(@as(c_uint, str.*)))) and ((@as(c_int, @bitCast(@as(c_uint, new_chars.*))) == @as(c_int, '\x00')) or !(strcmp(new_chars + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), str + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))));
+        if (percent == null) return @intFromBool((new_chars == @as([*c]u8, @ptrCast(@volatileCast(@constCast(str))))) or ((@as(c_int, @bitCast(@as(c_uint, new_chars.*))) == @as(c_int, @bitCast(@as(c_uint, str.*)))) and ((@as(c_int, @bitCast(@as(c_uint, new_chars.*))) == @as(c_int, '\x00')) or !(strcmp(new_chars + @as(usize, @bitCast(@as(isize, @intCast(1)))), str + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))));
         pattern = new_chars;
     }
-    sfxlen = strlen(percent + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
+    sfxlen = strlen(percent + @as(usize, @bitCast(@as(isize, @intCast(1)))));
     strlength = strlen(str);
-    if ((strlength < (@as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(percent) -% @intFromPtr(pattern))), @sizeOf(u8)))) +% sfxlen)) or !(strncmp(pattern, str, @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(percent) -% @intFromPtr(pattern))), @sizeOf(u8))))) == @as(c_int, 0))) return 0;
-    return @intFromBool(!(strcmp(percent + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), str + (strlength -% sfxlen)) != 0));
+    if ((strlength < (@as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(percent) -% @intFromPtr(pattern))), @sizeOf(u8)))) +% sfxlen)) or !(strncmp(pattern, str, @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(percent) -% @intFromPtr(pattern))), @sizeOf(u8))))) == 0)) return 0;
+    return @intFromBool(!(strcmp(percent + @as(usize, @bitCast(@as(isize, @intCast(1)))), str + (strlength -% sfxlen)) != 0));
 }
 export fn subst_expand(arg_o: [*c]u8, arg_text: [*c]const u8, arg_subst: [*c]const u8, arg_replace: [*c]const u8, arg_slen: usize, arg_rlen: usize, arg_by_word: c_int) [*c]u8 {
     var o = arg_o;
@@ -713,15 +713,15 @@ export fn subst_expand(arg_o: [*c]u8, arg_text: [*c]const u8, arg_subst: [*c]con
     _ = &t;
     var p: [*c]const u8 = undefined;
     _ = &p;
-    if ((slen == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) and !(by_word != 0)) {
+    if ((slen == @as(usize, 0)) and !(by_word != 0)) {
         o = variable_buffer_output(o, t, strlen(t));
-        if (rlen > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
+        if (rlen > @as(usize, 0)) {
             o = variable_buffer_output(o, replace, rlen);
         }
         return o;
     }
     while (true) {
-        if ((by_word != 0) and (slen == @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))))) {
+        if ((by_word != 0) and (slen == @as(usize, 0))) {
             p = end_of_token(next_token(t));
         } else {
             p = strstr(t, subst);
@@ -735,12 +735,12 @@ export fn subst_expand(arg_o: [*c]u8, arg_text: [*c]const u8, arg_subst: [*c]con
         }
         if ((by_word != 0) and (((p > text) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
             @as(u8, @bitCast((blk: {
-                const tmp = -@as(c_int, 1);
+                const tmp = -1;
                 if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
             }).*))
-        ]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0))) or !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p[slen]))]))) & ((@as(c_int, 2) | @as(c_int, 4)) | @as(c_int, 1))) != @as(c_int, 0)))) {
+        ]))) & (2 | 4)) != 0)) or !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p[slen]))]))) & ((2 | 4) | 1)) != 0))) {
             o = variable_buffer_output(o, subst, slen);
-        } else if (rlen > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
+        } else if (rlen > @as(usize, 0)) {
             o = variable_buffer_output(o, replace, rlen);
         }
         t = p + slen;
@@ -776,14 +776,14 @@ export fn patsubst_expand_pat(arg_o: [*c]u8, arg_text: [*c]const u8, arg_pattern
     var doneany: c_int = 0;
     _ = &doneany;
     if (replace_percent != null) {
-        replace_prepercent_len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(replace_percent) -% @intFromPtr(replace))), @sizeOf(u8)) - @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))));
+        replace_prepercent_len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(replace_percent) -% @intFromPtr(replace))), @sizeOf(u8)) - @as(c_long, 1)));
         replace_postpercent_len = strlen(replace_percent);
     } else {
         replace_prepercent_len = strlen(replace);
         replace_postpercent_len = 0;
     }
-    if (!(pattern_percent != null)) return subst_expand(o, text, pattern, replace, strlen(pattern), strlen(replace), @as(c_int, 1));
-    pattern_prepercent_len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(pattern_percent) -% @intFromPtr(pattern))), @sizeOf(u8)) - @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))));
+    if (!(pattern_percent != null)) return subst_expand(o, text, pattern, replace, strlen(pattern), strlen(replace), 1);
+    pattern_prepercent_len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(pattern_percent) -% @intFromPtr(pattern))), @sizeOf(u8)) - @as(c_long, 1)));
     pattern_postpercent_len = strlen(pattern_percent);
     while ((blk: {
         const tmp = find_next_token(&text, &len);
@@ -795,13 +795,13 @@ export fn patsubst_expand_pat(arg_o: [*c]u8, arg_text: [*c]const u8, arg_pattern
         if (len < (pattern_prepercent_len +% pattern_postpercent_len)) {
             fail = 1;
         }
-        if ((!(fail != 0) and (pattern_prepercent_len > @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))))) and (((@as(c_int, @bitCast(@as(c_uint, t.*))) != @as(c_int, @bitCast(@as(c_uint, pattern.*)))) or (@as(c_int, @bitCast(@as(c_uint, t[pattern_prepercent_len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]))) != @as(c_int, @bitCast(@as(c_uint, (blk: {
-            const tmp = -@as(c_int, 2);
+        if ((!(fail != 0) and (pattern_prepercent_len > @as(usize, 0))) and (((@as(c_int, @bitCast(@as(c_uint, t.*))) != @as(c_int, @bitCast(@as(c_uint, pattern.*)))) or (@as(c_int, @bitCast(@as(c_uint, t[pattern_prepercent_len -% @as(usize, 1)]))) != @as(c_int, @bitCast(@as(c_uint, (blk: {
+            const tmp = -2;
             if (tmp >= 0) break :blk pattern_percent + @as(usize, @intCast(tmp)) else break :blk pattern_percent - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-        }).*))))) or !(strncmp(t + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), pattern + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), pattern_prepercent_len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)))) {
+        }).*))))) or !(strncmp(t + @as(usize, @bitCast(@as(isize, @intCast(1)))), pattern + @as(usize, @bitCast(@as(isize, @intCast(1)))), pattern_prepercent_len -% @as(usize, 1)) == 0))) {
             fail = 1;
         }
-        if ((!(fail != 0) and (pattern_postpercent_len > @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))))) and (((@as(c_int, @bitCast(@as(c_uint, t[len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]))) != @as(c_int, @bitCast(@as(c_uint, pattern_percent[pattern_postpercent_len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))])))) or (@as(c_int, @bitCast(@as(c_uint, t[len -% pattern_postpercent_len]))) != @as(c_int, @bitCast(@as(c_uint, pattern_percent.*))))) or !(strncmp(&t[len -% pattern_postpercent_len], pattern_percent, pattern_postpercent_len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) == @as(c_int, 0)))) {
+        if ((!(fail != 0) and (pattern_postpercent_len > @as(usize, 0))) and (((@as(c_int, @bitCast(@as(c_uint, t[len -% @as(usize, 1)]))) != @as(c_int, @bitCast(@as(c_uint, pattern_percent[pattern_postpercent_len -% @as(usize, 1)])))) or (@as(c_int, @bitCast(@as(c_uint, t[len -% pattern_postpercent_len]))) != @as(c_int, @bitCast(@as(c_uint, pattern_percent.*))))) or !(strncmp(&t[len -% pattern_postpercent_len], pattern_percent, pattern_postpercent_len -% @as(usize, 1)) == 0))) {
             fail = 1;
         }
         if (fail != 0) {
@@ -813,8 +813,8 @@ export fn patsubst_expand_pat(arg_o: [*c]u8, arg_text: [*c]const u8, arg_pattern
                 o = variable_buffer_output(o, replace_percent, replace_postpercent_len);
             }
         }
-        if (((fail != 0) or (replace_prepercent_len > @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))))) or ((replace_percent != null) and ((len +% replace_postpercent_len) > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))))) {
-            o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        if (((fail != 0) or (replace_prepercent_len > @as(usize, 0))) or ((replace_percent != null) and ((len +% replace_postpercent_len) > @as(usize, 0)))) {
+            o = variable_buffer_output(o, " ", @as(usize, 1));
             doneany = 1;
         }
     }
@@ -877,36 +877,36 @@ export fn func_shell_base(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_trim_newlines
     _ = &pipedes;
     var pid: pid_t = undefined;
     _ = &pid;
-    command_argv = construct_command_argv(argv[@as(c_uint, @intCast(@as(c_int, 0)))], null, null, @as(c_int, 0), &batch_filename);
+    command_argv = construct_command_argv(argv[0], null, null, 0, &batch_filename);
     if (command_argv == null) {
         return o;
     }
     output_start();
-    errfd = if ((output_context != null) and (output_context.*.err >= @as(c_int, 0))) output_context.*.err else fileno(stderr);
-    child_1.environment = target_environment(null, @as(c_int, 0));
-    if (pipe(@as([*c]c_int, @ptrCast(@alignCast(&pipedes)))) < @as(c_int, 0)) {
+    errfd = if ((output_context != null) and (output_context.*.err >= 0)) output_context.*.err else fileno(stderr);
+    child_1.environment = target_environment(null, 0);
+    if (pipe(@as([*c]c_int, @ptrCast(@alignCast(&pipedes)))) < 0) {
         @"error"(reading_file, strlen(strerror(__errno_location().*)), "pipe: %s", strerror(__errno_location().*));
-        pid = -@as(c_int, 1);
+        pid = -1;
         {
             if (command_argv != null) {
-                free(@as(?*anyopaque, @ptrCast(command_argv[@as(c_uint, @intCast(@as(c_int, 0)))])));
+                free(@as(?*anyopaque, @ptrCast(command_argv[0])));
                 free(@as(?*anyopaque, @ptrCast(command_argv)));
             }
             free_childbase(&child_1);
             return o;
         }
     }
-    fd_noinherit(pipedes[@as(c_uint, @intCast(@as(c_int, 1)))]);
-    fd_noinherit(pipedes[@as(c_uint, @intCast(@as(c_int, 0)))]);
+    fd_noinherit(pipedes[1]);
+    fd_noinherit(pipedes[0]);
     child_1.output.syncout = 1;
-    child_1.output.out = pipedes[@as(c_uint, @intCast(@as(c_int, 1)))];
+    child_1.output.out = pipedes[1];
     child_1.output.err = errfd;
-    pid = child_execute_job(&child_1, @as(c_int, 1), command_argv);
-    if (pid < @as(c_int, 0)) {
-        shell_completed(@as(c_int, 127), @as(c_int, 0));
+    pid = child_execute_job(&child_1, 1, command_argv);
+    if (pid < 0) {
+        shell_completed(@as(c_int, 127), 0);
         {
             if (command_argv != null) {
-                free(@as(?*anyopaque, @ptrCast(command_argv[@as(c_uint, @intCast(@as(c_int, 0)))])));
+                free(@as(?*anyopaque, @ptrCast(command_argv[0])));
                 free(@as(?*anyopaque, @ptrCast(command_argv)));
             }
             free_childbase(&child_1);
@@ -924,34 +924,34 @@ export fn func_shell_base(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_trim_newlines
         _ = &cc;
         shell_function_pid = pid;
         shell_function_completed = 0;
-        if (pipedes[@as(c_uint, @intCast(@as(c_int, 1)))] >= @as(c_int, 0)) {
-            _ = close(pipedes[@as(c_uint, @intCast(@as(c_int, 1)))]);
+        if (pipedes[1] >= 0) {
+            _ = close(pipedes[1]);
         }
         maxlen = 200;
-        buffer = @as([*c]u8, @ptrCast(@alignCast(xmalloc(maxlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        buffer = @as([*c]u8, @ptrCast(@alignCast(xmalloc(maxlen +% @as(usize, 1)))));
         {
             i = 0;
             while (true) : (i +%= @as(usize, @bitCast(@as(c_long, cc)))) {
                 if (i == maxlen) {
                     maxlen +%= @as(usize, @bitCast(@as(c_long, @as(c_int, 512))));
-                    buffer = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(buffer)), maxlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                    buffer = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(buffer)), maxlen +% @as(usize, 1)))));
                 }
                 while (((blk: {
-                    const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(pipedes[@as(c_uint, @intCast(@as(c_int, 0)))], @as(?*anyopaque, @ptrCast(&buffer[i])), maxlen -% i)))));
+                    const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(pipedes[0], @as(?*anyopaque, @ptrCast(&buffer[i])), maxlen -% i)))));
                     cc = tmp;
                     break :blk tmp;
-                }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-                if (cc <= @as(c_int, 0)) break;
+                }) == -1) and (__errno_location().* == 4)) {}
+                if (cc <= 0) break;
             }
         }
         buffer[i] = '\x00';
-        _ = close(pipedes[@as(c_uint, @intCast(@as(c_int, 0)))]);
-        while (shell_function_completed == @as(c_int, 0)) {
-            reap_children(@as(c_int, 1), @as(c_int, 0));
+        _ = close(pipedes[0]);
+        while (shell_function_completed == 0) {
+            reap_children(1, 0);
         }
         if (batch_filename != null) {
             while (true) {
-                if ((@as(c_int, 2) & db_level) != 0) {
+                if ((2 & db_level) != 0) {
                     _ = printf(gettext("Cleaning up temporary batch file %s\n"), batch_filename);
                     _ = fflush(stdout);
                 }
@@ -966,7 +966,7 @@ export fn func_shell_base(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_trim_newlines
         free(@as(?*anyopaque, @ptrCast(buffer)));
     }
     if (command_argv != null) {
-        free(@as(?*anyopaque, @ptrCast(command_argv[@as(c_uint, @intCast(@as(c_int, 0)))])));
+        free(@as(?*anyopaque, @ptrCast(command_argv[0])));
         free(@as(?*anyopaque, @ptrCast(command_argv)));
     }
     free_childbase(&child_1);
@@ -980,23 +980,23 @@ export fn shell_completed(arg_exit_code: c_int, arg_exit_sig: c_int) void {
     var buf: [22]u8 = undefined;
     _ = &buf;
     shell_function_pid = 0;
-    if ((exit_sig == @as(c_int, 0)) and (exit_code == @as(c_int, 127))) {
-        shell_function_completed = -@as(c_int, 1);
+    if ((exit_sig == 0) and (exit_code == @as(c_int, 127))) {
+        shell_function_completed = -1;
     } else {
         shell_function_completed = 1;
     }
-    if ((exit_code == @as(c_int, 0)) and (exit_sig > @as(c_int, 0))) {
+    if ((exit_code == 0) and (exit_sig > 0)) {
         exit_code = @as(c_int, 128) + exit_sig;
     }
     _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&buf))), "%d", exit_code);
-    _ = define_variable_in_set(".SHELLSTATUS", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as([*c]u8, @ptrCast(@alignCast(&buf))), @as(c_uint, @bitCast(o_override)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    _ = define_variable_in_set(".SHELLSTATUS", @sizeOf([13]u8) -% @as(c_ulong, 1), @as([*c]u8, @ptrCast(@alignCast(&buf))), @as(c_uint, @bitCast(o_override)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
 }
 
-extern fn push_new_variable_scope() [*c]struct_variable_set_list;
-extern fn pop_variable_scope() void;
+const push_new_variable_scope = @import("variable.zig").push_new_variable_scope;
+const pop_variable_scope = @import("variable.zig").pop_variable_scope;
 
 export fn hash_init_function_table() void {
-    hash_init(&function_table, (@sizeOf([38]struct_function_table_entry) / @sizeOf(struct_function_table_entry)) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))), &function_table_entry_hash_1, &function_table_entry_hash_2, &function_table_entry_hash_cmp);
+    hash_init(&function_table, (@sizeOf([38]struct_function_table_entry) / @sizeOf(struct_function_table_entry)) *% @as(c_ulong, 2), &function_table_entry_hash_1, &function_table_entry_hash_2, &function_table_entry_hash_cmp);
     hash_load(&function_table, @as(?*anyopaque, @ptrCast(@as([*c]struct_function_table_entry, @ptrCast(@alignCast(&function_table_init))))), @sizeOf([38]struct_function_table_entry) / @sizeOf(struct_function_table_entry), @sizeOf(struct_function_table_entry));
 }
 export fn define_new_function(arg_flocp: [*c]const floc, arg_name: [*c]const u8, arg_min: c_uint, arg_max: c_uint, arg_flags: c_uint, arg_func: gmk_func_ptr) void {
@@ -1018,12 +1018,12 @@ export fn define_new_function(arg_flocp: [*c]const floc, arg_name: [*c]const u8,
     _ = &ent;
     var len: usize = undefined;
     _ = &len;
-    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(e.*))]))) & @as(c_int, 8192)) != @as(c_int, 0)) {
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(e.*))]))) & @as(c_int, 8192)) != 0) {
         e += 1;
     }
     len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(e) -% @intFromPtr(name))), @sizeOf(u8))));
-    if (len == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
-        fatal(flocp, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("Empty function name"));
+    if (len == @as(usize, 0)) {
+        fatal(flocp, @as(usize, 0), gettext("Empty function name"));
     }
     if ((@as(c_int, @bitCast(@as(c_uint, name.*))) == @as(c_int, '.')) or (@as(c_int, @bitCast(@as(c_uint, e.*))) != @as(c_int, '\x00'))) {
         fatal(flocp, strlen(name), gettext("Invalid function name: %s"), name);
@@ -1032,17 +1032,17 @@ export fn define_new_function(arg_flocp: [*c]const floc, arg_name: [*c]const u8,
         fatal(flocp, strlen(name), gettext("Function name too long: %s"), name);
     }
     if (min > @as(c_uint, @bitCast(@as(c_int, 255)))) {
-        fatal(flocp, (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) +% strlen(name), gettext("Invalid minimum argument count (%u) for function %s"), min, name);
+        fatal(flocp, (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3)) +% strlen(name), gettext("Invalid minimum argument count (%u) for function %s"), min, name);
     }
     if ((max > @as(c_uint, @bitCast(@as(c_int, 255)))) or ((max != 0) and (max < min))) {
-        fatal(flocp, (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) +% strlen(name), gettext("Invalid maximum argument count (%u) for function %s"), max, name);
+        fatal(flocp, (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3)) +% strlen(name), gettext("Invalid maximum argument count (%u) for function %s"), max, name);
     }
     ent = @as([*c]struct_function_table_entry, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_function_table_entry)))));
     ent.*.name = strcache_add(name);
     ent.*.len = @as(u8, @bitCast(@as(u8, @truncate(len))));
     ent.*.minimum_args = @as(u8, @bitCast(@as(u8, @truncate(min))));
     ent.*.maximum_args = @as(u8, @bitCast(@as(u8, @truncate(max))));
-    ent.*.expand_args = @as(c_uint, @bitCast(if ((flags & @as(c_uint, @bitCast(@as(c_int, 1)))) != @as(c_uint, @bitCast(@as(c_int, 0)))) @as(c_int, 0) else @as(c_int, 1)));
+    ent.*.expand_args = @as(c_uint, @bitCast(if ((flags & @as(c_uint, 1)) != @as(c_uint, 0)) 0 else 1));
     ent.*.alloc_fn = 1;
     ent.*.adds_command = 1;
     ent.*.fptr.alloc_func_ptr = func;
@@ -1169,7 +1169,7 @@ fn function_table_entry_hash_cmp(arg_xv: ?*const anyopaque, arg_yv: ?*const anyo
     _ = &result;
     if (result != 0) return result;
     while (true) {
-        return if (x.*.name == y.*.name) @as(c_int, 0) else memcmp(@as(?*const anyopaque, @ptrCast(x.*.name)), @as(?*const anyopaque, @ptrCast(y.*.name)), @as(c_ulong, @bitCast(@as(c_ulong, x.*.len))));
+        return if (x.*.name == y.*.name) 0 else memcmp(@as(?*const anyopaque, @ptrCast(x.*.name)), @as(?*const anyopaque, @ptrCast(y.*.name)), @as(c_ulong, @bitCast(@as(c_ulong, x.*.len))));
     }
     return 0;
 }
@@ -1181,10 +1181,10 @@ fn lookup_function(arg_s: [*c]const u8) callconv(.C) [*c]const struct_function_t
     _ = &function_table_entry_key;
     var e: [*c]const u8 = s;
     _ = &e;
-    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(e.*))]))) & @as(c_int, 8192)) != @as(c_int, 0)) {
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(e.*))]))) & @as(c_int, 8192)) != 0) {
         e += 1;
     }
-    if ((e == s) or !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(e.*))]))) & (@as(c_int, 1) | (@as(c_int, 2) | @as(c_int, 4)))) != @as(c_int, 0))) return null;
+    if ((e == s) or !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(e.*))]))) & (1 | (2 | 4))) != 0)) return null;
     function_table_entry_key.name = s;
     function_table_entry_key.len = @as(u8, @bitCast(@as(i8, @truncate(@divExact(@as(c_long, @bitCast(@intFromPtr(e) -% @intFromPtr(s))), @sizeOf(u8))))));
     return @as([*c]const struct_function_table_entry, @ptrCast(@alignCast(hash_find_item(&function_table, @as(?*const anyopaque, @ptrCast(&function_table_entry_key))))));
@@ -1200,11 +1200,11 @@ fn find_next_argument(arg_startparen: u8, arg_endparen: u8, arg_ptr: [*c]const u
     _ = &end;
     var count: c_int = 0;
     _ = &count;
-    while (ptr < end) : (ptr += 1) if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(ptr.*))]))) & (@as(c_int, 128) | @as(c_int, 1024))) != @as(c_int, 0))) continue else if (@as(c_int, @bitCast(@as(c_uint, ptr.*))) == @as(c_int, @bitCast(@as(c_uint, startparen)))) {
+    while (ptr < end) : (ptr += 1) if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(ptr.*))]))) & (@as(c_int, 128) | @as(c_int, 1024))) != 0)) continue else if (@as(c_int, @bitCast(@as(c_uint, ptr.*))) == @as(c_int, @bitCast(@as(c_uint, startparen)))) {
         count += 1;
     } else if (@as(c_int, @bitCast(@as(c_uint, ptr.*))) == @as(c_int, @bitCast(@as(c_uint, endparen)))) {
         count -= 1;
-        if (count < @as(c_int, 0)) return null;
+        if (count < 0) return null;
     } else if ((@as(c_int, @bitCast(@as(c_uint, ptr.*))) == @as(c_int, ',')) and !(count != 0)) return @as([*c]u8, @ptrCast(@volatileCast(@constCast(ptr))));
     return null;
 }
@@ -1223,7 +1223,7 @@ fn string_glob(arg_line: [*c]u8) callconv(.C) [*c]u8 {
     _ = &chain;
     var idx: usize = undefined;
     _ = &idx;
-    chain = @as([*c]struct_nameseq, @ptrCast(@alignCast(parse_file_seq(&line, @sizeOf(struct_nameseq), @as(c_int, 1), null, (@as(c_int, 1) | @as(c_int, 16)) | @as(c_int, 8)))));
+    chain = @as([*c]struct_nameseq, @ptrCast(@alignCast(parse_file_seq(&line, @sizeOf(struct_nameseq), 1, null, (1 | @as(c_int, 16)) | 8))));
     if (result.static == null) {
         length.static = 100;
         result.static = @as([*c]u8, @ptrCast(@alignCast(xmalloc(@as(usize, @bitCast(@as(c_long, @as(c_int, 100))))))));
@@ -1234,8 +1234,8 @@ fn string_glob(arg_line: [*c]u8) callconv(.C) [*c]u8 {
         _ = &next;
         var len: usize = strlen(chain.*.name);
         _ = &len;
-        if (((idx +% len) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) > length.static) {
-            length.static +%= (len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) *% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
+        if (((idx +% len) +% @as(usize, 1)) > length.static) {
+            length.static +%= (len +% @as(usize, 1)) *% @as(usize, 2);
             result.static = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(result.static)), length.static))));
         }
         _ = memcpy(@as(?*anyopaque, @ptrCast(&result.static[idx])), @as(?*const anyopaque, @ptrCast(chain.*.name)), len);
@@ -1252,10 +1252,10 @@ fn string_glob(arg_line: [*c]u8) callconv(.C) [*c]u8 {
         free(@as(?*anyopaque, @ptrCast(chain)));
         chain = next;
     }
-    if (idx == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
-        result.static[@as(c_uint, @intCast(@as(c_int, 0)))] = '\x00';
+    if (idx == @as(usize, 0)) {
+        result.static[0] = '\x00';
     } else {
-        result.static[idx -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))] = '\x00';
+        result.static[idx -% @as(usize, 1)] = '\x00';
     }
     return result.static;
 }
@@ -1266,7 +1266,7 @@ fn func_patsubst(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    o = patsubst_expand(o, argv[@as(c_uint, @intCast(@as(c_int, 2)))], argv[@as(c_uint, @intCast(@as(c_int, 0)))], argv[@as(c_uint, @intCast(@as(c_int, 1)))]);
+    o = patsubst_expand(o, argv[2], argv[0], argv[1]);
     return o;
 }
 fn func_join(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) callconv(.C) [*c]u8 {
@@ -1282,9 +1282,9 @@ fn func_join(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
     _ = &tp;
     var pp: [*c]const u8 = undefined;
     _ = &pp;
-    var list1_iterator: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var list1_iterator: [*c]const u8 = argv[0];
     _ = &list1_iterator;
-    var list2_iterator: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 1)))];
+    var list2_iterator: [*c]const u8 = argv[1];
     _ = &list2_iterator;
     while (true) {
         var len1: usize = undefined;
@@ -1300,7 +1300,7 @@ fn func_join(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
             o = variable_buffer_output(o, pp, len2);
         }
         if ((tp != null) or (pp != null)) {
-            o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+            o = variable_buffer_output(o, " ", @as(usize, 1));
             doneany = 1;
         }
         if (!((tp != null) or (pp != null))) break;
@@ -1317,43 +1317,43 @@ fn func_origin(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) 
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var v: [*c]struct_variable = lookup_variable(argv[@as(c_uint, @intCast(@as(c_int, 0)))], strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]));
+    var v: [*c]struct_variable = lookup_variable(argv[0], strlen(argv[0]));
     _ = &v;
     if (v == null) {
-        o = variable_buffer_output(o, "undefined", @as(usize, @bitCast(@as(c_long, @as(c_int, 9)))));
+        o = variable_buffer_output(o, "undefined", @as(usize, 9));
     } else {
         while (true) {
             switch (v.*.origin) {
-                @as(c_uint, @bitCast(@as(c_int, 7))) => {
+                @as(c_uint, 7) => {
                     abort();
                     break;
                 },
-                @as(c_uint, @bitCast(@as(c_int, 0))) => {
-                    o = variable_buffer_output(o, "default", @as(usize, @bitCast(@as(c_long, @as(c_int, 7)))));
+                @as(c_uint, 0) => {
+                    o = variable_buffer_output(o, "default", @as(usize, 7));
                     break;
                 },
-                @as(c_uint, @bitCast(@as(c_int, 1))) => {
+                @as(c_uint, 1) => {
                     o = variable_buffer_output(o, "environment", @as(usize, @bitCast(@as(c_long, @as(c_int, 11)))));
                     break;
                 },
-                @as(c_uint, @bitCast(@as(c_int, 2))) => {
-                    o = variable_buffer_output(o, "file", @as(usize, @bitCast(@as(c_long, @as(c_int, 4)))));
+                @as(c_uint, 2) => {
+                    o = variable_buffer_output(o, "file", @as(usize, 4));
                     break;
                 },
-                @as(c_uint, @bitCast(@as(c_int, 3))) => {
+                @as(c_uint, 3) => {
                     o = variable_buffer_output(o, "environment override", @as(usize, @bitCast(@as(c_long, @as(c_int, 20)))));
                     break;
                 },
-                @as(c_uint, @bitCast(@as(c_int, 4))) => {
+                @as(c_uint, 4) => {
                     o = variable_buffer_output(o, "command line", @as(usize, @bitCast(@as(c_long, @as(c_int, 12)))));
                     break;
                 },
-                @as(c_uint, @bitCast(@as(c_int, 5))) => {
-                    o = variable_buffer_output(o, "override", @as(usize, @bitCast(@as(c_long, @as(c_int, 8)))));
+                @as(c_uint, 5) => {
+                    o = variable_buffer_output(o, "override", @as(usize, 8));
                     break;
                 },
-                @as(c_uint, @bitCast(@as(c_int, 6))) => {
-                    o = variable_buffer_output(o, "automatic", @as(usize, @bitCast(@as(c_long, @as(c_int, 9)))));
+                @as(c_uint, 6) => {
+                    o = variable_buffer_output(o, "automatic", @as(usize, 9));
                     break;
                 },
                 else => {},
@@ -1370,14 +1370,14 @@ fn func_flavor(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) 
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var v: [*c]struct_variable = lookup_variable(argv[@as(c_uint, @intCast(@as(c_int, 0)))], strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]));
+    var v: [*c]struct_variable = lookup_variable(argv[0], strlen(argv[0]));
     _ = &v;
     if (v == null) {
-        o = variable_buffer_output(o, "undefined", @as(usize, @bitCast(@as(c_long, @as(c_int, 9)))));
+        o = variable_buffer_output(o, "undefined", @as(usize, 9));
     } else if (v.*.recursive != 0) {
-        o = variable_buffer_output(o, "recursive", @as(usize, @bitCast(@as(c_long, @as(c_int, 9)))));
+        o = variable_buffer_output(o, "recursive", @as(usize, 9));
     } else {
-        o = variable_buffer_output(o, "simple", @as(usize, @bitCast(@as(c_long, @as(c_int, 6)))));
+        o = variable_buffer_output(o, "simple", @as(usize, 6));
     }
     return o;
 }
@@ -1388,7 +1388,7 @@ fn func_notdir_suffix(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]con
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var list_iterator: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var list_iterator: [*c]const u8 = argv[0];
     _ = &list_iterator;
     var p2: [*c]const u8 = undefined;
     _ = &p2;
@@ -1396,20 +1396,20 @@ fn func_notdir_suffix(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]con
     _ = &doneany;
     var len: usize = 0;
     _ = &len;
-    var is_suffix: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, funcname[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, 's'));
+    var is_suffix: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, funcname[0]))) == @as(c_int, 's'));
     _ = &is_suffix;
     var is_notdir: c_int = @intFromBool(!(is_suffix != 0));
     _ = &is_notdir;
-    var stop: c_int = @as(c_int, 32768) | (if (is_suffix != 0) @as(c_int, 512) else @as(c_int, 0));
+    var stop: c_int = @as(c_int, 32768) | (if (is_suffix != 0) @as(c_int, 512) else 0);
     _ = &stop;
     while ((blk: {
         const tmp = find_next_token(&list_iterator, &len);
         p2 = tmp;
         break :blk tmp;
     }) != null) {
-        var p: [*c]const u8 = (p2 + len) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+        var p: [*c]const u8 = (p2 + len) - @as(usize, @bitCast(@as(isize, @intCast(1))));
         _ = &p;
-        while ((p >= p2) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & stop) != @as(c_int, 0))) {
+        while ((p >= p2) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & stop) != 0)) {
             p -= 1;
         }
         if (p >= p2) {
@@ -1421,7 +1421,7 @@ fn func_notdir_suffix(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]con
             o = variable_buffer_output(o, p2, len);
         }
         if ((is_notdir != 0) or (p >= p2)) {
-            o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+            o = variable_buffer_output(o, " ", @as(usize, 1));
             doneany = 1;
         }
     }
@@ -1437,7 +1437,7 @@ fn func_basename_dir(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]cons
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var p3: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var p3: [*c]const u8 = argv[0];
     _ = &p3;
     var p2: [*c]const u8 = undefined;
     _ = &p2;
@@ -1445,20 +1445,20 @@ fn func_basename_dir(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]cons
     _ = &doneany;
     var len: usize = 0;
     _ = &len;
-    var is_basename: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, funcname[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, 'b'));
+    var is_basename: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, funcname[0]))) == @as(c_int, 'b'));
     _ = &is_basename;
     var is_dir: c_int = @intFromBool(!(is_basename != 0));
     _ = &is_dir;
-    var stop: c_int = (@as(c_int, 32768) | (if (is_basename != 0) @as(c_int, 512) else @as(c_int, 0))) | @as(c_int, 1);
+    var stop: c_int = (@as(c_int, 32768) | (if (is_basename != 0) @as(c_int, 512) else 0)) | 1;
     _ = &stop;
     while ((blk: {
         const tmp = find_next_token(&p3, &len);
         p2 = tmp;
         break :blk tmp;
     }) != null) {
-        var p: [*c]const u8 = (p2 + len) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+        var p: [*c]const u8 = (p2 + len) - @as(usize, @bitCast(@as(isize, @intCast(1))));
         _ = &p;
-        while ((p >= p2) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & stop) != @as(c_int, 0))) {
+        while ((p >= p2) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & stop) != 0)) {
             p -= 1;
         }
         if ((p >= p2) and (is_dir != 0)) {
@@ -1470,11 +1470,11 @@ fn func_basename_dir(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]cons
         } else if ((p >= p2) and (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '.'))) {
             o = variable_buffer_output(o, p2, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(p2))), @sizeOf(u8)))));
         } else if (is_dir != 0) {
-            o = variable_buffer_output(o, "./", @as(usize, @bitCast(@as(c_long, @as(c_int, 2)))));
+            o = variable_buffer_output(o, "./", @as(usize, 2));
         } else {
             o = variable_buffer_output(o, p2, len);
         }
-        o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        o = variable_buffer_output(o, " ", @as(usize, 1));
         doneany = 1;
     }
     if (doneany != 0) {
@@ -1489,11 +1489,11 @@ fn func_addsuffix_addprefix(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var fixlen: usize = strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]);
+    var fixlen: usize = strlen(argv[0]);
     _ = &fixlen;
-    var list_iterator: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 1)))];
+    var list_iterator: [*c]const u8 = argv[1];
     _ = &list_iterator;
-    var is_addprefix: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, funcname[@as(c_uint, @intCast(@as(c_int, 3)))]))) == @as(c_int, 'p'));
+    var is_addprefix: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, funcname[3]))) == @as(c_int, 'p'));
     _ = &is_addprefix;
     var is_addsuffix: c_int = @intFromBool(!(is_addprefix != 0));
     _ = &is_addsuffix;
@@ -1509,13 +1509,13 @@ fn func_addsuffix_addprefix(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [
         break :blk tmp;
     }) != null) {
         if (is_addprefix != 0) {
-            o = variable_buffer_output(o, argv[@as(c_uint, @intCast(@as(c_int, 0)))], fixlen);
+            o = variable_buffer_output(o, argv[0], fixlen);
         }
         o = variable_buffer_output(o, p, len);
         if (is_addsuffix != 0) {
-            o = variable_buffer_output(o, argv[@as(c_uint, @intCast(@as(c_int, 0)))], fixlen);
+            o = variable_buffer_output(o, argv[0], fixlen);
         }
-        o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        o = variable_buffer_output(o, " ", @as(usize, 1));
         doneany = 1;
     }
     if (doneany != 0) {
@@ -1530,7 +1530,7 @@ fn func_subst(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) c
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    o = subst_expand(o, argv[@as(c_uint, @intCast(@as(c_int, 2)))], argv[@as(c_uint, @intCast(@as(c_int, 0)))], argv[@as(c_uint, @intCast(@as(c_int, 1)))], strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]), strlen(argv[@as(c_uint, @intCast(@as(c_int, 1)))]), @as(c_int, 0));
+    o = subst_expand(o, argv[2], argv[0], argv[1], strlen(argv[0]), strlen(argv[1]), 0);
     return o;
 }
 fn func_firstword(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) callconv(.C) [*c]u8 {
@@ -1542,7 +1542,7 @@ fn func_firstword(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u
     _ = &funcname;
     var i: usize = undefined;
     _ = &i;
-    var words: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var words: [*c]const u8 = argv[0];
     _ = &words;
     var p: [*c]const u8 = find_next_token(&words, &i);
     _ = &p;
@@ -1560,7 +1560,7 @@ fn func_lastword(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8
     _ = &funcname;
     var i: usize = undefined;
     _ = &i;
-    var words: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var words: [*c]const u8 = argv[0];
     _ = &words;
     var p: [*c]const u8 = null;
     _ = &p;
@@ -1570,7 +1570,7 @@ fn func_lastword(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8
         const tmp = find_next_token(&words, &i);
         t = tmp;
         break :blk tmp;
-    }) != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    }) != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         p = t;
     }
     if (p != null) {
@@ -1587,7 +1587,7 @@ fn func_words(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) c
     _ = &funcname;
     var i: c_uint = 0;
     _ = &i;
-    var word_iterator: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var word_iterator: [*c]const u8 = argv[0];
     _ = &word_iterator;
     var buf: [22]u8 = undefined;
     _ = &buf;
@@ -1605,7 +1605,7 @@ fn parse_numeric(arg_s: [*c]const u8, arg_msg: [*c]const u8) callconv(.C) c_long
     _ = &msg;
     var beg: [*c]const u8 = s;
     _ = &beg;
-    var end: [*c]const u8 = (s + strlen(s)) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+    var end: [*c]const u8 = (s + strlen(s)) - @as(usize, @bitCast(@as(isize, @intCast(1))));
     _ = &end;
     var endp: [*c]u8 = undefined;
     _ = &endp;
@@ -1637,11 +1637,11 @@ fn func_word(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
     _ = &p;
     var i: c_longlong = undefined;
     _ = &i;
-    i = parse_numeric(argv[@as(c_uint, @intCast(@as(c_int, 0)))], gettext("invalid first argument to 'word' function"));
-    if (i < @as(c_longlong, @bitCast(@as(c_longlong, @as(c_int, 1))))) {
-        fatal(expanding_var.*, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("first argument to 'word' function must be greater than 0"));
+    i = parse_numeric(argv[0], gettext("invalid first argument to 'word' function"));
+    if (i < @as(c_longlong, @bitCast(@as(c_longlong, 1)))) {
+        fatal(expanding_var.*, @as(usize, 0), gettext("first argument to 'word' function must be greater than 0"));
     }
-    end_p = argv[@as(c_uint, @intCast(@as(c_int, 1)))];
+    end_p = argv[1];
     while ((blk: {
         const tmp = find_next_token(&end_p, null);
         p = tmp;
@@ -1650,8 +1650,8 @@ fn func_word(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
         const ref = &i;
         ref.* -= 1;
         break :blk ref.*;
-    }) == @as(c_longlong, @bitCast(@as(c_longlong, @as(c_int, 0))))) break;
-    if (i == @as(c_longlong, @bitCast(@as(c_longlong, @as(c_int, 0))))) {
+    }) == @as(c_longlong, @bitCast(@as(c_longlong, 0)))) break;
+    if (i == @as(c_longlong, @bitCast(@as(c_longlong, 0)))) {
         o = variable_buffer_output(o, p, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end_p) -% @intFromPtr(p))), @sizeOf(u8)))));
     }
     return o;
@@ -1675,19 +1675,19 @@ fn func_wordlist(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8
     _ = &badfirst;
     var badsecond: [*c]const u8 = gettext("invalid second argument to 'wordlist' function");
     _ = &badsecond;
-    start = parse_numeric(argv[@as(c_uint, @intCast(@as(c_int, 0)))], badfirst);
-    if (start < @as(c_longlong, @bitCast(@as(c_longlong, @as(c_int, 1))))) {
+    start = parse_numeric(argv[0], badfirst);
+    if (start < @as(c_longlong, @bitCast(@as(c_longlong, 1)))) {
         fatal(expanding_var.*, strlen(badfirst) +% strlen(make_lltoa(start, @as([*c]u8, @ptrCast(@alignCast(&buf))))), "%s: '%s'", badfirst, make_lltoa(start, @as([*c]u8, @ptrCast(@alignCast(&buf)))));
     }
-    stop = parse_numeric(argv[@as(c_uint, @intCast(@as(c_int, 1)))], badsecond);
-    if (stop < @as(c_longlong, @bitCast(@as(c_longlong, @as(c_int, 0))))) {
+    stop = parse_numeric(argv[1], badsecond);
+    if (stop < @as(c_longlong, @bitCast(@as(c_longlong, 0)))) {
         fatal(expanding_var.*, strlen(badsecond) +% strlen(make_lltoa(stop, @as([*c]u8, @ptrCast(@alignCast(&buf))))), "%s: '%s'", badsecond, make_lltoa(stop, @as([*c]u8, @ptrCast(@alignCast(&buf)))));
     }
-    count = (stop - start) + @as(c_longlong, @bitCast(@as(c_longlong, @as(c_int, 1))));
-    if (count > @as(c_longlong, @bitCast(@as(c_longlong, @as(c_int, 0))))) {
+    count = (stop - start) + @as(c_longlong, @bitCast(@as(c_longlong, 1)));
+    if (count > @as(c_longlong, @bitCast(@as(c_longlong, 0)))) {
         var p: [*c]const u8 = undefined;
         _ = &p;
-        var end_p: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 2)))];
+        var end_p: [*c]const u8 = argv[2];
         _ = &end_p;
         while (((blk: {
             const tmp = find_next_token(&end_p, null);
@@ -1716,8 +1716,8 @@ fn func_findstring(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const 
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    if (strstr(argv[@as(c_uint, @intCast(@as(c_int, 1)))], argv[@as(c_uint, @intCast(@as(c_int, 0)))]) != null) {
-        o = variable_buffer_output(o, argv[@as(c_uint, @intCast(@as(c_int, 0)))], strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]));
+    if (strstr(argv[1], argv[0]) != null) {
+        o = variable_buffer_output(o, argv[0], strlen(argv[0]));
     }
     return o;
 }
@@ -1728,11 +1728,11 @@ fn func_foreach(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8)
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var varname: [*c]u8 = expand_argument(argv[@as(c_uint, @intCast(@as(c_int, 0)))], null);
+    var varname: [*c]u8 = expand_argument(argv[0], null);
     _ = &varname;
-    var list: [*c]u8 = expand_argument(argv[@as(c_uint, @intCast(@as(c_int, 1)))], null);
+    var list: [*c]u8 = expand_argument(argv[1], null);
     _ = &list;
-    var body: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 2)))];
+    var body: [*c]const u8 = argv[2];
     _ = &body;
     var doneany: c_int = 0;
     _ = &doneany;
@@ -1746,9 +1746,9 @@ fn func_foreach(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8)
     _ = &@"var";
     var vp: [*c]u8 = next_token(varname);
     _ = &vp;
-    end_of_token(vp)[@as(c_uint, @intCast(@as(c_int, 0)))] = '\x00';
+    end_of_token(vp)[0] = '\x00';
     _ = push_new_variable_scope();
-    @"var" = define_variable_in_set(vp, strlen(vp), "", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    @"var" = define_variable_in_set(vp, strlen(vp), "", @as(c_uint, @bitCast(o_automatic)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
     while ((blk: {
         const tmp = find_next_token(&list_iterator, &len);
         p = tmp;
@@ -1758,9 +1758,9 @@ fn func_foreach(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8)
         _ = &result;
         free(@as(?*anyopaque, @ptrCast(@"var".*.value)));
         @"var".*.value = xstrndup(p, len);
-        result = allocated_variable_expand_for_file(body, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+        result = allocated_variable_expand_for_file(body, @as([*c]struct_file, @ptrFromInt(0)));
         o = variable_buffer_output(o, result, strlen(result));
-        o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        o = variable_buffer_output(o, " ", @as(usize, 1));
         doneany = 1;
         free(@as(?*anyopaque, @ptrCast(result)));
     }
@@ -1779,11 +1779,11 @@ fn func_let(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) cal
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var varnames: [*c]u8 = expand_argument(argv[@as(c_uint, @intCast(@as(c_int, 0)))], null);
+    var varnames: [*c]u8 = expand_argument(argv[0], null);
     _ = &varnames;
-    var list: [*c]u8 = expand_argument(argv[@as(c_uint, @intCast(@as(c_int, 1)))], null);
+    var list: [*c]u8 = expand_argument(argv[1], null);
     _ = &list;
-    var body: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 2)))];
+    var body: [*c]const u8 = argv[2];
     _ = &body;
     var vp: [*c]const u8 = undefined;
     _ = &vp;
@@ -1799,7 +1799,7 @@ fn func_let(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) cal
     _ = &vlen;
     _ = push_new_variable_scope();
     vp = find_next_token(&vp_next, &vlen);
-    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(vp_next.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(vp_next.*))]))) & (2 | 4)) != 0) {
         vp_next += 1;
     }
     while (@as(c_int, @bitCast(@as(c_uint, vp_next.*))) != @as(c_int, '\x00')) {
@@ -1808,14 +1808,14 @@ fn func_let(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) cal
             list_iterator += 1;
             p[len] = '\x00';
         }
-        _ = define_variable_in_set(vp, vlen, if (p != null) p else "", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set(vp, vlen, if (p != null) p else "", @as(c_uint, @bitCast(o_automatic)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
         vp = find_next_token(&vp_next, &vlen);
-        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(vp_next.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(vp_next.*))]))) & (2 | 4)) != 0) {
             vp_next += 1;
         }
     }
     if (vp != null) {
-        _ = define_variable_in_set(vp, vlen, next_token(list_iterator), @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set(vp, vlen, next_token(list_iterator), @as(c_uint, @bitCast(o_automatic)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
     }
     o = variable_expand_string(o, body, @as(c_ulong, 18446744073709551615));
     pop_variable_scope();
@@ -1868,9 +1868,9 @@ fn a_word_hash_cmp(arg_x: ?*const anyopaque, arg_y: ?*const anyopaque) callconv(
     _ = &ax;
     var ay: [*c]const struct_a_word = @as([*c]const struct_a_word, @ptrCast(@alignCast(y)));
     _ = &ay;
-    if (ax.*.length != ay.*.length) return if (ax.*.length > ay.*.length) @as(c_int, 1) else -@as(c_int, 1);
+    if (ax.*.length != ay.*.length) return if (ax.*.length > ay.*.length) 1 else -1;
     while (true) {
-        return if (ax.*.str == ay.*.str) @as(c_int, 0) else memcmp(@as(?*const anyopaque, @ptrCast(ax.*.str)), @as(?*const anyopaque, @ptrCast(ay.*.str)), ax.*.length);
+        return if (ax.*.str == ay.*.str) 0 else memcmp(@as(?*const anyopaque, @ptrCast(ax.*.str)), @as(?*const anyopaque, @ptrCast(ay.*.str)), ax.*.length);
     }
     return 0;
 }
@@ -1904,7 +1904,7 @@ fn func_filter_filterout(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]
     _ = &word_count;
     var a_word_table: struct_hash_table = undefined;
     _ = &a_word_table;
-    var is_filter: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, funcname[@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))]))) == @as(c_int, '\x00'));
+    var is_filter: c_int = @intFromBool(@as(c_int, @bitCast(@as(c_uint, funcname[@sizeOf([7]u8) -% @as(c_ulong, 1)]))) == @as(c_int, '\x00'));
     _ = &is_filter;
     var cp: [*c]const u8 = undefined;
     _ = &cp;
@@ -1918,7 +1918,7 @@ fn func_filter_filterout(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]
     _ = &len;
     var doneany: c_int = 0;
     _ = &doneany;
-    cp = argv[@as(c_uint, @intCast(@as(c_int, 1)))];
+    cp = argv[1];
     while ((blk: {
         const tmp = find_next_token(&cp, null);
         p = tmp;
@@ -1929,7 +1929,7 @@ fn func_filter_filterout(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]
     if (!(word_count != 0)) return o;
     words = @as([*c]struct_a_word, @ptrCast(@alignCast(xcalloc(word_count *% @sizeOf(struct_a_word)))));
     word_end = words + word_count;
-    cp = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    cp = argv[0];
     while ((blk: {
         const tmp = find_next_token(&cp, null);
         p = tmp;
@@ -1939,7 +1939,7 @@ fn func_filter_filterout(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]
     }
     patterns = @as([*c]struct_a_pattern, @ptrCast(@alignCast(xcalloc(pat_count *% @sizeOf(struct_a_pattern)))));
     pat_end = patterns + pat_count;
-    cp = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    cp = argv[0];
     pp = patterns;
     while ((blk: {
         const tmp = find_next_token(&cp, &len);
@@ -1958,7 +1958,7 @@ fn func_filter_filterout(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]
         pp.*.length = strlen(pp.*.str);
         pp += 1;
     }
-    cp = argv[@as(c_uint, @intCast(@as(c_int, 1)))];
+    cp = argv[1];
     wp = words;
     while ((blk: {
         const tmp = find_next_token(&cp, &len);
@@ -1973,7 +1973,7 @@ fn func_filter_filterout(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]
         wp.*.length = len;
         wp += 1;
     }
-    hashing = @intFromBool((literals > @as(c_int, 1)) and ((@as(c_ulong, @bitCast(@as(c_long, literals))) *% word_count) >= @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 10))))));
+    hashing = @intFromBool((literals > 1) and ((@as(c_ulong, @bitCast(@as(c_long, literals))) *% word_count) >= @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 10))))));
     if (hashing != 0) {
         hash_init(&a_word_table, word_count, &a_word_hash_1, &a_word_hash_2, &a_word_hash_cmp);
         {
@@ -2004,13 +2004,13 @@ fn func_filter_filterout(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]
                 a_word_key.length = pp.*.length;
                 wp = @as([*c]struct_a_word, @ptrCast(@alignCast(hash_find_item(&a_word_table, @as(?*const anyopaque, @ptrCast(&a_word_key))))));
                 while (wp != null) {
-                    wp.*.matched |= @as(c_int, 1);
+                    wp.*.matched |= 1;
                     wp = wp.*.chain;
                 }
             } else {
                 wp = words;
                 while (wp < word_end) : (wp += 1) {
-                    wp.*.matched |= (wp.*.length == pp.*.length) and (memcmp(@as(?*const anyopaque, @ptrCast(pp.*.str)), @as(?*const anyopaque, @ptrCast(wp.*.str)), wp.*.length) == @as(c_int, 0));
+                    wp.*.matched |= (wp.*.length == pp.*.length) and (memcmp(@as(?*const anyopaque, @ptrCast(pp.*.str)), @as(?*const anyopaque, @ptrCast(wp.*.str)), wp.*.length) == 0);
                 }
             }
         }
@@ -2019,7 +2019,7 @@ fn func_filter_filterout(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]
         wp = words;
         while (wp < word_end) : (wp += 1) if ((if (is_filter != 0) wp.*.matched else @intFromBool(!(wp.*.matched != 0))) != 0) {
             o = variable_buffer_output(o, wp.*.str, strlen(wp.*.str));
-            o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+            o = variable_buffer_output(o, " ", @as(usize, 1));
             doneany = 1;
         };
     }
@@ -2027,7 +2027,7 @@ fn func_filter_filterout(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]
         o -= 1;
     }
     if (hashing != 0) {
-        hash_free(&a_word_table, @as(c_int, 0));
+        hash_free(&a_word_table, 0);
     }
     free(@as(?*anyopaque, @ptrCast(patterns)));
     free(@as(?*anyopaque, @ptrCast(words)));
@@ -2040,7 +2040,7 @@ fn func_strip(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) c
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var p: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var p: [*c]const u8 = argv[0];
     _ = &p;
     var doneany: c_int = 0;
     _ = &doneany;
@@ -2049,13 +2049,13 @@ fn func_strip(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) c
         _ = &i;
         var word_start: [*c]const u8 = undefined;
         _ = &word_start;
-        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (2 | 4)) != 0) {
             p += 1;
         }
         word_start = p;
         {
             i = 0;
-            while ((@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0))) : (_ = blk: {
+            while ((@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (2 | 4)) != 0)) : (_ = blk: {
                 p += 1;
                 break :blk blk_1: {
                     const ref = &i;
@@ -2066,7 +2066,7 @@ fn func_strip(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) c
         }
         if (!(i != 0)) break;
         o = variable_buffer_output(o, word_start, @as(usize, @bitCast(@as(c_long, i))));
-        o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        o = variable_buffer_output(o, " ", @as(usize, 1));
         doneany = 1;
     }
     if (doneany != 0) {
@@ -2084,24 +2084,24 @@ fn func_error(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) c
     while (true) {
         switch (@as(c_int, @bitCast(@as(c_uint, funcname.*)))) {
             @as(c_int, 101) => {
-                fatal(reading_file, strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]), "%s", argv[@as(c_uint, @intCast(@as(c_int, 0)))]);
-                @"error"(reading_file, strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]), "%s", argv[@as(c_uint, @intCast(@as(c_int, 0)))]);
+                fatal(reading_file, strlen(argv[0]), "%s", argv[0]);
+                @"error"(reading_file, strlen(argv[0]), "%s", argv[0]);
                 break;
             },
             @as(c_int, 119) => {
-                @"error"(reading_file, strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]), "%s", argv[@as(c_uint, @intCast(@as(c_int, 0)))]);
+                @"error"(reading_file, strlen(argv[0]), "%s", argv[0]);
                 break;
             },
             @as(c_int, 105) => {
                 {
-                    var len: usize = strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]);
+                    var len: usize = strlen(argv[0]);
                     _ = &len;
-                    var msg: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))))));
+                    var msg: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(len +% @as(usize, 2)))));
                     _ = &msg;
-                    _ = memcpy(@as(?*anyopaque, @ptrCast(msg)), @as(?*const anyopaque, @ptrCast(argv[@as(c_uint, @intCast(@as(c_int, 0)))])), len);
+                    _ = memcpy(@as(?*anyopaque, @ptrCast(msg)), @as(?*const anyopaque, @ptrCast(argv[0])), len);
                     msg[len] = '\n';
-                    msg[len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))] = '\x00';
-                    outputs(@as(c_int, 0), msg);
+                    msg[len +% @as(usize, 1)] = '\x00';
+                    outputs(0, msg);
                     break;
                 }
             },
@@ -2130,7 +2130,7 @@ fn func_sort(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
     _ = &p;
     var len: usize = undefined;
     _ = &len;
-    t = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    t = argv[0];
     wordi = 0;
     while ((blk: {
         const tmp = find_next_token(&t, null);
@@ -2140,8 +2140,8 @@ fn func_sort(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
         t += 1;
         wordi += 1;
     }
-    words = @as([*c][*c]u8, @ptrCast(@alignCast(xmalloc(@as(c_ulong, @bitCast(@as(c_long, if (wordi == @as(c_int, 0)) @as(c_int, 1) else wordi))) *% @sizeOf([*c]u8)))));
-    t = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    words = @as([*c][*c]u8, @ptrCast(@alignCast(xmalloc(@as(c_ulong, @bitCast(@as(c_long, if (wordi == 0) 1 else wordi))) *% @sizeOf([*c]u8)))));
+    t = argv[0];
     wordi = 0;
     while ((blk: {
         const tmp = find_next_token(&t, &len);
@@ -2171,21 +2171,21 @@ fn func_sort(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
                     const tmp = i;
                     if (tmp >= 0) break :blk words + @as(usize, @intCast(tmp)) else break :blk words - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                 }).*);
-                if (((i == (wordi - @as(c_int, 1))) or (strlen((blk: {
-                    const tmp = i + @as(c_int, 1);
+                if (((i == (wordi - 1)) or (strlen((blk: {
+                    const tmp = i + 1;
                     if (tmp >= 0) break :blk words + @as(usize, @intCast(tmp)) else break :blk words - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                 }).*) != len)) or (memcmp(@as(?*const anyopaque, @ptrCast((blk: {
                     const tmp = i;
                     if (tmp >= 0) break :blk words + @as(usize, @intCast(tmp)) else break :blk words - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                 }).*)), @as(?*const anyopaque, @ptrCast((blk: {
-                    const tmp = i + @as(c_int, 1);
+                    const tmp = i + 1;
                     if (tmp >= 0) break :blk words + @as(usize, @intCast(tmp)) else break :blk words - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                 }).*)), len) != 0)) {
                     o = variable_buffer_output(o, (blk: {
                         const tmp = i;
                         if (tmp >= 0) break :blk words + @as(usize, @intCast(tmp)) else break :blk words - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                     }).*, len);
-                    o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                    o = variable_buffer_output(o, " ", @as(usize, 1));
                 }
             }
         }
@@ -2222,7 +2222,7 @@ fn parse_textint(arg_number: [*c]const u8, arg_msg: [*c]const u8, arg_sign: [*c]
         p += 1;
     }
     numstart.* = p;
-    while ((@as(c_uint, @bitCast(@as(c_uint, p.*))) -% @as(c_uint, @bitCast(@as(c_int, '0')))) <= @as(c_uint, @bitCast(@as(c_int, 9)))) {
+    while ((@as(c_uint, @bitCast(@as(c_uint, p.*))) -% @as(c_uint, @bitCast(@as(c_int, '0')))) <= @as(c_uint, 9)) {
         p += 1;
     }
     after_number = p;
@@ -2248,9 +2248,9 @@ fn func_intcmp(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) 
     _ = &lnum;
     var rnum: [*c]const u8 = undefined;
     _ = &rnum;
-    var lhs_str: [*c]u8 = expand_argument(argv[@as(c_uint, @intCast(@as(c_int, 0)))], null);
+    var lhs_str: [*c]u8 = expand_argument(argv[0], null);
     _ = &lhs_str;
-    var rhs_str: [*c]u8 = expand_argument(argv[@as(c_uint, @intCast(@as(c_int, 1)))], null);
+    var rhs_str: [*c]u8 = expand_argument(argv[1], null);
     _ = &rhs_str;
     var llim: [*c]const u8 = parse_textint(lhs_str, gettext("non-numeric first argument to 'intcmp' function"), &lsign, &lnum);
     _ = &llim;
@@ -2262,24 +2262,24 @@ fn func_intcmp(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) 
     _ = &rlen;
     var cmp: c_int = lsign - rsign;
     _ = &cmp;
-    if (cmp == @as(c_int, 0)) {
+    if (cmp == 0) {
         cmp = @intFromBool(llen > rlen) - @intFromBool(llen < rlen);
-        if (cmp == @as(c_int, 0)) {
+        if (cmp == 0) {
             cmp = memcmp(@as(?*const anyopaque, @ptrCast(lnum)), @as(?*const anyopaque, @ptrCast(rnum)), @as(c_ulong, @bitCast(llen)));
         }
     }
-    argv += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));
-    if (!(argv.* != null) and (cmp == @as(c_int, 0))) {
-        if (lsign < @as(c_int, 0)) {
-            o = variable_buffer_output(o, "-", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+    argv += @as(usize, @bitCast(@as(isize, @intCast(2))));
+    if (!(argv.* != null) and (cmp == 0)) {
+        if (lsign < 0) {
+            o = variable_buffer_output(o, "-", @as(usize, 1));
         }
         o = variable_buffer_output(o, lnum - @as(usize, @bitCast(@as(isize, @intCast(!(lsign != 0))))), @as(usize, @bitCast(llen + @as(ptrdiff_t, @intFromBool(!(lsign != 0))))));
     }
     free(@as(?*anyopaque, @ptrCast(lhs_str)));
     free(@as(?*anyopaque, @ptrCast(rhs_str)));
-    if ((argv.* != null) and (cmp >= @as(c_int, 0))) {
+    if ((argv.* != null) and (cmp >= 0)) {
         argv += 1;
-        if (((cmp > @as(c_int, 0)) and (argv.* != null)) and ((argv + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))).* != null)) {
+        if (((cmp > 0) and (argv.* != null)) and ((argv + @as(usize, @bitCast(@as(isize, @intCast(1))))).* != null)) {
             argv += 1;
         }
     }
@@ -2298,20 +2298,20 @@ fn func_if(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) call
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var begp: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var begp: [*c]const u8 = argv[0];
     _ = &begp;
-    var endp: [*c]const u8 = (begp + strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))])) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+    var endp: [*c]const u8 = (begp + strlen(argv[0])) - @as(usize, @bitCast(@as(isize, @intCast(1))));
     _ = &endp;
     var result: c_int = 0;
     _ = &result;
     _ = strip_whitespace(&begp, &endp);
     if (begp <= endp) {
-        var expansion: [*c]u8 = expand_argument(begp, endp + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
+        var expansion: [*c]u8 = expand_argument(begp, endp + @as(usize, @bitCast(@as(isize, @intCast(1)))));
         _ = &expansion;
-        result = @intFromBool(@as(c_int, @bitCast(@as(c_uint, expansion[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00'));
+        result = @intFromBool(@as(c_int, @bitCast(@as(c_uint, expansion[0]))) != @as(c_int, '\x00'));
         free(@as(?*anyopaque, @ptrCast(expansion)));
     }
-    argv += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1) + @intFromBool(!(result != 0))))));
+    argv += @as(usize, @bitCast(@as(isize, @intCast(1 + @intFromBool(!(result != 0))))));
     if (argv.* != null) {
         var expansion: [*c]u8 = expand_argument(argv.*, null);
         _ = &expansion;
@@ -2330,7 +2330,7 @@ fn func_or(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) call
     while (argv.* != null) : (argv += 1) {
         var begp: [*c]const u8 = argv.*;
         _ = &begp;
-        var endp: [*c]const u8 = (begp + strlen(argv.*)) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+        var endp: [*c]const u8 = (begp + strlen(argv.*)) - @as(usize, @bitCast(@as(isize, @intCast(1))));
         _ = &endp;
         var expansion: [*c]u8 = undefined;
         _ = &expansion;
@@ -2338,7 +2338,7 @@ fn func_or(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) call
         _ = &result;
         _ = strip_whitespace(&begp, &endp);
         if (begp > endp) continue;
-        expansion = expand_argument(begp, endp + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
+        expansion = expand_argument(begp, endp + @as(usize, @bitCast(@as(isize, @intCast(1)))));
         result = strlen(expansion);
         if (!(result != 0)) {
             free(@as(?*anyopaque, @ptrCast(expansion)));
@@ -2362,13 +2362,13 @@ fn func_and(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) cal
     while (true) {
         var begp: [*c]const u8 = argv.*;
         _ = &begp;
-        var endp: [*c]const u8 = (begp + strlen(argv.*)) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+        var endp: [*c]const u8 = (begp + strlen(argv.*)) - @as(usize, @bitCast(@as(isize, @intCast(1))));
         _ = &endp;
         var result: usize = undefined;
         _ = &result;
         _ = strip_whitespace(&begp, &endp);
         if (begp > endp) return o;
-        expansion = expand_argument(begp, endp + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
+        expansion = expand_argument(begp, endp + @as(usize, @bitCast(@as(isize, @intCast(1)))));
         result = strlen(expansion);
         if (!(result != 0)) break;
         if ((blk: {
@@ -2392,7 +2392,7 @@ fn func_wildcard(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var p: [*c]u8 = string_glob(argv[@as(c_uint, @intCast(@as(c_int, 0)))]);
+    var p: [*c]u8 = string_glob(argv[0]);
     _ = &p;
     o = variable_buffer_output(o, p, strlen(p));
     return o;
@@ -2409,7 +2409,7 @@ fn func_eval(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
     var len: usize = undefined;
     _ = &len;
     install_variable_buffer(&buf, &len);
-    eval_buffer(argv[@as(c_uint, @intCast(@as(c_int, 0)))], null);
+    eval_buffer(argv[0], null);
     restore_variable_buffer(buf, len);
     return o;
 }
@@ -2420,7 +2420,7 @@ fn func_value(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) c
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var v: [*c]struct_variable = lookup_variable(argv[@as(c_uint, @intCast(@as(c_int, 0)))], strlen(argv[@as(c_uint, @intCast(@as(c_int, 0)))]));
+    var v: [*c]struct_variable = lookup_variable(argv[0], strlen(argv[0]));
     _ = &v;
     if (v != null) {
         o = variable_buffer_output(o, v.*.value, strlen(v.*.value));
@@ -2438,11 +2438,11 @@ fn fold_newlines(arg_buffer: [*c]u8, arg_length: [*c]usize, arg_trim_newlines: c
     _ = &dst;
     var src: [*c]u8 = buffer;
     _ = &src;
-    var last_nonnl: [*c]u8 = buffer - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+    var last_nonnl: [*c]u8 = buffer - @as(usize, @bitCast(@as(isize, @intCast(1))));
     _ = &last_nonnl;
     src[length.*] = 0;
     while (@as(c_int, @bitCast(@as(c_uint, src.*))) != @as(c_int, '\x00')) : (src += 1) {
-        if ((@as(c_int, @bitCast(@as(c_uint, src[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\r')) and (@as(c_int, @bitCast(@as(c_uint, src[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\n'))) continue;
+        if ((@as(c_int, @bitCast(@as(c_uint, src[0]))) == @as(c_int, '\r')) and (@as(c_int, @bitCast(@as(c_uint, src[1]))) == @as(c_int, '\n'))) continue;
         if (@as(c_int, @bitCast(@as(c_uint, src.*))) == @as(c_int, '\n')) {
             (blk: {
                 const ref = &dst;
@@ -2460,8 +2460,8 @@ fn fold_newlines(arg_buffer: [*c]u8, arg_length: [*c]usize, arg_trim_newlines: c
             }).* = src.*;
         }
     }
-    if (!(trim_newlines != 0) and (last_nonnl < (dst - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))))))) {
-        last_nonnl = dst - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));
+    if (!(trim_newlines != 0) and (last_nonnl < (dst - @as(usize, @bitCast(@as(isize, @intCast(2))))))) {
+        last_nonnl = dst - @as(usize, @bitCast(@as(isize, @intCast(2))));
     }
     (blk: {
         const ref = &last_nonnl;
@@ -2479,7 +2479,7 @@ fn func_shell(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) c
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    return func_shell_base(o, argv, @as(c_int, 1));
+    return func_shell_base(o, argv, 1);
 }
 fn abspath(arg_name: [*c]const u8, arg_apath: [*c]u8) callconv(.C) [*c]u8 {
     var name = arg_name;
@@ -2496,9 +2496,9 @@ fn abspath(arg_name: [*c]const u8, arg_apath: [*c]u8) callconv(.C) [*c]u8 {
     _ = &apath_limit;
     var root_len: c_ulong = 1;
     _ = &root_len;
-    if (@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) return null;
+    if (@as(c_int, @bitCast(@as(c_uint, name[0]))) == @as(c_int, '\x00')) return null;
     apath_limit = apath + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 4096)))));
-    if (!(@as(c_int, @bitCast(@as(c_uint, name[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '/'))) {
+    if (!(@as(c_int, @bitCast(@as(c_uint, name[0]))) == @as(c_int, '/'))) {
         if (!(starting_directory != null)) return null;
         _ = strcpy(apath, starting_directory);
         dest = strchr(apath, @as(c_int, '\x00'));
@@ -2517,31 +2517,31 @@ fn abspath(arg_name: [*c]const u8, arg_apath: [*c]u8) callconv(.C) [*c]u8 {
         while (@as(c_int, @bitCast(@as(c_uint, start.*))) != @as(c_int, '\x00')) : (start = end) {
             var len: usize = undefined;
             _ = &len;
-            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(start.*))]))) & @as(c_int, 32768)) != @as(c_int, 0)) {
+            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(start.*))]))) & @as(c_int, 32768)) != 0) {
                 start += 1;
             }
             {
                 end = start;
-                while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(end.*))]))) & (@as(c_int, 32768) | @as(c_int, 1))) != @as(c_int, 0))) : (end += 1) {}
+                while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(end.*))]))) & (@as(c_int, 32768) | 1)) != 0)) : (end += 1) {}
             }
             len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(start))), @sizeOf(u8))));
-            if (len == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) break else if ((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) and (@as(c_int, @bitCast(@as(c_uint, start[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '.'))) {} else if (((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))) and (@as(c_int, @bitCast(@as(c_uint, start[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '.'))) and (@as(c_int, @bitCast(@as(c_uint, start[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '.'))) {
+            if (len == @as(usize, 0)) break else if ((len == @as(usize, 1)) and (@as(c_int, @bitCast(@as(c_uint, start[0]))) == @as(c_int, '.'))) {} else if (((len == @as(usize, 2)) and (@as(c_int, @bitCast(@as(c_uint, start[0]))) == @as(c_int, '.'))) and (@as(c_int, @bitCast(@as(c_uint, start[1]))) == @as(c_int, '.'))) {
                 if (dest > (apath + root_len)) {
                     dest -= 1;
                     while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
                         @as(u8, @bitCast((blk: {
-                            const tmp = -@as(c_int, 1);
+                            const tmp = -1;
                             if (tmp >= 0) break :blk dest + @as(usize, @intCast(tmp)) else break :blk dest - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                         }).*))
-                    ]))) & @as(c_int, 32768)) != @as(c_int, 0))) : (dest -= 1) {}
+                    ]))) & @as(c_int, 32768)) != 0)) : (dest -= 1) {}
                 }
             } else {
                 if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
                     @as(u8, @bitCast((blk: {
-                        const tmp = -@as(c_int, 1);
+                        const tmp = -1;
                         if (tmp >= 0) break :blk dest + @as(usize, @intCast(tmp)) else break :blk dest - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                     }).*))
-                ]))) & @as(c_int, 32768)) != @as(c_int, 0))) {
+                ]))) & @as(c_int, 32768)) != 0)) {
                     (blk: {
                         const ref = &dest;
                         const tmp = ref.*;
@@ -2557,10 +2557,10 @@ fn abspath(arg_name: [*c]const u8, arg_apath: [*c]u8) callconv(.C) [*c]u8 {
     }
     if ((dest > (apath + root_len)) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
         @as(u8, @bitCast((blk: {
-            const tmp = -@as(c_int, 1);
+            const tmp = -1;
             if (tmp >= 0) break :blk dest + @as(usize, @intCast(tmp)) else break :blk dest - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).*))
-    ]))) & @as(c_int, 32768)) != @as(c_int, 0))) {
+    ]))) & @as(c_int, 32768)) != 0)) {
         dest -= 1;
     }
     dest.* = '\x00';
@@ -2573,7 +2573,7 @@ fn func_realpath(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var p: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var p: [*c]const u8 = argv[0];
     _ = &p;
     var path: [*c]const u8 = null;
     _ = &path;
@@ -2600,7 +2600,7 @@ fn func_realpath(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8
             while (true) {
                 __errno_location().* = 0;
                 rp = realpath(@as([*c]u8, @ptrCast(@alignCast(&in))), @as([*c]u8, @ptrCast(@alignCast(&out))));
-                if (!((rp == null) and (__errno_location().* == @as(c_int, 4)))) break;
+                if (!((rp == null) and (__errno_location().* == 4))) break;
             }
             if (rp != null) {
                 var r: c_int = undefined;
@@ -2609,10 +2609,10 @@ fn func_realpath(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8
                     const tmp = stat(@as([*c]u8, @ptrCast(@alignCast(&out))), &st);
                     r = tmp;
                     break :blk tmp;
-                }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-                if (r == @as(c_int, 0)) {
+                }) == -1) and (__errno_location().* == 4)) {}
+                if (r == 0) {
                     o = variable_buffer_output(o, @as([*c]u8, @ptrCast(@alignCast(&out))), strlen(@as([*c]u8, @ptrCast(@alignCast(&out)))));
-                    o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                    o = variable_buffer_output(o, " ", @as(usize, 1));
                     doneany = 1;
                 }
             }
@@ -2630,9 +2630,9 @@ fn func_file(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var @"fn": [*c]u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var @"fn": [*c]u8 = argv[0];
     _ = &@"fn";
-    if (@as(c_int, @bitCast(@as(c_uint, @"fn"[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '>')) {
+    if (@as(c_int, @bitCast(@as(c_uint, @"fn"[0]))) == @as(c_int, '>')) {
         var len: usize = undefined;
         _ = &len;
         var end: [*c]const u8 = undefined;
@@ -2646,41 +2646,41 @@ fn func_file(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
         var mode: [*c]const u8 = "w";
         _ = &mode;
         @"fn" += 1;
-        if (@as(c_int, @bitCast(@as(c_uint, @"fn"[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '>')) {
+        if (@as(c_int, @bitCast(@as(c_uint, @"fn"[0]))) == @as(c_int, '>')) {
             mode = "a";
             @"fn" += 1;
         }
         start = next_token(@"fn");
-        if (@as(c_int, @bitCast(@as(c_uint, start[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) {
-            fatal(expanding_var.*, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("file: missing filename"));
+        if (@as(c_int, @bitCast(@as(c_uint, start[0]))) == @as(c_int, '\x00')) {
+            fatal(expanding_var.*, @as(usize, 0), gettext("file: missing filename"));
         }
         end = end_of_token(start);
         len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(start))), @sizeOf(u8))));
-        nm = @as([*c]u8, @ptrCast(@alignCast(malloc(len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        nm = @as([*c]u8, @ptrCast(@alignCast(malloc(len +% @as(usize, 1)))));
         _ = memcpy(@as(?*anyopaque, @ptrCast(nm)), @as(?*const anyopaque, @ptrCast(start)), len);
         nm[len] = '\x00';
         while (true) {
             __errno_location().* = 0;
             fp = fopen(nm, mode);
-            if (!((fp == null) and (__errno_location().* == @as(c_int, 4)))) break;
+            if (!((fp == null) and (__errno_location().* == 4))) break;
         }
-        if (fp == @as([*c]FILE, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+        if (fp == @as([*c]FILE, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
             fatal(reading_file, strlen(nm) +% strlen(strerror(__errno_location().*)), gettext("open: %s: %s"), nm, strerror(__errno_location().*));
         }
         command_count +%= 1;
-        if (argv[@as(c_uint, @intCast(@as(c_int, 1)))] != null) {
-            var l: usize = strlen(argv[@as(c_uint, @intCast(@as(c_int, 1)))]);
+        if (argv[1] != null) {
+            var l: usize = strlen(argv[1]);
             _ = &l;
-            var nl: c_int = @intFromBool((l == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) or (@as(c_int, @bitCast(@as(c_uint, argv[@as(c_uint, @intCast(@as(c_int, 1)))][l -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]))) != @as(c_int, '\n')));
+            var nl: c_int = @intFromBool((l == @as(usize, 0)) or (@as(c_int, @bitCast(@as(c_uint, argv[1][l -% @as(usize, 1)]))) != @as(c_int, '\n')));
             _ = &nl;
-            if ((fputs(argv[@as(c_uint, @intCast(@as(c_int, 1)))], fp) == -@as(c_int, 1)) or ((nl != 0) and (fputc(@as(c_int, '\n'), fp) == -@as(c_int, 1)))) {
+            if ((fputs(argv[1], fp) == -1) or ((nl != 0) and (fputc(@as(c_int, '\n'), fp) == -1))) {
                 fatal(reading_file, strlen(nm) +% strlen(strerror(__errno_location().*)), gettext("write: %s: %s"), nm, strerror(__errno_location().*));
             }
         }
         if (fclose(fp) != 0) {
             fatal(reading_file, strlen(nm) +% strlen(strerror(__errno_location().*)), gettext("close: %s: %s"), nm, strerror(__errno_location().*));
         }
-    } else if (@as(c_int, @bitCast(@as(c_uint, @"fn"[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '<')) {
+    } else if (@as(c_int, @bitCast(@as(c_uint, @"fn"[0]))) == @as(c_int, '<')) {
         var n: usize = 0;
         _ = &n;
         var len: usize = undefined;
@@ -2693,27 +2693,27 @@ fn func_file(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
         _ = &nm;
         var fp: [*c]FILE = undefined;
         _ = &fp;
-        start = next_token(@"fn" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
-        if (@as(c_int, @bitCast(@as(c_uint, start[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) {
-            fatal(expanding_var.*, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("file: missing filename"));
+        start = next_token(@"fn" + @as(usize, @bitCast(@as(isize, @intCast(1)))));
+        if (@as(c_int, @bitCast(@as(c_uint, start[0]))) == @as(c_int, '\x00')) {
+            fatal(expanding_var.*, @as(usize, 0), gettext("file: missing filename"));
         }
-        if (argv[@as(c_uint, @intCast(@as(c_int, 1)))] != null) {
-            fatal(expanding_var.*, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("file: too many arguments"));
+        if (argv[1] != null) {
+            fatal(expanding_var.*, @as(usize, 0), gettext("file: too many arguments"));
         }
         end = end_of_token(start);
         len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(start))), @sizeOf(u8))));
-        nm = @as([*c]u8, @ptrCast(@alignCast(malloc(len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        nm = @as([*c]u8, @ptrCast(@alignCast(malloc(len +% @as(usize, 1)))));
         _ = memcpy(@as(?*anyopaque, @ptrCast(nm)), @as(?*const anyopaque, @ptrCast(start)), len);
         nm[len] = '\x00';
         while (true) {
             __errno_location().* = 0;
             fp = fopen(nm, "r");
-            if (!((fp == null) and (__errno_location().* == @as(c_int, 4)))) break;
+            if (!((fp == null) and (__errno_location().* == 4))) break;
         }
-        if (fp == @as([*c]FILE, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
-            if (__errno_location().* == @as(c_int, 2)) {
+        if (fp == @as([*c]FILE, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
+            if (__errno_location().* == 2) {
                 while (true) {
-                    if ((@as(c_int, 2) & db_level) != 0) {
+                    if ((2 & db_level) != 0) {
                         _ = printf(gettext("file: Failed to open '%s': %s\n"), nm, strerror(__errno_location().*));
                         _ = fflush(stdout);
                     }
@@ -2726,13 +2726,13 @@ fn func_file(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
         while (true) {
             var buf: [1024]u8 = undefined;
             _ = &buf;
-            var l: usize = fread(@as(?*anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&buf))))), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @sizeOf([1024]u8), fp);
+            var l: usize = fread(@as(?*anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&buf))))), @as(c_ulong, 1), @sizeOf([1024]u8), fp);
             _ = &l;
-            if (l > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
+            if (l > @as(usize, 0)) {
                 o = variable_buffer_output(o, @as([*c]u8, @ptrCast(@alignCast(&buf))), l);
                 n +%= l;
             }
-            if (ferror(fp) != 0) if (__errno_location().* != @as(c_int, 4)) {
+            if (ferror(fp) != 0) if (__errno_location().* != 4) {
                 fatal(reading_file, strlen(nm) +% strlen(strerror(__errno_location().*)), gettext("read: %s: %s"), nm, strerror(__errno_location().*));
             };
             if (feof(fp) != 0) break;
@@ -2741,11 +2741,11 @@ fn func_file(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
             fatal(reading_file, strlen(nm) +% strlen(strerror(__errno_location().*)), gettext("close: %s: %s"), nm, strerror(__errno_location().*));
         }
         if ((n != 0) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
-            const tmp = -@as(c_int, 1);
+            const tmp = -1;
             if (tmp >= 0) break :blk o + @as(usize, @intCast(tmp)) else break :blk o - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).*))) == @as(c_int, '\n'))) {
-            o -= @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1) + @intFromBool((n > @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
-                const tmp = -@as(c_int, 2);
+            o -= @as(usize, @bitCast(@as(isize, @intCast(1 + @intFromBool((n > @as(usize, 1)) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
+                const tmp = -2;
                 if (tmp >= 0) break :blk o + @as(usize, @intCast(tmp)) else break :blk o - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
             }).*))) == @as(c_int, '\r')))))));
         }
@@ -2761,7 +2761,7 @@ fn func_abspath(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8)
     _ = &argv;
     var funcname = arg_funcname;
     _ = &funcname;
-    var p: [*c]const u8 = argv[@as(c_uint, @intCast(@as(c_int, 0)))];
+    var p: [*c]const u8 = argv[0];
     _ = &p;
     var path: [*c]const u8 = null;
     _ = &path;
@@ -2783,7 +2783,7 @@ fn func_abspath(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8)
             in[len] = '\x00';
             if (abspath(@as([*c]u8, @ptrCast(@alignCast(&in))), @as([*c]u8, @ptrCast(@alignCast(&out)))) != null) {
                 o = variable_buffer_output(o, @as([*c]u8, @ptrCast(@alignCast(&out))), strlen(@as([*c]u8, @ptrCast(@alignCast(&out)))));
-                o = variable_buffer_output(o, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                o = variable_buffer_output(o, " ", @as(usize, 1));
                 doneany = 1;
             }
         }
@@ -2818,16 +2818,16 @@ fn func_call(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
     _ = &entry_p;
     var v: [*c]struct_variable = undefined;
     _ = &v;
-    fname = next_token(argv[@as(c_uint, @intCast(@as(c_int, 0)))]);
-    end_of_token(fname)[@as(c_uint, @intCast(@as(c_int, 0)))] = '\x00';
+    fname = next_token(argv[0]);
+    end_of_token(fname)[0] = '\x00';
     if (@as(c_int, @bitCast(@as(c_uint, fname.*))) == @as(c_int, '\x00')) return o;
     entry_p = lookup_function(fname);
     if (entry_p != null) {
         {
             i = 0;
-            while (argv[i +% @as(c_uint, @bitCast(@as(c_int, 1)))] != null) : (i +%= 1) {}
+            while (argv[i +% @as(c_uint, 1)] != null) : (i +%= 1) {}
         }
-        return expand_builtin_function(o, i, argv + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), entry_p);
+        return expand_builtin_function(o, i, argv + @as(usize, @bitCast(@as(isize, @intCast(1)))), entry_p);
     }
     flen = strlen(fname);
     v = lookup_variable(fname, flen);
@@ -2835,12 +2835,12 @@ fn func_call(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
         warn_undefined(fname, flen);
     }
     if ((v == null) or (@as(c_int, @bitCast(@as(c_uint, v.*.value.*))) == @as(c_int, '\x00'))) return o;
-    body = @as([*c]u8, @ptrCast(@alignCast(malloc(flen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 4))))))));
-    body[@as(c_uint, @intCast(@as(c_int, 0)))] = '$';
-    body[@as(c_uint, @intCast(@as(c_int, 1)))] = '(';
-    _ = memcpy(@as(?*anyopaque, @ptrCast(body + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2))))))), @as(?*const anyopaque, @ptrCast(fname)), flen);
-    body[flen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))] = ')';
-    body[flen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 3))))] = '\x00';
+    body = @as([*c]u8, @ptrCast(@alignCast(malloc(flen +% @as(usize, 4)))));
+    body[0] = '$';
+    body[1] = '(';
+    _ = memcpy(@as(?*anyopaque, @ptrCast(body + @as(usize, @bitCast(@as(isize, @intCast(2)))))), @as(?*const anyopaque, @ptrCast(fname)), flen);
+    body[flen +% @as(usize, 2)] = ')';
+    body[flen +% @as(usize, 3)] = '\x00';
     _ = push_new_variable_scope();
     {
         i = 0;
@@ -2855,19 +2855,19 @@ fn func_call(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) ca
             var num: [22]u8 = undefined;
             _ = &num;
             _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&num))), "%u", i);
-            _ = define_variable_in_set(@as([*c]u8, @ptrCast(@alignCast(&num))), strlen(@as([*c]u8, @ptrCast(@alignCast(&num)))), argv.*, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+            _ = define_variable_in_set(@as([*c]u8, @ptrCast(@alignCast(&num))), strlen(@as([*c]u8, @ptrCast(@alignCast(&num)))), argv.*, @as(c_uint, @bitCast(o_automatic)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
         }
     }
     while (i < max_args.static) : (i +%= 1) {
         var num: [22]u8 = undefined;
         _ = &num;
         _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&num))), "%u", i);
-        _ = define_variable_in_set(@as([*c]u8, @ptrCast(@alignCast(&num))), strlen(@as([*c]u8, @ptrCast(@alignCast(&num)))), "", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set(@as([*c]u8, @ptrCast(@alignCast(&num))), strlen(@as([*c]u8, @ptrCast(@alignCast(&num)))), "", @as(c_uint, @bitCast(o_automatic)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
     }
-    v.*.exp_count = @as(c_uint, @bitCast((@as(c_int, 1) << @intCast(15)) - @as(c_int, 1)));
+    v.*.exp_count = @as(c_uint, @bitCast((1 << @intCast(15)) - 1));
     saved_args = @as(c_int, @bitCast(max_args.static));
     max_args.static = i;
-    o = variable_expand_string(o, body, flen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 3)))));
+    o = variable_expand_string(o, body, flen +% @as(usize, 3));
     max_args.static = @as(c_uint, @bitCast(saved_args));
     v.*.exp_count = 0;
     pop_variable_scope();
@@ -2879,456 +2879,456 @@ var function_table_init: [38]struct_function_table_entry = [38]struct_function_t
             .func_ptr = &func_abspath,
         },
         .name = "abspath",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([8]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_addsuffix_addprefix,
         },
         .name = "addprefix",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([10]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_addsuffix_addprefix,
         },
         .name = "addsuffix",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([10]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_basename_dir,
         },
         .name = "basename",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_basename_dir,
         },
         .name = "dir",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([4]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([4]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_notdir_suffix,
         },
         .name = "notdir",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_subst,
         },
         .name = "subst",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_notdir_suffix,
         },
         .name = "suffix",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_filter_filterout,
         },
         .name = "filter",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_filter_filterout,
         },
         .name = "filter-out",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([11]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_findstring,
         },
         .name = "findstring",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([11]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_firstword,
         },
         .name = "firstword",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([10]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_flavor,
         },
         .name = "flavor",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_join,
         },
         .name = "join",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_lastword,
         },
         .name = "lastword",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_patsubst,
         },
         .name = "patsubst",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_realpath,
         },
         .name = "realpath",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_shell,
         },
         .name = "shell",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_sort,
         },
         .name = "sort",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_strip,
         },
         .name = "strip",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_wildcard,
         },
         .name = "wildcard",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_word,
         },
         .name = "word",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_wordlist,
         },
         .name = "wordlist",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([9]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_words,
         },
         .name = "words",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_origin,
         },
         .name = "origin",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_foreach,
         },
         .name = "foreach",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([8]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .expand_args = @as(c_uint, 0),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_let,
         },
         .name = "let",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([4]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([4]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .expand_args = @as(c_uint, 0),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_call,
         },
         .name = "call",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_error,
         },
         .name = "info",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_error,
         },
         .name = "error",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_error,
         },
         .name = "warning",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([8]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_intcmp,
         },
         .name = "intcmp",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 5))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([7]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(5)))),
+        .expand_args = @as(c_uint, 0),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_if,
         },
         .name = "if",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 3))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([3]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(3)))),
+        .expand_args = @as(c_uint, 0),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_or,
         },
         .name = "or",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([3]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .expand_args = @as(c_uint, 0),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_and,
         },
         .name = "and",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([4]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([4]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .expand_args = @as(c_uint, 0),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_value,
         },
         .name = "value",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([6]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_eval,
         },
         .name = "eval",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(0)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
     struct_function_table_entry{
         .fptr = union_unnamed_38{
             .func_ptr = &func_file,
         },
         .name = "file",
-        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))),
-        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1))))),
-        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2))))),
-        .expand_args = @as(c_uint, @bitCast(@as(c_int, 1))),
-        .alloc_fn = @as(c_uint, @bitCast(@as(c_int, 0))),
-        .adds_command = @as(c_uint, @bitCast(@as(c_int, 0))),
+        .len = @as(u8, @bitCast(@as(u8, @truncate(@sizeOf([5]u8) -% @as(c_ulong, 1))))),
+        .minimum_args = @as(u8, @bitCast(@as(i8, @truncate(1)))),
+        .maximum_args = @as(u8, @bitCast(@as(i8, @truncate(2)))),
+        .expand_args = @as(c_uint, 1),
+        .alloc_fn = @as(c_uint, 0),
+        .adds_command = @as(c_uint, 0),
     },
 };
 fn expand_builtin_function(arg_o: [*c]u8, arg_argc: c_uint, arg_argv: [*c][*c]u8, arg_entry_p: [*c]const struct_function_table_entry) callconv(.C) [*c]u8 {

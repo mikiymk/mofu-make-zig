@@ -271,8 +271,8 @@ const floc = extern struct {
 };
 extern fn concat(c_uint, ...) [*c]const u8;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 const o_file: c_int = 2;
 
@@ -321,7 +321,7 @@ export fn load_file(arg_flocp: [*c]const floc, arg_file_1: [*c]struct_file, arg_
     _ = &ldname;
     var nmlen: usize = strlen(ldname);
     _ = &nmlen;
-    var new: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc((nmlen +% (@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+    var new: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc((nmlen +% (@sizeOf([11]u8) -% @as(c_ulong, 1))) +% @as(c_ulong, 1)))));
     _ = &new;
     var symname: [*c]u8 = null;
     _ = &symname;
@@ -335,8 +335,8 @@ export fn load_file(arg_flocp: [*c]const floc, arg_file_1: [*c]struct_file, arg_
     if (fp != null) {
         var ep: [*c]const u8 = undefined;
         _ = &ep;
-        ep = strchr(fp + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), @as(c_int, ')'));
-        if ((ep != null) and (@as(c_int, @bitCast(@as(c_uint, ep[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '\x00'))) {
+        ep = strchr(fp + @as(usize, @bitCast(@as(isize, @intCast(1)))), @as(c_int, ')'));
+        if ((ep != null) and (@as(c_int, @bitCast(@as(c_uint, ep[1]))) == @as(c_int, '\x00'))) {
             var l: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(fp) -% @intFromPtr(ldname))), @sizeOf(u8))));
             _ = &l;
             fp += 1;
@@ -347,7 +347,7 @@ export fn load_file(arg_flocp: [*c]const floc, arg_file_1: [*c]struct_file, arg_
             new[l] = '\x00';
             ldname = new;
             nmlen = l;
-            symname = (new + l) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+            symname = (new + l) + @as(usize, @bitCast(@as(isize, @intCast(1))));
             _ = memcpy(@as(?*anyopaque, @ptrCast(symname)), @as(?*const anyopaque, @ptrCast(fp)), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(ep) -% @intFromPtr(fp))), @sizeOf(u8)))));
             (blk: {
                 const tmp = @divExact(@as(c_long, @bitCast(@intFromPtr(ep) -% @intFromPtr(fp))), @sizeOf(u8));
@@ -361,7 +361,7 @@ export fn load_file(arg_flocp: [*c]const floc, arg_file_1: [*c]struct_file, arg_
         break :blk tmp;
     };
     file_1 = lookup_file(ldname);
-    if ((file_1 != null) and (file_1.*.loaded != 0)) return -@as(c_int, 1);
+    if ((file_1 != null) and (file_1.*.loaded != 0)) return -1;
     if (!(symname != null)) {
         var p: [*c]u8 = new;
         _ = &p;
@@ -391,7 +391,7 @@ export fn load_file(arg_flocp: [*c]const floc, arg_file_1: [*c]struct_file, arg_
         symname = new;
     }
     while (true) {
-        if ((@as(c_int, 2) & db_level) != 0) {
+        if ((2 & db_level) != 0) {
             _ = printf(gettext("Loading symbol %s from %s\n"), symname, ldname);
             _ = fflush(stdout);
         }
@@ -401,7 +401,7 @@ export fn load_file(arg_flocp: [*c]const floc, arg_file_1: [*c]struct_file, arg_
     if (!(symp != null)) return 0;
     r = symp.?(flocp);
     if (r != 0) {
-        _ = do_variable_definition(flocp, ".LOADED", ldname, @as(c_uint, @bitCast(o_file)), @as(c_uint, @bitCast(f_append_value)), @as(c_int, 0));
+        _ = do_variable_definition(flocp, ".LOADED", ldname, @as(c_uint, @bitCast(o_file)), @as(c_uint, @bitCast(f_append_value)), 0);
     }
     return r;
 }
@@ -419,9 +419,9 @@ export fn unload_file(arg_name: [*c]const u8) c_int {
     _ = &d;
     {
         d = loaded_syms;
-        while (d != @as([*c]struct_load_list, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (d = d.*.next) if (((d.*.name == name) or ((@as(c_int, @bitCast(@as(c_uint, d.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, name.*)))) and ((@as(c_int, @bitCast(@as(c_uint, d.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(d.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) and (d.*.dlp != null)) {
+        while (d != @as([*c]struct_load_list, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (d = d.*.next) if (((d.*.name == name) or ((@as(c_int, @bitCast(@as(c_uint, d.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, name.*)))) and ((@as(c_int, @bitCast(@as(c_uint, d.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(d.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), name + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))) and (d.*.dlp != null)) {
             while (true) {
-                if ((@as(c_int, 2) & db_level) != 0) {
+                if ((2 & db_level) != 0) {
                     _ = printf(gettext("Unloading shared object %s\n"), name);
                     _ = fflush(stdout);
                 }
@@ -431,7 +431,7 @@ export fn unload_file(arg_name: [*c]const u8) c_int {
             if (rc != 0) {
                 perror_with_name("dlclose: ", d.*.name);
             } else {
-                d.*.dlp = @as(?*anyopaque, @ptrFromInt(@as(c_int, 0)));
+                d.*.dlp = @as(?*anyopaque, @ptrFromInt(0));
             }
             break;
         };
@@ -521,13 +521,13 @@ fn load_object(arg_flocp: [*c]const floc, arg_noerror: c_int, arg_ldname: [*c]co
     var symname = arg_symname;
     _ = &symname;
     const global_dl = struct {
-        var static: ?*anyopaque = @as(?*anyopaque, @ptrFromInt(@as(c_int, 0)));
+        var static: ?*anyopaque = @as(?*anyopaque, @ptrFromInt(0));
     };
     _ = &global_dl;
     var symp: load_func_t = undefined;
     _ = &symp;
     if (!(global_dl.static != null)) {
-        global_dl.static = dlopen(null, @as(c_int, 2) | @as(c_int, 256));
+        global_dl.static = dlopen(null, 2 | @as(c_int, 256));
         if (!(global_dl.static != null)) {
             var err: [*c]const u8 = dlerror();
             _ = &err;
@@ -538,20 +538,20 @@ fn load_object(arg_flocp: [*c]const floc, arg_noerror: c_int, arg_ldname: [*c]co
     if (!(symp != null)) {
         var new: [*c]struct_load_list = undefined;
         _ = &new;
-        var dlp: ?*anyopaque = @as(?*anyopaque, @ptrFromInt(@as(c_int, 0)));
+        var dlp: ?*anyopaque = @as(?*anyopaque, @ptrFromInt(0));
         _ = &dlp;
         if (!(strchr(ldname, @as(c_int, '/')) != null)) {
-            dlp = dlopen(concat(@as(c_uint, @bitCast(@as(c_int, 2))), "./", ldname), @as(c_int, 1) | @as(c_int, 256));
+            dlp = dlopen(concat(@as(c_uint, 2), "./", ldname), 1 | @as(c_int, 256));
         }
         if (!(dlp != null)) {
-            dlp = dlopen(ldname, @as(c_int, 1) | @as(c_int, 256));
+            dlp = dlopen(ldname, 1 | @as(c_int, 256));
         }
         if (!(dlp != null)) {
             var err: [*c]const u8 = dlerror();
             _ = &err;
             if (noerror != 0) {
                 while (true) {
-                    if ((@as(c_int, 1) & db_level) != 0) {
+                    if ((1 & db_level) != 0) {
                         _ = printf("%s\n", err);
                         _ = fflush(stdout);
                     }
@@ -563,7 +563,7 @@ fn load_object(arg_flocp: [*c]const floc, arg_noerror: c_int, arg_ldname: [*c]co
             return null;
         }
         while (true) {
-            if ((@as(c_int, 2) & db_level) != 0) {
+            if ((2 & db_level) != 0) {
                 _ = printf(gettext("Loaded shared object %s\n"), ldname);
                 _ = fflush(stdout);
             }

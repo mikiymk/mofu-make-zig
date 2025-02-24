@@ -133,7 +133,7 @@ const struct_file = extern struct {
 export fn gmk_expand(arg_ref: [*c]const u8) [*c]u8 {
     var ref = arg_ref;
     _ = &ref;
-    return allocated_variable_expand_for_file(ref, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+    return allocated_variable_expand_for_file(ref, @as([*c]struct_file, @ptrFromInt(0)));
 }
 export fn gmk_add_function(arg_name: [*c]const u8, arg_func: gmk_func_ptr, arg_min: c_uint, arg_max: c_uint, arg_flags: c_uint) void {
     var name = arg_name;

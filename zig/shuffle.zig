@@ -322,27 +322,27 @@ const struct_goaldep = extern struct {
 export fn shuffle_set_mode(arg_cmdarg: [*c]const u8) void {
     var cmdarg = arg_cmdarg;
     _ = &cmdarg;
-    if (strcasecmp(cmdarg, "reverse") == @as(c_int, 0)) {
+    if (strcasecmp(cmdarg, "reverse") == 0) {
         config.mode = @as(c_uint, @bitCast(sm_reverse));
         config.shuffler = &reverse_shuffle_array;
         _ = strcpy(@as([*c]u8, @ptrCast(@alignCast(&config.strval))), "reverse");
-    } else if (strcasecmp(cmdarg, "identity") == @as(c_int, 0)) {
+    } else if (strcasecmp(cmdarg, "identity") == 0) {
         config.mode = @as(c_uint, @bitCast(sm_identity));
         config.shuffler = &identity_shuffle_array;
         _ = strcpy(@as([*c]u8, @ptrCast(@alignCast(&config.strval))), "identity");
-    } else if (strcasecmp(cmdarg, "none") == @as(c_int, 0)) {
+    } else if (strcasecmp(cmdarg, "none") == 0) {
         config.mode = @as(c_uint, @bitCast(sm_none));
         config.shuffler = null;
-        config.strval[@as(c_uint, @intCast(@as(c_int, 0)))] = '\x00';
+        config.strval[0] = '\x00';
     } else {
-        if (strcasecmp(cmdarg, "random") == @as(c_int, 0)) {
+        if (strcasecmp(cmdarg, "random") == 0) {
             config.seed = make_rand();
         } else {
             var err: [*c]const u8 = undefined;
             _ = &err;
             config.seed = make_toui(cmdarg, &err);
             if (err != null) {
-                fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(err) +% strlen(cmdarg), gettext("invalid shuffle mode: %s: '%s'"), err, cmdarg);
+                fatal(@as([*c]floc, @ptrFromInt(0)), strlen(err) +% strlen(cmdarg), gettext("invalid shuffle mode: %s: '%s'"), err, cmdarg);
             }
         }
         config.mode = @as(c_uint, @bitCast(sm_random));
@@ -351,7 +351,7 @@ export fn shuffle_set_mode(arg_cmdarg: [*c]const u8) void {
     }
 }
 export fn shuffle_get_mode() [*c]const u8 {
-    return if (@as(c_int, @bitCast(@as(c_uint, config.strval[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) null else @as([*c]u8, @ptrCast(@alignCast(&config.strval)));
+    return if (@as(c_int, @bitCast(@as(c_uint, config.strval[0]))) == @as(c_int, '\x00')) null else @as([*c]u8, @ptrCast(@alignCast(&config.strval)));
 }
 export fn shuffle_deps_recursive(arg_deps: [*c]struct_dep) void {
     var deps = arg_deps;
@@ -411,10 +411,10 @@ fn reverse_shuffle_array(arg_a: [*c]?*anyopaque, arg_len: usize) callconv(.C) vo
     _ = &i;
     {
         i = 0;
-        while (i < (len / @as(usize, @bitCast(@as(c_long, @as(c_int, 2)))))) : (i +%= 1) {
+        while (i < (len / @as(usize, 2))) : (i +%= 1) {
             var t: ?*anyopaque = undefined;
             _ = &t;
-            var j: usize = (len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) -% i;
+            var j: usize = (len -% @as(usize, 1)) -% i;
             _ = &j;
             t = a[i];
             a[i] = a[j];
@@ -441,7 +441,7 @@ const struct_unnamed_38 = extern struct {
 };
 var config: struct_unnamed_38 = struct_unnamed_38{
     .mode = @as(c_uint, @bitCast(sm_none)),
-    .seed = @as(c_uint, @bitCast(@as(c_int, 0))),
+    .seed = @as(c_uint, 0),
     .shuffler = null,
     .strval = "",
 };
@@ -463,7 +463,7 @@ fn shuffle_deps(arg_deps: [*c]struct_dep) callconv(.C) void {
             ndeps +%= 1;
         }
     }
-    if (ndeps == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) return;
+    if (ndeps == @as(usize, 0)) return;
     da = @as([*c]?*anyopaque, @ptrCast(@alignCast(xmalloc(@sizeOf([*c]struct_dep) *% ndeps))));
     {
         _ = blk: {

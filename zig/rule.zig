@@ -297,8 +297,9 @@ const floc = extern struct {
     offset: c_ulong = @import("std").mem.zeroes(c_ulong),
 };
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const message = @import("output.zig").message;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 const enum_variable_origin = c_int;
 
@@ -494,7 +495,7 @@ export fn snap_implicit_rules() void {
     _ = &rule_1;
     var dep_2: [*c]struct_dep = undefined;
     _ = &dep_2;
-    var prereqs: [*c]struct_dep = expand_extra_prereqs(lookup_variable(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+    var prereqs: [*c]struct_dep = expand_extra_prereqs(lookup_variable(".EXTRA_PREREQS", @sizeOf([15]u8) -% @as(c_ulong, 1)));
     _ = &prereqs;
     var pre_deps: c_uint = 0;
     _ = &pre_deps;
@@ -511,7 +512,7 @@ export fn snap_implicit_rules() void {
                 d = tmp;
                 break :blk tmp;
             }) != null) {
-                l +%= @as(usize, @bitCast(@as(c_long, @as(c_int, 4))));
+                l +%= @as(usize, 4);
                 d += 1;
             };
             if (l > max_pattern_dep_length) {
@@ -522,7 +523,7 @@ export fn snap_implicit_rules() void {
     }
     num_pattern_rules = blk: {
         const tmp = blk_1: {
-            const tmp_2 = @as(c_uint, @bitCast(@as(c_int, 0)));
+            const tmp_2 = @as(c_uint, 0);
             max_pattern_deps = tmp_2;
             break :blk_1 tmp_2;
         };
@@ -564,7 +565,7 @@ export fn snap_implicit_rules() void {
                         }
                         if (@as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(dname))), @sizeOf(u8)))) > namelen) {
                             namelen = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(dname))), @sizeOf(u8))));
-                            name = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(name)), namelen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                            name = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(name)), namelen +% @as(usize, 1)))));
                         }
                         _ = memcpy(@as(?*anyopaque, @ptrCast(name)), @as(?*const anyopaque, @ptrCast(dname)), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(dname))), @sizeOf(u8)))));
                         (blk: {
@@ -610,7 +611,7 @@ export fn convert_to_pattern() void {
             }
         }
     }
-    rulename = @as([*c]u8, @ptrCast(@alignCast(malloc((maxsuffix *% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+    rulename = @as([*c]u8, @ptrCast(@alignCast(malloc((maxsuffix *% @as(usize, 2)) +% @as(usize, 1)))));
     {
         d = suffix_file.*.deps;
         while (d != null) : (d = d.*.next) {
@@ -630,15 +631,15 @@ export fn convert_to_pattern() void {
                     var s2len: usize = undefined;
                     _ = &s2len;
                     s2len = strlen(if (d2.*.name != null) d2.*.name else d2.*.file.*.name);
-                    if ((slen == s2len) and (((if (d.*.name != null) d.*.name else d.*.file.*.name) == (if (d2.*.name != null) d2.*.name else d2.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, @bitCast(@as(c_uint, (if (d2.*.name != null) d2.*.name else d2.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, '\x00')) or !(strcmp((if (d.*.name != null) d.*.name else d.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), (if (d2.*.name != null) d2.*.name else d2.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) continue;
-                    _ = memcpy(@as(?*anyopaque, @ptrCast(rulename + slen)), @as(?*const anyopaque, @ptrCast(if (d2.*.name != null) d2.*.name else d2.*.file.*.name)), s2len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                    if ((slen == s2len) and (((if (d.*.name != null) d.*.name else d.*.file.*.name) == (if (d2.*.name != null) d2.*.name else d2.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, @bitCast(@as(c_uint, (if (d2.*.name != null) d2.*.name else d2.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, '\x00')) or !(strcmp((if (d.*.name != null) d.*.name else d.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(1)))), (if (d2.*.name != null) d2.*.name else d2.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) continue;
+                    _ = memcpy(@as(?*anyopaque, @ptrCast(rulename + slen)), @as(?*const anyopaque, @ptrCast(if (d2.*.name != null) d2.*.name else d2.*.file.*.name)), s2len +% @as(usize, 1));
                     f = lookup_file(rulename);
                     if ((f == null) or (f.*.cmds == null)) continue;
                     if (f.*.deps != null) {
                         if (posix_pedantic != 0) continue;
-                        @"error"(&f.*.cmds.*.fileinfo, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("warning: ignoring prerequisites on suffix rule definition"));
+                        @"error"(&f.*.cmds.*.fileinfo, @as(usize, 0), gettext("warning: ignoring prerequisites on suffix rule definition"));
                     }
-                    if (((s2len == @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))) and (@as(c_int, @bitCast(@as(c_uint, rulename[slen]))) == @as(c_int, '.'))) and (@as(c_int, @bitCast(@as(c_uint, rulename[slen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]))) == @as(c_int, 'a'))) {
+                    if (((s2len == @as(usize, 2)) and (@as(c_int, @bitCast(@as(c_uint, rulename[slen]))) == @as(c_int, '.'))) and (@as(c_int, @bitCast(@as(c_uint, rulename[slen +% @as(usize, 1)]))) == @as(c_int, 'a'))) {
                         convert_suffix_rule(null, if (d.*.name != null) d.*.name else d.*.file.*.name, f.*.cmds);
                     }
                     convert_suffix_rule(if (d2.*.name != null) d2.*.name else d2.*.file.*.name, if (d.*.name != null) d.*.name else d.*.file.*.name, f.*.cmds);
@@ -662,15 +663,15 @@ export fn install_pattern_rule(arg_p: [*c]struct_pspec, arg_terminal: c_int) voi
     r.*.suffixes = @as([*c][*c]const u8, @ptrCast(@alignCast(xmalloc(@sizeOf([*c]const u8)))));
     r.*.lens = @as([*c]c_uint, @ptrCast(@alignCast(xmalloc(@sizeOf(c_uint)))));
     r.*._defn = null;
-    r.*.lens[@as(c_uint, @intCast(@as(c_int, 0)))] = @as(c_uint, @bitCast(@as(c_uint, @truncate(strlen(p.*.target)))));
-    r.*.targets[@as(c_uint, @intCast(@as(c_int, 0)))] = p.*.target;
-    r.*.suffixes[@as(c_uint, @intCast(@as(c_int, 0)))] = find_percent_cached(&r.*.targets[@as(c_uint, @intCast(@as(c_int, 0)))]);
-    _ = @as(c_int, 0);
-    r.*.suffixes[@as(c_uint, @intCast(@as(c_int, 0)))] += 1;
+    r.*.lens[0] = @as(c_uint, @bitCast(@as(c_uint, @truncate(strlen(p.*.target)))));
+    r.*.targets[0] = p.*.target;
+    r.*.suffixes[0] = find_percent_cached(&r.*.targets[0]);
+    _ = 0;
+    r.*.suffixes[0] += 1;
     ptr = p.*.dep;
-    r.*.deps = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(@as([*c][*c]u8, @ptrCast(@alignCast(&ptr))), @sizeOf(struct_dep), @as(c_int, 1), null, @as(c_int, 0)))));
-    if (new_pattern_rule(r, @as(c_int, 0)) != 0) {
-        r.*.terminal = @as(u8, @bitCast(@as(i8, @truncate(if (terminal != 0) @as(c_int, 1) else @as(c_int, 0)))));
+    r.*.deps = @as([*c]struct_dep, @ptrCast(@alignCast(parse_file_seq(@as([*c][*c]u8, @ptrCast(@alignCast(&ptr))), @sizeOf(struct_dep), 1, null, 0))));
+    if (new_pattern_rule(r, 0) != 0) {
+        r.*.terminal = @as(u8, @bitCast(@as(i8, @truncate(if (terminal != 0) 1 else 0))));
         r.*.cmds = @as([*c]struct_commands, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_commands)))));
         r.*.cmds.*.fileinfo.filenm = null;
         r.*.cmds.*.fileinfo.lineno = 0;
@@ -710,18 +711,18 @@ export fn create_pattern_rule(arg_targets: [*c][*c]const u8, arg_target_percents
         i = 0;
         while (i < @as(c_uint, @bitCast(@as(c_uint, n)))) : (i +%= 1) {
             r.*.lens[i] = @as(c_uint, @bitCast(@as(c_uint, @truncate(strlen(targets[i])))));
-            _ = @as(c_int, 0);
+            _ = 0;
             r.*.suffixes[i] += 1;
         }
     }
     if (new_pattern_rule(r, override) != 0) {
-        r.*.terminal = @as(u8, @bitCast(@as(i8, @truncate(if (terminal != 0) @as(c_int, 1) else @as(c_int, 0)))));
+        r.*.terminal = @as(u8, @bitCast(@as(i8, @truncate(if (terminal != 0) 1 else 0))));
     }
 }
 export fn get_rule_defn(arg_r: [*c]struct_rule) [*c]const u8 {
     var r = arg_r;
     _ = &r;
-    if (r.*._defn == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (r.*._defn == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         var len: usize = 8;
         _ = &len;
         var k: c_uint = undefined;
@@ -737,13 +738,13 @@ export fn get_rule_defn(arg_r: [*c]struct_rule) [*c]const u8 {
         {
             k = 0;
             while (k < @as(c_uint, @bitCast(@as(c_uint, r.*.num)))) : (k +%= 1) {
-                len +%= @as(usize, @bitCast(@as(c_ulong, r.*.lens[k] +% @as(c_uint, @bitCast(@as(c_int, 1))))));
+                len +%= @as(usize, @bitCast(@as(c_ulong, r.*.lens[k] +% @as(c_uint, 1))));
             }
         }
         {
             dep_1 = r.*.deps;
             while (dep_1 != null) : (dep_1 = dep_1.*.next) {
-                len +%= @as(usize, @bitCast((strlen(if (dep_1.*.name != null) dep_1.*.name else dep_1.*.file.*.name) +% (if (dep_1.*.wait_here != 0) @sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))) else @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 0)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+                len +%= @as(usize, @bitCast((strlen(if (dep_1.*.name != null) dep_1.*.name else dep_1.*.file.*.name) +% (if (dep_1.*.wait_here != 0) @sizeOf([7]u8) -% @as(c_ulong, 1) else @as(c_ulong, 0))) +% @as(c_ulong, 1)));
             }
         }
         p = blk: {
@@ -780,11 +781,11 @@ export fn get_rule_defn(arg_r: [*c]struct_rule) [*c]const u8 {
         }
         {
             dep_1 = r.*.deps;
-            while (dep_1 != null) : (dep_1 = dep_1.*.next) if (dep_1.*.ignore_mtime == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+            while (dep_1 != null) : (dep_1 = dep_1.*.next) if (dep_1.*.ignore_mtime == @as(c_uint, 0)) {
                 if (dep_1.*.wait_here != 0) {
-                    p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(" .WAIT")), @sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                    p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(" .WAIT")), @sizeOf([7]u8) -% @as(c_ulong, 1)))));
                 }
-                p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(" ")), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), @as(?*const anyopaque, @ptrCast(if (dep_1.*.name != null) dep_1.*.name else dep_1.*.file.*.name)), strlen(if (dep_1.*.name != null) dep_1.*.name else dep_1.*.file.*.name)))));
+                p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(" ")), @as(c_ulong, 1)), @as(?*const anyopaque, @ptrCast(if (dep_1.*.name != null) dep_1.*.name else dep_1.*.file.*.name)), strlen(if (dep_1.*.name != null) dep_1.*.name else dep_1.*.file.*.name)))));
             } else if (ood == null) {
                 ood = dep_1;
             };
@@ -801,7 +802,7 @@ export fn get_rule_defn(arg_r: [*c]struct_rule) [*c]const u8 {
             }) if (ood.*.ignore_mtime != 0) {
                 p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(sep)), strlen(sep)))));
                 if (ood.*.wait_here != 0) {
-                    p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(".WAIT ")), @sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                    p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(".WAIT ")), @sizeOf([7]u8) -% @as(c_ulong, 1)))));
                 }
                 p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(if (ood.*.name != null) ood.*.name else ood.*.file.*.name)), strlen(if (ood.*.name != null) ood.*.name else ood.*.file.*.name)))));
             };
@@ -819,7 +820,7 @@ export fn print_rule_data_base() void {
     _ = &r;
     _ = puts(gettext("\n# Implicit Rules"));
     rules = blk: {
-        const tmp = @as(c_uint, @bitCast(@as(c_int, 0)));
+        const tmp = @as(c_uint, 0);
         terminal = tmp;
         break :blk tmp;
     };
@@ -834,14 +835,14 @@ export fn print_rule_data_base() void {
             }
         }
     }
-    if (rules == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+    if (rules == @as(c_uint, 0)) {
         _ = puts(gettext("\n# No implicit rules."));
     } else {
         _ = printf(gettext("\n# %u implicit rules, %u (%.1f%%) terminal."), rules, terminal, (@as(f64, @floatFromInt(terminal)) / @as(f64, @floatFromInt(rules))) * 100.0);
     }
     if (num_pattern_rules != rules) {
-        if (num_pattern_rules != @as(c_uint, @bitCast(@as(c_int, 0)))) {
-            fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))), gettext("BUG: num_pattern_rules is wrong!  %u != %u"), num_pattern_rules, rules);
+        if (num_pattern_rules != @as(c_uint, 0)) {
+            fatal(@as([*c]floc, @ptrFromInt(0)), (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3)) *% @as(c_ulong, 2), gettext("BUG: num_pattern_rules is wrong!  %u != %u"), num_pattern_rules, rules);
         }
     }
 }
@@ -886,16 +887,16 @@ fn convert_suffix_rule(arg_target: [*c]const u8, arg_source: [*c]const u8, arg_c
     names = @as([*c][*c]const u8, @ptrCast(@alignCast(xmalloc(@sizeOf([*c]const u8)))));
     percents = @as([*c][*c]const u8, @ptrCast(@alignCast(xmalloc(@sizeOf([*c]const u8)))));
     if (target == null) {
-        names.* = strcache_add_len("(%.o)", @as(usize, @bitCast(@as(c_long, @as(c_int, 5)))));
-        percents.* = names.* + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+        names.* = strcache_add_len("(%.o)", @as(usize, 5));
+        percents.* = names.* + @as(usize, @bitCast(@as(isize, @intCast(1))));
     } else {
         var len: usize = strlen(target);
         _ = &len;
-        var p: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc((@as(usize, @bitCast(@as(c_long, @as(c_int, 1)))) +% len) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        var p: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc((@as(usize, 1) +% len) +% @as(usize, 1)))));
         _ = &p;
-        p[@as(c_uint, @intCast(@as(c_int, 0)))] = '%';
-        _ = memcpy(@as(?*anyopaque, @ptrCast(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), @as(?*const anyopaque, @ptrCast(target)), len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
-        names.* = strcache_add_len(p, len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        p[0] = '%';
+        _ = memcpy(@as(?*anyopaque, @ptrCast(p + @as(usize, @bitCast(@as(isize, @intCast(1)))))), @as(?*const anyopaque, @ptrCast(target)), len +% @as(usize, 1));
+        names.* = strcache_add_len(p, len +% @as(usize, 1));
         percents.* = names.*;
     }
     if (source == null) {
@@ -903,14 +904,14 @@ fn convert_suffix_rule(arg_target: [*c]const u8, arg_source: [*c]const u8, arg_c
     } else {
         var len: usize = strlen(source);
         _ = &len;
-        var p: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc((@as(usize, @bitCast(@as(c_long, @as(c_int, 1)))) +% len) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        var p: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc((@as(usize, 1) +% len) +% @as(usize, 1)))));
         _ = &p;
-        p[@as(c_uint, @intCast(@as(c_int, 0)))] = '%';
-        _ = memcpy(@as(?*anyopaque, @ptrCast(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), @as(?*const anyopaque, @ptrCast(source)), len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        p[0] = '%';
+        _ = memcpy(@as(?*anyopaque, @ptrCast(p + @as(usize, @bitCast(@as(isize, @intCast(1)))))), @as(?*const anyopaque, @ptrCast(source)), len +% @as(usize, 1));
         deps = @as([*c]struct_dep, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_dep)))));
-        deps.*.name = strcache_add_len(p, len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        deps.*.name = strcache_add_len(p, len +% @as(usize, 1));
     }
-    create_pattern_rule(names, percents, @as(c_ushort, @bitCast(@as(c_short, @truncate(@as(c_int, 1))))), @as(c_int, 0), deps, cmds, @as(c_int, 0));
+    create_pattern_rule(names, percents, @as(c_ushort, @bitCast(@as(c_short, @truncate(1)))), 0, deps, cmds, 0);
 }
 fn new_pattern_rule(arg_rule_1: [*c]struct_rule, arg_override: c_int) callconv(.C) c_int {
     var rule_1 = arg_rule_1;
@@ -947,7 +948,7 @@ fn new_pattern_rule(arg_rule_1: [*c]struct_rule, arg_override: c_int) callconv(.
                     while (i < @as(c_uint, @bitCast(@as(c_uint, rule_1.*.num)))) : (i +%= 1) {
                         {
                             j = 0;
-                            while (j < @as(c_uint, @bitCast(@as(c_uint, r.*.num)))) : (j +%= 1) if (!((rule_1.*.targets[i] == r.*.targets[j]) or ((@as(c_int, @bitCast(@as(c_uint, rule_1.*.targets[i].*))) == @as(c_int, @bitCast(@as(c_uint, r.*.targets[j].*)))) and ((@as(c_int, @bitCast(@as(c_uint, rule_1.*.targets[i].*))) == @as(c_int, '\x00')) or !(strcmp(rule_1.*.targets[i] + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), r.*.targets[j] + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) break;
+                            while (j < @as(c_uint, @bitCast(@as(c_uint, r.*.num)))) : (j +%= 1) if (!((rule_1.*.targets[i] == r.*.targets[j]) or ((@as(c_int, @bitCast(@as(c_uint, rule_1.*.targets[i].*))) == @as(c_int, @bitCast(@as(c_uint, r.*.targets[j].*)))) and ((@as(c_int, @bitCast(@as(c_uint, rule_1.*.targets[i].*))) == @as(c_int, '\x00')) or !(strcmp(rule_1.*.targets[i] + @as(usize, @bitCast(@as(isize, @intCast(1)))), r.*.targets[j] + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) break;
                         }
                         if (j == @as(c_uint, @bitCast(@as(c_uint, r.*.num)))) {
                             var d: [*c]struct_dep = undefined;
@@ -970,7 +971,7 @@ fn new_pattern_rule(arg_rule_1: [*c]struct_rule, arg_override: c_int) callconv(.
                                         d2 = tmp;
                                         break :blk_1 tmp;
                                     };
-                                }) if (!(((if (d.*.name != null) d.*.name else d.*.file.*.name) == (if (d2.*.name != null) d2.*.name else d2.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, @bitCast(@as(c_uint, (if (d2.*.name != null) d2.*.name else d2.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, '\x00')) or !(strcmp((if (d.*.name != null) d.*.name else d.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), (if (d2.*.name != null) d2.*.name else d2.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) break;
+                                }) if (!(((if (d.*.name != null) d.*.name else d.*.file.*.name) == (if (d2.*.name != null) d2.*.name else d2.*.file.*.name)) or ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, @bitCast(@as(c_uint, (if (d2.*.name != null) d2.*.name else d2.*.file.*.name).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (if (d.*.name != null) d.*.name else d.*.file.*.name).*))) == @as(c_int, '\x00')) or !(strcmp((if (d.*.name != null) d.*.name else d.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(1)))), (if (d2.*.name != null) d2.*.name else d2.*.file.*.name) + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) break;
                             }
                             if ((d == null) and (d2 == null)) {
                                 if (override != 0) {
@@ -984,14 +985,14 @@ fn new_pattern_rule(arg_rule_1: [*c]struct_rule, arg_override: c_int) callconv(.
                                     flag_395 = 1;
                                     break;
                                 } else {
-                                    freerule(rule_1, @as([*c]struct_rule, @ptrFromInt(@as(c_int, 0))));
+                                    freerule(rule_1, @as([*c]struct_rule, @ptrFromInt(0)));
                                     return 0;
                                 }
                             }
                         }
                     }
                 }
-                if (flag_395 == @as(c_int, 1)) break;
+                if (flag_395 == 1) break;
             }
         }
     }

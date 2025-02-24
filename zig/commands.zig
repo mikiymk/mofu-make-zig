@@ -347,8 +347,8 @@ const floc = extern struct {
     offset: c_ulong = @import("std").mem.zeroes(c_ulong),
 };
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 const o_automatic: c_int = 6;
 
@@ -549,7 +549,7 @@ export fn fatal_error_signal(arg_sig: c_int) void {
     var sig = arg_sig;
     _ = &sig;
     handling_fatal_signal = 1;
-    _ = signal(sig, @as(__sighandler_t, @ptrFromInt(@as(c_int, 0))));
+    _ = signal(sig, @as(__sighandler_t, @ptrFromInt(0)));
     temp_stdin_unlink();
     osync_clear();
     jobserver_clear();
@@ -558,17 +558,17 @@ export fn fatal_error_signal(arg_sig: c_int) void {
         _ = &c;
         {
             c = children;
-            while (c != null) : (c = c.*.next) if (!(c.*.remote != 0) and (c.*.pid > @as(c_int, 0))) {
+            while (c != null) : (c = c.*.next) if (!(c.*.remote != 0) and (c.*.pid > 0)) {
                 _ = kill(c.*.pid, @as(c_int, 15));
             };
         }
     }
-    if ((((sig == @as(c_int, 15)) or (sig == @as(c_int, 2))) or (sig == @as(c_int, 1))) or (sig == @as(c_int, 3))) {
+    if ((((sig == @as(c_int, 15)) or (sig == 2)) or (sig == 1)) or (sig == 3)) {
         var c: [*c]struct_child = undefined;
         _ = &c;
         {
             c = children;
-            while (c != null) : (c = c.*.next) if ((c.*.remote != 0) and (c.*.pid > @as(c_int, 0))) {
+            while (c != null) : (c = c.*.next) if ((c.*.remote != 0) and (c.*.pid > 0)) {
                 _ = remote_kill(c.*.pid, sig);
             };
         }
@@ -578,17 +578,17 @@ export fn fatal_error_signal(arg_sig: c_int) void {
                 delete_child_targets(c);
             }
         }
-        while (job_slots_used > @as(c_uint, @bitCast(@as(c_int, 0)))) {
-            reap_children(@as(c_int, 1), @as(c_int, 0));
+        while (job_slots_used > @as(c_uint, 0)) {
+            reap_children(1, 0);
         }
-    } else while (job_slots_used > @as(c_uint, @bitCast(@as(c_int, 0)))) {
-        reap_children(@as(c_int, 1), @as(c_int, 1));
+    } else while (job_slots_used > @as(c_uint, 0)) {
+        reap_children(1, 1);
     }
-    remove_intermediates(@as(c_int, 1));
-    if (sig == @as(c_int, 3)) {
-        exit(@as(c_int, 1));
+    remove_intermediates(1);
+    if (sig == 3) {
+        exit(1);
     }
-    if (kill(make_pid(), sig) < @as(c_int, 0)) {
+    if (kill(make_pid(), sig) < 0) {
         pfatal_with_name("kill");
     }
 }
@@ -599,7 +599,7 @@ export fn execute_file_commands(arg_file_1: [*c]struct_file) void {
     _ = &p;
     {
         p = file_1.*.cmds.*.commands;
-        while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) : (p += 1) if (((!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) and (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '-'))) and (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '@'))) and (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '+'))) break;
+        while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) : (p += 1) if (((!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (2 | 4)) != 0) and (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '-'))) and (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '@'))) and (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '+'))) break;
     }
     if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '\x00')) {
         set_command_state(file_1, @as(c_uint, @bitCast(cs_running)));
@@ -607,9 +607,9 @@ export fn execute_file_commands(arg_file_1: [*c]struct_file) void {
         notice_finished_file(file_1);
         return;
     }
-    initialize_file_variables(file_1, @as(c_int, 0));
+    initialize_file_variables(file_1, 0);
     set_file_variables(file_1, file_1.*.stem);
-    if ((file_1.*.loaded != 0) and (unload_file(file_1.*.name) == @as(c_int, 0))) {
+    if ((file_1.*.loaded != 0) and (unload_file(file_1.*.name) == 0)) {
         file_1.*.loaded = 0;
         file_1.*.unloaded = 1;
     }
@@ -636,18 +636,18 @@ export fn print_commands(arg_cmds: [*c]const struct_commands) void {
             _ = blk: {
                 end = s;
                 break :blk blk_1: {
-                    const tmp = @as(c_int, 0);
+                    const tmp = 0;
                     bs = tmp;
                     break :blk_1 tmp;
                 };
             };
             while (@as(c_int, @bitCast(@as(c_uint, end.*))) != @as(c_int, '\x00')) : (end += 1) {
                 if ((@as(c_int, @bitCast(@as(c_uint, end.*))) == @as(c_int, '\n')) and !(bs != 0)) break;
-                bs = if (@as(c_int, @bitCast(@as(c_uint, end.*))) == @as(c_int, '\\')) @intFromBool(!(bs != 0)) else @as(c_int, 0);
+                bs = if (@as(c_int, @bitCast(@as(c_uint, end.*))) == @as(c_int, '\\')) @intFromBool(!(bs != 0)) else 0;
             }
         }
         _ = printf("%c%.*s\n", @as(c_int, @bitCast(@as(c_uint, cmd_prefix))), @as(c_int, @bitCast(@as(c_int, @truncate(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(s))), @sizeOf(u8)))))), s);
-        s = end + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, @bitCast(@as(c_uint, end[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\n')))));
+        s = end + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, @bitCast(@as(c_uint, end[0]))) == @as(c_int, '\n')))));
     }
 }
 export fn delete_child_targets(arg_child_1: [*c]struct_child) void {
@@ -655,7 +655,7 @@ export fn delete_child_targets(arg_child_1: [*c]struct_child) void {
     _ = &child_1;
     var d: [*c]struct_dep = undefined;
     _ = &d;
-    if ((child_1.*.deleted != 0) or (child_1.*.pid < @as(c_int, 0))) return;
+    if ((child_1.*.deleted != 0) or (child_1.*.pid < 0)) return;
     delete_target(child_1.*.file, null);
     {
         d = child_1.*.file.*.also_make;
@@ -674,15 +674,15 @@ export fn chop_commands(arg_cmds: [*c]struct_commands) void {
     _ = &i;
     var lines: [*c][*c]u8 = undefined;
     _ = &lines;
-    if (!(cmds != null) or (cmds.*.command_lines != @as([*c][*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))))) return;
+    if (!(cmds != null) or (cmds.*.command_lines != @as([*c][*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0))))))) return;
     if (one_shell != 0) {
         var l: usize = strlen(cmds.*.commands);
         _ = &l;
         nlines = 1;
         lines = @as([*c][*c]u8, @ptrCast(@alignCast(xmalloc(@as(c_ulong, @bitCast(@as(c_ulong, nlines))) *% @sizeOf([*c]u8)))));
-        lines[@as(c_uint, @intCast(@as(c_int, 0)))] = xstrdup(cmds.*.commands);
-        if ((l > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) and (@as(c_int, @bitCast(@as(c_uint, lines[@as(c_uint, @intCast(@as(c_int, 0)))][l -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]))) == @as(c_int, '\n'))) {
-            lines[@as(c_uint, @intCast(@as(c_int, 0)))][l -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))] = '\x00';
+        lines[0] = xstrdup(cmds.*.commands);
+        if ((l > @as(usize, 0)) and (@as(c_int, @bitCast(@as(c_uint, lines[0][l -% @as(usize, 1)]))) == @as(c_int, '\n'))) {
+            lines[0][l -% @as(usize, 1)] = '\x00';
         }
     } else {
         var p: [*c]const u8 = cmds.*.commands;
@@ -696,19 +696,19 @@ export fn chop_commands(arg_cmds: [*c]struct_commands) void {
             _ = &end;
             while (true) {
                 end = strchr(end, @as(c_int, '\n'));
-                if (end == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+                if (end == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
                     end = p + strlen(p);
                 } else if ((end > p) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
-                    const tmp = -@as(c_int, 1);
+                    const tmp = -1;
                     if (tmp >= 0) break :blk end + @as(usize, @intCast(tmp)) else break :blk end - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                 }).*))) == @as(c_int, '\\'))) {
                     var backslash: c_int = 1;
                     _ = &backslash;
-                    if (end > (p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))) {
+                    if (end > (p + @as(usize, @bitCast(@as(isize, @intCast(1)))))) {
                         var b: [*c]const u8 = undefined;
                         _ = &b;
                         {
-                            b = end - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));
+                            b = end - @as(usize, @bitCast(@as(isize, @intCast(2))));
                             while ((b >= p) and (@as(c_int, @bitCast(@as(c_uint, b.*))) == @as(c_int, '\\'))) : (b -= 1) {
                                 backslash = @intFromBool(!(backslash != 0));
                             }
@@ -721,11 +721,11 @@ export fn chop_commands(arg_cmds: [*c]struct_commands) void {
                 }
                 break;
             }
-            if (@as(c_int, @bitCast(@as(c_uint, nlines))) == ((@as(c_int, 32767) * @as(c_int, 2)) + @as(c_int, 1))) {
-                fatal(&cmds.*.fileinfo, ((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3)))), gettext("Recipe has too many lines (limit %hu)"), @as(c_int, @bitCast(@as(c_uint, nlines))));
+            if (@as(c_int, @bitCast(@as(c_uint, nlines))) == ((@as(c_int, 32767) * 2) + 1)) {
+                fatal(&cmds.*.fileinfo, ((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3), gettext("Recipe has too many lines (limit %hu)"), @as(c_int, @bitCast(@as(c_uint, nlines))));
             }
             if (@as(usize, @bitCast(@as(c_ulong, nlines))) == max) {
-                max +%= @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
+                max +%= @as(usize, 2);
                 lines = @as([*c][*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(lines)), max *% @sizeOf([*c]u8)))));
             }
             lines[
@@ -753,7 +753,7 @@ export fn chop_commands(arg_cmds: [*c]struct_commands) void {
             _ = &flags;
             var p: [*c]const u8 = lines[i];
             _ = &p;
-            while (((((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & @as(c_int, 2)) != @as(c_int, 0)) or (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '-'))) or (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '@'))) or (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '+'))) {
+            while (((((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & 2) != 0) or (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '-'))) or (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '@'))) or (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '+'))) {
                 while (true) {
                     switch (@as(c_int, @bitCast(@as(c_uint, (blk: {
                         const ref = &p;
@@ -762,15 +762,15 @@ export fn chop_commands(arg_cmds: [*c]struct_commands) void {
                         break :blk tmp;
                     }).*)))) {
                         @as(c_int, 43) => {
-                            flags |= @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1)))));
+                            flags |= @as(u8, @bitCast(@as(i8, @truncate(1))));
                             break;
                         },
                         @as(c_int, 64) => {
-                            flags |= @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 2)))));
+                            flags |= @as(u8, @bitCast(@as(i8, @truncate(2))));
                             break;
                         },
                         @as(c_int, 45) => {
-                            flags |= @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 4)))));
+                            flags |= @as(u8, @bitCast(@as(i8, @truncate(4))));
                             break;
                         },
                         else => {},
@@ -778,11 +778,11 @@ export fn chop_commands(arg_cmds: [*c]struct_commands) void {
                     break;
                 }
             }
-            if (!((@as(c_int, @bitCast(@as(c_uint, flags))) & @as(c_int, 1)) != @as(c_int, 0)) and ((strstr(p, "$(MAKE)") != null) or (strstr(p, "${MAKE}") != null))) {
-                flags |= @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 1)))));
+            if (!((@as(c_int, @bitCast(@as(c_uint, flags))) & 1) != 0) and ((strstr(p, "$(MAKE)") != null) or (strstr(p, "${MAKE}") != null))) {
+                flags |= @as(u8, @bitCast(@as(i8, @truncate(1))));
             }
             cmds.*.lines_flags[i] = flags;
-            cmds.*.any_recurse |= @as(c_uint, @bitCast(if ((@as(c_int, @bitCast(@as(c_uint, flags))) & @as(c_int, 1)) != @as(c_int, 0)) @as(c_int, 1) else @as(c_int, 0)));
+            cmds.*.any_recurse |= @as(c_uint, @bitCast(if ((@as(c_int, @bitCast(@as(c_uint, flags))) & 1) != 0) 1 else 0));
         }
     }
 }
@@ -809,17 +809,17 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
         var p: [*c]u8 = undefined;
         _ = &p;
         cp = strchr(file_1.*.name, @as(c_int, '('));
-        p = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(cp) -% @intFromPtr(file_1.*.name))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))))));
+        p = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(cp) -% @intFromPtr(file_1.*.name))), @sizeOf(u8)) + @as(c_long, 1)))))));
         _ = memcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(file_1.*.name)), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(cp) -% @intFromPtr(file_1.*.name))), @sizeOf(u8)))));
         (blk: {
             const tmp = @divExact(@as(c_long, @bitCast(@intFromPtr(cp) -% @intFromPtr(file_1.*.name))), @sizeOf(u8));
             if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).* = '\x00';
         at = p;
-        len = strlen(cp + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
+        len = strlen(cp + @as(usize, @bitCast(@as(isize, @intCast(1)))));
         p = @as([*c]u8, @ptrCast(@alignCast(malloc(len))));
-        _ = memcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(cp + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
-        p[len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))] = '\x00';
+        _ = memcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(cp + @as(usize, @bitCast(@as(isize, @intCast(1)))))), len -% @as(usize, 1));
+        p[len -% @as(usize, 1)] = '\x00';
         percent = p;
     } else {
         at = file_1.*.name;
@@ -831,8 +831,8 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
         var len: usize = undefined;
         _ = &len;
         if (ar_name(file_1.*.name) != 0) {
-            name = strchr(file_1.*.name, @as(c_int, '(')) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
-            len = strlen(name) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+            name = strchr(file_1.*.name, @as(c_int, '(')) + @as(usize, @bitCast(@as(isize, @intCast(1))));
+            len = strlen(name) -% @as(c_ulong, 1);
         } else {
             name = file_1.*.name;
             len = strlen(name);
@@ -844,7 +844,7 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
                 _ = &dn;
                 var slen: usize = strlen(dn);
                 _ = &slen;
-                if ((len > slen) and (memcmp(@as(?*const anyopaque, @ptrCast(dn)), @as(?*const anyopaque, @ptrCast(name + (len -% slen))), slen) == @as(c_int, 0))) {
+                if ((len > slen) and (memcmp(@as(?*const anyopaque, @ptrCast(dn)), @as(?*const anyopaque, @ptrCast(name + (len -% slen))), slen) == 0)) {
                     file_1.*.stem = blk: {
                         const tmp = strcache_add_len(name, len -% slen);
                         stem = tmp;
@@ -874,10 +874,10 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
     if ((file_1.*.cmds != null) and (file_1.*.cmds == default_file.*.cmds)) {
         less = at;
     }
-    _ = define_variable_in_set("<", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), less, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("*", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), star, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("@", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), at, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("%", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), percent, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    _ = define_variable_in_set("<", @as(usize, 1), less, @as(c_uint, @bitCast(o_automatic)), 0, file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("*", @as(usize, 1), star, @as(c_uint, @bitCast(o_automatic)), 0, file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("@", @as(usize, 1), at, @as(c_uint, @bitCast(o_automatic)), 0, file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("%", @as(usize, 1), percent, @as(c_uint, @bitCast(o_automatic)), 0, file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(0)));
     {
         const plus_value = struct {
             var static: [*c]u8 = null;
@@ -930,17 +930,17 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
             while (d != null) : (d = d.*.next) {
                 if (!(d.*.need_2nd_expansion != 0) and !(d.*.ignore_automatic_vars != 0)) {
                     if (d.*.ignore_mtime != 0) {
-                        bar_len +%= @as(usize, @bitCast(strlen(if (d.*.name != null) d.*.name else d.*.file.*.name) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+                        bar_len +%= @as(usize, @bitCast(strlen(if (d.*.name != null) d.*.name else d.*.file.*.name) +% @as(c_ulong, 1)));
                     } else {
-                        plus_len +%= @as(usize, @bitCast(strlen(if (d.*.name != null) d.*.name else d.*.file.*.name) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+                        plus_len +%= @as(usize, @bitCast(strlen(if (d.*.name != null) d.*.name else d.*.file.*.name) +% @as(c_ulong, 1)));
                     }
                 }
             }
         }
-        if (bar_len == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
+        if (bar_len == @as(usize, 0)) {
             bar_len +%= 1;
         }
-        if (plus_len == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
+        if (plus_len == @as(usize, 0)) {
             plus_len +%= 1;
         }
         if (plus_len > plus_max.static) {
@@ -951,15 +951,15 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
             }))));
         }
         cp = plus_value.static;
-        qmark_len = plus_len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+        qmark_len = plus_len +% @as(usize, 1);
         {
             d = file_1.*.deps;
             while (d != null) : (d = d.*.next) if ((!(d.*.ignore_mtime != 0) and !(d.*.need_2nd_expansion != 0)) and !(d.*.ignore_automatic_vars != 0)) {
                 var c: [*c]const u8 = if (d.*.name != null) d.*.name else d.*.file.*.name;
                 _ = &c;
                 if (ar_name(c) != 0) {
-                    c = strchr(c, @as(c_int, '(')) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
-                    len = strlen(c) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+                    c = strchr(c, @as(c_int, '(')) + @as(usize, @bitCast(@as(isize, @intCast(1))));
+                    len = strlen(c) -% @as(c_ulong, 1);
                 } else {
                     len = strlen(c);
                 }
@@ -971,15 +971,15 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
                     break :blk tmp;
                 }).* = ' ';
                 if (!((d.*.changed != 0) or (always_make_flag != 0))) {
-                    qmark_len -%= len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+                    qmark_len -%= len +% @as(usize, 1);
                 }
             };
         }
         (blk: {
-            const tmp = if (cp > plus_value.static) -@as(c_int, 1) else @as(c_int, 0);
+            const tmp = if (cp > plus_value.static) -1 else 0;
             if (tmp >= 0) break :blk cp + @as(usize, @intCast(tmp)) else break :blk cp - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).* = '\x00';
-        _ = define_variable_in_set("+", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), plus_value.static, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set("+", @as(usize, 1), plus_value.static, @as(c_uint, @bitCast(o_automatic)), 0, file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(0)));
         cp = blk: {
             const tmp = plus_value.static;
             caret_value = tmp;
@@ -1014,7 +1014,7 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
                     _ = &hd;
                     if (d.*.ignore_mtime != hd.*.ignore_mtime) {
                         d.*.ignore_mtime = blk: {
-                            const tmp = @as(c_uint, @bitCast(@as(c_int, 0)));
+                            const tmp = @as(c_uint, 0);
                             hd.*.ignore_mtime = tmp;
                             break :blk tmp;
                         };
@@ -1030,8 +1030,8 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
                 if (((d.*.need_2nd_expansion != 0) or (d.*.ignore_automatic_vars != 0)) or (hash_find_item(&dep_hash, @as(?*const anyopaque, @ptrCast(d))) != @as(?*anyopaque, @ptrCast(d)))) continue;
                 c = if (d.*.name != null) d.*.name else d.*.file.*.name;
                 if (ar_name(c) != 0) {
-                    c = strchr(c, @as(c_int, '(')) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
-                    len = strlen(c) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+                    c = strchr(c, @as(c_int, '(')) + @as(usize, @bitCast(@as(isize, @intCast(1))));
+                    len = strlen(c) -% @as(c_ulong, 1);
                 } else {
                     len = strlen(c);
                 }
@@ -1063,22 +1063,22 @@ export fn set_file_variables(arg_file_1: [*c]struct_file, arg_stem: [*c]const u8
                 }
             }
         }
-        hash_free(&dep_hash, @as(c_int, 0));
+        hash_free(&dep_hash, 0);
         (blk: {
-            const tmp = if (cp > caret_value) -@as(c_int, 1) else @as(c_int, 0);
+            const tmp = if (cp > caret_value) -1 else 0;
             if (tmp >= 0) break :blk cp + @as(usize, @intCast(tmp)) else break :blk cp - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).* = '\x00';
-        _ = define_variable_in_set("^", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), caret_value, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set("^", @as(usize, 1), caret_value, @as(c_uint, @bitCast(o_automatic)), 0, file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(0)));
         (blk: {
-            const tmp = if (qp > qmark_value.static) -@as(c_int, 1) else @as(c_int, 0);
+            const tmp = if (qp > qmark_value.static) -1 else 0;
             if (tmp >= 0) break :blk qp + @as(usize, @intCast(tmp)) else break :blk qp - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).* = '\x00';
-        _ = define_variable_in_set("?", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), qmark_value.static, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set("?", @as(usize, 1), qmark_value.static, @as(c_uint, @bitCast(o_automatic)), 0, file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(0)));
         (blk: {
-            const tmp = if (bp > bar_value.static) -@as(c_int, 1) else @as(c_int, 0);
+            const tmp = if (bp > bar_value.static) -1 else 0;
             if (tmp >= 0) break :blk bp + @as(usize, @intCast(tmp)) else break :blk bp - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).* = '\x00';
-        _ = define_variable_in_set("|", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), bar_value.static, @as(c_uint, @bitCast(o_automatic)), @as(c_int, 0), file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+        _ = define_variable_in_set("|", @as(usize, 1), bar_value.static, @as(c_uint, @bitCast(o_automatic)), 0, file_1.*.variables.*.set, @as([*c]floc, @ptrFromInt(0)));
     }
 }
 fn dep_hash_1(arg_key: ?*const anyopaque) callconv(.C) c_ulong {
@@ -1137,13 +1137,13 @@ fn delete_target(arg_file_1: [*c]struct_file, arg_on_behalf_of: [*c]const u8) ca
     _ = &e;
     if ((file_1.*.precious != 0) or (file_1.*.phony != 0)) return;
     if (ar_name(file_1.*.name) != 0) {
-        var file_date: time_t = if (file_1.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) @as(time_t, @bitCast(@as(c_long, -@as(c_int, 1)))) else @as(time_t, @bitCast((file_1.*.last_mtime -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))));
+        var file_date: time_t = if (file_1.*.last_mtime == @as(uintmax_t, 1)) @as(time_t, @bitCast(@as(c_long, -1))) else @as(time_t, @bitCast((file_1.*.last_mtime -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0)));
         _ = &file_date;
         if (ar_member_date(file_1.*.name) != file_date) {
             if (on_behalf_of != null) {
-                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(on_behalf_of) +% strlen(file_1.*.name), gettext("*** [%s] Archive member '%s' may be bogus; not deleted"), on_behalf_of, file_1.*.name);
+                @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(on_behalf_of) +% strlen(file_1.*.name), gettext("*** [%s] Archive member '%s' may be bogus; not deleted"), on_behalf_of, file_1.*.name);
             } else {
-                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(file_1.*.name), gettext("*** Archive member '%s' may be bogus; not deleted"), file_1.*.name);
+                @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(file_1.*.name), gettext("*** Archive member '%s' may be bogus; not deleted"), file_1.*.name);
             }
         }
         return;
@@ -1152,14 +1152,14 @@ fn delete_target(arg_file_1: [*c]struct_file, arg_on_behalf_of: [*c]const u8) ca
         const tmp = stat(file_1.*.name, &st);
         e = tmp;
         break :blk tmp;
-    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-    if (((e == @as(c_int, 0)) and ((st.st_mode & @as(__mode_t, @bitCast(@as(c_int, 61440)))) == @as(__mode_t, @bitCast(@as(c_int, 32768))))) and (file_timestamp_cons(file_1.*.name, st.st_mtim.tv_sec, st.st_mtim.tv_nsec) != file_1.*.last_mtime)) {
+    }) == -1) and (__errno_location().* == 4)) {}
+    if (((e == 0) and ((st.st_mode & @as(__mode_t, @bitCast(@as(c_int, 61440)))) == @as(__mode_t, @bitCast(@as(c_int, 32768))))) and (file_timestamp_cons(file_1.*.name, st.st_mtim.tv_sec, st.st_mtim.tv_nsec) != file_1.*.last_mtime)) {
         if (on_behalf_of != null) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(on_behalf_of) +% strlen(file_1.*.name), gettext("*** [%s] Deleting file '%s'"), on_behalf_of, file_1.*.name);
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(on_behalf_of) +% strlen(file_1.*.name), gettext("*** [%s] Deleting file '%s'"), on_behalf_of, file_1.*.name);
         } else {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(file_1.*.name), gettext("*** Deleting file '%s'"), file_1.*.name);
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(file_1.*.name), gettext("*** Deleting file '%s'"), file_1.*.name);
         }
-        if ((unlink(file_1.*.name) < @as(c_int, 0)) and (__errno_location().* != @as(c_int, 2))) {
+        if ((unlink(file_1.*.name) < 0) and (__errno_location().* != 2)) {
             perror_with_name("unlink: ", file_1.*.name);
         }
     }

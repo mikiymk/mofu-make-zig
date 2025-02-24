@@ -291,7 +291,7 @@ export fn start_remote_job(arg_argv: [*c][*c]u8, arg_envp: [*c][*c]u8, arg_stdin
     _ = &id_ptr;
     var used_stdin = arg_used_stdin;
     _ = &used_stdin;
-    return -@as(c_int, 1);
+    return -1;
 }
 export fn remote_status(arg_exit_code_ptr: [*c]c_int, arg_signal_ptr: [*c]c_int, arg_coredump_ptr: [*c]c_int, arg_block: c_int) c_int {
     var exit_code_ptr = arg_exit_code_ptr;
@@ -303,7 +303,7 @@ export fn remote_status(arg_exit_code_ptr: [*c]c_int, arg_signal_ptr: [*c]c_int,
     var block = arg_block;
     _ = &block;
     __errno_location().* = 10;
-    return -@as(c_int, 1);
+    return -1;
 }
 export fn block_remote_children() void {
     return;
@@ -316,7 +316,7 @@ export fn remote_kill(arg_id: pid_t, arg_sig: c_int) c_int {
     _ = &id;
     var sig = arg_sig;
     _ = &sig;
-    return -@as(c_int, 1);
+    return -1;
 }
 
 extern var starting_directory: [*c]u8;

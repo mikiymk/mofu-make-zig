@@ -334,9 +334,10 @@ const floc = extern struct {
 // src/misc.c:204:1: warning: TODO unable to translate variadic function, demoted to extern
 extern fn concat(num: c_uint, ...) [*c]const u8;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-
-extern fn out_of_memory() noreturn;
+const message = @import("output.zig").message;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
+const out_of_memory = @import("output.zig").out_of_memory;
 
 export fn make_toui(arg_str: [*c]const u8, arg_error_1: [*c][*c]const u8) c_uint {
     var str = arg_str;
@@ -348,7 +349,7 @@ export fn make_toui(arg_str: [*c]const u8, arg_error_1: [*c][*c]const u8) c_uint
     var val: c_ulong = strtoul(str, &end, @as(c_int, 10));
     _ = &val;
     if (error_1 != null) {
-        if (@as(c_int, @bitCast(@as(c_uint, str[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) {
+        if (@as(c_int, @bitCast(@as(c_uint, str[0]))) == @as(c_int, '\x00')) {
             error_1.* = "Missing value";
         } else if (@as(c_int, @bitCast(@as(c_uint, end.*))) != @as(c_int, '\x00')) {
             error_1.* = "Invalid value";
@@ -380,8 +381,8 @@ export fn make_seed(arg_seed: c_uint) void {
     mk_state = seed;
 }
 export fn make_rand() c_uint {
-    if (mk_state == @as(c_uint, @bitCast(@as(c_int, 0)))) {
-        mk_state = @as(c_uint, @bitCast(@as(c_int, @truncate(time(null) ^ @as(time_t, @bitCast(@as(c_long, make_pid()))))))) +% @as(c_uint, @bitCast(@as(c_int, 1)));
+    if (mk_state == @as(c_uint, 0)) {
+        mk_state = @as(c_uint, @bitCast(@as(c_int, @truncate(time(null) ^ @as(time_t, @bitCast(@as(c_long, make_pid()))))))) +% @as(c_uint, 1);
     }
     mk_state ^= mk_state << @intCast(13);
     mk_state ^= mk_state >> @intCast(17);
@@ -391,11 +392,8 @@ export fn make_rand() c_uint {
 export fn make_pid() pid_t {
     return getpid();
 }
-export fn xmalloc(arg_size: usize) ?*anyopaque {
-    var size = arg_size;
-    _ = &size;
-    var result: ?*anyopaque = malloc(if (size != 0) size else @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
-    _ = &result;
+pub export fn xmalloc(size: usize) ?*anyopaque {
+    const result = malloc(if (size != 0) size else 1);
     if (result == null) {
         out_of_memory();
     }
@@ -404,7 +402,7 @@ export fn xmalloc(arg_size: usize) ?*anyopaque {
 export fn xcalloc(arg_size: usize) ?*anyopaque {
     var size = arg_size;
     _ = &size;
-    var result: ?*anyopaque = calloc(if (size != 0) size else @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+    var result: ?*anyopaque = calloc(if (size != 0) size else @as(usize, 1), @as(c_ulong, 1));
     _ = &result;
     if (result == null) {
         out_of_memory();
@@ -468,7 +466,7 @@ export fn find_next_token(arg_ptr: [*c][*c]const u8, arg_lengthptr: [*c]usize) [
 export fn next_token(arg_s: [*c]const u8) [*c]u8 {
     var s = arg_s;
     _ = &s;
-    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(s.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(s.*))]))) & (2 | 4)) != 0) {
         s += 1;
     }
     return @as([*c]u8, @ptrCast(@volatileCast(@constCast(s))));
@@ -476,7 +474,7 @@ export fn next_token(arg_s: [*c]const u8) [*c]u8 {
 export fn end_of_token(arg_s: [*c]const u8) [*c]u8 {
     var s = arg_s;
     _ = &s;
-    while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(s.*))]))) & ((@as(c_int, 2) | @as(c_int, 4)) | @as(c_int, 1))) != @as(c_int, 0))) {
+    while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(s.*))]))) & ((2 | 4) | 1)) != 0)) {
         s += 1;
     }
     return @as([*c]u8, @ptrCast(@volatileCast(@constCast(s))));
@@ -500,10 +498,10 @@ export fn collapse_continuations(arg_line: [*c]u8) void {
         var out_line_length: usize = undefined;
         _ = &out_line_length;
         if ((q > line) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
-            const tmp = -@as(c_int, 1);
+            const tmp = -1;
             if (tmp >= 0) break :blk q + @as(usize, @intCast(tmp)) else break :blk q - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).*))) == @as(c_int, '\\'))) {
-            i = -@as(c_int, 2);
+            i = -2;
             while (((&(blk: {
                 const tmp = i;
                 if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
@@ -517,22 +515,22 @@ export fn collapse_continuations(arg_line: [*c]u8) void {
         } else {
             i = 0;
         }
-        out_line_length = @as(usize, @bitCast((@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(in))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, i)))) - @as(c_long, @bitCast(@as(c_long, @divTrunc(i, @as(c_int, 2)))))));
+        out_line_length = @as(usize, @bitCast((@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(in))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, i)))) - @as(c_long, @bitCast(@as(c_long, @divTrunc(i, 2))))));
         if (out != in) {
             _ = memmove(@as(?*anyopaque, @ptrCast(out)), @as(?*const anyopaque, @ptrCast(in)), out_line_length);
         }
         out += @as([*c]u8, @ptrFromInt(out_line_length));
-        in = q + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
-        if ((i & @as(c_int, 1)) != 0) {
-            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(in.*))]))) & @as(c_int, 2)) != @as(c_int, 0)) {
+        in = q + @as(usize, @bitCast(@as(isize, @intCast(1))));
+        if ((i & 1) != 0) {
+            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(in.*))]))) & 2) != 0) {
                 in += 1;
             }
             if (!(posix_pedantic != 0)) while ((out > line) and ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
                 @as(u8, @bitCast((blk: {
-                    const tmp = -@as(c_int, 1);
+                    const tmp = -1;
                     if (tmp >= 0) break :blk out + @as(usize, @intCast(tmp)) else break :blk out - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                 }).*))
-            ]))) & @as(c_int, 2)) != @as(c_int, 0))) {
+            ]))) & 2) != 0)) {
                 out -= 1;
             };
             (blk: {
@@ -552,7 +550,7 @@ export fn collapse_continuations(arg_line: [*c]u8) void {
         q = strchr(in, @as(c_int, '\n'));
         if (!(q != null)) break;
     }
-    _ = memmove(@as(?*anyopaque, @ptrCast(out)), @as(?*const anyopaque, @ptrCast(in)), strlen(in) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+    _ = memmove(@as(?*anyopaque, @ptrCast(out)), @as(?*const anyopaque, @ptrCast(in)), strlen(in) +% @as(c_ulong, 1));
 }
 export fn lindex(arg_s: [*c]const u8, arg_limit: [*c]const u8, arg_c: c_int) [*c]u8 {
     var s = arg_s;
@@ -566,7 +564,7 @@ export fn lindex(arg_s: [*c]const u8, arg_limit: [*c]const u8, arg_c: c_int) [*c
         const tmp = ref.*;
         ref.* += 1;
         break :blk tmp;
-    }).*))) == c) return @as([*c]u8, @ptrCast(@volatileCast(@constCast(s - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))))));
+    }).*))) == c) return @as([*c]u8, @ptrCast(@volatileCast(@constCast(s - @as(usize, @bitCast(@as(isize, @intCast(1))))))));
     return null;
 }
 export fn alpha_compare(arg_v1: ?*const anyopaque, arg_v2: ?*const anyopaque) c_int {
@@ -589,7 +587,7 @@ export fn print_spaces(arg_n: c_uint) void {
         const tmp = ref.*;
         ref.* -%= 1;
         break :blk tmp;
-    }) > @as(c_uint, @bitCast(@as(c_int, 0)))) {
+    }) > @as(c_uint, 0)) {
         _ = putchar(@as(c_int, ' '));
     }
 }
@@ -626,17 +624,17 @@ export fn get_tmpdir() [*c]const u8 {
                     const tmp = stat(tmpdir.static, &st);
                     r = tmp;
                     break :blk tmp;
-                }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-                if (r < @as(c_int, 0)) {
-                    @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), (strlen(tp.*) +% strlen(tmpdir.static)) +% strlen(strerror(__errno_location().*)), gettext("%s value %s: %s"), tp.*, tmpdir.static, strerror(__errno_location().*));
+                }) == -1) and (__errno_location().* == 4)) {}
+                if (r < 0) {
+                    @"error"(@as([*c]floc, @ptrFromInt(0)), (strlen(tp.*) +% strlen(tmpdir.static)) +% strlen(strerror(__errno_location().*)), gettext("%s value %s: %s"), tp.*, tmpdir.static, strerror(__errno_location().*));
                 } else if (!((st.st_mode & @as(__mode_t, @bitCast(@as(c_int, 61440)))) == @as(__mode_t, @bitCast(@as(c_int, 16384))))) {
-                    @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(tp.*) +% strlen(tmpdir.static), gettext("%s value %s: not a directory"), tp.*, tmpdir.static);
+                    @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(tp.*) +% strlen(tmpdir.static), gettext("%s value %s: not a directory"), tp.*, tmpdir.static);
                 } else return tmpdir.static;
             };
         }
         tmpdir.static = "/tmp";
         if (found != 0) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(tmpdir.static), gettext("using default temporary directory '%s'"), tmpdir.static);
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(tmpdir.static), gettext("using default temporary directory '%s'"), tmpdir.static);
         }
     }
     return tmpdir.static;
@@ -644,7 +642,7 @@ export fn get_tmpdir() [*c]const u8 {
 export fn get_tmpfd(arg_name: [*c][*c]u8) c_int {
     var name = arg_name;
     _ = &name;
-    var fd: c_int = -@as(c_int, 1);
+    var fd: c_int = -1;
     _ = &fd;
     var tmpnm: [*c]u8 = undefined;
     _ = &tmpnm;
@@ -654,7 +652,7 @@ export fn get_tmpfd(arg_name: [*c][*c]u8) c_int {
         name.* = null;
     } else {
         fd = os_anontmp();
-        if (fd >= @as(c_int, 0)) return fd;
+        if (fd >= 0) return fd;
     }
     mask = umask(@as(__mode_t, @bitCast(@as(c_int, 63))));
     tmpnm = get_tmptemplate();
@@ -662,11 +660,11 @@ export fn get_tmpfd(arg_name: [*c][*c]u8) c_int {
         const tmp = mkstemp(tmpnm);
         fd = tmp;
         break :blk tmp;
-    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-    if (fd < @as(c_int, 0)) {
-        @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(tmpnm) +% strlen(strerror(__errno_location().*)), gettext("cannot create temporary file %s: %s"), tmpnm, strerror(__errno_location().*));
+    }) == -1) and (__errno_location().* == 4)) {}
+    if (fd < 0) {
+        @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(tmpnm) +% strlen(strerror(__errno_location().*)), gettext("cannot create temporary file %s: %s"), tmpnm, strerror(__errno_location().*));
         free(@as(?*anyopaque, @ptrCast(tmpnm)));
-        return -@as(c_int, 1);
+        return -1;
     }
     if (name != null) {
         name.* = tmpnm;
@@ -677,9 +675,9 @@ export fn get_tmpfd(arg_name: [*c][*c]u8) c_int {
             const tmp = unlink(tmpnm);
             r = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r < @as(c_int, 0)) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(tmpnm) +% strlen(strerror(__errno_location().*)), gettext("cannot unlink temporary file %s: %s"), tmpnm, strerror(__errno_location().*));
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (r < 0) {
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(tmpnm) +% strlen(strerror(__errno_location().*)), gettext("cannot unlink temporary file %s: %s"), tmpnm, strerror(__errno_location().*));
         }
         free(@as(?*anyopaque, @ptrCast(tmpnm)));
     }
@@ -695,54 +693,37 @@ export fn get_tmpfile(arg_name: [*c][*c]u8) [*c]FILE {
     _ = &file_1;
     var fd: c_int = undefined;
     _ = &fd;
-    _ = @as(c_int, 0);
+    _ = 0;
     fd = get_tmpfd(name);
-    if (fd < @as(c_int, 0)) return null;
-    _ = @as(c_int, 0);
+    if (fd < 0) return null;
+    _ = 0;
     while (true) {
         __errno_location().* = 0;
         file_1 = fdopen(fd, tmpfile_mode);
-        if (!((file_1 == null) and (__errno_location().* == @as(c_int, 4)))) break;
+        if (!((file_1 == null) and (__errno_location().* == 4))) break;
     }
-    if (file_1 == @as([*c]FILE, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
-        @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(name.*) +% strlen(strerror(__errno_location().*)), gettext("fdopen: temporary file %s: %s"), name.*, strerror(__errno_location().*));
+    if (file_1 == @as([*c]FILE, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
+        @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(name.*) +% strlen(strerror(__errno_location().*)), gettext("fdopen: temporary file %s: %s"), name.*, strerror(__errno_location().*));
     }
     return file_1;
 }
-export fn writebuf(arg_fd: c_int, arg_buffer: ?*const anyopaque, arg_len: usize) isize {
-    var fd = arg_fd;
-    _ = &fd;
-    var buffer = arg_buffer;
-    _ = &buffer;
-    var len = arg_len;
-    _ = &len;
-    var msg: [*c]const u8 = @as([*c]const u8, @ptrCast(@alignCast(buffer)));
-    _ = &msg;
-    var l: usize = len;
-    _ = &l;
+export fn writebuf(fd: c_int, buffer: ?*const anyopaque, len: usize) isize {
+    var msg: [*c]const u8 = @ptrCast(@alignCast(buffer));
+    var l = len;
     while (l != 0) {
         var r: isize = undefined;
-        _ = &r;
-        while (((blk: {
-            const tmp = write(fd, @as(?*const anyopaque, @ptrCast(msg)), l);
-            r = tmp;
-            break :blk tmp;
-        }) == @as(isize, @bitCast(@as(c_long, -@as(c_int, 1))))) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r < @as(isize, @bitCast(@as(c_long, @as(c_int, 0))))) return r;
+        while (true) {
+            r = write(fd, @as(?*const anyopaque, @ptrCast(msg)), l);
+            if (r != -1 or __errno_location().* != 4) break;
+        }
+        if (r < 0) return r;
         l -%= @as(usize, @bitCast(r));
-        msg += @as(usize, @bitCast(@as(isize, @intCast(r))));
+        msg += @as(usize, @bitCast(r));
     }
     return @as(isize, @bitCast(len));
 }
-export fn readbuf(arg_fd: c_int, arg_buffer: ?*anyopaque, arg_len: usize) isize {
-    var fd = arg_fd;
-    _ = &fd;
-    var buffer = arg_buffer;
-    _ = &buffer;
-    var len = arg_len;
-    _ = &len;
+export fn readbuf(fd: c_int, buffer: ?*anyopaque, len: usize) isize {
     var msg: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(buffer)));
-    _ = &msg;
     while (len != 0) {
         var r: isize = undefined;
         _ = &r;
@@ -750,9 +731,9 @@ export fn readbuf(arg_fd: c_int, arg_buffer: ?*anyopaque, arg_len: usize) isize 
             const tmp = read(fd, @as(?*anyopaque, @ptrCast(msg)), len);
             r = tmp;
             break :blk tmp;
-        }) == @as(isize, @bitCast(@as(c_long, -@as(c_int, 1))))) and (__errno_location().* == @as(c_int, 4))) {}
-        if (r < @as(isize, @bitCast(@as(c_long, @as(c_int, 0))))) return r;
-        if (r == @as(isize, @bitCast(@as(c_long, @as(c_int, 0))))) break;
+        }) == @as(isize, @bitCast(@as(c_long, -1)))) and (__errno_location().* == 4)) {}
+        if (r < @as(isize, 0)) return r;
+        if (r == @as(isize, 0)) break;
         len -%= @as(usize, @bitCast(r));
         msg += @as(usize, @bitCast(@as(isize, @intCast(r))));
     }
@@ -885,14 +866,14 @@ fn get_tmptemplate() callconv(.C) [*c]u8 {
     _ = &template;
     var cp: [*c]u8 = undefined;
     _ = &cp;
-    template = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(tmpdir) +% (@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))))));
+    template = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(tmpdir) +% (@sizeOf([9]u8) -% @as(c_ulong, 1))) +% @as(c_ulong, 2)))));
     cp = stpcpy(template, tmpdir);
     if (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
         @as(u8, @bitCast((blk: {
-            const tmp = -@as(c_int, 1);
+            const tmp = -1;
             if (tmp >= 0) break :blk cp + @as(usize, @intCast(tmp)) else break :blk cp - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).*))
-    ]))) & @as(c_int, 32768)) != @as(c_int, 0))) {
+    ]))) & @as(c_int, 32768)) != 0)) {
         (blk: {
             const ref = &cp;
             const tmp = ref.*;

@@ -266,7 +266,7 @@ export fn hash_init(arg_ht: [*c]struct_hash_table, arg_size: c_ulong, arg_hash_1
     ht.*.ht_vec = @as([*c]?*anyopaque, @ptrCast(@alignCast(xcalloc(@sizeOf(?*anyopaque) *% ht.*.ht_size))));
     if (ht.*.ht_vec == null) {
         _ = fprintf(stderr, gettext("can't allocate %lu bytes for hash table: memory exhausted"), ht.*.ht_size *% @sizeOf(?*anyopaque));
-        exit(@as(c_int, 1));
+        exit(1);
     }
     ht.*.ht_capacity = ht.*.ht_size -% (ht.*.ht_size / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 16)))));
     ht.*.ht_fill = 0;
@@ -313,7 +313,7 @@ export fn hash_find_slot(arg_ht: [*c]struct_hash_table, arg_key: ?*const anyopaq
     _ = &hash_1;
     ht.*.ht_lookups +%= 1;
     while (true) {
-        hash_1 &= @as(c_uint, @bitCast(@as(c_uint, @truncate(ht.*.ht_size -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        hash_1 &= @as(c_uint, @bitCast(@as(c_uint, @truncate(ht.*.ht_size -% @as(c_ulong, 1)))));
         slot = &ht.*.ht_vec[hash_1];
         if (slot.* == null) return if (deleted_slot != null) deleted_slot else slot;
         if (slot.* == hash_deleted_item) {
@@ -322,11 +322,11 @@ export fn hash_find_slot(arg_ht: [*c]struct_hash_table, arg_key: ?*const anyopaq
             }
         } else {
             if (key == @as(?*const anyopaque, @ptrCast(slot.*))) return slot;
-            if (ht.*.ht_compare.?(key, slot.*) == @as(c_int, 0)) return slot;
+            if (ht.*.ht_compare.?(key, slot.*) == 0) return slot;
             ht.*.ht_collisions +%= 1;
         }
         if (!(hash_2 != 0)) {
-            hash_2 = @as(c_uint, @bitCast(@as(c_uint, @truncate(ht.*.ht_hash_2.?(key) | @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+            hash_2 = @as(c_uint, @bitCast(@as(c_uint, @truncate(ht.*.ht_hash_2.?(key) | @as(c_ulong, 1)))));
         }
         hash_1 +%= hash_2;
     }
@@ -493,7 +493,7 @@ export fn hash_print_stats(arg_ht: [*c]struct_hash_table, arg_out_FILE: [*c]FILE
     _ = &out_FILE;
     _ = fprintf(out_FILE, gettext("Load=%lu/%lu=%.0f%%, "), ht.*.ht_fill, ht.*.ht_size, (100.0 * @as(f64, @floatFromInt(ht.*.ht_fill))) / @as(f64, @floatFromInt(ht.*.ht_size)));
     _ = fprintf(out_FILE, gettext("Rehash=%u, "), ht.*.ht_rehashes);
-    _ = fprintf(out_FILE, gettext("Collisions=%lu/%lu=%.0f%%"), ht.*.ht_collisions, ht.*.ht_lookups, if (ht.*.ht_lookups != 0) (100.0 * @as(f64, @floatFromInt(ht.*.ht_collisions))) / @as(f64, @floatFromInt(ht.*.ht_lookups)) else @as(f64, @floatFromInt(@as(c_int, 0))));
+    _ = fprintf(out_FILE, gettext("Collisions=%lu/%lu=%.0f%%"), ht.*.ht_collisions, ht.*.ht_lookups, if (ht.*.ht_lookups != 0) (100.0 * @as(f64, @floatFromInt(ht.*.ht_collisions))) / @as(f64, @floatFromInt(ht.*.ht_lookups)) else @as(f64, @floatFromInt(0)));
 }
 export fn hash_dump(arg_ht: [*c]struct_hash_table, arg_vector_0: [*c]?*anyopaque, arg_compare: qsort_cmp_t) [*c]?*anyopaque {
     var ht = arg_ht;
@@ -509,7 +509,7 @@ export fn hash_dump(arg_ht: [*c]struct_hash_table, arg_vector_0: [*c]?*anyopaque
     var end: [*c]?*anyopaque = &ht.*.ht_vec[ht.*.ht_size];
     _ = &end;
     if (vector_0 == null) {
-        vector_0 = @as([*c]?*anyopaque, @ptrCast(@alignCast(xmalloc(@sizeOf(?*anyopaque) *% (ht.*.ht_fill +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))));
+        vector_0 = @as([*c]?*anyopaque, @ptrCast(@alignCast(xmalloc(@sizeOf(?*anyopaque) *% (ht.*.ht_fill +% @as(c_ulong, 1))))));
     }
     vector = vector_0;
     {
@@ -553,33 +553,33 @@ export fn jhash(arg_k: [*c]const u8, arg_length: c_int) c_uint {
         while (true) {
             var val: c_uint = undefined;
             _ = &val;
-            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k)), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 4)))));
+            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k)), @as(c_ulong, 4));
             a +%= val;
             if (!false) break;
         }
         while (true) {
             var val: c_uint = undefined;
             _ = &val;
-            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 4))))))), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 4)))));
+            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k + @as(usize, @bitCast(@as(isize, @intCast(4)))))), @as(c_ulong, 4));
             b +%= val;
             if (!false) break;
         }
         while (true) {
             var val: c_uint = undefined;
             _ = &val;
-            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 8))))))), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 4)))));
+            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k + @as(usize, @bitCast(@as(isize, @intCast(8)))))), @as(c_ulong, 4));
             c +%= val;
             if (!false) break;
         }
         {
             a -%= c;
-            a ^= (c << @intCast(@as(c_int, 4))) | (c >> @intCast(@as(c_int, 32) - @as(c_int, 4)));
+            a ^= (c << @intCast(4)) | (c >> @intCast(@as(c_int, 32) - 4));
             c +%= b;
             b -%= a;
-            b ^= (a << @intCast(@as(c_int, 6))) | (a >> @intCast(@as(c_int, 32) - @as(c_int, 6)));
+            b ^= (a << @intCast(6)) | (a >> @intCast(@as(c_int, 32) - 6));
             a +%= c;
             c -%= b;
-            c ^= (b << @intCast(@as(c_int, 8))) | (b >> @intCast(@as(c_int, 32) - @as(c_int, 8)));
+            c ^= (b << @intCast(8)) | (b >> @intCast(@as(c_int, 32) - 8));
             b +%= a;
             a -%= c;
             a ^= (c << @intCast(@as(c_int, 16))) | (c >> @intCast(@as(c_int, 32) - @as(c_int, 16)));
@@ -588,45 +588,45 @@ export fn jhash(arg_k: [*c]const u8, arg_length: c_int) c_uint {
             b ^= (a << @intCast(@as(c_int, 19))) | (a >> @intCast(@as(c_int, 32) - @as(c_int, 19)));
             a +%= c;
             c -%= b;
-            c ^= (b << @intCast(@as(c_int, 4))) | (b >> @intCast(@as(c_int, 32) - @as(c_int, 4)));
+            c ^= (b << @intCast(4)) | (b >> @intCast(@as(c_int, 32) - 4));
             b +%= a;
         }
         length -= @as(c_int, 12);
         k += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 12)))));
     }
     if (!(length != 0)) return c;
-    if (length > @as(c_int, 8)) {
+    if (length > 8) {
         while (true) {
             var val: c_uint = undefined;
             _ = &val;
-            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k)), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 4)))));
+            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k)), @as(c_ulong, 4));
             a +%= val;
             if (!false) break;
         }
-        length -= @as(c_int, 4);
-        k += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 4)))));
+        length -= 4;
+        k += @as(usize, @bitCast(@as(isize, @intCast(4))));
     }
-    if (length > @as(c_int, 4)) {
+    if (length > 4) {
         while (true) {
             var val: c_uint = undefined;
             _ = &val;
-            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k)), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 4)))));
+            _ = memcpy(@as(?*anyopaque, @ptrCast(&val)), @as(?*const anyopaque, @ptrCast(k)), @as(c_ulong, 4));
             b +%= val;
             if (!false) break;
         }
-        length -= @as(c_int, 4);
-        k += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 4)))));
+        length -= 4;
+        k += @as(usize, @bitCast(@as(isize, @intCast(4))));
     }
-    if (length == @as(c_int, 4)) {
-        c +%= @as(c_uint, @bitCast(@as(c_uint, k[@as(c_uint, @intCast(@as(c_int, 3)))]))) << @intCast(24);
+    if (length == 4) {
+        c +%= @as(c_uint, @bitCast(@as(c_uint, k[3]))) << @intCast(24);
     }
-    if (length >= @as(c_int, 3)) {
-        c +%= @as(c_uint, @bitCast(@as(c_uint, k[@as(c_uint, @intCast(@as(c_int, 2)))]))) << @intCast(16);
+    if (length >= 3) {
+        c +%= @as(c_uint, @bitCast(@as(c_uint, k[2]))) << @intCast(16);
     }
-    if (length >= @as(c_int, 2)) {
-        c +%= @as(c_uint, @bitCast(@as(c_uint, k[@as(c_uint, @intCast(@as(c_int, 1)))]))) << @intCast(8);
+    if (length >= 2) {
+        c +%= @as(c_uint, @bitCast(@as(c_uint, k[1]))) << @intCast(8);
     }
-    c +%= @as(c_uint, @bitCast(@as(c_uint, k[@as(c_uint, @intCast(@as(c_int, 0)))])));
+    c +%= @as(c_uint, @bitCast(@as(c_uint, k[0])));
     {
         c ^= b;
         c -%= (b << @intCast(@as(c_int, 14))) | (b >> @intCast(@as(c_int, 32) - @as(c_int, 14)));
@@ -637,7 +637,7 @@ export fn jhash(arg_k: [*c]const u8, arg_length: c_int) c_uint {
         c ^= b;
         c -%= (b << @intCast(@as(c_int, 16))) | (b >> @intCast(@as(c_int, 32) - @as(c_int, 16)));
         a ^= c;
-        a -%= (c << @intCast(@as(c_int, 4))) | (c >> @intCast(@as(c_int, 32) - @as(c_int, 4)));
+        a -%= (c << @intCast(4)) | (c >> @intCast(@as(c_int, 32) - 4));
         b ^= a;
         b -%= (a << @intCast(@as(c_int, 14))) | (a >> @intCast(@as(c_int, 32) - @as(c_int, 14)));
         c ^= b;
@@ -684,9 +684,9 @@ export fn jhash_string(arg_k: [*c]const u8) c_uint {
             if (!(have_nul != 0)) {
                 a +%= val;
             } else if ((val & @as(c_uint, @bitCast(@as(c_int, 255)))) != 0) {
-                if ((val & @as(c_uint, @bitCast(@as(c_int, 65280)))) == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+                if ((val & @as(c_uint, @bitCast(@as(c_int, 65280)))) == @as(c_uint, 0)) {
                     a +%= val & @as(c_uint, @bitCast(@as(c_int, 255)));
-                } else if ((val & @as(c_uint, @bitCast(@as(c_int, 16711680)))) == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+                } else if ((val & @as(c_uint, @bitCast(@as(c_int, 16711680)))) == @as(c_uint, 0)) {
                     a +%= val & @as(c_uint, @bitCast(@as(c_int, 65535)));
                 } else {
                     a +%= val;
@@ -696,7 +696,7 @@ export fn jhash_string(arg_k: [*c]const u8) c_uint {
         }
         if (have_nul != 0) break;
         k += @as([*c]const u8, @ptrFromInt(@sizeOf(c_uint)));
-        _ = @as(c_int, 0);
+        _ = 0;
         klen -%= @as(usize, @bitCast(@sizeOf(c_uint)));
         while (true) {
             var val: c_uint = 0;
@@ -712,9 +712,9 @@ export fn jhash_string(arg_k: [*c]const u8) c_uint {
             if (!(have_nul != 0)) {
                 b +%= val;
             } else if ((val & @as(c_uint, @bitCast(@as(c_int, 255)))) != 0) {
-                if ((val & @as(c_uint, @bitCast(@as(c_int, 65280)))) == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+                if ((val & @as(c_uint, @bitCast(@as(c_int, 65280)))) == @as(c_uint, 0)) {
                     b +%= val & @as(c_uint, @bitCast(@as(c_int, 255)));
-                } else if ((val & @as(c_uint, @bitCast(@as(c_int, 16711680)))) == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+                } else if ((val & @as(c_uint, @bitCast(@as(c_int, 16711680)))) == @as(c_uint, 0)) {
                     b +%= val & @as(c_uint, @bitCast(@as(c_int, 65535)));
                 } else {
                     b +%= val;
@@ -724,7 +724,7 @@ export fn jhash_string(arg_k: [*c]const u8) c_uint {
         }
         if (have_nul != 0) break;
         k += @as([*c]const u8, @ptrFromInt(@sizeOf(c_uint)));
-        _ = @as(c_int, 0);
+        _ = 0;
         klen -%= @as(usize, @bitCast(@sizeOf(c_uint)));
         while (true) {
             var val: c_uint = 0;
@@ -740,9 +740,9 @@ export fn jhash_string(arg_k: [*c]const u8) c_uint {
             if (!(have_nul != 0)) {
                 c +%= val;
             } else if ((val & @as(c_uint, @bitCast(@as(c_int, 255)))) != 0) {
-                if ((val & @as(c_uint, @bitCast(@as(c_int, 65280)))) == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+                if ((val & @as(c_uint, @bitCast(@as(c_int, 65280)))) == @as(c_uint, 0)) {
                     c +%= val & @as(c_uint, @bitCast(@as(c_int, 255)));
-                } else if ((val & @as(c_uint, @bitCast(@as(c_int, 16711680)))) == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+                } else if ((val & @as(c_uint, @bitCast(@as(c_int, 16711680)))) == @as(c_uint, 0)) {
                     c +%= val & @as(c_uint, @bitCast(@as(c_int, 65535)));
                 } else {
                     c +%= val;
@@ -752,17 +752,17 @@ export fn jhash_string(arg_k: [*c]const u8) c_uint {
         }
         if (have_nul != 0) break;
         k += @as([*c]const u8, @ptrFromInt(@sizeOf(c_uint)));
-        _ = @as(c_int, 0);
+        _ = 0;
         klen -%= @as(usize, @bitCast(@sizeOf(c_uint)));
         {
             a -%= c;
-            a ^= (c << @intCast(@as(c_int, 4))) | (c >> @intCast(@as(c_int, 32) - @as(c_int, 4)));
+            a ^= (c << @intCast(4)) | (c >> @intCast(@as(c_int, 32) - 4));
             c +%= b;
             b -%= a;
-            b ^= (a << @intCast(@as(c_int, 6))) | (a >> @intCast(@as(c_int, 32) - @as(c_int, 6)));
+            b ^= (a << @intCast(6)) | (a >> @intCast(@as(c_int, 32) - 6));
             a +%= c;
             c -%= b;
-            c ^= (b << @intCast(@as(c_int, 8))) | (b >> @intCast(@as(c_int, 32) - @as(c_int, 8)));
+            c ^= (b << @intCast(8)) | (b >> @intCast(@as(c_int, 32) - 8));
             b +%= a;
             a -%= c;
             a ^= (c << @intCast(@as(c_int, 16))) | (c >> @intCast(@as(c_int, 32) - @as(c_int, 16)));
@@ -771,7 +771,7 @@ export fn jhash_string(arg_k: [*c]const u8) c_uint {
             b ^= (a << @intCast(@as(c_int, 19))) | (a >> @intCast(@as(c_int, 32) - @as(c_int, 19)));
             a +%= c;
             c -%= b;
-            c ^= (b << @intCast(@as(c_int, 4))) | (b >> @intCast(@as(c_int, 32) - @as(c_int, 4)));
+            c ^= (b << @intCast(4)) | (b >> @intCast(@as(c_int, 32) - 4));
             b +%= a;
         }
     }
@@ -785,7 +785,7 @@ export fn jhash_string(arg_k: [*c]const u8) c_uint {
         c ^= b;
         c -%= (b << @intCast(@as(c_int, 16))) | (b >> @intCast(@as(c_int, 32) - @as(c_int, 16)));
         a ^= c;
-        a -%= (c << @intCast(@as(c_int, 4))) | (c >> @intCast(@as(c_int, 32) - @as(c_int, 4)));
+        a -%= (c << @intCast(4)) | (c >> @intCast(@as(c_int, 32) - 4));
         b ^= a;
         b -%= (a << @intCast(@as(c_int, 14))) | (a >> @intCast(@as(c_int, 32) - @as(c_int, 14)));
         c ^= b;
@@ -804,7 +804,7 @@ fn hash_rehash(arg_ht: [*c]struct_hash_table) callconv(.C) void {
     var ovp: [*c]?*anyopaque = undefined;
     _ = &ovp;
     if (ht.*.ht_fill >= ht.*.ht_capacity) {
-        ht.*.ht_size *%= @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))));
+        ht.*.ht_size *%= @as(c_ulong, 2);
         ht.*.ht_capacity = ht.*.ht_size -% (ht.*.ht_size >> @intCast(4));
     }
     ht.*.ht_rehashes +%= 1;
@@ -831,5 +831,5 @@ fn round_up_2(arg_n: c_ulong) callconv(.C) c_ulong {
     n |= n >> @intCast(8);
     n |= n >> @intCast(16);
     n |= n >> @intCast(32);
-    return n +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+    return n +% @as(c_ulong, 1);
 }

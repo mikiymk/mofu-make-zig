@@ -260,8 +260,8 @@ const floc = extern struct {
 };
 extern fn concat(c_uint, ...) [*c]const u8;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 extern fn perror_with_name([*c]const u8, [*c]const u8) void;
 
@@ -281,7 +281,7 @@ export fn ar_name(arg_name: [*c]const u8) c_int {
     if ((p == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) or (p == name)) return 0;
     end = (p + strlen(p)) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
     if ((@as(c_int, @bitCast(@as(c_uint, end.*))) != @as(c_int, ')')) or (end == (p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))))) return 0;
-    if ((@as(c_int, @bitCast(@as(c_uint, p[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, '(')) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
+    if ((@as(c_int, @bitCast(@as(c_uint, p[1]))) == @as(c_int, '(')) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
         const tmp = -@as(c_int, 1);
         if (tmp >= 0) break :blk end + @as(usize, @intCast(tmp)) else break :blk end - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
     }).*))) == @as(c_int, ')'))) {

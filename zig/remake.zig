@@ -360,9 +360,9 @@ const floc = extern struct {
     offset: c_ulong = @import("std").mem.zeroes(c_ulong),
 };
 
-extern fn message(prefix: c_int, length: usize, fmt: [*c]const u8, ...) void;
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const message = @import("output.zig").message;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 const enum_variable_origin = c_int;
 
@@ -405,8 +405,8 @@ extern fn ar_parse_name([*c]const u8, [*c][*c]u8, [*c][*c]u8) void;
 extern fn ar_touch([*c]const u8) c_int;
 extern fn ar_member_date([*c]const u8) time_t;
 
-extern fn vpath_search(file: [*c]const u8, mtime_ptr: [*c]uintmax_t, vpath_index: [*c]c_uint, path_index: [*c]c_uint) [*c]const u8;
-extern fn gpath_search(file: [*c]const u8, len: usize) c_int;
+const vpath_search = @import("vpath.zig").vpath_search;
+const gpath_search = @import("vpath.zig").gpath_search;
 
 const struct_goaldep = extern struct {
     next: [*c]struct_goaldep = @import("std").mem.zeroes([*c]struct_goaldep),
@@ -428,7 +428,7 @@ const struct_goaldep = extern struct {
 export fn show_goal_error() void {
     var goal: [*c]struct_goaldep = undefined;
     _ = &goal;
-    if ((goal_dep.*.flags & @as(c_uint, @bitCast((@as(c_int, 1) << @intCast(1)) | (@as(c_int, 1) << @intCast(2))))) != @as(c_uint, @bitCast(@as(c_int, 1) << @intCast(1)))) return;
+    if ((goal_dep.*.flags & @as(c_uint, @bitCast((1 << @intCast(1)) | (1 << @intCast(2))))) != @as(c_uint, @bitCast(1 << @intCast(1)))) return;
     {
         goal = goal_list;
         while (goal != null) : (goal = goal.*.next) if (goal_dep.*.file == goal.*.file) {
@@ -515,14 +515,14 @@ export fn notice_finished_file(arg_file_1: [*c]struct_file) void {
             _ = &i;
             {
                 i = 0;
-                while (i < @as(c_uint, @bitCast(@as(c_uint, file_1.*.cmds.*.ncommand_lines)))) : (i +%= 1) if (!((@as(c_int, @bitCast(@as(c_uint, file_1.*.cmds.*.lines_flags[i]))) & @as(c_int, 1)) != @as(c_int, 0))) {
+                while (i < @as(c_uint, @bitCast(@as(c_uint, file_1.*.cmds.*.ncommand_lines)))) : (i +%= 1) if (!((@as(c_int, @bitCast(@as(c_uint, file_1.*.cmds.*.lines_flags[i]))) & 1) != 0)) {
                     flag_957 = 1;
                 };
             }
         } else {
             flag_957 = 1;
         }
-        if (flag_957 == @as(c_int, 1)) {
+        if (flag_957 == 1) {
             if (file_1.*.phony != 0) {
                 file_1.*.update_status = @as(c_uint, @bitCast(us_success));
             } else if (file_1.*.cmds != null) {
@@ -532,7 +532,7 @@ export fn notice_finished_file(arg_file_1: [*c]struct_file) void {
             }
         }
     }
-    if (file_1.*.mtime_before_update == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+    if (file_1.*.mtime_before_update == @as(uintmax_t, 0)) {
         file_1.*.mtime_before_update = file_1.*.last_mtime;
     }
     if (((ran != 0) and !(file_1.*.phony != 0)) or (touched != 0)) {
@@ -541,15 +541,15 @@ export fn notice_finished_file(arg_file_1: [*c]struct_file) void {
         if ((((question_flag != 0) or (just_print_flag != 0)) or (touch_flag != 0)) and (file_1.*.cmds != null)) {
             {
                 i = @as(c_int, @bitCast(@as(c_uint, file_1.*.cmds.*.ncommand_lines)));
-                while (i > @as(c_int, 0)) : (i -= 1) if (!((@as(c_int, @bitCast(@as(c_uint, (blk: {
-                    const tmp = i - @as(c_int, 1);
+                while (i > 0) : (i -= 1) if (!((@as(c_int, @bitCast(@as(c_uint, (blk: {
+                    const tmp = i - 1;
                     if (tmp >= 0) break :blk file_1.*.cmds.*.lines_flags + @as(usize, @intCast(tmp)) else break :blk file_1.*.cmds.*.lines_flags - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
-                }).*))) & @as(c_int, 1)) != @as(c_int, 0))) break;
+                }).*))) & 1) != 0)) break;
             }
         } else if ((file_1.*.is_target != 0) and (file_1.*.cmds == null)) {
             i = 1;
         }
-        file_1.*.last_mtime = if (i == @as(c_int, 0)) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))));
+        file_1.*.last_mtime = if (i == 0) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -1))) <= @as(uintmax_t, 0))) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, 8)) -% @as(c_ulong, 1)));
     }
     if (file_1.*.double_colon != null) {
         var f: [*c]struct_file = undefined;
@@ -558,7 +558,7 @@ export fn notice_finished_file(arg_file_1: [*c]struct_file) void {
         _ = &max_mtime;
         {
             f = file_1.*.double_colon;
-            while ((f != null) and (f.*.updated != 0)) : (f = f.*.prev) if ((max_mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) and ((f.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) or (f.*.last_mtime > max_mtime))) {
+            while ((f != null) and (f.*.updated != 0)) : (f = f.*.prev) if ((max_mtime != @as(uintmax_t, 0)) and ((f.*.last_mtime == @as(uintmax_t, 0)) or (f.*.last_mtime > max_mtime))) {
                 max_mtime = f.*.last_mtime;
             };
         }
@@ -577,7 +577,7 @@ export fn notice_finished_file(arg_file_1: [*c]struct_file) void {
                 d.*.file.*.updated = 1;
                 d.*.file.*.update_status = file_1.*.update_status;
                 if ((ran != 0) and !(d.*.file.*.phony != 0)) {
-                    _ = f_mtime(d.*.file, @as(c_int, 0));
+                    _ = f_mtime(d.*.file, 0);
                 }
             }
         }
@@ -633,12 +633,12 @@ export fn f_mtime(arg_file_1: [*c]struct_file, arg_search: c_int) uintmax_t {
             _ = &memlen;
             arlen = strlen(arfile.*.hname);
             memlen = strlen(memname);
-            name = @as([*c]u8, @ptrCast(@alignCast(malloc(((arlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) +% memlen) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))))));
+            name = @as([*c]u8, @ptrCast(@alignCast(malloc(((arlen +% @as(usize, 1)) +% memlen) +% @as(usize, 2)))));
             _ = memcpy(@as(?*anyopaque, @ptrCast(name)), @as(?*const anyopaque, @ptrCast(arfile.*.hname)), arlen);
             name[arlen] = '(';
-            _ = memcpy(@as(?*anyopaque, @ptrCast((name + arlen) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), @as(?*const anyopaque, @ptrCast(memname)), memlen);
-            name[(arlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) +% memlen] = ')';
-            name[((arlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) +% memlen) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))] = '\x00';
+            _ = memcpy(@as(?*anyopaque, @ptrCast((name + arlen) + @as(usize, @bitCast(@as(isize, @intCast(1)))))), @as(?*const anyopaque, @ptrCast(memname)), memlen);
+            name[(arlen +% @as(usize, 1)) +% memlen] = ')';
+            name[((arlen +% @as(usize, 1)) +% memlen) +% @as(usize, 1)] = '\x00';
             if (arfile.*.name == arfile.*.hname) {
                 rename_file(file_1, strcache_add(name));
             } else {
@@ -650,47 +650,47 @@ export fn f_mtime(arg_file_1: [*c]struct_file, arg_search: c_int) uintmax_t {
         }
         free(@as(?*anyopaque, @ptrCast(arname)));
         file_1.*.low_resolution_time = 1;
-        if (mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) return 1;
+        if (mtime == @as(uintmax_t, 1)) return 1;
         member_date = ar_member_date(file_1.*.hname);
-        if ((member_date == @as(time_t, @bitCast(@as(c_long, -@as(c_int, 1))))) or ((memmtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) and (@as(time_t, @bitCast((memmtime -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0)))) > member_date))) {
+        if ((member_date == @as(time_t, @bitCast(@as(c_long, -1)))) or ((memmtime != @as(uintmax_t, 1)) and (@as(time_t, @bitCast((memmtime -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0))) > member_date))) {
             mtime = 1;
         } else {
-            mtime = file_timestamp_cons(file_1.*.hname, member_date, @as(c_long, @bitCast(@as(c_long, @as(c_int, 0)))));
+            mtime = file_timestamp_cons(file_1.*.hname, member_date, @as(c_long, 0));
         }
     } else {
         mtime = name_mtime(file_1.*.name);
-        if (((mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) and (search != 0)) and !(file_1.*.ignore_vpath != 0)) {
+        if (((mtime == @as(uintmax_t, 1)) and (search != 0)) and !(file_1.*.ignore_vpath != 0)) {
             var name: [*c]const u8 = vpath_search(file_1.*.name, &mtime, null, null);
             _ = &name;
-            if ((name != null) or (((@as(c_int, @bitCast(@as(c_uint, file_1.*.name[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '-')) and (@as(c_int, @bitCast(@as(c_uint, file_1.*.name[@as(c_uint, @intCast(@as(c_int, 1)))]))) == @as(c_int, 'l'))) and ((blk: {
+            if ((name != null) or (((@as(c_int, @bitCast(@as(c_uint, file_1.*.name[0]))) == @as(c_int, '-')) and (@as(c_int, @bitCast(@as(c_uint, file_1.*.name[1]))) == @as(c_int, 'l'))) and ((blk: {
                 const tmp = library_search(file_1.*.name, &mtime);
                 name = tmp;
                 break :blk tmp;
             }) != null))) {
                 var name_len: usize = undefined;
                 _ = &name_len;
-                if (mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+                if (mtime != @as(uintmax_t, 0)) {
                     file_1.*.last_mtime = mtime;
                 }
-                name_len = (strlen(name) -% strlen(file_1.*.name)) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+                name_len = (strlen(name) -% strlen(file_1.*.name)) -% @as(c_ulong, 1);
                 if (gpath_search(name, name_len) != 0) {
                     rename_file(file_1, name);
                     while (file_1.*.renamed != null) {
                         file_1 = file_1.*.renamed;
                     }
-                    return if (file_1.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(file_1, @as(c_int, 1)) else file_1.*.last_mtime;
+                    return if (file_1.*.last_mtime == @as(uintmax_t, 0)) f_mtime(file_1, 1) else file_1.*.last_mtime;
                 }
                 rehash_file(file_1, name);
                 while (file_1.*.renamed != null) {
                     file_1 = file_1.*.renamed;
                 }
-                if ((mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2))))) and (mtime != (~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))))) {
+                if ((mtime != @as(uintmax_t, 2)) and (mtime != (~@as(uintmax_t, 0) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -1))) <= @as(uintmax_t, 0))) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, 8)) -% @as(c_ulong, 1)))))) {
                     mtime = name_mtime(name);
                 }
             }
         }
     }
-    if (((!(clock_skew_detected != 0) and (mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1)))))) and (mtime != (~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))))) and !(file_1.*.updated != 0)) {
+    if (((!(clock_skew_detected != 0) and (mtime != @as(uintmax_t, 1))) and (mtime != (~@as(uintmax_t, 0) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -1))) <= @as(uintmax_t, 0))) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, 8)) -% @as(c_ulong, 1)))))) and !(file_1.*.updated != 0)) {
         const adjusted_now = struct {
             var static: uintmax_t = @import("std").mem.zeroes(uintmax_t);
         };
@@ -702,9 +702,9 @@ export fn f_mtime(arg_file_1: [*c]struct_file, arg_search: c_int) uintmax_t {
             _ = &resolution;
             var now: uintmax_t = file_timestamp_now(&resolution);
             _ = &now;
-            adjusted_now.static = now +% @as(uintmax_t, @bitCast(@as(c_long, resolution - @as(c_int, 1))));
+            adjusted_now.static = now +% @as(uintmax_t, @bitCast(@as(c_long, resolution - 1)));
             if (adjusted_now.static < adjusted_mtime) {
-                var from_now: f64 = @as(f64, @floatFromInt(((mtime -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) -% ((now -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))))) + (@as(f64, @floatFromInt(@as(c_int, @bitCast(@as(c_uint, @truncate((mtime -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) & @as(uintmax_t, @bitCast(@as(c_long, (@as(c_int, 1) << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) - @as(c_int, 1)))))))) - @as(c_int, @bitCast(@as(c_uint, @truncate((now -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) & @as(uintmax_t, @bitCast(@as(c_long, (@as(c_int, 1) << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) - @as(c_int, 1)))))))))) / 1000000000.0);
+                var from_now: f64 = @as(f64, @floatFromInt(((mtime -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0)) -% ((now -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0)))) + (@as(f64, @floatFromInt(@as(c_int, @bitCast(@as(c_uint, @truncate((mtime -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) & @as(uintmax_t, @bitCast(@as(c_long, (1 << @intCast(if (true) @as(c_int, 30) else 0)) - 1))))))) - @as(c_int, @bitCast(@as(c_uint, @truncate((now -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) & @as(uintmax_t, @bitCast(@as(c_long, (1 << @intCast(if (true) @as(c_int, 30) else 0)) - 1))))))))) / 1000000000.0);
                 _ = &from_now;
                 var from_now_string: [100]u8 = undefined;
                 _ = &from_now_string;
@@ -713,7 +713,7 @@ export fn f_mtime(arg_file_1: [*c]struct_file, arg_search: c_int) uintmax_t {
                 } else {
                     _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&from_now_string))), "%.2g", from_now);
                 }
-                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(file_1.*.name) +% strlen(@as([*c]u8, @ptrCast(@alignCast(&from_now_string)))), gettext("Warning: File '%s' has modification time %s s in the future"), file_1.*.name, @as([*c]u8, @ptrCast(@alignCast(&from_now_string))));
+                @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(file_1.*.name) +% strlen(@as([*c]u8, @ptrCast(@alignCast(&from_now_string)))), gettext("Warning: File '%s' has modification time %s s in the future"), file_1.*.name, @as([*c]u8, @ptrCast(@alignCast(&from_now_string))));
                 clock_skew_detected = 1;
             }
         }
@@ -723,7 +723,7 @@ export fn f_mtime(arg_file_1: [*c]struct_file, arg_search: c_int) uintmax_t {
     }
     propagate_timestamp = file_1.*.updated;
     while (true) {
-        if ((((mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) and (file_1.*.command_state == @as(c_uint, @bitCast(cs_not_started)))) and !(file_1.*.tried_implicit != 0)) and (file_1.*.intermediate != 0)) {
+        if ((((mtime != @as(uintmax_t, 1)) and (file_1.*.command_state == @as(c_uint, @bitCast(cs_not_started)))) and !(file_1.*.tried_implicit != 0)) and (file_1.*.intermediate != 0)) {
             file_1.*.intermediate = 0;
         }
         if (file_1.*.updated == propagate_timestamp) {
@@ -809,7 +809,7 @@ export fn update_goal_chain(arg_goaldeps: [*c]struct_goaldep) enum_update_status
         var lastgoal: [*c]struct_dep = undefined;
         _ = &lastgoal;
         start_waiting_jobs();
-        reap_children(@intFromBool(last_cmd_count == command_count), @as(c_int, 0));
+        reap_children(@intFromBool(last_cmd_count == command_count), 0);
         last_cmd_count = command_count;
         lastgoal = null;
         gu = goals;
@@ -824,12 +824,12 @@ export fn update_goal_chain(arg_goaldeps: [*c]struct_goaldep) enum_update_status
             goal_dep = g;
             {
                 file_1 = if (g.*.file.*.double_colon != null) g.*.file.*.double_colon else g.*.file;
-                while (file_1 != @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (file_1 = file_1.*.prev) {
+                while (file_1 != @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (file_1 = file_1.*.prev) {
                     var ocommands_started: c_uint = undefined;
                     _ = &ocommands_started;
                     var fail: enum_update_status_36 = undefined;
                     _ = &fail;
-                    file_1.*.dontcare = @as(c_uint, @intFromBool((g.*.flags & @as(c_uint, @bitCast(@as(c_int, 1) << @intCast(2)))) != @as(c_uint, @bitCast(@as(c_int, 0)))));
+                    file_1.*.dontcare = @as(c_uint, @intFromBool((g.*.flags & @as(c_uint, @bitCast(1 << @intCast(2)))) != @as(c_uint, 0)));
                     while (file_1.*.renamed != null) {
                         file_1 = file_1.*.renamed;
                     }
@@ -841,7 +841,7 @@ export fn update_goal_chain(arg_goaldeps: [*c]struct_goaldep) enum_update_status
                         } else {
                             touch_flag = blk: {
                                 const tmp = blk_1: {
-                                    const tmp_2 = @as(c_int, 0);
+                                    const tmp_2 = 0;
                                     just_print_flag = tmp_2;
                                     break :blk_1 tmp_2;
                                 };
@@ -851,7 +851,7 @@ export fn update_goal_chain(arg_goaldeps: [*c]struct_goaldep) enum_update_status
                         }
                     }
                     ocommands_started = commands_started;
-                    fail = update_file(file_1, @as(c_uint, @bitCast(if (rebuilding_makefiles != 0) @as(c_int, 1) else @as(c_int, 0))));
+                    fail = update_file(file_1, @as(c_uint, @bitCast(if (rebuilding_makefiles != 0) 1 else 0)));
                     while (file_1.*.renamed != null) {
                         file_1 = file_1.*.renamed;
                     }
@@ -864,7 +864,7 @@ export fn update_goal_chain(arg_goaldeps: [*c]struct_goaldep) enum_update_status
                             status = file_1.*.update_status;
                             stop = @intFromBool(((question_flag != 0) and !(keep_going_flag != 0)) and !(rebuilding_makefiles != 0));
                         } else {
-                            var mtime: uintmax_t = if (rebuilding_makefiles != 0) if (file_1.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(file_1, @as(c_int, 0)) else file_1.*.last_mtime else if (file_1.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(file_1, @as(c_int, 1)) else file_1.*.last_mtime;
+                            var mtime: uintmax_t = if (rebuilding_makefiles != 0) if (file_1.*.last_mtime == @as(uintmax_t, 0)) f_mtime(file_1, 0) else file_1.*.last_mtime else if (file_1.*.last_mtime == @as(uintmax_t, 0)) f_mtime(file_1, 1) else file_1.*.last_mtime;
                             _ = &mtime;
                             while (file_1.*.renamed != null) {
                                 file_1 = file_1.*.renamed;
@@ -887,7 +887,7 @@ export fn update_goal_chain(arg_goaldeps: [*c]struct_goaldep) enum_update_status
             file_1 = g.*.file;
             if ((stop != 0) or !(any_not_updated != 0)) {
                 if ((((!(rebuilding_makefiles != 0) and (file_1.*.update_status == @as(c_uint, @bitCast(us_success)))) and !(g.*.changed != 0)) and !(run_silent != 0)) and !(question_flag != 0)) {
-                    message(@as(c_int, 1), strlen(file_1.*.name), if ((file_1.*.phony != 0) or (file_1.*.cmds == null)) gettext("Nothing to be done for '%s'.") else gettext("'%s' is up to date."), file_1.*.name);
+                    message(1, strlen(file_1.*.name), if ((file_1.*.phony != 0) or (file_1.*.cmds == null)) gettext("Nothing to be done for '%s'.") else gettext("'%s' is up to date."), file_1.*.name);
                 }
                 if (lastgoal == null) {
                     goals = gu.*.next;
@@ -949,7 +949,7 @@ fn update_file(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) enum
     if (f.*.considered == considered) {
         if (!((((f.*.updated != 0) and (f.*.update_status > @as(c_uint, @bitCast(us_none)))) and !(f.*.dontcare != 0)) and (f.*.no_diag != 0))) {
             while (true) {
-                if ((@as(c_int, 2) & db_level) != 0) {
+                if ((2 & db_level) != 0) {
                     print_spaces(depth);
                     _ = printf(gettext("Pruning file '%s'.\n"), file_1.*.name);
                     _ = fflush(stdout);
@@ -1003,7 +1003,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     var running: c_int = 0;
     _ = &running;
     while (true) {
-        if ((@as(c_int, 2) & db_level) != 0) {
+        if ((2 & db_level) != 0) {
             print_spaces(depth);
             _ = printf(gettext("Considering target file '%s'.\n"), file_1.*.name);
             _ = fflush(stdout);
@@ -1013,7 +1013,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     if (file_1.*.updated != 0) {
         if (file_1.*.update_status > @as(c_uint, @bitCast(us_none))) {
             while (true) {
-                if ((@as(c_int, 2) & db_level) != 0) {
+                if ((2 & db_level) != 0) {
                     print_spaces(depth);
                     _ = printf(gettext("Recently tried and failed to update file '%s'.\n"), file_1.*.name);
                     _ = fflush(stdout);
@@ -1026,7 +1026,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
             return file_1.*.update_status;
         }
         while (true) {
-            if ((@as(c_int, 2) & db_level) != 0) {
+            if ((2 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("File '%s' was considered already.\n"), file_1.*.name);
                 _ = fflush(stdout);
@@ -1037,10 +1037,10 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     }
     while (true) {
         switch (file_1.*.command_state) {
-            @as(c_uint, @bitCast(@as(c_int, 0))), @as(c_uint, @bitCast(@as(c_int, 1))) => break,
-            @as(c_uint, @bitCast(@as(c_int, 2))) => {
+            @as(c_uint, 0), @as(c_uint, 1) => break,
+            @as(c_uint, 2) => {
                 while (true) {
-                    if ((@as(c_int, 2) & db_level) != 0) {
+                    if ((2 & db_level) != 0) {
                         print_spaces(depth);
                         _ = printf(gettext("Still updating file '%s'.\n"), file_1.*.name);
                         _ = fflush(stdout);
@@ -1049,9 +1049,9 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
                 }
                 return @as(c_uint, @bitCast(us_success));
             },
-            @as(c_uint, @bitCast(@as(c_int, 3))) => {
+            @as(c_uint, 3) => {
                 while (true) {
-                    if ((@as(c_int, 2) & db_level) != 0) {
+                    if ((2 & db_level) != 0) {
                         print_spaces(depth);
                         _ = printf(gettext("Finished updating file '%s'.\n"), file_1.*.name);
                         _ = fflush(stdout);
@@ -1068,48 +1068,48 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     }
     file_1.*.no_diag = file_1.*.dontcare;
     _ = blk: {
-        const tmp = @as(c_uint, @bitCast(@as(c_int, 1)));
+        const tmp = @as(c_uint, 1);
         (if (file_1.*.double_colon != null) file_1.*.double_colon else file_1).*.updating = tmp;
         break :blk tmp;
     };
     ofile = file_1;
     depth +%= 1;
-    this_mtime = if (file_1.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(file_1, @as(c_int, 1)) else file_1.*.last_mtime;
+    this_mtime = if (file_1.*.last_mtime == @as(uintmax_t, 0)) f_mtime(file_1, 1) else file_1.*.last_mtime;
     while (file_1.*.renamed != null) {
         file_1 = file_1.*.renamed;
     }
-    noexist = @intFromBool(this_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1)))));
+    noexist = @intFromBool(this_mtime == @as(uintmax_t, 1));
     if (noexist != 0) {
         while (true) {
-            if ((@as(c_int, 1) & db_level) != 0) {
+            if ((1 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("File '%s' does not exist.\n"), file_1.*.name);
                 _ = fflush(stdout);
             }
             if (!false) break;
         }
-    } else if (((this_mtime >= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) and (this_mtime <= (((((((~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) +% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else @as(c_int, 1))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))))) and (file_1.*.low_resolution_time != 0)) {
-        var ns: c_int = @as(c_int, @bitCast(@as(c_uint, @truncate((this_mtime -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) & @as(uintmax_t, @bitCast(@as(c_long, (@as(c_int, 1) << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) - @as(c_int, 1))))))));
+    } else if (((this_mtime >= @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) and (this_mtime <= (((((((~@as(uintmax_t, 0) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -1))) <= @as(uintmax_t, 0))) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, 8)) -% @as(c_ulong, 1)))) -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0)) << @intCast(if (true) @as(c_int, 30) else 0)) +% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else 1)))) -% @as(uintmax_t, 1)))) and (file_1.*.low_resolution_time != 0)) {
+        var ns: c_int = @as(c_int, @bitCast(@as(c_uint, @truncate((this_mtime -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) & @as(uintmax_t, @bitCast(@as(c_long, (1 << @intCast(if (true) @as(c_int, 30) else 0)) - 1)))))));
         _ = &ns;
-        if (ns != @as(c_int, 0)) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(file_1.*.name), gettext("*** Warning: .LOW_RESOLUTION_TIME file '%s' has a high resolution time stamp"), file_1.*.name);
+        if (ns != 0) {
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(file_1.*.name), gettext("*** Warning: .LOW_RESOLUTION_TIME file '%s' has a high resolution time stamp"), file_1.*.name);
         }
-        this_mtime +%= @as(uintmax_t, @bitCast(@as(c_long, ((if (true) @as(c_int, 1000000000) else @as(c_int, 1)) - @as(c_int, 1)) - ns)));
+        this_mtime +%= @as(uintmax_t, @bitCast(@as(c_long, ((if (true) @as(c_int, 1000000000) else 1) - 1) - ns)));
     }
     {
         ad = file_1.*.also_make;
         while ((ad != null) and !(noexist != 0)) : (ad = ad.*.next) {
             var adfile: [*c]struct_file = ad.*.file;
             _ = &adfile;
-            var fmtime: uintmax_t = if (adfile.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(adfile, @as(c_int, 1)) else adfile.*.last_mtime;
+            var fmtime: uintmax_t = if (adfile.*.last_mtime == @as(uintmax_t, 0)) f_mtime(adfile, 1) else adfile.*.last_mtime;
             _ = &fmtime;
-            noexist = @intFromBool(fmtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1)))));
+            noexist = @intFromBool(fmtime == @as(uintmax_t, 1));
             if (noexist != 0) {
                 while (adfile.*.renamed != null) {
                     adfile = adfile.*.renamed;
                 }
                 while (true) {
-                    if ((@as(c_int, 1) & db_level) != 0) {
+                    if ((1 & db_level) != 0) {
                         print_spaces(depth);
                         _ = printf(gettext("Grouped target peer '%s' of file '%s' does not exist.\n"), adfile.*.name, file_1.*.name);
                         _ = fflush(stdout);
@@ -1128,7 +1128,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     }
     if ((((file_1.*.cmds == null) and !(file_1.*.is_target != 0)) and (default_file != null)) and (default_file.*.cmds != null)) {
         while (true) {
-            if ((@as(c_int, 8) & db_level) != 0) {
+            if ((8 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("Using default recipe for '%s'.\n"), file_1.*.name);
                 _ = fflush(stdout);
@@ -1162,12 +1162,12 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
             while (d.*.file.*.renamed != null) {
                 d.*.file = d.*.file.*.renamed;
             }
-            mtime = if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 1)) else d.*.file.*.last_mtime;
+            mtime = if (d.*.file.*.last_mtime == @as(uintmax_t, 0)) f_mtime(d.*.file, 1) else d.*.file.*.last_mtime;
             while (d.*.file.*.renamed != null) {
                 d.*.file = d.*.file.*.renamed;
             }
             if ((if (d.*.file.*.double_colon != null) d.*.file.*.double_colon else d.*.file).*.updating != 0) {
-                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(file_1.*.name) +% strlen(d.*.file.*.name), gettext("Circular %s <- %s dependency dropped."), file_1.*.name, d.*.file.*.name);
+                @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(file_1.*.name) +% strlen(d.*.file.*.name), gettext("Circular %s <- %s dependency dropped."), file_1.*.name, d.*.file.*.name);
                 if (lastd == null) {
                     file_1.*.deps = du.*.next;
                 } else {
@@ -1209,7 +1209,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
             }
             if ((dep_status != 0) and !(keep_going_flag != 0)) break;
             if (!(running != 0)) {
-                d.*.changed = @as(c_uint, @intFromBool(((if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 1)) else d.*.file.*.last_mtime) != mtime) or (mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1)))))));
+                d.*.changed = @as(c_uint, @intFromBool(((if (d.*.file.*.last_mtime == @as(uintmax_t, 0)) f_mtime(d.*.file, 1) else d.*.file.*.last_mtime) != mtime) or (mtime == @as(uintmax_t, 1))));
             }
             lastd = du;
             du = du.*.next;
@@ -1226,7 +1226,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
                     _ = &new;
                     var dontcare: c_int = 0;
                     _ = &dontcare;
-                    var mtime: uintmax_t = if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 1)) else d.*.file.*.last_mtime;
+                    var mtime: uintmax_t = if (d.*.file.*.last_mtime == @as(uintmax_t, 0)) f_mtime(d.*.file, 1) else d.*.file.*.last_mtime;
                     _ = &mtime;
                     while (d.*.file.*.renamed != null) {
                         d.*.file = d.*.file.*.renamed;
@@ -1261,19 +1261,19 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
                     }
                     if ((dep_status != 0) and !(keep_going_flag != 0)) break;
                     if (!(running != 0)) {
-                        d.*.changed = @as(c_uint, @intFromBool(((file_1.*.phony != 0) and (file_1.*.cmds != null)) or ((if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 1)) else d.*.file.*.last_mtime) != mtime)));
+                        d.*.changed = @as(c_uint, @intFromBool(((file_1.*.phony != 0) and (file_1.*.cmds != null)) or ((if (d.*.file.*.last_mtime == @as(uintmax_t, 0)) f_mtime(d.*.file, 1) else d.*.file.*.last_mtime) != mtime)));
                     }
                 }
             }
         }
     }
     _ = blk: {
-        const tmp = @as(c_uint, @bitCast(@as(c_int, 0)));
+        const tmp = @as(c_uint, 0);
         (if (file_1.*.double_colon != null) file_1.*.double_colon else file_1).*.updating = tmp;
         break :blk tmp;
     };
     _ = blk: {
-        const tmp = @as(c_uint, @bitCast(@as(c_int, 0)));
+        const tmp = @as(c_uint, 0);
         (if (ofile.*.double_colon != null) ofile.*.double_colon else ofile).*.updating = tmp;
         break :blk tmp;
     };
@@ -1281,7 +1281,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     if (running != 0) {
         set_command_state(file_1, @as(c_uint, @bitCast(cs_deps_running)));
         while (true) {
-            if ((@as(c_int, 2) & db_level) != 0) {
+            if ((2 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("The prerequisites of '%s' are being made.\n"), file_1.*.name);
                 _ = fflush(stdout);
@@ -1291,7 +1291,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
         return @as(c_uint, @bitCast(us_success));
     }
     while (true) {
-        if ((@as(c_int, 2) & db_level) != 0) {
+        if ((2 & db_level) != 0) {
             print_spaces(depth);
             _ = printf(gettext("Finished prerequisites of target file '%s'.\n"), file_1.*.name);
             _ = fflush(stdout);
@@ -1302,15 +1302,15 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
         file_1.*.update_status = if (dep_status == @as(c_uint, @bitCast(us_none))) @as(c_uint, @bitCast(us_failed)) else dep_status;
         notice_finished_file(file_1);
         while (true) {
-            if ((@as(c_int, 2) & db_level) != 0) {
+            if ((2 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("Giving up on target file '%s'.\n"), file_1.*.name);
                 _ = fflush(stdout);
             }
             if (!false) break;
         }
-        if ((((depth == @as(c_uint, @bitCast(@as(c_int, 0)))) and (keep_going_flag != 0)) and !(just_print_flag != 0)) and !(question_flag != 0)) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(file_1.*.name), gettext("Target '%s' not remade because of errors."), file_1.*.name);
+        if ((((depth == @as(c_uint, 0)) and (keep_going_flag != 0)) and !(just_print_flag != 0)) and !(question_flag != 0)) {
+            @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(file_1.*.name), gettext("Target '%s' not remade because of errors."), file_1.*.name);
         }
         return dep_status;
     }
@@ -1321,38 +1321,38 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     {
         d = file_1.*.deps;
         while (d != null) : (d = d.*.next) {
-            var d_mtime: uintmax_t = if (d.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(d.*.file, @as(c_int, 1)) else d.*.file.*.last_mtime;
+            var d_mtime: uintmax_t = if (d.*.file.*.last_mtime == @as(uintmax_t, 0)) f_mtime(d.*.file, 1) else d.*.file.*.last_mtime;
             _ = &d_mtime;
             while (d.*.file.*.renamed != null) {
                 d.*.file = d.*.file.*.renamed;
             }
             if (!(d.*.ignore_mtime != 0)) {
-                if ((d_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) and !(d.*.file.*.intermediate != 0)) {
+                if ((d_mtime == @as(uintmax_t, 1)) and !(d.*.file.*.intermediate != 0)) {
                     must_make = 1;
                 }
                 deps_changed |= @as(c_int, @bitCast(d.*.changed));
             }
             d.*.changed |= @as(c_uint, @intFromBool((noexist != 0) or (d_mtime > this_mtime)));
-            if (!(noexist != 0) and (((@as(c_int, 1) | @as(c_int, 2)) & db_level) != 0)) {
+            if (!(noexist != 0) and (((1 | 2) & db_level) != 0)) {
                 var fmt: [*c]const u8 = null;
                 _ = &fmt;
                 if (d.*.ignore_mtime != 0) {
-                    if ((@as(c_int, 2) & db_level) != 0) {
+                    if ((2 & db_level) != 0) {
                         fmt = gettext("Prerequisite '%s' is order-only for target '%s'.\n");
                     }
-                } else if (d_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) {
-                    if ((@as(c_int, 1) & db_level) != 0) {
+                } else if (d_mtime == @as(uintmax_t, 1)) {
+                    if ((1 & db_level) != 0) {
                         fmt = gettext("Prerequisite '%s' of target '%s' does not exist.\n");
                     }
                 } else if (d.*.changed != 0) {
-                    if ((@as(c_int, 1) & db_level) != 0) {
+                    if ((1 & db_level) != 0) {
                         fmt = gettext("Prerequisite '%s' is newer than target '%s'.\n");
                     }
-                } else if ((@as(c_int, 2) & db_level) != 0) {
+                } else if ((2 & db_level) != 0) {
                     fmt = gettext("Prerequisite '%s' is older than target '%s'.\n");
                 }
                 if (fmt != null) {
-                    print_spaces(depth +% @as(c_uint, @bitCast(@as(c_int, 1))));
+                    print_spaces(depth +% @as(c_uint, 1));
                     _ = printf(fmt, if (d.*.name != null) d.*.name else d.*.file.*.name, file_1.*.name);
                     _ = fflush(stdout);
                 }
@@ -1362,7 +1362,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     if ((file_1.*.double_colon != null) and (file_1.*.deps == null)) {
         must_make = 1;
         while (true) {
-            if ((@as(c_int, 1) & db_level) != 0) {
+            if ((1 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("Target '%s' is double-colon and has no prerequisites.\n"), file_1.*.name);
                 _ = fflush(stdout);
@@ -1372,7 +1372,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     } else if ((((!(noexist != 0) and (file_1.*.is_target != 0)) and !(deps_changed != 0)) and (file_1.*.cmds == null)) and !(always_make_flag != 0)) {
         must_make = 0;
         while (true) {
-            if ((@as(c_int, 2) & db_level) != 0) {
+            if ((2 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("No recipe for '%s' and no prerequisites actually changed.\n"), file_1.*.name);
                 _ = fflush(stdout);
@@ -1382,7 +1382,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     } else if ((!(must_make != 0) and (file_1.*.cmds != null)) and (always_make_flag != 0)) {
         must_make = 1;
         while (true) {
-            if ((@as(c_int, 2) & db_level) != 0) {
+            if ((2 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("Making '%s' due to always-make flag.\n"), file_1.*.name);
                 _ = fflush(stdout);
@@ -1391,16 +1391,16 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
         }
     }
     if (!(must_make != 0)) {
-        if ((@as(c_int, 2) & db_level) != 0) {
+        if ((2 & db_level) != 0) {
             print_spaces(depth);
             _ = printf(gettext("No need to remake target '%s'"), file_1.*.name);
-            if (!((file_1.*.name == file_1.*.hname) or ((@as(c_int, @bitCast(@as(c_uint, file_1.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, file_1.*.hname.*)))) and ((@as(c_int, @bitCast(@as(c_uint, file_1.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(file_1.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), file_1.*.hname + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+            if (!((file_1.*.name == file_1.*.hname) or ((@as(c_int, @bitCast(@as(c_uint, file_1.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, file_1.*.hname.*)))) and ((@as(c_int, @bitCast(@as(c_uint, file_1.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(file_1.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), file_1.*.hname + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) {
                 _ = printf(gettext("; using VPATH name '%s'"), file_1.*.hname);
             }
             _ = puts(".");
             _ = fflush(stdout);
         }
-        if (!(file_1.*.notintermediate != 0) and (no_intermediates == @as(c_uint, @bitCast(@as(c_int, 0))))) {
+        if (!(file_1.*.notintermediate != 0) and (no_intermediates == @as(c_uint, 0))) {
             file_1.*.secondary = 1;
         }
         notice_finished_file(file_1);
@@ -1411,16 +1411,16 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
         return @as(c_uint, @bitCast(us_success));
     }
     while (true) {
-        if ((@as(c_int, 1) & db_level) != 0) {
+        if ((1 & db_level) != 0) {
             print_spaces(depth);
             _ = printf(gettext("Must remake target '%s'.\n"), file_1.*.name);
             _ = fflush(stdout);
         }
         if (!false) break;
     }
-    if (!((file_1.*.name == file_1.*.hname) or ((@as(c_int, @bitCast(@as(c_uint, file_1.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, file_1.*.hname.*)))) and ((@as(c_int, @bitCast(@as(c_uint, file_1.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(file_1.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), file_1.*.hname + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+    if (!((file_1.*.name == file_1.*.hname) or ((@as(c_int, @bitCast(@as(c_uint, file_1.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, file_1.*.hname.*)))) and ((@as(c_int, @bitCast(@as(c_uint, file_1.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(file_1.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), file_1.*.hname + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) {
         while (true) {
-            if ((@as(c_int, 1) & db_level) != 0) {
+            if ((1 & db_level) != 0) {
                 _ = printf(gettext("  Ignoring VPATH name '%s'.\n"), file_1.*.hname);
                 _ = fflush(stdout);
             }
@@ -1431,7 +1431,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     remake_file(file_1);
     if (file_1.*.command_state != @as(c_uint, @bitCast(cs_finished))) {
         while (true) {
-            if ((@as(c_int, 2) & db_level) != 0) {
+            if ((2 & db_level) != 0) {
                 print_spaces(depth);
                 _ = printf(gettext("Recipe of '%s' is being run.\n"), file_1.*.name);
                 _ = fflush(stdout);
@@ -1442,9 +1442,9 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
     }
     while (true) {
         switch (file_1.*.update_status) {
-            @as(c_uint, @bitCast(@as(c_int, 3))) => {
+            @as(c_uint, 3) => {
                 while (true) {
-                    if ((@as(c_int, 1) & db_level) != 0) {
+                    if ((1 & db_level) != 0) {
                         print_spaces(depth);
                         _ = printf(gettext("Failed to remake target file '%s'.\n"), file_1.*.name);
                         _ = fflush(stdout);
@@ -1453,9 +1453,9 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
                 }
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 0))) => {
+            @as(c_uint, 0) => {
                 while (true) {
-                    if ((@as(c_int, 1) & db_level) != 0) {
+                    if ((1 & db_level) != 0) {
                         print_spaces(depth);
                         _ = printf(gettext("Successfully remade target file '%s'.\n"), file_1.*.name);
                         _ = fflush(stdout);
@@ -1464,9 +1464,9 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
                 }
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 2))) => {
+            @as(c_uint, 2) => {
                 while (true) {
-                    if ((@as(c_int, 1) & db_level) != 0) {
+                    if ((1 & db_level) != 0) {
                         print_spaces(depth);
                         _ = printf(gettext("Target file '%s' needs to be remade under -q.\n"), file_1.*.name);
                         _ = fflush(stdout);
@@ -1475,7 +1475,7 @@ fn update_file_1(arg_file_1: [*c]struct_file, arg_depth: c_uint) callconv(.C) en
                 }
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 1))) => break,
+            @as(c_uint, 1) => break,
             else => {},
         }
         break;
@@ -1499,7 +1499,7 @@ fn check_dep(arg_file_1: [*c]struct_file, arg_depth: c_uint, arg_this_mtime: uin
     var dep_status: enum_update_status_36 = @as(c_uint, @bitCast(us_success));
     _ = &dep_status;
     _ = blk: {
-        const tmp = @as(c_uint, @bitCast(@as(c_int, 1)));
+        const tmp = @as(c_uint, 1);
         (if (file_1.*.double_colon != null) file_1.*.double_colon else file_1).*.updating = tmp;
         break :blk tmp;
     };
@@ -1511,11 +1511,11 @@ fn check_dep(arg_file_1: [*c]struct_file, arg_depth: c_uint, arg_this_mtime: uin
         while (file_1.*.renamed != null) {
             file_1 = file_1.*.renamed;
         }
-        mtime = if (file_1.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(file_1, @as(c_int, 1)) else file_1.*.last_mtime;
+        mtime = if (file_1.*.last_mtime == @as(uintmax_t, 0)) f_mtime(file_1, 1) else file_1.*.last_mtime;
         while (file_1.*.renamed != null) {
             file_1 = file_1.*.renamed;
         }
-        if ((mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) or (mtime > this_mtime)) {
+        if ((mtime == @as(uintmax_t, 1)) or (mtime > this_mtime)) {
             must_make_ptr.* = 1;
         }
     } else {
@@ -1527,7 +1527,7 @@ fn check_dep(arg_file_1: [*c]struct_file, arg_depth: c_uint, arg_this_mtime: uin
         }
         if ((((file_1.*.cmds == null) and !(file_1.*.is_target != 0)) and (default_file != null)) and (default_file.*.cmds != null)) {
             while (true) {
-                if ((@as(c_int, 8) & db_level) != 0) {
+                if ((8 & db_level) != 0) {
                     print_spaces(depth);
                     _ = printf(gettext("Using default commands for '%s'.\n"), file_1.*.name);
                     _ = fflush(stdout);
@@ -1539,11 +1539,11 @@ fn check_dep(arg_file_1: [*c]struct_file, arg_depth: c_uint, arg_this_mtime: uin
         while (file_1.*.renamed != null) {
             file_1 = file_1.*.renamed;
         }
-        mtime = if (file_1.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) f_mtime(file_1, @as(c_int, 1)) else file_1.*.last_mtime;
+        mtime = if (file_1.*.last_mtime == @as(uintmax_t, 0)) f_mtime(file_1, 1) else file_1.*.last_mtime;
         while (file_1.*.renamed != null) {
             file_1 = file_1.*.renamed;
         }
-        if ((mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) and (mtime > this_mtime)) {
+        if ((mtime != @as(uintmax_t, 1)) and (mtime > this_mtime)) {
             must_make_ptr.* = 1;
         } else {
             var ld: [*c]struct_dep = undefined;
@@ -1567,7 +1567,7 @@ fn check_dep(arg_file_1: [*c]struct_file, arg_depth: c_uint, arg_this_mtime: uin
                 var maybe_make: c_int = undefined;
                 _ = &maybe_make;
                 if ((if (d.*.file.*.double_colon != null) d.*.file.*.double_colon else d.*.file).*.updating != 0) {
-                    @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(file_1.*.name) +% strlen(d.*.file.*.name), gettext("Circular %s <- %s dependency dropped."), file_1.*.name, d.*.file.*.name);
+                    @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(file_1.*.name) +% strlen(d.*.file.*.name), gettext("Circular %s <- %s dependency dropped."), file_1.*.name, d.*.file.*.name);
                     if (ld == null) {
                         file_1.*.deps = d.*.next;
                         free(@as(?*anyopaque, @ptrCast(d)));
@@ -1581,7 +1581,7 @@ fn check_dep(arg_file_1: [*c]struct_file, arg_depth: c_uint, arg_this_mtime: uin
                 }
                 d.*.file.*.parent = file_1;
                 maybe_make = must_make_ptr.*;
-                new = check_dep(d.*.file, depth +% @as(c_uint, @bitCast(@as(c_int, 1))), this_mtime, &maybe_make);
+                new = check_dep(d.*.file, depth +% @as(c_uint, 1), this_mtime, &maybe_make);
                 if (new > dep_status) {
                     dep_status = new;
                 }
@@ -1604,12 +1604,12 @@ fn check_dep(arg_file_1: [*c]struct_file, arg_depth: c_uint, arg_this_mtime: uin
         }
     }
     _ = blk: {
-        const tmp = @as(c_uint, @bitCast(@as(c_int, 0)));
+        const tmp = @as(c_uint, 0);
         (if (file_1.*.double_colon != null) file_1.*.double_colon else file_1).*.updating = tmp;
         break :blk tmp;
     };
     _ = blk: {
-        const tmp = @as(c_uint, @bitCast(@as(c_int, 0)));
+        const tmp = @as(c_uint, 0);
         (if (ofile.*.double_colon != null) ofile.*.double_colon else ofile).*.updating = tmp;
         break :blk tmp;
     };
@@ -1619,18 +1619,18 @@ fn touch_file(arg_file_1: [*c]struct_file) callconv(.C) enum_update_status_36 {
     var file_1 = arg_file_1;
     _ = &file_1;
     if (!(run_silent != 0)) {
-        message(@as(c_int, 0), strlen(file_1.*.name), "touch %s", file_1.*.name);
+        message(0, strlen(file_1.*.name), "touch %s", file_1.*.name);
     }
     if (just_print_flag != 0) return @as(c_uint, @bitCast(us_success));
     if (ar_name(file_1.*.name) != 0) return @as(c_uint, @bitCast(if (ar_touch(file_1.*.name) != 0) us_failed else us_success)) else {
         var fd: c_int = undefined;
         _ = &fd;
         while (((blk: {
-            const tmp = open(file_1.*.name, @as(c_int, 2) | @as(c_int, 64), @as(c_int, 438));
+            const tmp = open(file_1.*.name, 2 | @as(c_int, 64), @as(c_int, 438));
             fd = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (fd < @as(c_int, 0)) {
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (fd < 0) {
             while (true) {
                 perror_with_name("touch: open: ", file_1.*.name);
                 return @as(c_uint, @bitCast(us_failed));
@@ -1646,17 +1646,17 @@ fn touch_file(arg_file_1: [*c]struct_file) callconv(.C) enum_update_status_36 {
                 const tmp = fstat(fd, &statbuf);
                 e = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-            if (e < @as(c_int, 0)) while (true) {
+            }) == -1) and (__errno_location().* == 4)) {}
+            if (e < 0) while (true) {
                 perror_with_name("touch: fstat: ", file_1.*.name);
                 return @as(c_uint, @bitCast(us_failed));
             };
             while (((blk: {
-                const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(fd, @as(?*anyopaque, @ptrCast(&buf)), @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))))))));
+                const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(fd, @as(?*anyopaque, @ptrCast(&buf)), @as(usize, 1))))));
                 e = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-            if (e < @as(c_int, 0)) while (true) {
+            }) == -1) and (__errno_location().* == 4)) {}
+            if (e < 0) while (true) {
                 perror_with_name("touch: read: ", file_1.*.name);
                 return @as(c_uint, @bitCast(us_failed));
             };
@@ -1664,32 +1664,32 @@ fn touch_file(arg_file_1: [*c]struct_file) callconv(.C) enum_update_status_36 {
                 var o: off_t = undefined;
                 _ = &o;
                 while (((blk: {
-                    const tmp = lseek(fd, @as(c_long, 0), @as(c_int, 0));
+                    const tmp = lseek(fd, 0, 0);
                     o = tmp;
                     break :blk tmp;
-                }) == @as(off_t, @bitCast(@as(c_long, -@as(c_int, 1))))) and (__errno_location().* == @as(c_int, 4))) {}
-                if (o < @as(c_long, 0)) while (true) {
+                }) == @as(off_t, @bitCast(@as(c_long, -1)))) and (__errno_location().* == 4)) {}
+                if (o < 0) while (true) {
                     perror_with_name("touch: lseek: ", file_1.*.name);
                     return @as(c_uint, @bitCast(us_failed));
                 };
             }
             while (((blk: {
-                const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(write(fd, @as(?*const anyopaque, @ptrCast(&buf)), @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))))))));
+                const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(write(fd, @as(?*const anyopaque, @ptrCast(&buf)), @as(usize, 1))))));
                 e = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-            if (e < @as(c_int, 0)) while (true) {
+            }) == -1) and (__errno_location().* == 4)) {}
+            if (e < 0) while (true) {
                 perror_with_name("touch: write: ", file_1.*.name);
                 return @as(c_uint, @bitCast(us_failed));
             };
-            if (statbuf.st_size == @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+            if (statbuf.st_size == @as(__off_t, 0)) {
                 _ = close(fd);
                 while (((blk: {
-                    const tmp = open(file_1.*.name, @as(c_int, 2) | @as(c_int, 512), @as(c_int, 438));
+                    const tmp = open(file_1.*.name, 2 | @as(c_int, 512), @as(c_int, 438));
                     fd = tmp;
                     break :blk tmp;
-                }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-                if (fd < @as(c_int, 0)) while (true) {
+                }) == -1) and (__errno_location().* == 4)) {}
+                if (fd < 0) while (true) {
                     perror_with_name("touch: open: ", file_1.*.name);
                     return @as(c_uint, @bitCast(us_failed));
                 };
@@ -1736,10 +1736,10 @@ fn name_mtime(arg_name: [*c]const u8) callconv(.C) uintmax_t {
         const tmp = stat(name, &st);
         e = tmp;
         break :blk tmp;
-    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-    if (e == @as(c_int, 0)) {
+    }) == -1) and (__errno_location().* == 4)) {}
+    if (e == 0) {
         mtime = file_timestamp_cons(name, st.st_mtim.tv_sec, st.st_mtim.tv_nsec);
-    } else if ((__errno_location().* == @as(c_int, 2)) or (__errno_location().* == @as(c_int, 20))) {
+    } else if ((__errno_location().* == 2) or (__errno_location().* == @as(c_int, 20))) {
         mtime = 1;
     } else {
         perror_with_name("stat: ", name);
@@ -1762,9 +1762,9 @@ fn name_mtime(arg_name: [*c]const u8) callconv(.C) uintmax_t {
                 const tmp = lstat(@as([*c]u8, @ptrCast(@alignCast(&lpath))), &st);
                 e = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+            }) == -1) and (__errno_location().* == 4)) {}
             if (e != 0) {
-                if ((__errno_location().* != @as(c_int, 2)) and (__errno_location().* != @as(c_int, 20))) {
+                if ((__errno_location().* != 2) and (__errno_location().* != @as(c_int, 20))) {
                     perror_with_name("lstat: ", @as([*c]u8, @ptrCast(@alignCast(&lpath))));
                 }
                 break;
@@ -1775,23 +1775,23 @@ fn name_mtime(arg_name: [*c]const u8) callconv(.C) uintmax_t {
                 mtime = ltime;
             }
             while (((blk: {
-                const tmp = readlink(@as([*c]u8, @ptrCast(@alignCast(&lpath))), @as([*c]u8, @ptrCast(@alignCast(&lbuf))), @as(usize, @bitCast(@as(c_long, @as(c_int, 4096) - @as(c_int, 1)))));
+                const tmp = readlink(@as([*c]u8, @ptrCast(@alignCast(&lpath))), @as([*c]u8, @ptrCast(@alignCast(&lbuf))), @as(usize, @bitCast(@as(c_long, @as(c_int, 4096) - 1))));
                 llen = tmp;
                 break :blk tmp;
-            }) == @as(c_long, @bitCast(@as(c_long, -@as(c_int, 1))))) and (__errno_location().* == @as(c_int, 4))) {}
-            if (llen < @as(c_long, @bitCast(@as(c_long, @as(c_int, 0))))) {
+            }) == @as(c_long, @bitCast(@as(c_long, -1)))) and (__errno_location().* == 4)) {}
+            if (llen < @as(c_long, 0)) {
                 perror_with_name("readlink: ", @as([*c]u8, @ptrCast(@alignCast(&lpath))));
                 break;
             }
             lbuf[@as(c_ulong, @intCast(llen))] = '\x00';
-            if ((@as(c_int, @bitCast(@as(c_uint, lbuf[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '/')) or ((blk: {
+            if ((@as(c_int, @bitCast(@as(c_uint, lbuf[0]))) == @as(c_int, '/')) or ((blk: {
                 const tmp = strrchr(@as([*c]u8, @ptrCast(@alignCast(&lpath))), @as(c_int, '/'));
                 p = tmp;
                 break :blk tmp;
-            }) == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))))) {
+            }) == @as([*c]u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0))))))) {
                 _ = strcpy(@as([*c]u8, @ptrCast(@alignCast(&lpath))), @as([*c]u8, @ptrCast(@alignCast(&lbuf))));
-            } else if (((@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(@as([*c]u8, @ptrCast(@alignCast(&lpath)))))), @sizeOf(u8)) + llen) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 2))))) > @as(c_long, @bitCast(@as(c_long, @as(c_int, 4096))))) break else {
-                _ = strcpy(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), @as([*c]u8, @ptrCast(@alignCast(&lbuf))));
+            } else if (((@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(@as([*c]u8, @ptrCast(@alignCast(&lpath)))))), @sizeOf(u8)) + llen) + @as(c_long, 2)) > @as(c_long, @bitCast(@as(c_long, @as(c_int, 4096))))) break else {
+                _ = strcpy(p + @as(usize, @bitCast(@as(isize, @intCast(1)))), @as([*c]u8, @ptrCast(@alignCast(&lbuf))));
             }
         }
     }
@@ -1832,7 +1832,7 @@ fn library_search(arg_lib: [*c]const u8, arg_mtime_ptr: [*c]uintmax_t) callconv(
     var dp: [*c][*c]const u8 = undefined;
     _ = &dp;
     libpatterns = xstrdup(variable_expand("$(.LIBPATTERNS)"));
-    lib += @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2)))));
+    lib += @as(usize, @bitCast(@as(isize, @intCast(2))));
     liblen = strlen(lib);
     p2 = libpatterns;
     while ((blk: {
@@ -1868,18 +1868,18 @@ fn library_search(arg_lib: [*c]const u8, arg_mtime_ptr: [*c]uintmax_t) callconv(
             p[len] = '\x00';
             p3 = find_percent(p);
             if (!(p3 != null)) {
-                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(p), gettext(".LIBPATTERNS element '%s' is not a pattern"), p);
+                @"error"(@as([*c]floc, @ptrFromInt(0)), strlen(p), gettext(".LIBPATTERNS element '%s' is not a pattern"), p);
                 p[len] = c;
                 continue;
             }
             p4 = variable_buffer_output(variable_buffer, p, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p3) -% @intFromPtr(p))), @sizeOf(u8)))));
             p4 = variable_buffer_output(p4, lib, liblen);
-            p4 = variable_buffer_output(p4, p3 + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), len -% @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p3) -% @intFromPtr(p))), @sizeOf(u8)))));
+            p4 = variable_buffer_output(p4, p3 + @as(usize, @bitCast(@as(isize, @intCast(1)))), len -% @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p3) -% @intFromPtr(p))), @sizeOf(u8)))));
             p[len] = c;
             libbuf = variable_buffer;
         }
         mtime = name_mtime(libbuf);
-        if (mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) {
+        if (mtime != @as(uintmax_t, 1)) {
             if (mtime_ptr != null) {
                 mtime_ptr.* = mtime;
             }
@@ -1917,20 +1917,20 @@ fn library_search(arg_lib: [*c]const u8, arg_mtime_ptr: [*c]uintmax_t) callconv(
                 }
             }
             buflen.static = strlen(libbuf);
-            buf.static = @as([*c]u8, @ptrCast(@alignCast(xmalloc((libdir_maxlen.static +% buflen.static) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))))));
+            buf.static = @as([*c]u8, @ptrCast(@alignCast(xmalloc((libdir_maxlen.static +% buflen.static) +% @as(usize, 2)))));
         } else if (buflen.static < strlen(libbuf)) {
             buflen.static = strlen(libbuf);
-            buf.static = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(buf.static)), (libdir_maxlen.static +% buflen.static) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))))));
+            buf.static = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(buf.static)), (libdir_maxlen.static +% buflen.static) +% @as(usize, 2)))));
         }
         {
-            var vpath_index: c_uint = ~@as(c_uint, @bitCast(@as(c_int, 0))) -% std_dirs.static;
+            var vpath_index: c_uint = ~@as(c_uint, 0) -% std_dirs.static;
             _ = &vpath_index;
             {
                 dp = @as([*c][*c]const u8, @ptrCast(@alignCast(&dirs.static)));
                 while (dp.* != null) : (dp += 1) {
                     _ = sprintf(buf.static, "%s/%s", dp.*, libbuf);
                     mtime = name_mtime(buf.static);
-                    if (mtime != @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) {
+                    if (mtime != @as(uintmax_t, 1)) {
                         if ((file_1 == null) or (vpath_index < best_vpath)) {
                             file_1 = strcache_add(buf.static);
                             best_vpath = vpath_index;
@@ -1954,13 +1954,13 @@ fn check_also_make(arg_file_1: [*c]const struct_file) callconv(.C) void {
     _ = &ad;
     var mtime: uintmax_t = file_1.*.last_mtime;
     _ = &mtime;
-    if (mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0))))) {
+    if (mtime == @as(uintmax_t, 0)) {
         mtime = name_mtime(file_1.*.name);
     }
-    if (((mtime >= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) and (mtime <= (((((((~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) >> @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) << @intCast(if (true) @as(c_int, 30) else @as(c_int, 0))) +% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2) + @as(c_int, 1))))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else @as(c_int, 1))))) -% @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))))) and (mtime > file_1.*.mtime_before_update)) {
+    if (((mtime >= @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) and (mtime <= (((((((~@as(uintmax_t, 0) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -1))) <= @as(uintmax_t, 0))) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, 8)) -% @as(c_ulong, 1)))) -% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) >> @intCast(if (true) @as(c_int, 30) else 0)) << @intCast(if (true) @as(c_int, 30) else 0)) +% @as(uintmax_t, @bitCast(@as(c_long, 2 + 1)))) +% @as(uintmax_t, @bitCast(@as(c_long, if (true) @as(c_int, 1000000000) else 1)))) -% @as(uintmax_t, 1)))) and (mtime > file_1.*.mtime_before_update)) {
         ad = file_1.*.also_make;
-        while (ad != null) : (ad = ad.*.next) if (ad.*.file.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 1))))) {
-            @"error"(if (file_1.*.cmds != null) &file_1.*.cmds.*.fileinfo else @as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(ad.*.file.*.name), gettext("warning: pattern recipe did not update peer target '%s'."), ad.*.file.*.name);
+        while (ad != null) : (ad = ad.*.next) if (ad.*.file.*.last_mtime == @as(uintmax_t, 1)) {
+            @"error"(if (file_1.*.cmds != null) &file_1.*.cmds.*.fileinfo else @as([*c]floc, @ptrFromInt(0)), strlen(ad.*.file.*.name), gettext("warning: pattern recipe did not update peer target '%s'."), ad.*.file.*.name);
         };
     }
 }
@@ -1981,23 +1981,23 @@ fn complain(arg_file_1: [*c]struct_file) callconv(.C) void {
     if (d == null) {
         show_goal_error();
         if (file_1.*.parent != null) {
-            var l: usize = (strlen(file_1.*.name) +% strlen(file_1.*.parent.*.name)) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 4))));
+            var l: usize = (strlen(file_1.*.name) +% strlen(file_1.*.parent.*.name)) +% @as(c_ulong, 4);
             _ = &l;
             var m: [*c]const u8 = gettext("%sNo rule to make target '%s', needed by '%s'%s");
             _ = &m;
             if (!(keep_going_flag != 0)) {
-                fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), l, m, "", file_1.*.name, file_1.*.parent.*.name, "");
+                fatal(@as([*c]floc, @ptrFromInt(0)), l, m, "", file_1.*.name, file_1.*.parent.*.name, "");
             }
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), l, m, "*** ", file_1.*.name, file_1.*.parent.*.name, ".");
+            @"error"(@as([*c]floc, @ptrFromInt(0)), l, m, "*** ", file_1.*.name, file_1.*.parent.*.name, ".");
         } else {
-            var l: usize = strlen(file_1.*.name) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 4))));
+            var l: usize = strlen(file_1.*.name) +% @as(c_ulong, 4);
             _ = &l;
             var m: [*c]const u8 = gettext("%sNo rule to make target '%s'%s");
             _ = &m;
             if (!(keep_going_flag != 0)) {
-                fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), l, m, "", file_1.*.name, "");
+                fatal(@as([*c]floc, @ptrFromInt(0)), l, m, "", file_1.*.name, "");
             }
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), l, m, "*** ", file_1.*.name, ".");
+            @"error"(@as([*c]floc, @ptrFromInt(0)), l, m, "*** ", file_1.*.name, ".");
         }
         file_1.*.no_diag = 0;
     }

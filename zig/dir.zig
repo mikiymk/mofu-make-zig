@@ -357,16 +357,16 @@ export fn file_exists_p(arg_name: [*c]const u8) c_int {
     _ = &dirname;
     var slash: [*c]const u8 = undefined;
     _ = &slash;
-    if (ar_name(name) != 0) return @intFromBool(ar_member_date(name) != @as(time_t, @bitCast(@as(c_long, -@as(c_int, 1)))));
+    if (ar_name(name) != 0) return @intFromBool(ar_member_date(name) != @as(time_t, @bitCast(@as(c_long, -1))));
     dirend = strrchr(name, @as(c_int, '/'));
-    if (dirend == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) return dir_file_exists_p(".", name);
+    if (dirend == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) return dir_file_exists_p(".", name);
     slash = dirend;
     if (dirend == name) {
         dirname = "/";
     } else {
         var p: [*c]u8 = undefined;
         _ = &p;
-        p = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(name))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))))));
+        p = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(name))), @sizeOf(u8)) + @as(c_long, 1)))))));
         _ = memcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(name)), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(name))), @sizeOf(u8)))));
         (blk: {
             const tmp = @divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(name))), @sizeOf(u8));
@@ -419,7 +419,7 @@ export fn file_impossible_p(arg_filename: [*c]const u8) c_int {
     var dirfile_key: struct_dirfile = undefined;
     _ = &dirfile_key;
     dirend = strrchr(filename, @as(c_int, '/'));
-    if (dirend == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (dirend == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         dir = find_directory(".").*.contents;
     } else {
         var dirname: [*c]const u8 = undefined;
@@ -431,7 +431,7 @@ export fn file_impossible_p(arg_filename: [*c]const u8) c_int {
         } else {
             var cp: [*c]u8 = undefined;
             _ = &cp;
-            cp = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(filename))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))))));
+            cp = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(filename))), @sizeOf(u8)) + @as(c_long, 1)))))));
             _ = memcpy(@as(?*anyopaque, @ptrCast(cp)), @as(?*const anyopaque, @ptrCast(filename)), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(filename))), @sizeOf(u8)))));
             (blk: {
                 const tmp = @divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(filename))), @sizeOf(u8));
@@ -440,9 +440,9 @@ export fn file_impossible_p(arg_filename: [*c]const u8) c_int {
             dirname = cp;
         }
         dir = find_directory(dirname).*.contents;
-        filename = slash + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+        filename = slash + @as(usize, @bitCast(@as(isize, @intCast(1))));
     }
-    if ((dir == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) or (dir.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))))) return 0;
+    if ((dir == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) or (dir.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0))))))) return 0;
     dirfile_key.name = filename;
     dirfile_key.length = strlen(filename);
     dirfile_1 = @as([*c]struct_dirfile, @ptrCast(@alignCast(hash_find_item(&dir.*.dirfiles, @as(?*const anyopaque, @ptrCast(&dirfile_key))))));
@@ -466,7 +466,7 @@ export fn file_impossible(arg_filename: [*c]const u8) void {
     var new: [*c]struct_dirfile = undefined;
     _ = &new;
     dirend = strrchr(p, @as(c_int, '/'));
-    if (dirend == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (dirend == @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         dir = find_directory(".");
     } else {
         var dirname: [*c]const u8 = undefined;
@@ -478,7 +478,7 @@ export fn file_impossible(arg_filename: [*c]const u8) void {
         } else {
             var cp: [*c]u8 = undefined;
             _ = &cp;
-            cp = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(p))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))))));
+            cp = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(p))), @sizeOf(u8)) + @as(c_long, 1)))))));
             _ = memcpy(@as(?*anyopaque, @ptrCast(cp)), @as(?*const anyopaque, @ptrCast(p)), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(p))), @sizeOf(u8)))));
             (blk: {
                 const tmp = @divExact(@as(c_long, @bitCast(@intFromPtr(dirend) -% @intFromPtr(p))), @sizeOf(u8));
@@ -488,15 +488,15 @@ export fn file_impossible(arg_filename: [*c]const u8) void {
         }
         dir = find_directory(dirname);
         filename = blk: {
-            const tmp = slash + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+            const tmp = slash + @as(usize, @bitCast(@as(isize, @intCast(1))));
             p = tmp;
             break :blk tmp;
         };
     }
-    if (dir.*.contents == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (dir.*.contents == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         dir.*.contents = @as([*c]struct_directory_contents, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_directory_contents)))));
     }
-    if (dir.*.contents.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (dir.*.contents.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         hash_init(&dir.*.contents.*.dirfiles, @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 107)))), &dirfile_hash_1, &dirfile_hash_2, &dirfile_hash_cmp);
     }
     new = @as([*c]struct_dirfile, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_dirfile)))));
@@ -521,7 +521,7 @@ export fn print_dir_data_base() void {
     _ = &dir_end;
     _ = puts(gettext("\n# Directories\n"));
     files = blk: {
-        const tmp = @as(c_uint, @bitCast(@as(c_int, 0)));
+        const tmp = @as(c_uint, 0);
         impossible = tmp;
         break :blk tmp;
     };
@@ -531,9 +531,9 @@ export fn print_dir_data_base() void {
         var dir: [*c]struct_directory = dir_slot.*;
         _ = &dir;
         if (!((dir == null) or (@as(?*anyopaque, @ptrCast(dir)) == hash_deleted_item))) {
-            if (dir.*.contents == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+            if (dir.*.contents == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
                 _ = printf(gettext("# %s: could not be stat'd.\n"), dir.*.name);
-            } else if (dir.*.contents.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+            } else if (dir.*.contents.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
                 _ = printf(gettext("# %s (device %ld, inode %ld): could not be opened.\n"), dir.*.name, @as(c_long, @bitCast(dir.*.contents.*.dev)), @as(c_long, @bitCast(dir.*.contents.*.ino)));
             } else {
                 var f: c_uint = 0;
@@ -558,19 +558,19 @@ export fn print_dir_data_base() void {
                     }
                 }
                 _ = printf(gettext("# %s (device %ld, inode %ld): "), dir.*.name, @as(c_long, @bitCast(dir.*.contents.*.dev)), @as(c_long, @bitCast(dir.*.contents.*.ino)));
-                if (f == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+                if (f == @as(c_uint, 0)) {
                     _ = fputs(gettext("No"), stdout);
                 } else {
                     _ = printf("%u", f);
                 }
                 _ = fputs(gettext(" files, "), stdout);
-                if (im == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+                if (im == @as(c_uint, 0)) {
                     _ = fputs(gettext("no"), stdout);
                 } else {
                     _ = printf("%u", im);
                 }
                 _ = fputs(gettext(" impossibilities"), stdout);
-                if (dir.*.contents.*.dirstream == @as(?*DIR, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) {
+                if (dir.*.contents.*.dirstream == @as(?*DIR, @ptrCast(@as(?*anyopaque, @ptrFromInt(0))))) {
                     _ = puts(".");
                 } else {
                     _ = puts(gettext(" so far."));
@@ -581,13 +581,13 @@ export fn print_dir_data_base() void {
         }
     }
     _ = fputs("\n# ", stdout);
-    if (files == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+    if (files == @as(c_uint, 0)) {
         _ = fputs(gettext("No"), stdout);
     } else {
         _ = printf("%u", files);
     }
     _ = fputs(gettext(" files, "), stdout);
-    if (impossible == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+    if (impossible == @as(c_uint, 0)) {
         _ = fputs(gettext("no"), stdout);
     } else {
         _ = printf("%u", impossible);
@@ -707,8 +707,8 @@ fn clear_directory_contents(arg_dc: [*c]struct_directory_contents) callconv(.C) 
         _ = closedir(dc.*.dirstream);
         dc.*.dirstream = null;
     }
-    if (dc.*.dirfiles.ht_vec != @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
-        hash_free(&dc.*.dirfiles, @as(c_int, 1));
+    if (dc.*.dirfiles.ht_vec != @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
+        hash_free(&dc.*.dirfiles, 1);
     }
     return null;
 }
@@ -743,9 +743,9 @@ fn directory_contents_hash_cmp(arg_xv: ?*const anyopaque, arg_yv: ?*const anyopa
     _ = &y;
     var result: c_int = undefined;
     _ = &result;
-    result = if (x.*.ino < y.*.ino) -@as(c_int, 1) else if (x.*.ino == y.*.ino) @as(c_int, 0) else @as(c_int, 1);
+    result = if (x.*.ino < y.*.ino) -1 else if (x.*.ino == y.*.ino) 0 else 1;
     if (result != 0) return result;
-    return if (x.*.dev < y.*.dev) -@as(c_int, 1) else if (x.*.dev == y.*.dev) @as(c_int, 0) else @as(c_int, 1);
+    return if (x.*.dev < y.*.dev) -1 else if (x.*.dev == y.*.dev) 0 else 1;
 }
 var directory_contents: struct_hash_table = @import("std").mem.zeroes(struct_hash_table);
 fn directory_hash_1(arg_key: ?*const anyopaque) callconv(.C) c_ulong {
@@ -784,7 +784,7 @@ fn directory_hash_cmp(arg_x: ?*const anyopaque, arg_y: ?*const anyopaque) callco
     var y = arg_y;
     _ = &y;
     while (true) {
-        return if (@as([*c]const struct_directory, @ptrCast(@alignCast(x))).*.name == @as([*c]const struct_directory, @ptrCast(@alignCast(y))).*.name) @as(c_int, 0) else strcmp(@as([*c]const struct_directory, @ptrCast(@alignCast(x))).*.name, @as([*c]const struct_directory, @ptrCast(@alignCast(y))).*.name);
+        return if (@as([*c]const struct_directory, @ptrCast(@alignCast(x))).*.name == @as([*c]const struct_directory, @ptrCast(@alignCast(y))).*.name) 0 else strcmp(@as([*c]const struct_directory, @ptrCast(@alignCast(x))).*.name, @as([*c]const struct_directory, @ptrCast(@alignCast(y))).*.name);
     }
     return 0;
 }
@@ -832,7 +832,7 @@ fn dirfile_hash_cmp(arg_xv: ?*const anyopaque, arg_yv: ?*const anyopaque) callco
     _ = &result;
     if (result != 0) return result;
     while (true) {
-        return if (x.*.name == y.*.name) @as(c_int, 0) else strcmp(x.*.name, y.*.name);
+        return if (x.*.name == y.*.name) 0 else strcmp(x.*.name, y.*.name);
     }
     return 0;
 }
@@ -847,8 +847,8 @@ fn dir_contents_file_exists_p(arg_dir: [*c]struct_directory, arg_filename: [*c]c
     _ = &d;
     var dc: [*c]struct_directory_contents = dir.*.contents;
     _ = &dc;
-    if ((dc == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) or (dc.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))))) return 0;
-    if (filename != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if ((dc == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) or (dc.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0))))))) return 0;
+    if (filename != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         var dirfile_key: struct_dirfile = undefined;
         _ = &dirfile_key;
         if (@as(c_int, @bitCast(@as(c_uint, filename.*))) == @as(c_int, '\x00')) {
@@ -859,7 +859,7 @@ fn dir_contents_file_exists_p(arg_dir: [*c]struct_directory, arg_filename: [*c]c
         df = @as([*c]struct_dirfile, @ptrCast(@alignCast(hash_find_item(&dc.*.dirfiles, @as(?*const anyopaque, @ptrCast(&dirfile_key))))));
         if (df != null) return @intFromBool(!(df.*.impossible != 0));
     }
-    if (dc.*.dirstream == @as(?*DIR, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) {
+    if (dc.*.dirstream == @as(?*DIR, @ptrCast(@as(?*anyopaque, @ptrFromInt(0))))) {
         return 0;
     }
     while (true) {
@@ -872,15 +872,15 @@ fn dir_contents_file_exists_p(arg_dir: [*c]struct_directory, arg_filename: [*c]c
         while (true) {
             __errno_location().* = 0;
             d = readdir(dc.*.dirstream);
-            if (!((d == null) and (__errno_location().* == @as(c_int, 4)))) break;
+            if (!((d == null) and (__errno_location().* == 4))) break;
         }
-        if (d == @as([*c]struct_dirent, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+        if (d == @as([*c]struct_dirent, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
             if (__errno_location().* != 0) {
-                fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(dir.*.name) +% strlen(strerror(__errno_location().*)), "readdir %s: %s", dir.*.name, strerror(__errno_location().*));
+                fatal(@as([*c]floc, @ptrFromInt(0)), strlen(dir.*.name) +% strlen(strerror(__errno_location().*)), "readdir %s: %s", dir.*.name, strerror(__errno_location().*));
             }
             break;
         }
-        if (!(d.*.d_ino != @as(__ino_t, @bitCast(@as(c_long, @as(c_int, 0)))))) continue;
+        if (!(d.*.d_ino != @as(__ino_t, 0))) continue;
         len = strlen(@as([*c]u8, @ptrCast(@alignCast(&d.*.d_name))));
         dirfile_key.name = @as([*c]u8, @ptrCast(@alignCast(&d.*.d_name)));
         dirfile_key.length = len;
@@ -893,9 +893,9 @@ fn dir_contents_file_exists_p(arg_dir: [*c]struct_directory, arg_filename: [*c]c
             df.*.impossible = 0;
             _ = hash_insert_at(&dc.*.dirfiles, @as(?*const anyopaque, @ptrCast(df)), @as(?*const anyopaque, @ptrCast(dirfile_slot)));
         }
-        if ((filename != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) and ((@as([*c]u8, @ptrCast(@alignCast(&d.*.d_name))) == @as([*c]u8, @ptrCast(@volatileCast(@constCast(filename))))) or ((@as(c_int, @bitCast(@as(c_uint, @as([*c]u8, @ptrCast(@alignCast(&d.*.d_name))).*))) == @as(c_int, @bitCast(@as(c_uint, filename.*)))) and ((@as(c_int, @bitCast(@as(c_uint, @as([*c]u8, @ptrCast(@alignCast(&d.*.d_name))).*))) == @as(c_int, '\x00')) or !(strcmp(@as([*c]u8, @ptrCast(@alignCast(&d.*.d_name))) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), filename + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) return 1;
+        if ((filename != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) and ((@as([*c]u8, @ptrCast(@alignCast(&d.*.d_name))) == @as([*c]u8, @ptrCast(@volatileCast(@constCast(filename))))) or ((@as(c_int, @bitCast(@as(c_uint, @as([*c]u8, @ptrCast(@alignCast(&d.*.d_name))).*))) == @as(c_int, @bitCast(@as(c_uint, filename.*)))) and ((@as(c_int, @bitCast(@as(c_uint, @as([*c]u8, @ptrCast(@alignCast(&d.*.d_name))).*))) == @as(c_int, '\x00')) or !(strcmp(@as([*c]u8, @ptrCast(@alignCast(&d.*.d_name))) + @as(usize, @bitCast(@as(isize, @intCast(1)))), filename + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) return 1;
     }
-    if (d == @as([*c]struct_dirent, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (d == @as([*c]struct_dirent, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         open_directories -%= 1;
         _ = closedir(dc.*.dirstream);
         dc.*.dirstream = null;
@@ -929,7 +929,7 @@ fn find_directory(arg_name: [*c]const u8) callconv(.C) [*c]struct_directory {
         _ = &ctr;
         if (ctr == command_count) return dir;
         while (true) {
-            if ((@as(c_int, 2) & db_level) != 0) {
+            if ((2 & db_level) != 0) {
                 _ = printf("Directory %s cache invalidated (count %lu != command %lu)\n", name, ctr, command_count);
                 _ = fflush(stdout);
             }
@@ -951,8 +951,8 @@ fn find_directory(arg_name: [*c]const u8) callconv(.C) [*c]struct_directory {
         const tmp = stat(name, &st);
         r = tmp;
         break :blk tmp;
-    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-    if (r < @as(c_int, 0)) return dir;
+    }) == -1) and (__errno_location().* == 4)) {}
+    if (r < 0) return dir;
     _ = memset(@as(?*anyopaque, @ptrCast(&dc_key)), @as(c_int, '\x00'), @sizeOf(struct_directory_contents));
     dc_key.dev = st.st_dev;
     dc_key.ino = st.st_ino;
@@ -972,9 +972,9 @@ fn find_directory(arg_name: [*c]const u8) callconv(.C) [*c]struct_directory {
         while (true) {
             __errno_location().* = 0;
             dc.*.dirstream = opendir(name);
-            if (!((dc.*.dirstream == null) and (__errno_location().* == @as(c_int, 4)))) break;
+            if (!((dc.*.dirstream == null) and (__errno_location().* == 4))) break;
         }
-        if (dc.*.dirstream == @as(?*DIR, @ptrCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))) {
+        if (dc.*.dirstream == @as(?*DIR, @ptrCast(@as(?*anyopaque, @ptrFromInt(0))))) {
             dc.*.dirfiles.ht_vec = null;
         } else {
             hash_init(&dc.*.dirfiles, @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 107)))), &dirfile_hash_1, &dirfile_hash_2, &dirfile_hash_cmp);
@@ -997,7 +997,7 @@ fn open_dirstream(arg_directory_1: [*c]const u8) callconv(.C) ?*anyopaque {
     _ = &new;
     var dir: [*c]struct_directory = find_directory(directory_1);
     _ = &dir;
-    if ((dir.*.contents == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) or (dir.*.contents.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0)))))))) return @as(?*anyopaque, @ptrFromInt(@as(c_int, 0)));
+    if ((dir.*.contents == @as([*c]struct_directory_contents, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) or (dir.*.contents.*.dirfiles.ht_vec == @as([*c]?*anyopaque, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0))))))) return @as(?*anyopaque, @ptrFromInt(0));
     _ = dir_contents_file_exists_p(dir, null);
     new = @as([*c]struct_dirstream, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_dirstream)))));
     new.*.contents = dir.*.contents;
@@ -1032,12 +1032,12 @@ fn read_dirstream(arg_stream: ?*anyopaque) callconv(.C) [*c]struct_dirent {
         if (!((df == null) or (@as(?*anyopaque, @ptrCast(df)) == hash_deleted_item)) and !(df.*.impossible != 0)) {
             var d: [*c]struct_dirent = undefined;
             _ = &d;
-            var len: usize = df.*.length +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+            var len: usize = df.*.length +% @as(usize, 1);
             _ = &len;
             var sz: usize = (@sizeOf(struct_dirent) -% @sizeOf([256]u8)) +% len;
             _ = &sz;
             if (sz > bufsz.static) {
-                bufsz.static *%= @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
+                bufsz.static *%= @as(usize, 2);
                 if (sz > bufsz.static) {
                     bufsz.static = sz;
                 }
@@ -1045,7 +1045,7 @@ fn read_dirstream(arg_stream: ?*anyopaque) callconv(.C) [*c]struct_dirent {
             }
             d = @as([*c]struct_dirent, @ptrCast(@alignCast(buf.static)));
             _ = blk: {
-                const tmp = @as(__ino_t, @bitCast(@as(c_long, @as(c_int, 1))));
+                const tmp = @as(__ino_t, 1);
                 d.*.d_ino = tmp;
                 break :blk tmp;
             };

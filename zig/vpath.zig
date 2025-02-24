@@ -26,36 +26,6 @@ const __sig_atomic_t = c_int;
 
 const time_t = __time_t;
 
-fn __bswap_16(arg___bsx: __uint16_t) callconv(.C) __uint16_t {
-    var __bsx = arg___bsx;
-    _ = &__bsx;
-    return @as(__uint16_t, @bitCast(@as(c_short, @truncate(((@as(c_int, @bitCast(@as(c_uint, __bsx))) >> @intCast(8)) & @as(c_int, 255)) | ((@as(c_int, @bitCast(@as(c_uint, __bsx))) & @as(c_int, 255)) << @intCast(8))))));
-}
-fn __bswap_32(arg___bsx: __uint32_t) callconv(.C) __uint32_t {
-    var __bsx = arg___bsx;
-    _ = &__bsx;
-    return ((((__bsx & @as(c_uint, 4278190080)) >> @intCast(24)) | ((__bsx & @as(c_uint, 16711680)) >> @intCast(8))) | ((__bsx & @as(c_uint, 65280)) << @intCast(8))) | ((__bsx & @as(c_uint, 255)) << @intCast(24));
-}
-fn __bswap_64(arg___bsx: __uint64_t) callconv(.C) __uint64_t {
-    var __bsx = arg___bsx;
-    _ = &__bsx;
-    return @as(__uint64_t, @bitCast(@as(c_ulong, @truncate(((((((((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 18374686479671623680)) >> @intCast(56)) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 71776119061217280)) >> @intCast(40))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 280375465082880)) >> @intCast(24))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 1095216660480)) >> @intCast(8))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 4278190080)) << @intCast(8))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 16711680)) << @intCast(24))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 65280)) << @intCast(40))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 255)) << @intCast(56))))));
-}
-fn __uint16_identity(arg___x: __uint16_t) callconv(.C) __uint16_t {
-    var __x = arg___x;
-    _ = &__x;
-    return __x;
-}
-fn __uint32_identity(arg___x: __uint32_t) callconv(.C) __uint32_t {
-    var __x = arg___x;
-    _ = &__x;
-    return __x;
-}
-fn __uint64_identity(arg___x: __uint64_t) callconv(.C) __uint64_t {
-    var __x = arg___x;
-    _ = &__x;
-    return __x;
-}
 const __sigset_t = extern struct {
     __val: [16]c_ulong = @import("std").mem.zeroes([16]c_ulong),
 };
@@ -351,13 +321,9 @@ const struct_vpath = extern struct {
 };
 export fn build_vpath_lists() void {
     var new: [*c]struct_vpath = null;
-    _ = &new;
     var old: [*c]struct_vpath = undefined;
-    _ = &old;
     var nexto: [*c]struct_vpath = undefined;
-    _ = &nexto;
     var p: [*c]u8 = undefined;
-    _ = &p;
     {
         old = vpaths;
         while (old != null) : (old = nexto) {
@@ -369,10 +335,8 @@ export fn build_vpath_lists() void {
     vpaths = new;
     p = variable_expand("$(strip $(VPATH))");
     if (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) {
-        var save_vpaths: [*c]struct_vpath = vpaths;
-        _ = &save_vpaths;
+        const save_vpaths: [*c]struct_vpath = vpaths;
         var gp: [1:0]u8 = "%".*;
-        _ = &gp;
         vpaths = null;
         construct_vpath_list(@as([*c]u8, @ptrCast(@alignCast(&gp))), p);
         general_vpath = vpaths;
@@ -380,47 +344,35 @@ export fn build_vpath_lists() void {
     }
     p = variable_expand("$(strip $(GPATH))");
     if (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) {
-        var save_vpaths: [*c]struct_vpath = vpaths;
-        _ = &save_vpaths;
+        const save_vpaths: [*c]struct_vpath = vpaths;
         var gp: [1:0]u8 = "%".*;
-        _ = &gp;
         vpaths = null;
         construct_vpath_list(@as([*c]u8, @ptrCast(@alignCast(&gp))), p);
         gpaths = vpaths;
         vpaths = save_vpaths;
     }
 }
+
 export fn construct_vpath_list(arg_pattern: [*c]u8, arg_dirpath: [*c]u8) void {
-    var pattern = arg_pattern;
-    _ = &pattern;
+    const pattern = arg_pattern;
     var dirpath = arg_dirpath;
-    _ = &dirpath;
     var elem: c_uint = undefined;
-    _ = &elem;
     var p: [*c]u8 = undefined;
-    _ = &p;
     var vpath_1: [*c][*c]const u8 = undefined;
-    _ = &vpath_1;
     var maxvpath: usize = undefined;
-    _ = &maxvpath;
     var maxelem: c_uint = undefined;
-    _ = &maxelem;
     var percent: [*c]const u8 = null;
-    _ = &percent;
     if (pattern != null) {
         percent = find_percent(pattern);
     }
     if (dirpath == null) {
         var path: [*c]struct_vpath = undefined;
-        _ = &path;
         var lastpath: [*c]struct_vpath = undefined;
-        _ = &lastpath;
         lastpath = null;
         path = vpaths;
         while (path != null) {
-            var next: [*c]struct_vpath = path.*.next;
-            _ = &next;
-            if ((pattern == null) or ((((percent == null) and (path.*.percent == null)) or (@divExact(@as(c_long, @bitCast(@intFromPtr(percent) -% @intFromPtr(pattern))), @sizeOf(u8)) == @divExact(@as(c_long, @bitCast(@intFromPtr(path.*.percent) -% @intFromPtr(path.*.pattern))), @sizeOf(u8)))) and ((pattern == @as([*c]u8, @ptrCast(@volatileCast(@constCast(path.*.pattern))))) or ((@as(c_int, @bitCast(@as(c_uint, pattern.*))) == @as(c_int, @bitCast(@as(c_uint, path.*.pattern.*)))) and ((@as(c_int, @bitCast(@as(c_uint, pattern.*))) == @as(c_int, '\x00')) or !(strcmp(pattern + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), path.*.pattern + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))))) {
+            const next: [*c]struct_vpath = path.*.next;
+            if ((pattern == null) or ((((percent == null) and (path.*.percent == null)) or (@divExact(@as(c_long, @bitCast(@intFromPtr(percent) -% @intFromPtr(pattern))), @sizeOf(u8)) == @divExact(@as(c_long, @bitCast(@intFromPtr(path.*.percent) -% @intFromPtr(path.*.pattern))), @sizeOf(u8)))) and ((pattern == @as([*c]u8, @ptrCast(@volatileCast(@constCast(path.*.pattern))))) or ((@as(c_int, @bitCast(@as(c_uint, pattern.*))) == @as(c_int, @bitCast(@as(c_uint, path.*.pattern.*)))) and ((@as(c_int, @bitCast(@as(c_uint, pattern.*))) == @as(c_int, '\x00')) or !(strcmp(pattern + @as(usize, @bitCast(@as(isize, @intCast(1)))), path.*.pattern + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))))) {
                 if (lastpath == null) {
                     vpaths = path.*.next;
                 } else {
@@ -435,7 +387,7 @@ export fn construct_vpath_list(arg_pattern: [*c]u8, arg_dirpath: [*c]u8) void {
         }
         return;
     }
-    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(dirpath.*))]))) & (@as(c_int, 2) | @as(c_int, 64))) != @as(c_int, 0)) {
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(dirpath.*))]))) & (2 | @as(c_int, 64))) != 0) {
         dirpath += 1;
     }
     maxelem = 2;
@@ -447,7 +399,7 @@ export fn construct_vpath_list(arg_pattern: [*c]u8, arg_dirpath: [*c]u8) void {
             ref.* += 1;
             break :blk tmp;
         }).*))
-    ]))) & (@as(c_int, 2) | @as(c_int, 64))) != @as(c_int, 0)) {
+    ]))) & (2 | @as(c_int, 64))) != 0) {
         maxelem +%= 1;
     };
     vpath_1 = @as([*c][*c]const u8, @ptrCast(@alignCast(xmalloc(@as(c_ulong, @bitCast(@as(c_ulong, maxelem))) *% @sizeOf([*c]const u8)))));
@@ -456,21 +408,19 @@ export fn construct_vpath_list(arg_pattern: [*c]u8, arg_dirpath: [*c]u8) void {
     p = dirpath;
     while (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) {
         var v: [*c]u8 = undefined;
-        _ = &v;
         var len: usize = undefined;
-        _ = &len;
         v = p;
-        while (((@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) and (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, ':'))) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & @as(c_int, 2)) != @as(c_int, 0))) {
+        while (((@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, '\x00')) and (@as(c_int, @bitCast(@as(c_uint, p.*))) != @as(c_int, ':'))) and !((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & 2) != 0)) {
             p += 1;
         }
         len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(v))), @sizeOf(u8))));
-        if ((len > @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
-            const tmp = -@as(c_int, 1);
+        if ((len > @as(usize, 1)) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
+            const tmp = -1;
             if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
         }).*))) == @as(c_int, '/'))) {
             len -%= 1;
         }
-        if ((len > @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) or (@as(c_int, @bitCast(@as(c_uint, v.*))) != @as(c_int, '.'))) {
+        if ((len > @as(usize, 1)) or (@as(c_int, @bitCast(@as(c_uint, v.*))) != @as(c_int, '.'))) {
             vpath_1[
                 blk: {
                     const ref = &elem;
@@ -483,15 +433,14 @@ export fn construct_vpath_list(arg_pattern: [*c]u8, arg_dirpath: [*c]u8) void {
                 maxvpath = len;
             }
         }
-        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 64))) != @as(c_int, 0)) {
+        while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (2 | @as(c_int, 64))) != 0) {
             p += 1;
         }
     }
-    if (elem > @as(c_uint, @bitCast(@as(c_int, 0)))) {
+    if (elem > @as(c_uint, 0)) {
         var path: [*c]struct_vpath = undefined;
-        _ = &path;
-        if (elem < (maxelem -% @as(c_uint, @bitCast(@as(c_int, 1))))) {
-            vpath_1 = @as([*c][*c]const u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(vpath_1)), @as(c_ulong, @bitCast(@as(c_ulong, elem +% @as(c_uint, @bitCast(@as(c_int, 1)))))) *% @sizeOf([*c]const u8)))));
+        if (elem < (maxelem -% @as(c_uint, 1))) {
+            vpath_1 = @as([*c][*c]const u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(vpath_1)), @as(c_ulong, @bitCast(@as(c_ulong, elem +% @as(c_uint, 1)))) *% @sizeOf([*c]const u8)))));
         }
         vpath_1[elem] = null;
         path = @as([*c]struct_vpath, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_vpath)))));
@@ -507,17 +456,12 @@ export fn construct_vpath_list(arg_pattern: [*c]u8, arg_dirpath: [*c]u8) void {
     }
 }
 export fn vpath_search(arg_file_1: [*c]const u8, arg_mtime_ptr: [*c]uintmax_t, arg_vpath_index: [*c]c_uint, arg_path_index: [*c]c_uint) [*c]const u8 {
-    var file_1 = arg_file_1;
-    _ = &file_1;
-    var mtime_ptr = arg_mtime_ptr;
-    _ = &mtime_ptr;
-    var vpath_index = arg_vpath_index;
-    _ = &vpath_index;
-    var path_index = arg_path_index;
-    _ = &path_index;
+    const file_1 = arg_file_1;
+    const mtime_ptr = arg_mtime_ptr;
+    const vpath_index = arg_vpath_index;
+    const path_index = arg_path_index;
     var v: [*c]struct_vpath = undefined;
-    _ = &v;
-    if ((@as(c_int, @bitCast(@as(c_uint, file_1[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '/')) or ((vpaths == null) and (general_vpath == null))) return null;
+    if ((@as(c_int, @bitCast(@as(c_uint, file_1[0]))) == @as(c_int, '/')) or ((vpaths == null) and (general_vpath == null))) return null;
     if (vpath_index != null) {
         vpath_index.* = 0;
         path_index.* = 0;
@@ -526,8 +470,7 @@ export fn vpath_search(arg_file_1: [*c]const u8, arg_mtime_ptr: [*c]uintmax_t, a
         v = vpaths;
         while (v != null) : (v = v.*.next) {
             if (pattern_matches(v.*.pattern, v.*.percent, file_1) != 0) {
-                var p: [*c]const u8 = selective_vpath_search(v, file_1, mtime_ptr, path_index);
-                _ = &p;
+                const p: [*c]const u8 = selective_vpath_search(v, file_1, mtime_ptr, path_index);
                 if (p != null) return p;
             }
             if (vpath_index != null) {
@@ -536,23 +479,19 @@ export fn vpath_search(arg_file_1: [*c]const u8, arg_mtime_ptr: [*c]uintmax_t, a
         }
     }
     if (general_vpath != null) {
-        var p: [*c]const u8 = selective_vpath_search(general_vpath, file_1, mtime_ptr, path_index);
-        _ = &p;
+        const p: [*c]const u8 = selective_vpath_search(general_vpath, file_1, mtime_ptr, path_index);
         if (p != null) return p;
     }
     return null;
 }
 export fn gpath_search(arg_file_1: [*c]const u8, arg_len: usize) c_int {
-    var file_1 = arg_file_1;
-    _ = &file_1;
-    var len = arg_len;
-    _ = &len;
+    const file_1 = arg_file_1;
+    const len = arg_len;
     if ((gpaths != null) and (len <= gpaths.*.maxlen)) {
         var gp: [*c][*c]const u8 = undefined;
-        _ = &gp;
         {
             gp = gpaths.*.searchpath;
-            while (gp.* != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (gp += 1) if ((strncmp(gp.*, file_1, len) == @as(c_int, 0)) and (@as(c_int, @bitCast(@as(c_uint, gp.*[len]))) == @as(c_int, '\x00'))) return 1;
+            while (gp.* != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (gp += 1) if ((strncmp(gp.*, file_1, len) == 0) and (@as(c_int, @bitCast(@as(c_uint, gp.*[len]))) == @as(c_int, '\x00'))) return 1;
         }
     }
     return 0;
@@ -600,22 +539,19 @@ extern var program: [*c]const u8;
 
 export fn print_vpath_data_base() void {
     var nvpaths: c_uint = undefined;
-    _ = &nvpaths;
     var v: [*c]struct_vpath = undefined;
-    _ = &v;
     _ = puts(gettext("\n# VPATH Search Paths\n"));
     nvpaths = 0;
     {
         v = vpaths;
         while (v != null) : (v = v.*.next) {
             var i: c_uint = undefined;
-            _ = &i;
             nvpaths +%= 1;
             _ = printf("vpath %s ", v.*.pattern);
             {
                 i = 0;
                 while (v.*.searchpath[i] != null) : (i +%= 1) {
-                    _ = printf("%s%c", v.*.searchpath[i], if (v.*.searchpath[i +% @as(c_uint, @bitCast(@as(c_int, 1)))] == null) @as(c_int, '\n') else @as(c_int, ':'));
+                    _ = printf("%s%c", v.*.searchpath[i], if (v.*.searchpath[i +% @as(c_uint, 1)] == null) @as(c_int, '\n') else @as(c_int, ':'));
                 }
             }
         }
@@ -628,15 +564,13 @@ export fn print_vpath_data_base() void {
     if (general_vpath == null) {
         _ = puts(gettext("\n# No general ('VPATH' variable) search path."));
     } else {
-        var path: [*c][*c]const u8 = general_vpath.*.searchpath;
-        _ = &path;
+        const path: [*c][*c]const u8 = general_vpath.*.searchpath;
         var i: c_uint = undefined;
-        _ = &i;
         _ = fputs(gettext("\n# General ('VPATH' variable) search path:\n# "), stdout);
         {
             i = 0;
             while (path[i] != null) : (i +%= 1) {
-                _ = printf("%s%c", path[i], if (path[i +% @as(c_uint, @bitCast(@as(c_int, 1)))] == null) @as(c_int, '\n') else @as(c_int, ':'));
+                _ = printf("%s%c", path[i], if (path[i +% @as(c_uint, 1)] == null) @as(c_int, '\n') else @as(c_int, ':'));
             }
         }
     }
@@ -678,58 +612,40 @@ var vpaths: [*c]struct_vpath = @import("std").mem.zeroes([*c]struct_vpath);
 var general_vpath: [*c]struct_vpath = @import("std").mem.zeroes([*c]struct_vpath);
 var gpaths: [*c]struct_vpath = @import("std").mem.zeroes([*c]struct_vpath);
 fn selective_vpath_search(arg_path: [*c]struct_vpath, arg_file_1: [*c]const u8, arg_mtime_ptr: [*c]uintmax_t, arg_path_index: [*c]c_uint) callconv(.C) [*c]const u8 {
-    var path = arg_path;
-    _ = &path;
-    var file_1 = arg_file_1;
-    _ = &file_1;
+    const path = arg_path;
+    const file_1 = arg_file_1;
     var mtime_ptr = arg_mtime_ptr;
-    _ = &mtime_ptr;
-    var path_index = arg_path_index;
-    _ = &path_index;
+    const path_index = arg_path_index;
     var not_target: c_int = undefined;
-    _ = &not_target;
     var name: [*c]u8 = undefined;
-    _ = &name;
     var n: [*c]const u8 = undefined;
-    _ = &n;
     var filename: [*c]const u8 = undefined;
-    _ = &filename;
-    var vpath_2: [*c][*c]const u8 = path.*.searchpath;
-    _ = &vpath_2;
-    var maxvpath: usize = path.*.maxlen;
-    _ = &maxvpath;
+    const vpath_2: [*c][*c]const u8 = path.*.searchpath;
+    const maxvpath: usize = path.*.maxlen;
     var i: c_uint = undefined;
-    _ = &i;
     var flen: usize = undefined;
-    _ = &flen;
     var name_dplen: usize = undefined;
-    _ = &name_dplen;
     var exists: c_int = 0;
-    _ = &exists;
     {
-        var f: [*c]struct_file = lookup_file(file_1);
-        _ = &f;
+        const f: [*c]struct_file = lookup_file(file_1);
         not_target = @intFromBool((f == null) or !(f.*.is_target != 0));
     }
     flen = strlen(file_1);
     n = strrchr(file_1, @as(c_int, '/'));
-    name_dplen = @as(usize, @bitCast(if (n != null) @divExact(@as(c_long, @bitCast(@intFromPtr(n) -% @intFromPtr(file_1))), @sizeOf(u8)) else @as(c_long, @bitCast(@as(c_long, @as(c_int, 0))))));
-    filename = if (name_dplen > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) n + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))) else file_1;
-    if (name_dplen > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
-        flen -%= name_dplen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+    name_dplen = @as(usize, @bitCast(if (n != null) @divExact(@as(c_long, @bitCast(@intFromPtr(n) -% @intFromPtr(file_1))), @sizeOf(u8)) else @as(c_long, 0)));
+    filename = if (name_dplen > @as(usize, 0)) n + @as(usize, @bitCast(@as(isize, @intCast(1)))) else file_1;
+    if (name_dplen > @as(usize, 0)) {
+        flen -%= name_dplen +% @as(usize, 1);
     }
-    name = @as([*c]u8, @ptrCast(@alignCast(malloc(((((maxvpath +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) +% name_dplen) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) +% flen) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+    name = @as([*c]u8, @ptrCast(@alignCast(malloc(((((maxvpath +% @as(usize, 1)) +% name_dplen) +% @as(usize, 1)) +% flen) +% @as(usize, 1)))));
     {
         i = 0;
         while (vpath_2[i] != null) : (i +%= 1) {
             var exists_in_cache: c_int = 0;
-            _ = &exists_in_cache;
             var p: [*c]u8 = name;
-            _ = &p;
-            var vlen: usize = strlen(vpath_2[i]);
-            _ = &vlen;
+            const vlen: usize = strlen(vpath_2[i]);
             p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(vpath_2[i])), vlen))));
-            if (name_dplen > @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
+            if (name_dplen > @as(usize, 0)) {
                 (blk: {
                     const ref = &p;
                     const tmp = ref.*;
@@ -739,20 +655,19 @@ fn selective_vpath_search(arg_path: [*c]struct_vpath, arg_file_1: [*c]const u8, 
                 p = @as([*c]u8, @ptrCast(@alignCast(mempcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(file_1)), name_dplen))));
             }
             if ((p != name) and (@as(c_int, @bitCast(@as(c_uint, (blk: {
-                const tmp = -@as(c_int, 1);
+                const tmp = -1;
                 if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
             }).*))) != @as(c_int, '/'))) {
                 p.* = '/';
-                _ = memcpy(@as(?*anyopaque, @ptrCast(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))))), @as(?*const anyopaque, @ptrCast(filename)), flen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                _ = memcpy(@as(?*anyopaque, @ptrCast(p + @as(usize, @bitCast(@as(isize, @intCast(1)))))), @as(?*const anyopaque, @ptrCast(filename)), flen +% @as(usize, 1));
             } else {
-                _ = memcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(filename)), flen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                _ = memcpy(@as(?*anyopaque, @ptrCast(p)), @as(?*const anyopaque, @ptrCast(filename)), flen +% @as(usize, 1));
             }
             {
-                var f: [*c]struct_file = lookup_file(name);
-                _ = &f;
+                const f: [*c]struct_file = lookup_file(name);
                 if (f != null) {
                     exists = @intFromBool((not_target != 0) or (f.*.is_target != 0));
-                    if (((exists != 0) and (mtime_ptr != null)) and ((f.*.last_mtime == @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 2))))) or (f.*.last_mtime == (~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -@as(c_int, 1)))) <= @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))))) @as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) else ~@as(uintmax_t, @bitCast(@as(c_long, @as(c_int, 0)))) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8))))) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))))) {
+                    if (((exists != 0) and (mtime_ptr != null)) and ((f.*.last_mtime == @as(uintmax_t, 2)) or (f.*.last_mtime == (~@as(uintmax_t, 0) -% (if (!(@as(uintmax_t, @bitCast(@as(c_long, -1))) <= @as(uintmax_t, 0))) @as(uintmax_t, 0) else ~@as(uintmax_t, 0) << @intCast((@sizeOf(uintmax_t) *% @as(c_ulong, 8)) -% @as(c_ulong, 1))))))) {
                         mtime_ptr.* = f.*.last_mtime;
                         mtime_ptr = null;
                     }
@@ -770,17 +685,15 @@ fn selective_vpath_search(arg_path: [*c]struct_vpath, arg_file_1: [*c]const u8, 
             }
             if (exists != 0) {
                 var st: struct_stat = undefined;
-                _ = &st;
                 p.* = '/';
                 if (exists_in_cache != 0) {
                     var e: c_int = undefined;
-                    _ = &e;
                     while (((blk: {
                         const tmp = stat(name, &st);
                         e = tmp;
                         break :blk tmp;
-                    }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-                    if (e != @as(c_int, 0)) {
+                    }) == -1) and (__errno_location().* == 4)) {}
+                    if (e != 0) {
                         exists = 0;
                         continue;
                     }
@@ -795,7 +708,7 @@ fn selective_vpath_search(arg_path: [*c]struct_vpath, arg_file_1: [*c]const u8, 
                 if (path_index != null) {
                     path_index.* = i;
                 }
-                return strcache_add_len(name, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) -% @intFromPtr(name))), @sizeOf(u8)))) +% flen);
+                return strcache_add_len(name, @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p + @as(usize, @bitCast(@as(isize, @intCast(1))))) -% @intFromPtr(name))), @sizeOf(u8)))) +% flen);
             }
         }
     }

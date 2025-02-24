@@ -14,36 +14,6 @@ const __sig_atomic_t = c_int;
 
 const pid_t = __pid_t;
 
-fn __bswap_16(arg___bsx: __uint16_t) callconv(.C) __uint16_t {
-    var __bsx = arg___bsx;
-    _ = &__bsx;
-    return @as(__uint16_t, @bitCast(@as(c_short, @truncate(((@as(c_int, @bitCast(@as(c_uint, __bsx))) >> @intCast(8)) & @as(c_int, 255)) | ((@as(c_int, @bitCast(@as(c_uint, __bsx))) & @as(c_int, 255)) << @intCast(8))))));
-}
-fn __bswap_32(arg___bsx: __uint32_t) callconv(.C) __uint32_t {
-    var __bsx = arg___bsx;
-    _ = &__bsx;
-    return ((((__bsx & @as(c_uint, 4278190080)) >> @intCast(24)) | ((__bsx & @as(c_uint, 16711680)) >> @intCast(8))) | ((__bsx & @as(c_uint, 65280)) << @intCast(8))) | ((__bsx & @as(c_uint, 255)) << @intCast(24));
-}
-fn __bswap_64(arg___bsx: __uint64_t) callconv(.C) __uint64_t {
-    var __bsx = arg___bsx;
-    _ = &__bsx;
-    return @as(__uint64_t, @bitCast(@as(c_ulong, @truncate(((((((((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 18374686479671623680)) >> @intCast(56)) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 71776119061217280)) >> @intCast(40))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 280375465082880)) >> @intCast(24))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 1095216660480)) >> @intCast(8))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 4278190080)) << @intCast(8))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 16711680)) << @intCast(24))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 65280)) << @intCast(40))) | ((@as(c_ulonglong, @bitCast(@as(c_ulonglong, __bsx))) & @as(c_ulonglong, 255)) << @intCast(56))))));
-}
-fn __uint16_identity(arg___x: __uint16_t) callconv(.C) __uint16_t {
-    var __x = arg___x;
-    _ = &__x;
-    return __x;
-}
-fn __uint32_identity(arg___x: __uint32_t) callconv(.C) __uint32_t {
-    var __x = arg___x;
-    _ = &__x;
-    return __x;
-}
-fn __uint64_identity(arg___x: __uint64_t) callconv(.C) __uint64_t {
-    var __x = arg___x;
-    _ = &__x;
-    return __x;
-}
 const __sigset_t = extern struct {
     __val: [16]c_ulong = @import("std").mem.zeroes([16]c_ulong),
 };
@@ -308,8 +278,9 @@ const floc = extern struct {
 };
 extern fn concat(c_uint, ...) [*c]const u8;
 
-extern fn @"error"(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) void;
-extern fn fatal(flocp: [*c]const floc, length: usize, fmt: [*c]const u8, ...) noreturn;
+const message = @import("output.zig").message;
+const @"error" = @import("output.zig").@"error";
+const fatal = @import("output.zig").fatal;
 
 const o_default: c_int = 0;
 const o_env: c_int = 1;
@@ -407,13 +378,11 @@ const struct_pattern_var = extern struct {
 };
 export fn print_variable_data_base() void {
     _ = puts(gettext("\n# Variables\n"));
-    print_variable_set(&global_variable_set, "", @as(c_int, 0));
+    print_variable_set(&global_variable_set, "", 0);
     _ = puts(gettext("\n# Pattern-specific Variable Values"));
     {
         var p: [*c]struct_pattern_var = undefined;
-        _ = &p;
         var rules: c_uint = 0;
-        _ = &rules;
         {
             p = pattern_vars;
             while (p != null) : (p = p.*.next) {
@@ -422,7 +391,7 @@ export fn print_variable_data_base() void {
                 print_variable(@as(?*const anyopaque, @ptrCast(&p.*.variable)), @as(?*anyopaque, @ptrCast("# ")));
             }
         }
-        if (rules == @as(c_uint, @bitCast(@as(c_int, 0)))) {
+        if (rules == @as(c_uint, 0)) {
             _ = puts(gettext("\n# No pattern-specific variable values."));
         } else {
             _ = printf(gettext("\n# %u pattern-specific variable values"), rules);
@@ -432,9 +401,9 @@ export fn print_variable_data_base() void {
 
 extern var starting_directory: [*c]u8;
 extern var makelevel: c_uint;
-extern var version_string: [*c]u8;
+const version_string = @import("version.zig").version_string;
 extern var remote_description: [*c]u8;
-extern var make_host: [*c]u8;
+const make_host = @import("version.zig").make_host;
 extern var commands_started: c_uint;
 extern var handling_fatal_signal: sig_atomic_t;
 const hash_map_func_t = ?*const fn (?*const anyopaque) callconv(.C) void;
@@ -526,9 +495,7 @@ extern fn func_shell_base(o: [*c]u8, argv: [*c][*c]u8, trim_newlines: c_int) [*c
 extern fn recursively_expand_for_file(v: [*c]struct_variable, file: [*c]struct_file) [*c]u8;
 export fn create_new_variable_set() [*c]struct_variable_set_list {
     var setlist: [*c]struct_variable_set_list = undefined;
-    _ = &setlist;
     var set: [*c]struct_variable_set = undefined;
-    _ = &set;
     set = @as([*c]struct_variable_set, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_variable_set)))));
     hash_init(&set.*.table, @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 13)))), &variable_hash_1, &variable_hash_2, &variable_hash_cmp);
     setlist = @as([*c]struct_variable_set_list, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_variable_set_list)))));
@@ -538,18 +505,16 @@ export fn create_new_variable_set() [*c]struct_variable_set_list {
     return setlist;
 }
 export fn free_variable_set(arg_list: [*c]struct_variable_set_list) void {
-    var list = arg_list;
-    _ = &list;
+    const list = arg_list;
     hash_map(&list.*.set.*.table, &free_variable_name_and_value);
-    hash_free(&list.*.set.*.table, @as(c_int, 1));
+    hash_free(&list.*.set.*.table, 1);
     free(@as(?*anyopaque, @ptrCast(list.*.set)));
     free(@as(?*anyopaque, @ptrCast(list)));
 }
 export fn push_new_variable_scope() [*c]struct_variable_set_list {
     current_variable_set_list = create_new_variable_set();
     if (current_variable_set_list.*.next == (&global_setlist)) {
-        var set: [*c]struct_variable_set = current_variable_set_list.*.set;
-        _ = &set;
+        const set: [*c]struct_variable_set = current_variable_set_list.*.set;
         current_variable_set_list.*.set = global_setlist.set;
         global_setlist.set = set;
         current_variable_set_list.*.next = global_setlist.next;
@@ -560,10 +525,8 @@ export fn push_new_variable_scope() [*c]struct_variable_set_list {
 }
 export fn pop_variable_scope() void {
     var setlist: [*c]struct_variable_set_list = undefined;
-    _ = &setlist;
     var set: [*c]struct_variable_set = undefined;
-    _ = &set;
-    _ = @as(c_int, 0);
+    _ = 0;
     if (current_variable_set_list != (&global_setlist)) {
         setlist = current_variable_set_list;
         set = setlist.*.set;
@@ -577,49 +540,44 @@ export fn pop_variable_scope() void {
     }
     free(@as(?*anyopaque, @ptrCast(setlist)));
     hash_map(&set.*.table, &free_variable_name_and_value);
-    hash_free(&set.*.table, @as(c_int, 1));
+    hash_free(&set.*.table, 1);
     free(@as(?*anyopaque, @ptrCast(set)));
 }
 export fn define_automatic_variables() void {
     var v: [*c]struct_variable = undefined;
-    _ = &v;
     var buf: [200]u8 = undefined;
-    _ = &buf;
     _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&buf))), "%u", makelevel);
-    _ = define_variable_in_set("MAKELEVEL", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as([*c]u8, @ptrCast(@alignCast(&buf))), @as(c_uint, @bitCast(o_env)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&buf))), "%s%s%s", version_string, if ((remote_description == null) or (@as(c_int, @bitCast(@as(c_uint, remote_description[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00'))) "" else "-", if ((remote_description == null) or (@as(c_int, @bitCast(@as(c_uint, remote_description[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00'))) "" else remote_description);
-    _ = define_variable_in_set("MAKE_VERSION", @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), @as([*c]u8, @ptrCast(@alignCast(&buf))), @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("MAKE_HOST", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), make_host, @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    v = define_variable_in_set("SHELL", @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), default_shell, @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    _ = define_variable_in_set("MAKELEVEL", @sizeOf([10]u8) -% @as(c_ulong, 1), @as([*c]u8, @ptrCast(@alignCast(&buf))), @as(c_uint, @bitCast(o_env)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&buf))), "%s%s%s", version_string, if ((remote_description == null) or (@as(c_int, @bitCast(@as(c_uint, remote_description[0]))) == @as(c_int, '\x00'))) "" else "-", if ((remote_description == null) or (@as(c_int, @bitCast(@as(c_uint, remote_description[0]))) == @as(c_int, '\x00'))) "" else remote_description);
+    _ = define_variable_in_set("MAKE_VERSION", @sizeOf([13]u8) -% @as(c_ulong, 1), @as([*c]u8, @ptrCast(@alignCast(&buf))), @as(c_uint, @bitCast(o_default)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("MAKE_HOST", @sizeOf([10]u8) -% @as(c_ulong, 1), make_host, @as(c_uint, @bitCast(o_default)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    v = define_variable_in_set("SHELL", @sizeOf([6]u8) -% @as(c_ulong, 1), default_shell, @as(c_uint, @bitCast(o_default)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
     if (((@as(c_int, @bitCast(@as(c_uint, v.*.value.*))) == @as(c_int, '\x00')) or (v.*.origin == @as(c_uint, @bitCast(o_env)))) or (v.*.origin == @as(c_uint, @bitCast(o_env_override)))) {
         free(@as(?*anyopaque, @ptrCast(v.*.value)));
         v.*.origin = @as(c_uint, @bitCast(o_file));
         v.*.value = xstrdup(default_shell);
     }
-    v = define_variable_in_set("MAKEFILES", @sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "", @as(c_uint, @bitCast(o_default)), @as(c_int, 0), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    v = define_variable_in_set("MAKEFILES", @sizeOf([10]u8) -% @as(c_ulong, 1), "", @as(c_uint, @bitCast(o_default)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
     v.*.@"export" = @as(c_uint, @bitCast(v_ifset));
-    _ = define_variable_in_set("@D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $@))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("%D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $%))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("*D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $*))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("<D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $<))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("?D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $?))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("^D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $^))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("+D", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(patsubst %/,%,$(dir $+))", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("@F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $@)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("%F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $%)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("*F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $*)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("<F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $<)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("?F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $?)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("^F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $^)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
-    _ = define_variable_in_set("+F", @sizeOf([3]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), "$(notdir $+)", @as(c_uint, @bitCast(o_automatic)), @as(c_int, 1), current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(@as(c_int, 0))));
+    _ = define_variable_in_set("@D", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(patsubst %/,%,$(dir $@))", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("%D", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(patsubst %/,%,$(dir $%))", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("*D", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(patsubst %/,%,$(dir $*))", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("<D", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(patsubst %/,%,$(dir $<))", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("?D", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(patsubst %/,%,$(dir $?))", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("^D", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(patsubst %/,%,$(dir $^))", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("+D", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(patsubst %/,%,$(dir $+))", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("@F", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(notdir $@)", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("%F", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(notdir $%)", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("*F", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(notdir $*)", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("<F", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(notdir $<)", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("?F", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(notdir $?)", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("^F", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(notdir $^)", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+    _ = define_variable_in_set("+F", @sizeOf([3]u8) -% @as(c_ulong, 1), "$(notdir $+)", @as(c_uint, @bitCast(o_automatic)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
 }
 export fn initialize_file_variables(arg_file_1: [*c]struct_file, arg_reading: c_int) void {
-    var file_1 = arg_file_1;
-    _ = &file_1;
-    var reading = arg_reading;
-    _ = &reading;
+    const file_1 = arg_file_1;
+    const reading = arg_reading;
     var l: [*c]struct_variable_set_list = file_1.*.variables;
-    _ = &l;
     if (l == null) {
         l = @as([*c]struct_variable_set_list, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_variable_set_list)))));
         l.*.set = @as([*c]struct_variable_set, @ptrCast(@alignCast(xmalloc(@sizeOf(struct_variable_set)))));
@@ -641,23 +599,19 @@ export fn initialize_file_variables(arg_file_1: [*c]struct_file, arg_reading: c_
     l.*.next_is_parent = 1;
     if (!(reading != 0) and !(file_1.*.pat_searched != 0)) {
         var p: [*c]struct_pattern_var = undefined;
-        _ = &p;
         const targlen: usize = strlen(file_1.*.name);
-        _ = &targlen;
         p = lookup_pattern_var(null, file_1.*.name, targlen);
         if (p != null) {
-            var global: [*c]struct_variable_set_list = current_variable_set_list;
-            _ = &global;
+            const global: [*c]struct_variable_set_list = current_variable_set_list;
             file_1.*.pat_variables = create_new_variable_set();
             current_variable_set_list = file_1.*.pat_variables;
             while (true) {
                 var v: [*c]struct_variable = undefined;
-                _ = &v;
                 if (p.*.variable.flavor == @as(c_uint, @bitCast(f_simple))) {
-                    v = define_variable_in_set(p.*.variable.name, strlen(p.*.variable.name), p.*.variable.value, p.*.variable.origin, @as(c_int, 0), current_variable_set_list.*.set, &p.*.variable.fileinfo);
+                    v = define_variable_in_set(p.*.variable.name, strlen(p.*.variable.name), p.*.variable.value, p.*.variable.origin, 0, current_variable_set_list.*.set, &p.*.variable.fileinfo);
                     v.*.flavor = @as(c_uint, @bitCast(f_simple));
                 } else {
-                    v = do_variable_definition(&p.*.variable.fileinfo, p.*.variable.name, p.*.variable.value, p.*.variable.origin, p.*.variable.flavor, @as(c_int, 1));
+                    v = do_variable_definition(&p.*.variable.fileinfo, p.*.variable.name, p.*.variable.value, p.*.variable.origin, p.*.variable.flavor, 1);
                 }
                 v.*.per_target = p.*.variable.per_target;
                 v.*.@"export" = p.*.variable.@"export";
@@ -680,36 +634,28 @@ export fn initialize_file_variables(arg_file_1: [*c]struct_file, arg_reading: c_
     }
 }
 export fn print_file_variables(arg_file_1: [*c]const struct_file) void {
-    var file_1 = arg_file_1;
-    _ = &file_1;
+    const file_1 = arg_file_1;
     if (file_1.*.variables != null) {
-        print_variable_set(file_1.*.variables.*.set, "# ", @as(c_int, 1));
+        print_variable_set(file_1.*.variables.*.set, "# ", 1);
     }
 }
 export fn print_target_variables(arg_file_1: [*c]const struct_file) void {
-    var file_1 = arg_file_1;
-    _ = &file_1;
+    const file_1 = arg_file_1;
     if (file_1.*.variables != null) {
-        var l: usize = strlen(file_1.*.name);
-        _ = &l;
-        var t: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(l +% @as(usize, @bitCast(@as(c_long, @as(c_int, 3))))))));
-        _ = &t;
+        const l: usize = strlen(file_1.*.name);
+        var t: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(l +% @as(usize, 3)))));
         _ = memcpy(@as(?*anyopaque, @ptrCast(t)), @as(?*const anyopaque, @ptrCast(file_1.*.name)), l);
         t[l] = ':';
-        t[l +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))] = ' ';
-        t[l +% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))] = '\x00';
+        t[l +% @as(usize, 1)] = ' ';
+        t[l +% @as(usize, 2)] = '\x00';
         hash_map_arg(&file_1.*.variables.*.set.*.table, &print_noauto_variable, @as(?*anyopaque, @ptrCast(t)));
     }
 }
 export fn merge_variable_set_lists(arg_setlist0: [*c][*c]struct_variable_set_list, arg_setlist1: [*c]struct_variable_set_list) void {
-    var setlist0 = arg_setlist0;
-    _ = &setlist0;
+    const setlist0 = arg_setlist0;
     var setlist1 = arg_setlist1;
-    _ = &setlist1;
     var to: [*c]struct_variable_set_list = setlist0.*;
-    _ = &to;
     var last0: [*c]struct_variable_set_list = null;
-    _ = &last0;
     if (!(setlist1 != null) or (setlist1 == (&global_setlist))) return;
     if (to != null) {
         while (to != (&global_setlist)) {
@@ -718,8 +664,7 @@ export fn merge_variable_set_lists(arg_setlist0: [*c][*c]struct_variable_set_lis
         }
         to = setlist0.*;
         while ((setlist1 != (&global_setlist)) and (to != (&global_setlist))) {
-            var from: [*c]struct_variable_set_list = setlist1;
-            _ = &from;
+            const from: [*c]struct_variable_set_list = setlist1;
             setlist1 = setlist1.*.next;
             merge_variable_sets(to.*.set, from.*.set);
             last0 = to;
@@ -735,52 +680,38 @@ export fn merge_variable_set_lists(arg_setlist0: [*c][*c]struct_variable_set_lis
     }
 }
 export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]const u8, arg_value: [*c]const u8, arg_origin: enum_variable_origin, arg_flavor: enum_variable_flavor, arg_target_var: c_int) [*c]struct_variable {
-    var flocp = arg_flocp;
-    _ = &flocp;
-    var varname = arg_varname;
-    _ = &varname;
-    var value = arg_value;
-    _ = &value;
-    var origin = arg_origin;
-    _ = &origin;
+    const flocp = arg_flocp;
+    const varname = arg_varname;
+    const value = arg_value;
+    const origin = arg_origin;
     var flavor = arg_flavor;
-    _ = &flavor;
-    var target_var = arg_target_var;
-    _ = &target_var;
+    const target_var = arg_target_var;
     var newval: [*c]const u8 = undefined;
-    _ = &newval;
     var alloc_value: [*c]u8 = null;
-    _ = &alloc_value;
     var v: [*c]struct_variable = undefined;
-    _ = &v;
     var append: c_int = 0;
-    _ = &append;
     var conditional: c_int = 0;
-    _ = &conditional;
     while (true) {
         switch (flavor) {
-            @as(c_uint, @bitCast(@as(c_int, 1))) => {
+            @as(c_uint, 1) => {
                 newval = blk: {
-                    const tmp = allocated_variable_expand_for_file(value, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+                    const tmp = allocated_variable_expand_for_file(value, @as([*c]struct_file, @ptrFromInt(0)));
                     alloc_value = tmp;
                     break :blk tmp;
                 };
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 3))) => {
+            @as(c_uint, 3) => {
                 {
-                    var t: [*c]u8 = allocated_variable_expand_for_file(value, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
-                    _ = &t;
+                    const t: [*c]u8 = allocated_variable_expand_for_file(value, @as([*c]struct_file, @ptrFromInt(0)));
                     var np: [*c]u8 = blk: {
-                        const tmp = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(t) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                        const tmp = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(t) *% @as(c_ulong, 2)) +% @as(c_ulong, 1)))));
                         alloc_value = tmp;
                         break :blk tmp;
                     };
-                    _ = &np;
                     var op: [*c]u8 = t;
-                    _ = &op;
-                    while (@as(c_int, @bitCast(@as(c_uint, op[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00')) {
-                        if (@as(c_int, @bitCast(@as(c_uint, op[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '$')) {
+                    while (@as(c_int, @bitCast(@as(c_uint, op[0]))) != @as(c_int, '\x00')) {
+                        if (@as(c_int, @bitCast(@as(c_uint, op[0]))) == @as(c_int, '$')) {
                             (blk: {
                                 const ref = &np;
                                 const tmp = ref.*;
@@ -806,10 +737,9 @@ export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]con
                     break;
                 }
             },
-            @as(c_uint, @bitCast(@as(c_int, 6))) => {
+            @as(c_uint, 6) => {
                 {
-                    var q: [*c]u8 = allocated_variable_expand_for_file(value, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
-                    _ = &q;
+                    const q: [*c]u8 = allocated_variable_expand_for_file(value, @as([*c]struct_file, @ptrFromInt(0)));
                     alloc_value = shell_result(q);
                     free(@as(?*anyopaque, @ptrCast(q)));
                     flavor = @as(c_uint, @bitCast(f_recursive));
@@ -817,7 +747,7 @@ export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]con
                     break;
                 }
             },
-            @as(c_uint, @bitCast(@as(c_int, 5))) => {
+            @as(c_uint, 5) => {
                 v = lookup_variable(varname, strlen(varname));
                 if (v != null) {
                     free(@as(?*anyopaque, @ptrCast(alloc_value)));
@@ -828,11 +758,11 @@ export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]con
                 newval = value;
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 2))) => {
+            @as(c_uint, 2) => {
                 newval = value;
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 4))), @as(c_uint, @bitCast(@as(c_int, 7))) => {
+            @as(c_uint, 4), @as(c_uint, 7) => {
                 {
                     if (target_var != 0) {
                         append = 1;
@@ -848,23 +778,17 @@ export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]con
                         flavor = @as(c_uint, @bitCast(f_recursive));
                     } else {
                         var oldlen: usize = undefined;
-                        _ = &oldlen;
                         var vallen: usize = undefined;
-                        _ = &vallen;
                         var alloclen: usize = undefined;
-                        _ = &alloclen;
                         var val: [*c]const u8 = undefined;
-                        _ = &val;
                         var cp: [*c]u8 = undefined;
-                        _ = &cp;
                         var tp: [*c]u8 = null;
-                        _ = &tp;
                         val = value;
                         if (v.*.recursive != 0) {
                             flavor = @as(c_uint, @bitCast(f_recursive));
                         } else if (flavor != @as(c_uint, @bitCast(f_append_value))) {
                             val = blk: {
-                                const tmp = allocated_variable_expand_for_file(val, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+                                const tmp = allocated_variable_expand_for_file(val, @as([*c]struct_file, @ptrFromInt(0)));
                                 tp = tmp;
                                 break :blk tmp;
                             };
@@ -878,7 +802,7 @@ export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]con
                             }
                         }
                         oldlen = strlen(v.*.value);
-                        alloclen = ((oldlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))) +% vallen) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
+                        alloclen = ((oldlen +% @as(usize, 1)) +% vallen) +% @as(usize, 1);
                         cp = blk: {
                             const tmp = @as([*c]u8, @ptrCast(@alignCast(xmalloc(alloclen))));
                             alloc_value = tmp;
@@ -886,8 +810,7 @@ export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]con
                         };
                         if (oldlen != 0) {
                             var s: [*c]u8 = undefined;
-                            _ = &s;
-                            if (((varname == @as([*c]const u8, @ptrCast(@alignCast("MAKEFLAGS")))) or ((@as(c_int, @bitCast(@as(c_uint, varname.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, varname.*))) == @as(c_int, '\x00')) or !(strcmp(varname + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) and ((blk: {
+                            if (((varname == @as([*c]const u8, @ptrCast(@alignCast("MAKEFLAGS")))) or ((@as(c_int, @bitCast(@as(c_uint, varname.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, varname.*))) == @as(c_int, '\x00')) or !(strcmp(varname + @as(usize, @bitCast(@as(isize, @intCast(1)))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))) and ((blk: {
                                 const tmp = strstr(v.*.value, " -- ");
                                 s = tmp;
                                 break :blk tmp;
@@ -903,7 +826,7 @@ export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]con
                                 break :blk tmp;
                             }).* = ' ';
                         }
-                        _ = memcpy(@as(?*anyopaque, @ptrCast(cp)), @as(?*const anyopaque, @ptrCast(val)), vallen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                        _ = memcpy(@as(?*anyopaque, @ptrCast(cp)), @as(?*const anyopaque, @ptrCast(val)), vallen +% @as(usize, 1));
                         free(@as(?*anyopaque, @ptrCast(tp)));
                         newval = alloc_value;
                     }
@@ -916,7 +839,7 @@ export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]con
         }
         break;
     }
-    _ = @as(c_int, 0);
+    _ = 0;
     v = define_variable_in_set(varname, strlen(varname), newval, origin, @intFromBool((flavor == @as(c_uint, @bitCast(f_recursive))) or (flavor == @as(c_uint, @bitCast(f_expand)))), if (target_var != 0) current_variable_set_list.*.set else null, flocp);
     v.*.append = @as(c_uint, @bitCast(append));
     v.*.conditional = @as(c_uint, @bitCast(conditional));
@@ -924,15 +847,11 @@ export fn do_variable_definition(arg_flocp: [*c]const floc, arg_varname: [*c]con
     return if (v.*.special != 0) set_special_var(v, origin) else v;
 }
 export fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_variable) [*c]u8 {
-    var str = arg_str;
-    _ = &str;
-    var @"var" = arg_var;
-    _ = &@"var";
+    const str = arg_str;
+    const @"var" = arg_var;
     var p: [*c]const u8 = str;
-    _ = &p;
     var end: [*c]const u8 = null;
-    _ = &end;
-    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+    while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (2 | 4)) != 0) {
         p += 1;
     }
     @"var".*.name = @as([*c]u8, @ptrCast(@volatileCast(@constCast(p))));
@@ -944,26 +863,25 @@ export fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_v
             ref.* += 1;
             break :blk tmp;
         }).*)));
-        _ = &c;
-        if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(@as(i8, @truncate(c))))]))) & (@as(c_int, 8) | @as(c_int, 1))) != @as(c_int, 0)) return null;
-        if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(@as(i8, @truncate(c))))]))) & @as(c_int, 2)) != @as(c_int, 0)) {
+        if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(@as(i8, @truncate(c))))]))) & (8 | 1)) != 0) return null;
+        if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(@as(i8, @truncate(c))))]))) & 2) != 0) {
             if (end != null) return null;
-            end = p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
-            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) {
+            end = p - @as(usize, @bitCast(@as(isize, @intCast(1))));
+            while ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(p.*))]))) & (2 | 4)) != 0) {
                 p += 1;
             }
             continue;
         }
         if (c == @as(c_int, '=')) {
             if (!(end != null)) {
-                end = p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                end = p - @as(usize, @bitCast(@as(isize, @intCast(1))));
             }
             @"var".*.flavor = @as(c_uint, @bitCast(f_recursive));
             break;
         }
         if (c == @as(c_int, ':')) {
             if (!(end != null)) {
-                end = p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                end = p - @as(usize, @bitCast(@as(isize, @intCast(1))));
             }
             c = @as(c_int, @bitCast(@as(c_uint, (blk: {
                 const ref = &p;
@@ -1000,7 +918,6 @@ export fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_v
         }
         if (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '=')) {
             var flag_1682: c_int = 0;
-            _ = &flag_1682;
             while (true) {
                 switch (c) {
                     @as(c_int, 43) => {
@@ -1021,9 +938,9 @@ export fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_v
                 }
                 break;
             }
-            if (flag_1682 == @as(c_int, 0)) {
+            if (flag_1682 == 0) {
                 if (!(end != null)) {
-                    end = p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                    end = p - @as(usize, @bitCast(@as(isize, @intCast(1))));
                 }
                 p += 1;
                 break;
@@ -1032,9 +949,7 @@ export fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_v
         if (end != null) return null;
         if (c == @as(c_int, '$')) {
             var closeparen: u8 = undefined;
-            _ = &closeparen;
             var count: c_uint = undefined;
-            _ = &count;
             c = @as(c_int, @bitCast(@as(c_uint, (blk: {
                 const ref = &p;
                 const tmp = ref.*;
@@ -1051,7 +966,7 @@ export fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_v
                         closeparen = '}';
                         break;
                     },
-                    @as(c_int, 0) => return null,
+                    0 => return null,
                     else => {
                         continue;
                     },
@@ -1065,7 +980,7 @@ export fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_v
                         const ref = &count;
                         ref.* -%= 1;
                         break :blk ref.*;
-                    }) == @as(c_uint, @bitCast(@as(c_int, 0))))) {
+                    }) == @as(c_uint, 0))) {
                         p += 1;
                         break;
                     }
@@ -1081,35 +996,26 @@ export fn parse_variable_definition(arg_str: [*c]const u8, arg_var: [*c]struct_v
     return @as([*c]u8, @ptrCast(@volatileCast(@constCast(p))));
 }
 export fn assign_variable_definition(arg_v: [*c]struct_variable, arg_line: [*c]const u8) [*c]struct_variable {
-    var v = arg_v;
-    _ = &v;
-    var line = arg_line;
-    _ = &line;
+    const v = arg_v;
+    const line = arg_line;
     var name: [*c]u8 = undefined;
-    _ = &name;
     if (!(parse_variable_definition(line, v) != null)) return null;
-    name = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_ulong, v.*.length +% @as(c_uint, @bitCast(@as(c_int, 1))))))))));
+    name = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@as(c_ulong, v.*.length +% @as(c_uint, 1))))))));
     _ = memcpy(@as(?*anyopaque, @ptrCast(name)), @as(?*const anyopaque, @ptrCast(v.*.name)), @as(c_ulong, @bitCast(@as(c_ulong, v.*.length))));
     name[v.*.length] = '\x00';
-    v.*.name = allocated_variable_expand_for_file(name, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
-    if (@as(c_int, @bitCast(@as(c_uint, v.*.name[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) {
-        fatal(&v.*.fileinfo, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("empty variable name"));
+    v.*.name = allocated_variable_expand_for_file(name, @as([*c]struct_file, @ptrFromInt(0)));
+    if (@as(c_int, @bitCast(@as(c_uint, v.*.name[0]))) == @as(c_int, '\x00')) {
+        fatal(&v.*.fileinfo, @as(usize, 0), gettext("empty variable name"));
     }
     return v;
 }
 export fn try_variable_definition(arg_flocp: [*c]const floc, arg_line: [*c]const u8, arg_origin: enum_variable_origin, arg_target_var: c_int) [*c]struct_variable {
-    var flocp = arg_flocp;
-    _ = &flocp;
-    var line = arg_line;
-    _ = &line;
-    var origin = arg_origin;
-    _ = &origin;
-    var target_var = arg_target_var;
-    _ = &target_var;
+    const flocp = arg_flocp;
+    const line = arg_line;
+    const origin = arg_origin;
+    const target_var = arg_target_var;
     var v: struct_variable = undefined;
-    _ = &v;
     var vp: [*c]struct_variable = undefined;
-    _ = &vp;
     if (flocp != null) {
         v.fileinfo = flocp.*;
     } else {
@@ -1125,25 +1031,18 @@ export fn init_hash_global_variable_set() void {
 }
 
 export fn lookup_variable(arg_name: [*c]const u8, arg_length: usize) [*c]struct_variable {
-    var name = arg_name;
-    _ = &name;
-    var length = arg_length;
-    _ = &length;
+    const name = arg_name;
+    const length = arg_length;
     var setlist: [*c]const struct_variable_set_list = undefined;
-    _ = &setlist;
     var var_key: struct_variable = undefined;
-    _ = &var_key;
     var is_parent: c_int = 0;
-    _ = &is_parent;
     var_key.name = @as([*c]u8, @ptrCast(@volatileCast(@constCast(name))));
     var_key.length = @as(c_uint, @bitCast(@as(c_uint, @truncate(length))));
     {
         setlist = current_variable_set_list;
         while (setlist != null) : (setlist = setlist.*.next) {
-            var set: [*c]const struct_variable_set = setlist.*.set;
-            _ = &set;
+            const set: [*c]const struct_variable_set = setlist.*.set;
             var v: [*c]struct_variable = undefined;
-            _ = &v;
             v = @as([*c]struct_variable, @ptrCast(@alignCast(hash_find_item(@as([*c]struct_hash_table, @ptrCast(@volatileCast(@constCast(&set.*.table)))), @as(?*const anyopaque, @ptrCast(&var_key))))));
             if ((v != null) and (!(is_parent != 0) or !(v.*.private_var != 0))) return if (v.*.special != 0) lookup_special_var(v) else v;
             is_parent |= setlist.*.next_is_parent;
@@ -1152,17 +1051,13 @@ export fn lookup_variable(arg_name: [*c]const u8, arg_length: usize) [*c]struct_
     return null;
 }
 export fn lookup_variable_for_file(arg_name: [*c]const u8, arg_length: usize, arg_file_1: [*c]struct_file) [*c]struct_variable {
-    var name = arg_name;
-    _ = &name;
-    var length = arg_length;
-    _ = &length;
-    var file_1 = arg_file_1;
-    _ = &file_1;
+    const name = arg_name;
+    const length = arg_length;
+    const file_1 = arg_file_1;
     var @"var": [*c]struct_variable = undefined;
     _ = &@"var";
     var savev: [*c]struct_variable_set_list = undefined;
-    _ = &savev;
-    if (file_1 == @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) return lookup_variable(name, length);
+    if (file_1 == @as([*c]struct_file, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) return lookup_variable(name, length);
     savev = current_variable_set_list;
     current_variable_set_list = file_1.*.variables;
     @"var" = lookup_variable(name, length);
@@ -1170,40 +1065,26 @@ export fn lookup_variable_for_file(arg_name: [*c]const u8, arg_length: usize, ar
     return @"var";
 }
 export fn lookup_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_set: [*c]const struct_variable_set) [*c]struct_variable {
-    var name = arg_name;
-    _ = &name;
-    var length = arg_length;
-    _ = &length;
-    var set = arg_set;
-    _ = &set;
+    const name = arg_name;
+    const length = arg_length;
+    const set = arg_set;
     var var_key: struct_variable = undefined;
-    _ = &var_key;
     var_key.name = @as([*c]u8, @ptrCast(@volatileCast(@constCast(name))));
     var_key.length = @as(c_uint, @bitCast(@as(c_uint, @truncate(length))));
     return @as([*c]struct_variable, @ptrCast(@alignCast(hash_find_item(@as([*c]struct_hash_table, @ptrCast(@volatileCast(@constCast(&set.*.table)))), @as(?*const anyopaque, @ptrCast(&var_key))))));
 }
 export fn define_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_value: [*c]const u8, arg_origin: enum_variable_origin, arg_recursive: c_int, arg_set: [*c]struct_variable_set, arg_flocp: [*c]const floc) [*c]struct_variable {
     var name = arg_name;
-    _ = &name;
-    var length = arg_length;
-    _ = &length;
-    var value = arg_value;
-    _ = &value;
+    const length = arg_length;
+    const value = arg_value;
     var origin = arg_origin;
-    _ = &origin;
-    var recursive = arg_recursive;
-    _ = &recursive;
+    const recursive = arg_recursive;
     var set = arg_set;
-    _ = &set;
-    var flocp = arg_flocp;
-    _ = &flocp;
+    const flocp = arg_flocp;
     var v: [*c]struct_variable = undefined;
-    _ = &v;
     var var_slot: [*c][*c]struct_variable = undefined;
-    _ = &var_slot;
     var var_key: struct_variable = undefined;
-    _ = &var_key;
-    if (set == @as([*c]struct_variable_set, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (set == @as([*c]struct_variable_set, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         set = &global_variable_set;
     }
     var_key.name = @as([*c]u8, @ptrCast(@volatileCast(@constCast(name))));
@@ -1251,7 +1132,7 @@ export fn define_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_
     } else {
         {
             name += 1;
-            while (@as(c_int, @bitCast(@as(c_uint, name.*))) != @as(c_int, '\x00')) : (name += 1) if ((((@as(c_int, @bitCast(@as(c_uint, name.*))) != @as(c_int, '_')) and ((@as(c_int, @bitCast(@as(c_uint, name.*))) < @as(c_int, 'a')) or (@as(c_int, @bitCast(@as(c_uint, name.*))) > @as(c_int, 'z')))) and ((@as(c_int, @bitCast(@as(c_uint, name.*))) < @as(c_int, 'A')) or (@as(c_int, @bitCast(@as(c_uint, name.*))) > @as(c_int, 'Z')))) and !((@as(c_uint, @bitCast(@as(c_uint, name.*))) -% @as(c_uint, @bitCast(@as(c_int, '0')))) <= @as(c_uint, @bitCast(@as(c_int, 9))))) break;
+            while (@as(c_int, @bitCast(@as(c_uint, name.*))) != @as(c_int, '\x00')) : (name += 1) if ((((@as(c_int, @bitCast(@as(c_uint, name.*))) != @as(c_int, '_')) and ((@as(c_int, @bitCast(@as(c_uint, name.*))) < @as(c_int, 'a')) or (@as(c_int, @bitCast(@as(c_uint, name.*))) > @as(c_int, 'z')))) and ((@as(c_int, @bitCast(@as(c_uint, name.*))) < @as(c_int, 'A')) or (@as(c_int, @bitCast(@as(c_uint, name.*))) > @as(c_int, 'Z')))) and !((@as(c_uint, @bitCast(@as(c_uint, name.*))) -% @as(c_uint, @bitCast(@as(c_int, '0')))) <= @as(c_uint, 9))) break;
         }
         if (@as(c_int, @bitCast(@as(c_uint, name.*))) != @as(c_int, '\x00')) {
             v.*.exportable = 0;
@@ -1264,36 +1145,26 @@ const struct_defined_vars = extern struct {
     len: usize = @import("std").mem.zeroes(usize),
 };
 export fn warn_undefined(arg_name: [*c]const u8, arg_len: usize) void {
-    var name = arg_name;
-    _ = &name;
-    var len = arg_len;
-    _ = &len;
+    const name = arg_name;
+    const len = arg_len;
     if (warn_undefined_variables_flag != 0) {
         var dp: [*c]const struct_defined_vars = undefined;
-        _ = &dp;
         {
             dp = @as([*c]const struct_defined_vars, @ptrCast(@alignCast(&defined_vars)));
-            while (dp.*.name != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (dp += 1) if ((dp.*.len == len) and (memcmp(@as(?*const anyopaque, @ptrCast(dp.*.name)), @as(?*const anyopaque, @ptrCast(name)), len) == @as(c_int, 0))) return;
+            while (dp.*.name != @as([*c]const u8, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (dp += 1) if ((dp.*.len == len) and (memcmp(@as(?*const anyopaque, @ptrCast(dp.*.name)), @as(?*const anyopaque, @ptrCast(name)), len) == 0)) return;
         }
         @"error"(reading_file, len, gettext("warning: undefined variable '%.*s'"), @as(c_int, @bitCast(@as(c_uint, @truncate(len)))), name);
     }
 }
 export fn undefine_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_origin: enum_variable_origin, arg_set: [*c]struct_variable_set) void {
-    var name = arg_name;
-    _ = &name;
-    var length = arg_length;
-    _ = &length;
+    const name = arg_name;
+    const length = arg_length;
     var origin = arg_origin;
-    _ = &origin;
     var set = arg_set;
-    _ = &set;
     var v: [*c]struct_variable = undefined;
-    _ = &v;
     var var_slot: [*c][*c]struct_variable = undefined;
-    _ = &var_slot;
     var var_key: struct_variable = undefined;
-    _ = &var_key;
-    if (set == @as([*c]struct_variable_set, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
+    if (set == @as([*c]struct_variable_set, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
         set = &global_variable_set;
     }
     var_key.name = @as([*c]u8, @ptrCast(@volatileCast(@constCast(name))));
@@ -1318,34 +1189,20 @@ export fn undefine_variable_in_set(arg_name: [*c]const u8, arg_length: usize, ar
     }
 }
 export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) [*c][*c]u8 {
-    var file_1 = arg_file_1;
-    _ = &file_1;
-    var recursive = arg_recursive;
-    _ = &recursive;
+    const file_1 = arg_file_1;
+    const recursive = arg_recursive;
     var set_list: [*c]struct_variable_set_list = undefined;
-    _ = &set_list;
     var s: [*c]struct_variable_set_list = undefined;
-    _ = &s;
     var table: struct_hash_table = undefined;
-    _ = &table;
     var v_slot: [*c][*c]struct_variable = undefined;
-    _ = &v_slot;
     var v_end: [*c][*c]struct_variable = undefined;
-    _ = &v_end;
     var result_0: [*c][*c]u8 = undefined;
-    _ = &result_0;
     var result: [*c][*c]u8 = undefined;
-    _ = &result;
     var invalid: [*c]const u8 = null;
-    _ = &invalid;
     var added_SHELL: c_int = @intFromBool(shell_var.value == null);
-    _ = &added_SHELL;
     var found_makelevel: c_int = 0;
-    _ = &found_makelevel;
     var found_mflags: c_int = 0;
-    _ = &found_mflags;
     var found_makeflags: c_int = 0;
-    _ = &found_makeflags;
     if (!(file_1 != null)) {
         env_recursion +%= 1;
     }
@@ -1361,19 +1218,14 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
     {
         s = set_list;
         while (s != null) : (s = s.*.next) {
-            var set: [*c]struct_variable_set = s.*.set;
-            _ = &set;
+            const set: [*c]struct_variable_set = s.*.set;
             const islocal: c_int = @intFromBool(s == set_list);
-            _ = &islocal;
             const isglobal: c_int = @intFromBool(set == (&global_variable_set));
-            _ = &isglobal;
             v_slot = @as([*c][*c]struct_variable, @ptrCast(@alignCast(set.*.table.ht_vec)));
             v_end = v_slot + set.*.table.ht_size;
             while (v_slot < v_end) : (v_slot += 1) if (!((v_slot.* == null) or (@as(?*anyopaque, @ptrCast(v_slot.*)) == hash_deleted_item))) {
                 var evslot: [*c][*c]struct_variable = undefined;
-                _ = &evslot;
-                var v: [*c]struct_variable = v_slot.*;
-                _ = &v;
+                const v: [*c]struct_variable = v_slot.*;
                 if (!(islocal != 0) and (v.*.private_var != 0)) continue;
                 evslot = @as([*c][*c]struct_variable, @ptrCast(@alignCast(hash_find_slot(&table, @as(?*const anyopaque, @ptrCast(v))))));
                 if ((evslot.* == null) or (@as(?*anyopaque, @ptrCast(evslot.*)) == hash_deleted_item)) {
@@ -1387,28 +1239,25 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
         }
     }
     result = blk: {
-        const tmp = @as([*c][*c]u8, @ptrCast(@alignCast(xmalloc((table.ht_fill +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3))))) *% @sizeOf([*c]u8)))));
+        const tmp = @as([*c][*c]u8, @ptrCast(@alignCast(xmalloc((table.ht_fill +% @as(c_ulong, 3)) *% @sizeOf([*c]u8)))));
         result_0 = tmp;
         break :blk tmp;
     };
     v_slot = @as([*c][*c]struct_variable, @ptrCast(@alignCast(table.ht_vec)));
     v_end = v_slot + table.ht_size;
     while (v_slot < v_end) : (v_slot += 1) if (!((v_slot.* == null) or (@as(?*anyopaque, @ptrCast(v_slot.*)) == hash_deleted_item))) {
-        var v: [*c]struct_variable = v_slot.*;
-        _ = &v;
+        const v: [*c]struct_variable = v_slot.*;
         var value: [*c]u8 = v.*.value;
-        _ = &value;
         var cp: [*c]u8 = null;
-        _ = &cp;
         if (!(should_export(v) != 0)) continue;
-        if ((v.*.recursive != 0) and (((v.*.origin != @as(c_uint, @bitCast(o_env))) and (v.*.origin != @as(c_uint, @bitCast(o_env_override)))) or ((v.*.name == ("MAKEFLAGS")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))))) {
+        if ((v.*.recursive != 0) and (((v.*.origin != @as(c_uint, @bitCast(o_env))) and (v.*.origin != @as(c_uint, @bitCast(o_env_override)))) or ((v.*.name == ("MAKEFLAGS")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))))) {
             value = blk: {
                 const tmp = recursively_expand_for_file(v, file_1);
                 cp = tmp;
                 break :blk tmp;
             };
         }
-        if (!(added_SHELL != 0) and ((v.*.name == ("SHELL")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "SHELL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "SHELL" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+        if (!(added_SHELL != 0) and ((v.*.name == ("SHELL")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "SHELL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), "SHELL" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) {
             added_SHELL = 1;
             {
                 (blk: {
@@ -1416,15 +1265,14 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
                     const tmp = ref.*;
                     ref.* += 1;
                     break :blk tmp;
-                }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                }).* = xstrdup(concat(@as(c_uint, 3), v.*.name, "=", value));
                 free(@as(?*anyopaque, @ptrCast(cp)));
                 continue;
             }
         }
-        if (!(found_makelevel != 0) and ((v.*.name == ("MAKELEVEL")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKELEVEL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKELEVEL" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+        if (!(found_makelevel != 0) and ((v.*.name == ("MAKELEVEL")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKELEVEL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), "MAKELEVEL" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) {
             var val: [23]u8 = undefined;
-            _ = &val;
-            _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&val))), "%u", makelevel +% @as(c_uint, @bitCast(@as(c_int, 1))));
+            _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&val))), "%u", makelevel +% @as(c_uint, 1));
             free(@as(?*anyopaque, @ptrCast(cp)));
             value = blk: {
                 const tmp = xstrdup(@as([*c]u8, @ptrCast(@alignCast(&val))));
@@ -1438,17 +1286,15 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
                     const tmp = ref.*;
                     ref.* += 1;
                     break :blk tmp;
-                }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                }).* = xstrdup(concat(@as(c_uint, 3), v.*.name, "=", value));
                 free(@as(?*anyopaque, @ptrCast(cp)));
                 continue;
             }
         }
         if (invalid != null) {
-            if (!(found_makeflags != 0) and ((v.*.name == ("MAKEFLAGS")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+            if (!(found_makeflags != 0) and ((v.*.name == ("MAKEFLAGS")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) {
                 var mf: [*c]u8 = undefined;
-                _ = &mf;
                 var vars: [*c]u8 = undefined;
-                _ = &vars;
                 found_makeflags = 1;
                 if (!(strstr(value, " --jobserver-auth=") != null)) {
                     (blk: {
@@ -1456,19 +1302,17 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
                         const tmp = ref.*;
                         ref.* += 1;
                         break :blk tmp;
-                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    }).* = xstrdup(concat(@as(c_uint, 3), v.*.name, "=", value));
                     free(@as(?*anyopaque, @ptrCast(cp)));
                     continue;
                 }
                 vars = strstr(value, " -- ");
                 if (!(vars != null)) {
-                    mf = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 2))), value, invalid));
+                    mf = xstrdup(concat(@as(c_uint, 2), value, invalid));
                 } else {
-                    var lf: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(vars) -% @intFromPtr(value))), @sizeOf(u8))));
-                    _ = &lf;
-                    var li: usize = strlen(invalid);
-                    _ = &li;
-                    mf = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(value) +% li) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))));
+                    const lf: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(vars) -% @intFromPtr(value))), @sizeOf(u8))));
+                    const li: usize = strlen(invalid);
+                    mf = @as([*c]u8, @ptrCast(@alignCast(xmalloc((strlen(value) +% li) +% @as(c_ulong, 1)))));
                     _ = strcpy(@as([*c]u8, @ptrCast(@alignCast(mempcpy(mempcpy(@as(?*anyopaque, @ptrCast(mf)), @as(?*const anyopaque, @ptrCast(value)), lf), @as(?*const anyopaque, @ptrCast(invalid)), li)))), vars);
                 }
                 free(@as(?*anyopaque, @ptrCast(cp)));
@@ -1486,14 +1330,13 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
                         const tmp = ref.*;
                         ref.* += 1;
                         break :blk tmp;
-                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    }).* = xstrdup(concat(@as(c_uint, 3), v.*.name, "=", value));
                     free(@as(?*anyopaque, @ptrCast(cp)));
                     continue;
                 }
             }
-            if (!(found_mflags != 0) and ((v.*.name == ("MFLAGS")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
+            if (!(found_mflags != 0) and ((v.*.name == ("MFLAGS")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), "MFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) {
                 var mf: [*c]const u8 = undefined;
-                _ = &mf;
                 found_mflags = 1;
                 if (!(strstr(value, " --jobserver-auth=") != null)) {
                     (blk: {
@@ -1501,7 +1344,7 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
                         const tmp = ref.*;
                         ref.* += 1;
                         break :blk tmp;
-                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    }).* = xstrdup(concat(@as(c_uint, 3), v.*.name, "=", value));
                     free(@as(?*anyopaque, @ptrCast(cp)));
                     continue;
                 }
@@ -1511,11 +1354,11 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
                         const tmp = ref.*;
                         ref.* += 1;
                         break :blk tmp;
-                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    }).* = xstrdup(concat(@as(c_uint, 3), v.*.name, "=", value));
                     free(@as(?*anyopaque, @ptrCast(cp)));
                     continue;
                 }
-                mf = concat(@as(c_uint, @bitCast(@as(c_int, 2))), value, invalid);
+                mf = concat(@as(c_uint, 2), value, invalid);
                 free(@as(?*anyopaque, @ptrCast(cp)));
                 value = blk: {
                     const tmp = xstrdup(mf);
@@ -1531,7 +1374,7 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
                         const tmp = ref.*;
                         ref.* += 1;
                         break :blk tmp;
-                    }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+                    }).* = xstrdup(concat(@as(c_uint, 3), v.*.name, "=", value));
                     free(@as(?*anyopaque, @ptrCast(cp)));
                     continue;
                 }
@@ -1542,7 +1385,7 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
             const tmp = ref.*;
             ref.* += 1;
             break :blk tmp;
-        }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), v.*.name, "=", value));
+        }).* = xstrdup(concat(@as(c_uint, 3), v.*.name, "=", value));
         free(@as(?*anyopaque, @ptrCast(cp)));
     };
     if (!(added_SHELL != 0)) {
@@ -1551,12 +1394,11 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
             const tmp = ref.*;
             ref.* += 1;
             break :blk tmp;
-        }).* = xstrdup(concat(@as(c_uint, @bitCast(@as(c_int, 3))), shell_var.name, "=", shell_var.value));
+        }).* = xstrdup(concat(@as(c_uint, 3), shell_var.name, "=", shell_var.value));
     }
     if (!(found_makelevel != 0)) {
         var val: [33]u8 = undefined;
-        _ = &val;
-        _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&val))), "%s=%u", "MAKELEVEL", makelevel +% @as(c_uint, @bitCast(@as(c_int, 1))));
+        _ = sprintf(@as([*c]u8, @ptrCast(@alignCast(&val))), "%s=%u", "MAKELEVEL", makelevel +% @as(c_uint, 1));
         (blk: {
             const ref = &result;
             const tmp = ref.*;
@@ -1565,28 +1407,23 @@ export fn target_environment(arg_file_1: [*c]struct_file, arg_recursive: c_int) 
         }).* = xstrdup(@as([*c]u8, @ptrCast(@alignCast(&val))));
     }
     result.* = null;
-    hash_free(&table, @as(c_int, 0));
+    hash_free(&table, 0);
     if (!(file_1 != null)) {
         env_recursion -%= 1;
     }
     return result_0;
 }
 export fn create_pattern_var(arg_target: [*c]const u8, arg_suffix: [*c]const u8) [*c]struct_pattern_var {
-    var target = arg_target;
-    _ = &target;
-    var suffix = arg_suffix;
-    _ = &suffix;
-    var len: usize = strlen(target);
-    _ = &len;
-    var p: [*c]struct_pattern_var = @as([*c]struct_pattern_var, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_pattern_var)))));
-    _ = &p;
+    const target = arg_target;
+    const suffix = arg_suffix;
+    const len: usize = strlen(target);
+    const p: [*c]struct_pattern_var = @as([*c]struct_pattern_var, @ptrCast(@alignCast(xcalloc(@sizeOf(struct_pattern_var)))));
     if (pattern_vars != null) {
         if ((len < @as(usize, @bitCast(@as(c_long, @as(c_int, 256))))) and (last_pattern_vars[len] != null)) {
             p.*.next = last_pattern_vars[len].*.next;
             last_pattern_vars[len].*.next = p;
         } else {
             var v: [*c][*c]struct_pattern_var = undefined;
-            _ = &v;
             {
                 v = &pattern_vars;
                 while (true) : (v = &v.*.*.next) {
@@ -1604,7 +1441,7 @@ export fn create_pattern_var(arg_target: [*c]const u8, arg_suffix: [*c]const u8)
     }
     p.*.target = target;
     p.*.len = len;
-    p.*.suffix = suffix + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+    p.*.suffix = suffix + @as(usize, @bitCast(@as(isize, @intCast(1))));
     if (len < @as(usize, @bitCast(@as(c_long, @as(c_int, 256))))) {
         last_pattern_vars[len] = p;
     }
@@ -1639,41 +1476,31 @@ var variable_changenum: c_ulong = 0;
 var pattern_vars: [*c]struct_pattern_var = null;
 var last_pattern_vars: [256][*c]struct_pattern_var = @import("std").mem.zeroes([256][*c]struct_pattern_var);
 fn lookup_pattern_var(arg_start: [*c]struct_pattern_var, arg_target: [*c]const u8, arg_targlen: usize) callconv(.C) [*c]struct_pattern_var {
-    var start = arg_start;
-    _ = &start;
-    var target = arg_target;
-    _ = &target;
-    var targlen = arg_targlen;
-    _ = &targlen;
+    const start = arg_start;
+    const target = arg_target;
+    const targlen = arg_targlen;
     var p: [*c]struct_pattern_var = undefined;
-    _ = &p;
     {
         p = if (start != null) start.*.next else pattern_vars;
         while (p != null) : (p = p.*.next) {
             var stem: [*c]const u8 = undefined;
-            _ = &stem;
             var stemlen: usize = undefined;
-            _ = &stemlen;
             if (p.*.len > targlen) continue;
-            stem = target + @as(usize, @bitCast(@as(isize, @intCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p.*.suffix) -% @intFromPtr(p.*.target))), @sizeOf(u8)) - @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))));
-            stemlen = (targlen -% p.*.len) +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))));
-            if ((stem > target) and !(strncmp(p.*.target, target, @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(stem) -% @intFromPtr(target))), @sizeOf(u8))))) == @as(c_int, 0))) continue;
-            if ((@as(c_int, @bitCast(@as(c_uint, p.*.suffix.*))) == @as(c_int, @bitCast(@as(c_uint, stem[stemlen])))) and ((@as(c_int, @bitCast(@as(c_uint, p.*.suffix.*))) == @as(c_int, '\x00')) or (((&p.*.suffix[@as(c_uint, @intCast(@as(c_int, 1)))]) == (&stem[stemlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))])) or ((@as(c_int, @bitCast(@as(c_uint, (&p.*.suffix[@as(c_uint, @intCast(@as(c_int, 1)))]).*))) == @as(c_int, @bitCast(@as(c_uint, (&stem[stemlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (&p.*.suffix[@as(c_uint, @intCast(@as(c_int, 1)))]).*))) == @as(c_int, '\x00')) or !(strcmp((&p.*.suffix[@as(c_uint, @intCast(@as(c_int, 1)))]) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), (&stem[stemlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))]) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))))) break;
+            stem = target + @as(usize, @bitCast(@as(isize, @intCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p.*.suffix) -% @intFromPtr(p.*.target))), @sizeOf(u8)) - @as(c_long, 1)))));
+            stemlen = (targlen -% p.*.len) +% @as(usize, 1);
+            if ((stem > target) and !(strncmp(p.*.target, target, @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(stem) -% @intFromPtr(target))), @sizeOf(u8))))) == 0)) continue;
+            if ((@as(c_int, @bitCast(@as(c_uint, p.*.suffix.*))) == @as(c_int, @bitCast(@as(c_uint, stem[stemlen])))) and ((@as(c_int, @bitCast(@as(c_uint, p.*.suffix.*))) == @as(c_int, '\x00')) or (((&p.*.suffix[1]) == (&stem[stemlen +% @as(usize, 1)])) or ((@as(c_int, @bitCast(@as(c_uint, (&p.*.suffix[1]).*))) == @as(c_int, @bitCast(@as(c_uint, (&stem[stemlen +% @as(usize, 1)]).*)))) and ((@as(c_int, @bitCast(@as(c_uint, (&p.*.suffix[1]).*))) == @as(c_int, '\x00')) or !(strcmp((&p.*.suffix[1]) + @as(usize, @bitCast(@as(isize, @intCast(1)))), (&stem[stemlen +% @as(usize, 1)]) + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))))) break;
         }
     }
     return p;
 }
 fn variable_hash_1(arg_keyv: ?*const anyopaque) callconv(.C) c_ulong {
-    var keyv = arg_keyv;
-    _ = &keyv;
-    var key: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(keyv)));
-    _ = &key;
+    const keyv = arg_keyv;
+    const key: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(keyv)));
     while (true) {
         var _result_: c_ulong = 0;
-        _ = &_result_;
         while (true) {
-            var _key_: [*c]const u8 = @as([*c]const u8, @ptrCast(@alignCast(key.*.name)));
-            _ = &_key_;
+            const _key_: [*c]const u8 = @as([*c]const u8, @ptrCast(@alignCast(key.*.name)));
             _result_ +%= @as(c_ulong, @bitCast(@as(c_ulong, jhash(_key_, @as(c_int, @bitCast(key.*.length))))));
             if (!false) break;
         }
@@ -1682,13 +1509,10 @@ fn variable_hash_1(arg_keyv: ?*const anyopaque) callconv(.C) c_ulong {
     return 0;
 }
 fn variable_hash_2(arg_keyv: ?*const anyopaque) callconv(.C) c_ulong {
-    var keyv = arg_keyv;
-    _ = &keyv;
-    var key: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(keyv)));
-    _ = &key;
+    const keyv = arg_keyv;
+    const key: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(keyv)));
     while (true) {
-        var _result_: c_ulong = 0;
-        _ = &_result_;
+        const _result_: c_ulong = 0;
         while (true) {
             _ = key.*.name;
             _ = key.*.length;
@@ -1699,19 +1523,14 @@ fn variable_hash_2(arg_keyv: ?*const anyopaque) callconv(.C) c_ulong {
     return 0;
 }
 fn variable_hash_cmp(arg_xv: ?*const anyopaque, arg_yv: ?*const anyopaque) callconv(.C) c_int {
-    var xv = arg_xv;
-    _ = &xv;
-    var yv = arg_yv;
-    _ = &yv;
-    var x: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(xv)));
-    _ = &x;
-    var y: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(yv)));
-    _ = &y;
-    var result: c_int = @as(c_int, @bitCast(x.*.length -% y.*.length));
-    _ = &result;
+    const xv = arg_xv;
+    const yv = arg_yv;
+    const x: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(xv)));
+    const y: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(yv)));
+    const result: c_int = @as(c_int, @bitCast(x.*.length -% y.*.length));
     if (result != 0) return result;
     while (true) {
-        return if (x.*.name == y.*.name) @as(c_int, 0) else memcmp(@as(?*const anyopaque, @ptrCast(x.*.name)), @as(?*const anyopaque, @ptrCast(y.*.name)), @as(c_ulong, @bitCast(@as(c_ulong, x.*.length))));
+        return if (x.*.name == y.*.name) 0 else memcmp(@as(?*const anyopaque, @ptrCast(x.*.name)), @as(?*const anyopaque, @ptrCast(y.*.name)), @as(c_ulong, @bitCast(@as(c_ulong, x.*.length))));
     }
     return 0;
 }
@@ -1719,13 +1538,11 @@ var global_variable_set: struct_variable_set = @import("std").mem.zeroes(struct_
 var global_setlist: struct_variable_set_list = struct_variable_set_list{
     .next = null,
     .set = &global_variable_set,
-    .next_is_parent = @as(c_int, 0),
+    .next_is_parent = 0,
 };
 fn free_variable_name_and_value(arg_item: ?*const anyopaque) callconv(.C) void {
-    var item = arg_item;
-    _ = &item;
-    var v: [*c]struct_variable = @as([*c]struct_variable, @ptrCast(@volatileCast(@constCast(item))));
-    _ = &v;
+    const item = arg_item;
+    const v: [*c]struct_variable = @as([*c]struct_variable, @ptrCast(@volatileCast(@constCast(item))));
     free(@as(?*anyopaque, @ptrCast(v.*.name)));
     free(@as(?*anyopaque, @ptrCast(v.*.value)));
 }
@@ -1735,31 +1552,22 @@ fn lookup_special_var(arg_var: [*c]struct_variable) callconv(.C) [*c]struct_vari
     const last_changenum = struct {
         var static: c_ulong = 0;
     };
-    _ = &last_changenum;
-    if ((variable_changenum != last_changenum.static) and ((@"var".*.name == (".VARIABLES")) or ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, @bitCast(@as(c_uint, ".VARIABLES".*)))) and ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, '\x00')) or !(strcmp(@"var".*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), ".VARIABLES" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0))))) {
-        var max: usize = ((strlen(@"var".*.value) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))));
-        _ = &max;
+    if ((variable_changenum != last_changenum.static) and ((@"var".*.name == (".VARIABLES")) or ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, @bitCast(@as(c_uint, ".VARIABLES".*)))) and ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, '\x00')) or !(strcmp(@"var".*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), ".VARIABLES" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0))))) {
+        var max: usize = ((strlen(@"var".*.value) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))))) +% @as(c_ulong, 1)) *% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 500))));
         var len: usize = undefined;
-        _ = &len;
         var p: [*c]u8 = undefined;
-        _ = &p;
         var vp: [*c][*c]struct_variable = @as([*c][*c]struct_variable, @ptrCast(@alignCast(global_variable_set.table.ht_vec)));
-        _ = &vp;
-        var end: [*c][*c]struct_variable = &vp[global_variable_set.table.ht_size];
-        _ = &end;
+        const end: [*c][*c]struct_variable = &vp[global_variable_set.table.ht_size];
         @"var".*.value = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(@"var".*.value)), max))));
         p = @"var".*.value;
         len = 0;
         while (vp < end) : (vp += 1) if (!((vp.* == null) or (@as(?*anyopaque, @ptrCast(vp.*)) == hash_deleted_item))) {
-            var v: [*c]struct_variable = vp.*;
-            _ = &v;
-            var l: c_int = @as(c_int, @bitCast(v.*.length));
-            _ = &l;
-            len +%= @as(usize, @bitCast(@as(c_long, l + @as(c_int, 1))));
+            const v: [*c]struct_variable = vp.*;
+            const l: c_int = @as(c_int, @bitCast(v.*.length));
+            len +%= @as(usize, @bitCast(@as(c_long, l + 1)));
             if (len > max) {
-                var off: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(@"var".*.value))), @sizeOf(u8))));
-                _ = &off;
-                max +%= @as(usize, @bitCast(@as(c_long, (@divTrunc(l + @as(c_int, 1), @as(c_int, 500)) + @as(c_int, 1)) * @as(c_int, 500))));
+                const off: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p) -% @intFromPtr(@"var".*.value))), @sizeOf(u8))));
+                max +%= @as(usize, @bitCast(@as(c_long, (@divTrunc(l + 1, @as(c_int, 500)) + 1) * @as(c_int, 500))));
                 @"var".*.value = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(@"var".*.value)), max))));
                 p = &@"var".*.value[off];
             }
@@ -1771,27 +1579,20 @@ fn lookup_special_var(arg_var: [*c]struct_variable) callconv(.C) [*c]struct_vari
                 break :blk tmp;
             }).* = ' ';
         };
-        (p - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))).* = '\x00';
+        (p - @as(usize, @bitCast(@as(isize, @intCast(1))))).* = '\x00';
         last_changenum.static = variable_changenum;
     }
     return @"var";
 }
 fn merge_variable_sets(arg_to_set: [*c]struct_variable_set, arg_from_set: [*c]struct_variable_set) callconv(.C) void {
-    var to_set = arg_to_set;
-    _ = &to_set;
-    var from_set = arg_from_set;
-    _ = &from_set;
+    const to_set = arg_to_set;
+    const from_set = arg_from_set;
     var from_var_slot: [*c][*c]struct_variable = @as([*c][*c]struct_variable, @ptrCast(@alignCast(from_set.*.table.ht_vec)));
-    _ = &from_var_slot;
-    var from_var_end: [*c][*c]struct_variable = from_var_slot + from_set.*.table.ht_size;
-    _ = &from_var_end;
-    var inc: c_int = if (to_set == (&global_variable_set)) @as(c_int, 1) else @as(c_int, 0);
-    _ = &inc;
+    const from_var_end: [*c][*c]struct_variable = from_var_slot + from_set.*.table.ht_size;
+    const inc: c_int = if (to_set == (&global_variable_set)) 1 else 0;
     while (from_var_slot < from_var_end) : (from_var_slot += 1) if (!((from_var_slot.* == null) or (@as(?*anyopaque, @ptrCast(from_var_slot.*)) == hash_deleted_item))) {
-        var from_var: [*c]struct_variable = from_var_slot.*;
-        _ = &from_var;
-        var to_var_slot: [*c][*c]struct_variable = @as([*c][*c]struct_variable, @ptrCast(@alignCast(hash_find_slot(&to_set.*.table, @as(?*const anyopaque, @ptrCast(from_var_slot.*))))));
-        _ = &to_var_slot;
+        const from_var: [*c]struct_variable = from_var_slot.*;
+        const to_var_slot: [*c][*c]struct_variable = @as([*c][*c]struct_variable, @ptrCast(@alignCast(hash_find_slot(&to_set.*.table, @as(?*const anyopaque, @ptrCast(from_var_slot.*))))));
         if ((to_var_slot.* == null) or (@as(?*anyopaque, @ptrCast(to_var_slot.*)) == hash_deleted_item)) {
             _ = hash_insert_at(&to_set.*.table, @as(?*const anyopaque, @ptrCast(from_var)), @as(?*const anyopaque, @ptrCast(to_var_slot)));
             variable_changenum +%= @as(c_ulong, @bitCast(@as(c_long, inc)));
@@ -1802,17 +1603,16 @@ fn merge_variable_sets(arg_to_set: [*c]struct_variable_set, arg_from_set: [*c]st
     };
 }
 fn should_export(arg_v: [*c]const struct_variable) callconv(.C) c_int {
-    var v = arg_v;
-    _ = &v;
+    const v = arg_v;
     while (true) {
         switch (v.*.@"export") {
-            @as(c_uint, @bitCast(@as(c_int, 1))) => break,
-            @as(c_uint, @bitCast(@as(c_int, 2))) => return 0,
-            @as(c_uint, @bitCast(@as(c_int, 3))) => {
+            @as(c_uint, 1) => break,
+            @as(c_uint, 2) => return 0,
+            @as(c_uint, 3) => {
                 if (v.*.origin == @as(c_uint, @bitCast(o_default))) return 0;
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 0))) => {
+            @as(c_uint, 0) => {
                 if ((v.*.origin == @as(c_uint, @bitCast(o_default))) or (v.*.origin == @as(c_uint, @bitCast(o_automatic)))) return 0;
                 if (!(v.*.exportable != 0)) return 0;
                 if (((!(export_all_variables != 0) and (v.*.origin != @as(c_uint, @bitCast(o_command)))) and (v.*.origin != @as(c_uint, @bitCast(o_env)))) and (v.*.origin != @as(c_uint, @bitCast(o_env_override)))) return 0;
@@ -1825,32 +1625,25 @@ fn should_export(arg_v: [*c]const struct_variable) callconv(.C) c_int {
     return 1;
 }
 fn set_special_var(arg_var: [*c]struct_variable, arg_origin: enum_variable_origin) callconv(.C) [*c]struct_variable {
-    var @"var" = arg_var;
-    _ = &@"var";
-    var origin = arg_origin;
-    _ = &origin;
-    if ((@"var".*.name == ("MAKEFLAGS")) or ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, '\x00')) or !(strcmp(@"var".*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
+    const @"var" = arg_var;
+    const origin = arg_origin;
+    if ((@"var".*.name == ("MAKEFLAGS")) or ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "MAKEFLAGS".*)))) and ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, '\x00')) or !(strcmp(@"var".*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), "MAKEFLAGS" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))) {
         reset_makeflags(origin);
-    } else if ((@"var".*.name == (".RECIPEPREFIX")) or ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, @bitCast(@as(c_uint, ".RECIPEPREFIX".*)))) and ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, '\x00')) or !(strcmp(@"var".*.name + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))), ".RECIPEPREFIX" + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))))) != 0)))) {
-        cmd_prefix = @as(u8, @bitCast(@as(i8, @truncate(if (@as(c_int, @bitCast(@as(c_uint, @"var".*.value[@as(c_uint, @intCast(@as(c_int, 0)))]))) == @as(c_int, '\x00')) @as(c_int, '\t') else @as(c_int, @bitCast(@as(c_uint, @"var".*.value[@as(c_uint, @intCast(@as(c_int, 0)))])))))));
+    } else if ((@"var".*.name == (".RECIPEPREFIX")) or ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, @bitCast(@as(c_uint, ".RECIPEPREFIX".*)))) and ((@as(c_int, @bitCast(@as(c_uint, @"var".*.name.*))) == @as(c_int, '\x00')) or !(strcmp(@"var".*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), ".RECIPEPREFIX" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))) {
+        cmd_prefix = @as(u8, @bitCast(@as(i8, @truncate(if (@as(c_int, @bitCast(@as(c_uint, @"var".*.value[0]))) == @as(c_int, '\x00')) @as(c_int, '\t') else @as(c_int, @bitCast(@as(c_uint, @"var".*.value[0])))))));
     }
     return @"var";
 }
 fn shell_result(arg_p: [*c]const u8) callconv(.C) [*c]u8 {
-    var p = arg_p;
-    _ = &p;
+    const p = arg_p;
     var buf: [*c]u8 = undefined;
-    _ = &buf;
     var len: usize = undefined;
-    _ = &len;
     var args: [2][*c]u8 = undefined;
-    _ = &args;
     var result: [*c]u8 = undefined;
-    _ = &result;
     install_variable_buffer(&buf, &len);
-    args[@as(c_uint, @intCast(@as(c_int, 0)))] = @as([*c]u8, @ptrCast(@volatileCast(@constCast(p))));
-    args[@as(c_uint, @intCast(@as(c_int, 1)))] = null;
-    _ = variable_buffer_output(func_shell_base(variable_buffer, @as([*c][*c]u8, @ptrCast(@alignCast(&args))), @as(c_int, 0)), "\x00", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+    args[0] = @as([*c]u8, @ptrCast(@volatileCast(@constCast(p))));
+    args[1] = null;
+    _ = variable_buffer_output(func_shell_base(variable_buffer, @as([*c][*c]u8, @ptrCast(@alignCast(&args))), 0), "\x00", @as(usize, 1));
     result = strdup(variable_buffer);
     restore_variable_buffer(buf, len);
     return result;
@@ -1858,91 +1651,86 @@ fn shell_result(arg_p: [*c]const u8) callconv(.C) [*c]u8 {
 const defined_vars: [11]struct_defined_vars = [11]struct_defined_vars{
     struct_defined_vars{
         .name = "MAKECMDGOALS",
-        .len = @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([13]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = "MAKE_RESTARTS",
-        .len = @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([14]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = "MAKE_TERMOUT",
-        .len = @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([13]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = "MAKE_TERMERR",
-        .len = @sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([13]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = "MAKEOVERRIDES",
-        .len = @sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([14]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = ".DEFAULT",
-        .len = @sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([9]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = "-*-command-variables-*-",
-        .len = @sizeOf([24]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([24]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = "-*-eval-flags-*-",
-        .len = @sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([17]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = "VPATH",
-        .len = @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([6]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = "GPATH",
-        .len = @sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))),
+        .len = @sizeOf([6]u8) -% @as(c_ulong, 1),
     },
     struct_defined_vars{
         .name = null,
-        .len = @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))),
+        .len = @as(usize, 0),
     },
 };
 fn print_variable(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C) void {
-    var item = arg_item;
-    _ = &item;
-    var arg = arg_arg;
-    _ = &arg;
-    var v: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(item)));
-    _ = &v;
-    var prefix: [*c]const u8 = @as([*c]const u8, @ptrCast(@alignCast(arg)));
-    _ = &prefix;
+    const item = arg_item;
+    const arg = arg_arg;
+    const v: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(item)));
+    const prefix: [*c]const u8 = @as([*c]const u8, @ptrCast(@alignCast(arg)));
     var origin: [*c]const u8 = undefined;
-    _ = &origin;
     while (true) {
         switch (v.*.origin) {
-            @as(c_uint, @bitCast(@as(c_int, 6))) => {
+            @as(c_uint, 6) => {
                 origin = gettext("automatic");
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 0))) => {
+            @as(c_uint, 0) => {
                 origin = gettext("default");
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 1))) => {
+            @as(c_uint, 1) => {
                 origin = gettext("environment");
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 2))) => {
+            @as(c_uint, 2) => {
                 origin = gettext("makefile");
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 3))) => {
+            @as(c_uint, 3) => {
                 origin = gettext("environment under -e");
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 4))) => {
+            @as(c_uint, 4) => {
                 origin = gettext("command line");
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 5))) => {
+            @as(c_uint, 5) => {
                 origin = gettext("'override' directive");
                 break;
             },
-            @as(c_uint, @bitCast(@as(c_int, 7))) => {
+            @as(c_uint, 7) => {
                 abort();
             },
             else => {},
@@ -1963,7 +1751,6 @@ fn print_variable(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C
         _ = printf("define %s\n%s\nendef\n", v.*.name, v.*.value);
     } else {
         var p: [*c]u8 = undefined;
-        _ = &p;
         _ = printf("%s %s= ", v.*.name, if (v.*.recursive != 0) if (v.*.append != 0) "+" else "" else ":");
         p = next_token(v.*.value);
         if ((p != v.*.value) and (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '\x00'))) {
@@ -1983,34 +1770,25 @@ fn print_variable(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C
     }
 }
 fn print_auto_variable(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C) void {
-    var item = arg_item;
-    _ = &item;
-    var arg = arg_arg;
-    _ = &arg;
-    var v: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(item)));
-    _ = &v;
+    const item = arg_item;
+    const arg = arg_arg;
+    const v: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(item)));
     if (v.*.origin == @as(c_uint, @bitCast(o_automatic))) {
         print_variable(item, arg);
     }
 }
 fn print_noauto_variable(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C) void {
-    var item = arg_item;
-    _ = &item;
-    var arg = arg_arg;
-    _ = &arg;
-    var v: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(item)));
-    _ = &v;
+    const item = arg_item;
+    const arg = arg_arg;
+    const v: [*c]const struct_variable = @as([*c]const struct_variable, @ptrCast(@alignCast(item)));
     if (v.*.origin != @as(c_uint, @bitCast(o_automatic))) {
         print_variable(item, arg);
     }
 }
 fn print_variable_set(arg_set: [*c]struct_variable_set, arg_prefix: [*c]const u8, arg_pauto: c_int) callconv(.C) void {
-    var set = arg_set;
-    _ = &set;
-    var prefix = arg_prefix;
-    _ = &prefix;
-    var pauto = arg_pauto;
-    _ = &pauto;
+    const set = arg_set;
+    const prefix = arg_prefix;
+    const pauto = arg_pauto;
     hash_map_arg(&set.*.table, if (pauto != 0) &print_auto_variable else &print_variable, @as(?*anyopaque, @ptrCast(@volatileCast(@constCast(prefix)))));
     _ = fputs(gettext("# variable set hash-table stats:\n"), stdout);
     _ = fputs("# ", stdout);

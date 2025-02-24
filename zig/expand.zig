@@ -303,7 +303,7 @@ const struct_variable = extern struct {
     @"export": enum_variable_export = @import("std").mem.zeroes(enum_variable_export),
 };
 
-extern fn xmalloc(usize) ?*anyopaque;
+const xmalloc = @import("misc.zig").xmalloc;
 
 extern fn xrealloc(?*anyopaque, usize) ?*anyopaque;
 extern fn xstrdup([*c]const u8) [*c]u8;
@@ -416,10 +416,10 @@ export fn variable_buffer_output(arg_ptr: [*c]u8, arg_string: [*c]const u8, arg_
     _ = &length;
     var newlen: usize = length +% @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(ptr) -% @intFromPtr(variable_buffer))), @sizeOf(u8))));
     _ = &newlen;
-    if ((newlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 5))))) > variable_buffer_length) {
+    if ((newlen +% @as(usize, 5)) > variable_buffer_length) {
         var offset: usize = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(ptr) -% @intFromPtr(variable_buffer))), @sizeOf(u8))));
         _ = &offset;
-        variable_buffer_length = if ((newlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 100))))) > (@as(usize, @bitCast(@as(c_long, @as(c_int, 2)))) *% variable_buffer_length)) newlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 100)))) else @as(usize, @bitCast(@as(c_long, @as(c_int, 2)))) *% variable_buffer_length;
+        variable_buffer_length = if ((newlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 100))))) > (@as(usize, 2) *% variable_buffer_length)) newlen +% @as(usize, @bitCast(@as(c_long, @as(c_int, 100)))) else @as(usize, 2) *% variable_buffer_length;
         variable_buffer = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(variable_buffer)), variable_buffer_length))));
         ptr = variable_buffer + offset;
     }
@@ -484,22 +484,22 @@ export fn expand_argument(arg_str: [*c]const u8, arg_end: [*c]const u8) [*c]u8 {
     var r: [*c]u8 = undefined;
     _ = &r;
     if (str == end) return xstrdup("");
-    if (!(end != null) or (@as(c_int, @bitCast(@as(c_uint, end.*))) == @as(c_int, '\x00'))) return allocated_variable_expand_for_file(str, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
-    if ((@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(str))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))) > @as(c_long, @bitCast(@as(c_long, @as(c_int, 1000))))) {
+    if (!(end != null) or (@as(c_int, @bitCast(@as(c_uint, end.*))) == @as(c_int, '\x00'))) return allocated_variable_expand_for_file(str, @as([*c]struct_file, @ptrFromInt(0)));
+    if ((@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(str))), @sizeOf(u8)) + @as(c_long, 1)) > @as(c_long, @bitCast(@as(c_long, @as(c_int, 1000))))) {
         tmp = blk: {
-            const tmp_1 = @as([*c]u8, @ptrCast(@alignCast(xmalloc(@as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(str))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))))));
+            const tmp_1 = @as([*c]u8, @ptrCast(@alignCast(xmalloc(@as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(str))), @sizeOf(u8)) + @as(c_long, 1)))))));
             alloc = tmp_1;
             break :blk tmp_1;
         };
     } else {
-        tmp = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(str))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 1))))))))));
+        tmp = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(str))), @sizeOf(u8)) + @as(c_long, 1)))))));
     }
     _ = memcpy(@as(?*anyopaque, @ptrCast(tmp)), @as(?*const anyopaque, @ptrCast(str)), @as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(str))), @sizeOf(u8)))));
     (blk: {
         const tmp_1 = @divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(str))), @sizeOf(u8));
         if (tmp_1 >= 0) break :blk tmp_1 + @as(usize, @intCast(tmp_1)) else break :blk tmp_1 - ~@as(usize, @bitCast(@as(isize, @intCast(tmp_1)) +% -1));
     }).* = '\x00';
-    r = allocated_variable_expand_for_file(tmp, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+    r = allocated_variable_expand_for_file(tmp, @as([*c]struct_file, @ptrFromInt(0)));
     free(@as(?*anyopaque, @ptrCast(alloc)));
     return r;
 }
@@ -527,21 +527,21 @@ export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8, arg
     }
     o = line;
     line_offset = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(line) -% @intFromPtr(variable_buffer))), @sizeOf(u8))));
-    if (length == @as(usize, @bitCast(@as(c_long, @as(c_int, 0))))) {
-        _ = variable_buffer_output(o, "", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+    if (length == @as(usize, 0)) {
+        _ = variable_buffer_output(o, "", @as(usize, 1));
         return variable_buffer;
     }
     save = if (length == @as(c_ulong, 18446744073709551615)) xstrdup(string) else xstrndup(string, length);
     p = save;
     while (true) {
         p1 = strchr(p, @as(c_int, '$'));
-        o = variable_buffer_output(o, p, if (p1 != null) @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p1) -% @intFromPtr(p))), @sizeOf(u8)))) else strlen(p) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
+        o = variable_buffer_output(o, p, if (p1 != null) @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(p1) -% @intFromPtr(p))), @sizeOf(u8)))) else strlen(p) +% @as(c_ulong, 1));
         if (p1 == null) break;
-        p = p1 + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+        p = p1 + @as(usize, @bitCast(@as(isize, @intCast(1))));
         while (true) {
             switch (@as(c_int, @bitCast(@as(c_uint, p.*)))) {
-                @as(c_int, 36), @as(c_int, 0) => {
-                    o = variable_buffer_output(o, p1, @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                @as(c_int, 36), 0 => {
+                    o = variable_buffer_output(o, p1, @as(usize, 1));
                     break;
                 },
                 @as(c_int, 40), @as(c_int, 123) => {
@@ -552,7 +552,7 @@ export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8, arg
                         _ = &closeparen;
                         var begp: [*c]const u8 = undefined;
                         _ = &begp;
-                        var beg: [*c]const u8 = p + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                        var beg: [*c]const u8 = p + @as(usize, @bitCast(@as(isize, @intCast(1))));
                         _ = &beg;
                         var op: [*c]u8 = undefined;
                         _ = &op;
@@ -571,7 +571,7 @@ export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8, arg
                         }
                         end = strchr(beg, @as(c_int, @bitCast(@as(c_uint, closeparen))));
                         if (end == null) {
-                            fatal(expanding_var.*, @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("unterminated variable reference"));
+                            fatal(expanding_var.*, @as(usize, 0), gettext("unterminated variable reference"));
                         }
                         p1 = lindex(beg, end, @as(c_int, '$'));
                         if (p1 != null) {
@@ -586,10 +586,10 @@ export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8, arg
                                         const ref = &count;
                                         ref.* -= 1;
                                         break :blk ref.*;
-                                    }) < @as(c_int, 0))) break;
+                                    }) < 0)) break;
                                 }
                             }
-                            if (count < @as(c_int, 0)) {
+                            if (count < 0) {
                                 abeg = expand_argument(beg, p);
                                 beg = abeg;
                                 end = strchr(beg, @as(c_int, '\x00'));
@@ -599,14 +599,14 @@ export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8, arg
                         }
                         colon = lindex(beg, end, @as(c_int, ':'));
                         if (colon != null) {
-                            var subst_beg: [*c]const u8 = colon + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                            var subst_beg: [*c]const u8 = colon + @as(usize, @bitCast(@as(isize, @intCast(1))));
                             _ = &subst_beg;
                             var subst_end: [*c]const u8 = lindex(subst_beg, end, @as(c_int, '='));
                             _ = &subst_end;
                             if (subst_end == null) {
                                 colon = null;
                             } else {
-                                var replace_beg: [*c]const u8 = subst_end + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1)))));
+                                var replace_beg: [*c]const u8 = subst_end + @as(usize, @bitCast(@as(isize, @intCast(1))));
                                 _ = &replace_beg;
                                 var replace_end: [*c]const u8 = end;
                                 _ = &replace_end;
@@ -625,7 +625,7 @@ export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8, arg
                                     _ = &rpercent;
                                     var value: [*c]u8 = if (v.*.recursive != 0) recursively_expand_for_file(v, null) else v.*.value;
                                     _ = &value;
-                                    pattern = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(subst_end) -% @intFromPtr(subst_beg))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 2))))))))));
+                                    pattern = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(subst_end) -% @intFromPtr(subst_beg))), @sizeOf(u8)) + @as(c_long, 2)))))));
                                     (blk: {
                                         const ref = &pattern;
                                         const tmp = ref.*;
@@ -637,7 +637,7 @@ export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8, arg
                                         const tmp = @divExact(@as(c_long, @bitCast(@intFromPtr(subst_end) -% @intFromPtr(subst_beg))), @sizeOf(u8));
                                         if (tmp >= 0) break :blk pattern + @as(usize, @intCast(tmp)) else break :blk pattern - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                                     }).* = '\x00';
-                                    replace = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(replace_end) -% @intFromPtr(replace_beg))), @sizeOf(u8)) + @as(c_long, @bitCast(@as(c_long, @as(c_int, 2))))))))));
+                                    replace = @as([*c]u8, @ptrCast(@alignCast(malloc(@as(c_ulong, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(replace_end) -% @intFromPtr(replace_beg))), @sizeOf(u8)) + @as(c_long, 2)))))));
                                     (blk: {
                                         const ref = &replace;
                                         const tmp = ref.*;
@@ -679,11 +679,11 @@ export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8, arg
                 else => {
                     if ((@as(c_int, @bitCast(@as(c_uint, stopchar_map[
                         @as(u8, @bitCast((blk: {
-                            const tmp = -@as(c_int, 1);
+                            const tmp = -1;
                             if (tmp >= 0) break :blk p + @as(usize, @intCast(tmp)) else break :blk p - ~@as(usize, @bitCast(@as(isize, @intCast(tmp)) +% -1));
                         }).*))
-                    ]))) & (@as(c_int, 2) | @as(c_int, 4))) != @as(c_int, 0)) break;
-                    o = reference_variable(o, p, @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+                    ]))) & (2 | 4)) != 0) break;
+                    o = reference_variable(o, p, @as(usize, 1));
                     break;
                 },
             }
@@ -693,14 +693,14 @@ export fn variable_expand_string(arg_line: [*c]u8, arg_string: [*c]const u8, arg
         p += 1;
     }
     free(@as(?*anyopaque, @ptrCast(save)));
-    _ = variable_buffer_output(o, "", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+    _ = variable_buffer_output(o, "", @as(usize, 1));
     return variable_buffer + line_offset;
 }
-export fn initialize_variable_output() [*c]u8 {
+pub fn initialize_variable_output() [*c]u8 {
     if (variable_buffer == null) {
         variable_buffer_length = 200;
-        variable_buffer = @as([*c]u8, @ptrCast(@alignCast(xmalloc(variable_buffer_length))));
-        variable_buffer[@as(c_uint, @intCast(@as(c_int, 0)))] = '\x00';
+        variable_buffer = @ptrCast(xmalloc(variable_buffer_length));
+        variable_buffer[0] = '\x00';
     }
     return variable_buffer;
 }
@@ -748,7 +748,7 @@ export fn recursively_expand_for_file(arg_v: [*c]struct_variable, arg_file_1: [*
         var ep: [*c][*c]u8 = undefined;
         _ = &ep;
         while (true) {
-            if ((@as(c_int, 2) & db_level) != 0) {
+            if ((2 & db_level) != 0) {
                 _ = printf(gettext("%s:%lu: not recursively expanding %s to export to shell function\n"), v.*.fileinfo.filenm, v.*.fileinfo.lineno, v.*.name);
                 _ = fflush(stdout);
             }
@@ -756,7 +756,7 @@ export fn recursively_expand_for_file(arg_v: [*c]struct_variable, arg_file_1: [*
         }
         {
             ep = environ;
-            while (ep.* != null) : (ep += 1) if ((@as(c_int, @bitCast(@as(c_uint, ep.*[nl]))) == @as(c_int, '=')) and (strncmp(ep.*, v.*.name, nl) == @as(c_int, 0))) return xstrdup((ep.* + nl) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 1))))));
+            while (ep.* != null) : (ep += 1) if ((@as(c_int, @bitCast(@as(c_uint, ep.*[nl]))) == @as(c_int, '=')) and (strncmp(ep.*, v.*.name, nl) == 0)) return xstrdup((ep.* + nl) + @as(usize, @bitCast(@as(isize, @intCast(1)))));
         }
         return xstrdup("");
     }
@@ -783,7 +783,7 @@ export fn recursively_expand_for_file(arg_v: [*c]struct_variable, arg_file_1: [*
     if (v.*.append != 0) {
         value = allocated_variable_append(v);
     } else {
-        value = allocated_variable_expand_for_file(v.*.value, @as([*c]struct_file, @ptrFromInt(@as(c_int, 0))));
+        value = allocated_variable_expand_for_file(v.*.value, @as([*c]struct_file, @ptrFromInt(0)));
     }
     v.*.expanding = 0;
     if (set_reading != 0) {
@@ -835,8 +835,8 @@ fn allocated_variable_append(arg_v: [*c]const struct_variable) callconv(.C) [*c]
     var olen: usize = variable_buffer_length;
     _ = &olen;
     variable_buffer = null;
-    val = variable_append(v.*.name, strlen(v.*.name), current_variable_set_list, @as(c_int, 1));
-    _ = variable_buffer_output(val, "", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+    val = variable_append(v.*.name, strlen(v.*.name), current_variable_set_list, 1);
+    _ = variable_buffer_output(val, "", @as(usize, 1));
     val = variable_buffer;
     variable_buffer = obuf;
     variable_buffer_length = olen;
@@ -881,7 +881,7 @@ fn variable_append(arg_name: [*c]const u8, arg_length: usize, arg_set: [*c]const
     var nextlocal: c_int = undefined;
     _ = &nextlocal;
     if (!(set != null)) return initialize_variable_output();
-    nextlocal = @intFromBool((local != 0) and (set.*.next_is_parent == @as(c_int, 0)));
+    nextlocal = @intFromBool((local != 0) and (set.*.next_is_parent == 0));
     v = lookup_variable_in_set(name, length, set.*.set);
     if (!(v != null) or (!(local != 0) and (v.*.private_var != 0))) return variable_append(name, length, set.*.next, nextlocal);
     if (v.*.append != 0) {
@@ -890,7 +890,7 @@ fn variable_append(arg_name: [*c]const u8, arg_length: usize, arg_set: [*c]const
         buf = initialize_variable_output();
     }
     if (buf > variable_buffer) {
-        buf = variable_buffer_output(buf, " ", @as(usize, @bitCast(@as(c_long, @as(c_int, 1)))));
+        buf = variable_buffer_output(buf, " ", @as(usize, 1));
     }
     if (!(v.*.recursive != 0)) return variable_buffer_output(buf, v.*.value, strlen(v.*.value));
     buf = variable_expand_string(buf, v.*.value, strlen(v.*.value));

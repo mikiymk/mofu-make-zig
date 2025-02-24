@@ -204,34 +204,26 @@ const floc = extern struct {
 };
 
 // src/output.c:413:1: warning: TODO unable to translate variadic function, demoted to extern
-extern fn message(prefix: c_int, len: usize, fmt: [*c]const u8, ...) void;
+pub extern fn message(prefix: c_int, len: usize, fmt: [*c]const u8, ...) void;
 // src/output.c:444:1: warning: TODO unable to translate variadic function, demoted to extern
-extern fn @"error"(flocp: [*c]const floc, len: usize, fmt: [*c]const u8, ...) void;
+pub extern fn @"error"(flocp: [*c]const floc, len: usize, fmt: [*c]const u8, ...) void;
 // src/output.c:476:1: warning: TODO unable to translate variadic function, demoted to extern
-extern fn fatal(flocp: [*c]const floc, len: usize, fmt: [*c]const u8, ...) noreturn;
-export fn out_of_memory() noreturn {
+pub extern fn fatal(flocp: [*c]const floc, len: usize, fmt: [*c]const u8, ...) noreturn;
+pub export fn out_of_memory() noreturn {
     _ = writebuf(fileno(stdout), @as(?*const anyopaque, @ptrCast(program)), strlen(program));
-    _ = writebuf(fileno(stdout), @as(?*const anyopaque, @ptrCast(": *** virtual memory exhausted\n")), @sizeOf([32]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
-    exit(@as(c_int, 2));
+    _ = writebuf(fileno(stdout), @as(?*const anyopaque, @ptrCast(": *** virtual memory exhausted\n")), @sizeOf([32]u8) -% 1);
+    exit(2);
 }
 
 extern fn should_print_dir() c_int;
 
-export fn pfatal_with_name(arg_name: [*c]const u8) noreturn {
-    var name = arg_name;
-    _ = &name;
-    var err: [*c]const u8 = strerror(__errno_location().*);
-    _ = &err;
-    fatal(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), strlen(name) +% strlen(err), gettext("%s: %s"), name, err);
+pub export fn pfatal_with_name(name: [*c]const u8) noreturn {
+    const err: [*c]const u8 = strerror(__errno_location().*);
+    fatal(@as([*c]floc, @ptrFromInt(0)), strlen(name) +% strlen(err), gettext("%s: %s"), name, err);
 }
-export fn perror_with_name(arg_str: [*c]const u8, arg_name: [*c]const u8) void {
-    var str = arg_str;
-    _ = &str;
-    var name = arg_name;
-    _ = &name;
-    var err: [*c]const u8 = strerror(__errno_location().*);
-    _ = &err;
-    @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), (strlen(str) +% strlen(name)) +% strlen(err), gettext("%s%s: %s"), str, name, err);
+pub export fn perror_with_name(str: [*c]const u8, name: [*c]const u8) void {
+    const err: [*c]const u8 = strerror(__errno_location().*);
+    @"error"(@as([*c]floc, @ptrFromInt(0)), (strlen(str) +% strlen(name)) +% strlen(err), gettext("%s%s: %s"), str, name, err);
 }
 
 extern fn xrealloc(?*anyopaque, usize) ?*anyopaque;
@@ -299,12 +291,10 @@ const struct_output = extern struct {
 extern var output_context: [*c]struct_output;
 extern var stdio_traced: c_uint;
 
-export fn output_init(arg_out: [*c]struct_output) void {
-    var out = arg_out;
-    _ = &out;
+pub export fn output_init(out: [*c]struct_output) void {
     if (out != null) {
         out.*.out = blk: {
-            const tmp = -@as(c_int, 1);
+            const tmp = -1;
             out.*.err = tmp;
             break :blk tmp;
         };
@@ -314,57 +304,47 @@ export fn output_init(arg_out: [*c]struct_output) void {
     fd_set_append(fileno(stdout));
     fd_set_append(fileno(stderr));
 }
-export fn output_close(arg_out: [*c]struct_output) void {
-    var out = arg_out;
-    _ = &out;
+pub export fn output_close(out: [*c]struct_output) void {
     if (!(out != null)) {
         if (stdio_traced != 0) {
-            _ = log_working_directory(@as(c_int, 0));
+            _ = log_working_directory(0);
         }
         return;
     }
     output_dump(out);
-    if (out.*.out >= @as(c_int, 0)) {
+    if (out.*.out >= 0) {
         _ = close(out.*.out);
     }
-    if ((out.*.err >= @as(c_int, 0)) and (out.*.err != out.*.out)) {
+    if ((out.*.err >= 0) and (out.*.err != out.*.out)) {
         _ = close(out.*.err);
     }
     output_init(out);
 }
-export fn output_start() void {
-    if ((output_context != null) and (output_context.*.syncout != 0)) if (!((output_context.*.out >= @as(c_int, 0)) or (output_context.*.err >= @as(c_int, 0)))) {
+pub export fn output_start() void {
+    if ((output_context != null) and (output_context.*.syncout != 0)) if (!((output_context.*.out >= 0) or (output_context.*.err >= 0))) {
         setup_tmpfile(output_context);
     };
-    if ((output_sync == @as(c_int, 0)) or (output_sync == @as(c_int, 3))) if (!(stdio_traced != 0) and (should_print_dir() != 0)) {
-        stdio_traced = @as(c_uint, @bitCast(log_working_directory(@as(c_int, 1))));
+    if ((output_sync == 0) or (output_sync == 3)) if (!(stdio_traced != 0) and (should_print_dir() != 0)) {
+        stdio_traced = @as(c_uint, @bitCast(log_working_directory(1)));
     };
 }
-export fn outputs(arg_is_err: c_int, arg_msg: [*c]const u8) void {
-    var is_err = arg_is_err;
-    _ = &is_err;
-    var msg = arg_msg;
-    _ = &msg;
+pub export fn outputs(is_err: c_int, msg: [*c]const u8) void {
     if (!(msg != null) or (@as(c_int, @bitCast(@as(c_uint, msg.*))) == @as(c_int, '\x00'))) return;
     output_start();
     _outputs(output_context, is_err, msg);
 }
-export fn output_dump(arg_out: [*c]struct_output) void {
-    var out = arg_out;
-    _ = &out;
-    var outfd_not_empty: c_int = @intFromBool((out.*.out != -@as(c_int, 1)) and (lseek(out.*.out, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))), @as(c_int, 2)) > @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0))))));
-    _ = &outfd_not_empty;
-    var errfd_not_empty: c_int = @intFromBool((out.*.err != -@as(c_int, 1)) and (lseek(out.*.err, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))), @as(c_int, 2)) > @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0))))));
-    _ = &errfd_not_empty;
+pub export fn output_dump(out: [*c]struct_output) void {
+    const outfd_not_empty: c_int = @intFromBool((out.*.out != -1) and (lseek(out.*.out, @as(__off_t, 0), 2) > @as(__off_t, 0)));
+    const errfd_not_empty: c_int = @intFromBool((out.*.err != -1) and (lseek(out.*.err, @as(__off_t, 0), 2) > @as(__off_t, 0)));
     if ((outfd_not_empty != 0) or (errfd_not_empty != 0)) {
         var traced: c_int = 0;
         _ = &traced;
         if (!(osync_acquire() != 0)) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("warning: Cannot acquire output lock, disabling output sync."));
+            @"error"(@as([*c]floc, @ptrFromInt(0)), @as(usize, 0), gettext("warning: Cannot acquire output lock, disabling output sync."));
             osync_clear();
         }
-        if ((output_sync != @as(c_int, 3)) and (should_print_dir() != 0)) {
-            traced = log_working_directory(@as(c_int, 1));
+        if ((output_sync != 3) and (should_print_dir() != 0)) {
+            traced = log_working_directory(1);
         }
         if (outfd_not_empty != 0) {
             pump_from_tmp(out.*.out, stdout);
@@ -373,54 +353,47 @@ export fn output_dump(arg_out: [*c]struct_output) void {
             pump_from_tmp(out.*.err, stderr);
         }
         if (traced != 0) {
-            _ = log_working_directory(@as(c_int, 0));
+            _ = log_working_directory(0);
         }
         osync_release();
-        if (out.*.out != -@as(c_int, 1)) {
+        if (out.*.out != -1) {
             var e: c_int = undefined;
             _ = &e;
-            _ = lseek(out.*.out, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))), @as(c_int, 0));
+            _ = lseek(out.*.out, @as(__off_t, 0), 0);
             while (((blk: {
-                const tmp = ftruncate(out.*.out, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))));
+                const tmp = ftruncate(out.*.out, @as(__off_t, 0));
                 e = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+            }) == -1) and (__errno_location().* == 4)) {}
         }
-        if ((out.*.err != -@as(c_int, 1)) and (out.*.err != out.*.out)) {
+        if ((out.*.err != -1) and (out.*.err != out.*.out)) {
             var e: c_int = undefined;
             _ = &e;
-            _ = lseek(out.*.err, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))), @as(c_int, 0));
+            _ = lseek(out.*.err, @as(__off_t, 0), 0);
             while (((blk: {
-                const tmp = ftruncate(out.*.err, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))));
+                const tmp = ftruncate(out.*.err, @as(__off_t, 0));
                 e = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+            }) == -1) and (__errno_location().* == 4)) {}
         }
     }
 }
 
-fn _outputs(arg_out: [*c]struct_output, arg_is_err: c_int, arg_msg: [*c]const u8) callconv(.C) void {
-    var out = arg_out;
-    _ = &out;
-    var is_err = arg_is_err;
-    _ = &is_err;
-    var msg = arg_msg;
-    _ = &msg;
+fn _outputs(out: [*c]struct_output, is_err: c_int, msg: [*c]const u8) callconv(.C) void {
     var f: [*c]FILE = undefined;
-    _ = &f;
     if ((out != null) and (out.*.syncout != 0)) {
         var fd: c_int = if (is_err != 0) out.*.err else out.*.out;
         _ = &fd;
-        if (fd != -@as(c_int, 1)) {
+        if (fd != -1) {
             var len: usize = strlen(msg);
             _ = &len;
             var r: c_int = undefined;
             _ = &r;
             while (((blk: {
-                const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(lseek(fd, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))), @as(c_int, 2))))));
+                const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(lseek(fd, @as(__off_t, 0), 2)))));
                 r = tmp;
                 break :blk tmp;
-            }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
+            }) == -1) and (__errno_location().* == 4)) {}
             _ = writebuf(fd, @as(?*const anyopaque, @ptrCast(msg)), len);
             return;
         }
@@ -429,9 +402,7 @@ fn _outputs(arg_out: [*c]struct_output, arg_is_err: c_int, arg_msg: [*c]const u8
     _ = fputs(msg, f);
     _ = fflush(f);
 }
-fn log_working_directory(arg_entering: c_int) callconv(.C) c_int {
-    var entering = arg_entering;
-    _ = &entering;
+fn log_working_directory(entering: c_int) callconv(.C) c_int {
     const buf = struct {
         var static: [*c]u8 = null;
     };
@@ -446,11 +417,11 @@ fn log_working_directory(arg_entering: c_int) callconv(.C) c_int {
     _ = &fmt;
     var p: [*c]u8 = undefined;
     _ = &p;
-    need = ((strlen(program) +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 3)))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))));
+    need = ((strlen(program) +% (((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 53)))) *% @sizeOf(uintmax_t)) / @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 22))))) +% @as(c_ulong, 3))) +% @as(c_ulong, 2)) +% @as(c_ulong, 1);
     if (starting_directory != null) {
         need +%= @as(usize, @bitCast(strlen(starting_directory)));
     }
-    if (makelevel == @as(c_uint, @bitCast(@as(c_int, 0)))) if (starting_directory == null) if (entering != 0) {
+    if (makelevel == @as(c_uint, 0)) if (starting_directory == null) if (entering != 0) {
         fmt = gettext("%s: Entering an unknown directory\n");
     } else {
         fmt = gettext("%s: Leaving an unknown directory\n");
@@ -487,7 +458,7 @@ fn log_working_directory(arg_entering: c_int) callconv(.C) c_int {
             break :blk tmp;
         }).* = ' ';
     }
-    if (makelevel == @as(c_uint, @bitCast(@as(c_int, 0)))) if (starting_directory == null) {
+    if (makelevel == @as(c_uint, 0)) if (starting_directory == null) {
         _ = sprintf(p, fmt, program);
     } else {
         _ = sprintf(p, fmt, program, starting_directory);
@@ -496,19 +467,15 @@ fn log_working_directory(arg_entering: c_int) callconv(.C) c_int {
     } else {
         _ = sprintf(p, fmt, program, makelevel, starting_directory);
     }
-    _outputs(null, @as(c_int, 0), buf.static);
+    _outputs(null, 0, buf.static);
     return 1;
 }
-fn pump_from_tmp(arg_from: c_int, arg_to: [*c]FILE) callconv(.C) void {
-    var from = arg_from;
-    _ = &from;
-    var to = arg_to;
-    _ = &to;
+fn pump_from_tmp(from: c_int, to: [*c]FILE) callconv(.C) void {
     const buffer = struct {
         var static: [8192]u8 = @import("std").mem.zeroes([8192]u8);
     };
     _ = &buffer;
-    if (lseek(from, @as(__off_t, @bitCast(@as(c_long, @as(c_int, 0)))), @as(c_int, 0)) == @as(__off_t, @bitCast(@as(c_long, -@as(c_int, 1))))) {
+    if (lseek(from, @as(__off_t, 0), 0) == @as(__off_t, @bitCast(@as(c_long, -1)))) {
         perror("lseek()");
     }
     while (true) {
@@ -518,27 +485,24 @@ fn pump_from_tmp(arg_from: c_int, arg_to: [*c]FILE) callconv(.C) void {
             const tmp = @as(c_int, @bitCast(@as(c_int, @truncate(read(from, @as(?*anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&buffer.static))))), @sizeOf([8192]u8))))));
             len = tmp;
             break :blk tmp;
-        }) == -@as(c_int, 1)) and (__errno_location().* == @as(c_int, 4))) {}
-        if (len < @as(c_int, 0)) {
+        }) == -1) and (__errno_location().* == 4)) {}
+        if (len < 0) {
             perror("read()");
         }
-        if (len <= @as(c_int, 0)) break;
-        if (fwrite(@as(?*const anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&buffer.static))))), @as(c_ulong, @bitCast(@as(c_long, len))), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), to) < @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) {
+        if (len <= 0) break;
+        if (fwrite(@as(?*const anyopaque, @ptrCast(@as([*c]u8, @ptrCast(@alignCast(&buffer.static))))), @as(c_ulong, @bitCast(@as(c_long, len))), @as(c_ulong, 1), to) < @as(c_ulong, 1)) {
             perror("fwrite()");
             break;
         }
         _ = fflush(to);
     }
 }
-export fn output_tmpfd() c_int {
-    var fd: c_int = get_tmpfd(null);
-    _ = &fd;
+pub export fn output_tmpfd() c_int {
+    const fd: c_int = get_tmpfd(null);
     fd_set_append(fd);
     return fd;
 }
-fn setup_tmpfile(arg_out: [*c]struct_output) callconv(.C) void {
-    var out = arg_out;
-    _ = &out;
+fn setup_tmpfile(out: [*c]struct_output) callconv(.C) void {
     const in_setup = struct {
         var static: c_uint = 0;
     };
@@ -548,21 +512,21 @@ fn setup_tmpfile(arg_out: [*c]struct_output) callconv(.C) void {
     if (in_setup.static != 0) return;
     in_setup.static = 1;
     io_state = check_io_state();
-    if (!((io_state & @as(c_uint, @bitCast(@as(c_int, 8) | @as(c_int, 16)))) != @as(c_uint, @bitCast(@as(c_int, 0))))) {
+    if (!((io_state & @as(c_uint, @bitCast(8 | @as(c_int, 16)))) != @as(c_uint, 0))) {
         perror_with_name("output-sync suppressed: ", "stderr");
         {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("cannot open output-sync lock file, suppressing output-sync."));
+            @"error"(@as([*c]floc, @ptrFromInt(0)), @as(usize, 0), gettext("cannot open output-sync lock file, suppressing output-sync."));
             output_close(out);
             output_sync = 0;
             osync_clear();
             in_setup.static = 0;
         }
     }
-    if ((io_state & @as(c_uint, @bitCast(@as(c_int, 8)))) != @as(c_uint, @bitCast(@as(c_int, 0)))) {
+    if ((io_state & @as(c_uint, 8)) != @as(c_uint, 0)) {
         var fd: c_int = output_tmpfd();
         _ = &fd;
-        if (fd < @as(c_int, 0)) {
-            @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("cannot open output-sync lock file, suppressing output-sync."));
+        if (fd < 0) {
+            @"error"(@as([*c]floc, @ptrFromInt(0)), @as(usize, 0), gettext("cannot open output-sync lock file, suppressing output-sync."));
             output_close(out);
             output_sync = 0;
             osync_clear();
@@ -571,14 +535,14 @@ fn setup_tmpfile(arg_out: [*c]struct_output) callconv(.C) void {
         fd_noinherit(fd);
         out.*.out = fd;
     }
-    if ((io_state & @as(c_uint, @bitCast(@as(c_int, 16)))) != @as(c_uint, @bitCast(@as(c_int, 0)))) {
-        if ((out.*.out != -@as(c_int, 1)) and ((io_state & @as(c_uint, @bitCast(@as(c_int, 2)))) != @as(c_uint, @bitCast(@as(c_int, 0))))) {
+    if ((io_state & @as(c_uint, @bitCast(@as(c_int, 16)))) != @as(c_uint, 0)) {
+        if ((out.*.out != -1) and ((io_state & @as(c_uint, 2)) != @as(c_uint, 0))) {
             out.*.err = out.*.out;
         } else {
             var fd: c_int = output_tmpfd();
             _ = &fd;
-            if (fd < @as(c_int, 0)) {
-                @"error"(@as([*c]floc, @ptrFromInt(@as(c_int, 0))), @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))), gettext("cannot open output-sync lock file, suppressing output-sync."));
+            if (fd < 0) {
+                @"error"(@as([*c]floc, @ptrFromInt(0)), @as(usize, 0), gettext("cannot open output-sync lock file, suppressing output-sync."));
                 output_close(out);
                 output_sync = 0;
                 osync_clear();
@@ -597,15 +561,15 @@ const struct_fmtstring = extern struct {
 };
 var fmtbuf: struct_fmtstring = struct_fmtstring{
     .buffer = null,
-    .size = @as(usize, @bitCast(@as(c_long, @as(c_int, 0)))),
+    .size = @as(usize, 0),
 };
 fn get_buffer(arg_need: usize) callconv(.C) [*c]u8 {
     var need = arg_need;
     _ = &need;
     if (need > fmtbuf.size) {
-        fmtbuf.size +%= need *% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))));
+        fmtbuf.size +%= need *% @as(usize, 2);
         fmtbuf.buffer = @as([*c]u8, @ptrCast(@alignCast(xrealloc(@as(?*anyopaque, @ptrCast(fmtbuf.buffer)), fmtbuf.size))));
     }
-    fmtbuf.buffer[need -% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))] = '\x00';
+    fmtbuf.buffer[need -% @as(usize, 1)] = '\x00';
     return fmtbuf.buffer;
 }

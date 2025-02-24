@@ -212,7 +212,7 @@ export fn strcache_print_stats(arg_prefix: [*c]const u8) void {
     _ = &totfree;
     var maxfree: c_ulong = 0;
     _ = &maxfree;
-    var minfree: c_ulong = (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer");
+    var minfree: c_ulong = (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, 2) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer");
     _ = &minfree;
     if (!(strcache != null)) {
         _ = printf(gettext("\n%s No strcache buffers\n"), prefix);
@@ -220,7 +220,7 @@ export fn strcache_print_stats(arg_prefix: [*c]const u8) void {
     }
     {
         sp = strcache.*.next;
-        while (sp != @as([*c]const struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (sp = sp.*.next) {
+        while (sp != @as([*c]const struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (sp = sp.*.next) {
             var bf: sc_buflen_t = sp.*.bytesfree;
             _ = &bf;
             totfree +%= @as(c_ulong, @bitCast(@as(c_ulong, bf)));
@@ -231,7 +231,7 @@ export fn strcache_print_stats(arg_prefix: [*c]const u8) void {
     }
     {
         sp = fullcache;
-        while (sp != @as([*c]const struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (sp = sp.*.next) {
+        while (sp != @as([*c]const struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (sp = sp.*.next) {
             var bf: sc_buflen_t = sp.*.bytesfree;
             _ = &bf;
             totfree +%= @as(c_ulong, @bitCast(@as(c_ulong, bf)));
@@ -241,9 +241,9 @@ export fn strcache_print_stats(arg_prefix: [*c]const u8) void {
             fullbuffs +%= 1;
         }
     }
-    _ = @as(c_int, 0);
-    _ = printf(gettext("\n%s strcache buffers: %lu (%lu) / strings = %lu / storage = %lu B / avg = %lu B\n"), prefix, numbuffs +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))), fullbuffs, total_strings, total_size, total_size / total_strings);
-    _ = printf(gettext("%s current buf: size = %hu B / used = %hu B / count = %hu / avg = %u B\n"), prefix, @as(c_int, @bitCast(@as(c_uint, @as(sc_buflen_t, @bitCast(@as(c_ushort, @truncate((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer")))))))), @as(c_int, @bitCast(@as(c_uint, strcache.*.end))), @as(c_int, @bitCast(@as(c_uint, strcache.*.count))), @as(c_uint, @bitCast(@divTrunc(@as(c_int, @bitCast(@as(c_uint, strcache.*.end))), @as(c_int, @bitCast(@as(c_uint, strcache.*.count)))))));
+    _ = 0;
+    _ = printf(gettext("\n%s strcache buffers: %lu (%lu) / strings = %lu / storage = %lu B / avg = %lu B\n"), prefix, numbuffs +% @as(c_ulong, 1), fullbuffs, total_strings, total_size, total_size / total_strings);
+    _ = printf(gettext("%s current buf: size = %hu B / used = %hu B / count = %hu / avg = %u B\n"), prefix, @as(c_int, @bitCast(@as(c_uint, @as(sc_buflen_t, @bitCast(@as(c_ushort, @truncate((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, 2) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer")))))))), @as(c_int, @bitCast(@as(c_uint, strcache.*.end))), @as(c_int, @bitCast(@as(c_uint, strcache.*.count))), @as(c_uint, @bitCast(@divTrunc(@as(c_int, @bitCast(@as(c_uint, strcache.*.end))), @as(c_int, @bitCast(@as(c_uint, strcache.*.count)))))));
     if (numbuffs != 0) {
         var sz: c_ulong = total_size -% @as(c_ulong, @bitCast(@as(c_ulong, strcache.*.end)));
         _ = &sz;
@@ -296,7 +296,7 @@ export fn strcache_add_len(arg_str: [*c]const u8, arg_len: usize) [*c]const u8 {
     var len = arg_len;
     _ = &len;
     if (@as(c_int, @bitCast(@as(c_uint, str[len]))) != @as(c_int, '\x00')) {
-        var key: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(len +% @as(usize, @bitCast(@as(c_long, @as(c_int, 1))))))));
+        var key: [*c]u8 = @as([*c]u8, @ptrCast(@alignCast(malloc(len +% @as(usize, 1)))));
         _ = &key;
         _ = memcpy(@as(?*anyopaque, @ptrCast(key)), @as(?*const anyopaque, @ptrCast(str)), len);
         key[len] = '\x00';
@@ -428,22 +428,22 @@ fn add_string(arg_str: [*c]const u8, arg_len: sc_buflen_t) callconv(.C) [*c]cons
     _ = &sp;
     var spp: [*c][*c]struct_strcache = &strcache;
     _ = &spp;
-    var sz: sc_buflen_t = @as(sc_buflen_t, @bitCast(@as(c_short, @truncate(@as(c_int, @bitCast(@as(c_uint, len))) + @as(c_int, 1)))));
+    var sz: sc_buflen_t = @as(sc_buflen_t, @bitCast(@as(c_short, @truncate(@as(c_int, @bitCast(@as(c_uint, len))) + 1))));
     _ = &sz;
     total_strings +%= 1;
     total_size +%= @as(c_ulong, @bitCast(@as(c_ulong, sz)));
-    if (@as(c_ulong, @bitCast(@as(c_ulong, sz))) > ((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer"))) {
+    if (@as(c_ulong, @bitCast(@as(c_ulong, sz))) > ((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, 2) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer"))) {
         sp = new_cache(&fullcache, sz);
         return copy_string(sp, str, len);
     }
-    while (spp.* != @as([*c]struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) : (spp = &spp.*.*.next) if (@as(c_int, @bitCast(@as(c_uint, spp.*.*.bytesfree))) > @as(c_int, @bitCast(@as(c_uint, sz)))) break;
+    while (spp.* != @as([*c]struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) : (spp = &spp.*.*.next) if (@as(c_int, @bitCast(@as(c_uint, spp.*.*.bytesfree))) > @as(c_int, @bitCast(@as(c_uint, sz)))) break;
     sp = spp.*;
-    if (sp == @as([*c]struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(@as(c_int, 0))))))) {
-        sp = new_cache(&strcache, @as(sc_buflen_t, @bitCast(@as(c_ushort, @truncate((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer"))))));
+    if (sp == @as([*c]struct_strcache, @ptrCast(@alignCast(@as(?*anyopaque, @ptrFromInt(0)))))) {
+        sp = new_cache(&strcache, @as(sc_buflen_t, @bitCast(@as(c_ushort, @truncate((@as(c_ulong, @bitCast(@as(c_long, @as(c_int, 8192)))) -% (@as(c_ulong, 2) *% @sizeOf(usize))) -% @offsetOf(struct_strcache, "buffer"))))));
         spp = &strcache;
     }
     res = copy_string(sp, str, len);
-    if ((total_strings > @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 20))))) and (@as(c_ulong, @bitCast(@as(c_ulong, sp.*.bytesfree))) < ((total_size / total_strings) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))) {
+    if ((total_strings > @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 20))))) and (@as(c_ulong, @bitCast(@as(c_ulong, sp.*.bytesfree))) < ((total_size / total_strings) +% @as(c_ulong, 1)))) {
         spp.* = sp.*.next;
         sp.*.next = fullcache;
         fullcache = sp;
@@ -500,7 +500,7 @@ fn str_hash_cmp(arg_x: ?*const anyopaque, arg_y: ?*const anyopaque) callconv(.C)
     var y = arg_y;
     _ = &y;
     while (true) {
-        return if (@as([*c]const u8, @ptrCast(@alignCast(x))) == @as([*c]const u8, @ptrCast(@alignCast(y)))) @as(c_int, 0) else strcmp(@as([*c]const u8, @ptrCast(@alignCast(x))), @as([*c]const u8, @ptrCast(@alignCast(y))));
+        return if (@as([*c]const u8, @ptrCast(@alignCast(x))) == @as([*c]const u8, @ptrCast(@alignCast(y)))) 0 else strcmp(@as([*c]const u8, @ptrCast(@alignCast(x))), @as([*c]const u8, @ptrCast(@alignCast(y))));
     }
     return 0;
 }
@@ -515,7 +515,7 @@ fn add_hash(arg_str: [*c]const u8, arg_len: usize) callconv(.C) [*c]const u8 {
     _ = &slot;
     var key: [*c]const u8 = undefined;
     _ = &key;
-    if (len > @as(usize, @bitCast(@as(c_long, ((@as(c_int, 32767) * @as(c_int, 2)) + @as(c_int, 1)) - @as(c_int, 1))))) return add_hugestring(str, len);
+    if (len > @as(usize, @bitCast(@as(c_long, ((@as(c_int, 32767) * 2) + 1) - 1)))) return add_hugestring(str, len);
     slot = @as([*c]const [*c]u8, @ptrCast(@alignCast(hash_find_slot(&strings, @as(?*const anyopaque, @ptrCast(str))))));
     key = slot.*;
     total_adds +%= 1;
