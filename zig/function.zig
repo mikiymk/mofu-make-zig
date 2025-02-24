@@ -1,3 +1,6 @@
+const std = @import("std");
+const root = @import("root.zig");
+
 const ptrdiff_t = c_long;
 
 const gmk_func_ptr = ?*const fn ([*c]const u8, c_uint, [*c][*c]u8) callconv(.C) [*c]u8;
@@ -2470,7 +2473,7 @@ fn fold_newlines(arg_buffer: [*c]u8, arg_length: [*c]usize, arg_trim_newlines: c
     }).* = '\x00';
     length.* = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(last_nonnl) -% @intFromPtr(buffer))), @sizeOf(u8))));
 }
-export var shell_function_pid: pid_t = 0;
+pub export var shell_function_pid: pid_t = 0;
 var shell_function_completed: c_int = @import("std").mem.zeroes(c_int);
 fn func_shell(arg_o: [*c]u8, arg_argv: [*c][*c]u8, arg_funcname: [*c]const u8) callconv(.C) [*c]u8 {
     var o = arg_o;

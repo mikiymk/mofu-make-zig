@@ -1,3 +1,6 @@
+const std = @import("std");
+const root = @import("../root.zig");
+
 const __dev_t = c_ulong;
 const __ino_t = c_ulong;
 const __nlink_t = c_ulong;

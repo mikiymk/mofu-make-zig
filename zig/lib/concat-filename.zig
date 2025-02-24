@@ -1,3 +1,6 @@
+const std = @import("std");
+const root = @import("../root.zig");
+
 const __uint16_t = c_ushort;
 
 const __uint32_t = c_uint;

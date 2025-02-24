@@ -1,3 +1,6 @@
+const std = @import("std");
+const root = @import("root.zig");
+
 const __uint16_t = c_ushort;
 
 const __uint32_t = c_uint;
@@ -1225,8 +1228,8 @@ fn start_waiting_job(arg_c: [*c]struct_child) callconv(.C) c_int {
 }
 var good_stdin_used: c_int = 0;
 var waiting_jobs: [*c]struct_child = null;
-export var unixy_shell: c_int = 1;
-export var job_counter: c_ulong = 0;
+pub export var unixy_shell: c_int = 1;
+pub export var job_counter: c_ulong = 0;
 extern var fatal_signal_set: sigset_t;
 fn block_sigs() callconv(.C) void {
     _ = sigprocmask(0, &fatal_signal_set, @as([*c]sigset_t, @ptrFromInt(0)));

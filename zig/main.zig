@@ -1,3 +1,6 @@
+const std = @import("std");
+const root = @import("root.zig");
+
 const __uint16_t = c_ushort;
 
 const __uint32_t = c_uint;
@@ -1633,7 +1636,7 @@ const default_silent_flag: c_int = 0;
 var silent_origin: enum_variable_origin = @as(c_uint, @bitCast(o_default));
 var db_flags: [*c]struct_stringlist = null;
 var debug_flag: c_int = 0;
-export var output_sync_option: [*c]u8 = null;
+pub export var output_sync_option: [*c]u8 = null;
 const default_keep_going_flag: c_int = 0;
 var keep_going_origin: enum_variable_origin = @as(c_uint, @bitCast(o_default));
 var print_directory_flag: c_int = -1;
@@ -1647,7 +1650,7 @@ const inf_jobs: c_int = 0;
 var jobserver_style: [*c]u8 = null;
 var shuffle_mode: [*c]u8 = null;
 var sync_mutex: [*c]u8 = null;
-export var default_load_average: f64 = -1.0;
+pub export var default_load_average: f64 = -1.0;
 var directories: [*c]struct_stringlist = null;
 var include_dirs: [*c]struct_stringlist = null;
 var old_files: [*c]struct_stringlist = null;
@@ -2280,9 +2283,9 @@ const struct_command_variable = extern struct {
     variable: [*c]struct_variable = @import("std").mem.zeroes([*c]struct_variable),
 };
 var command_variables: [*c]struct_command_variable = @import("std").mem.zeroes([*c]struct_command_variable);
-export var directory_before_chdir: [*c]u8 = @import("std").mem.zeroes([*c]u8);
-export var make_sync: struct_output = @import("std").mem.zeroes(struct_output);
-export var fatal_signal_set: sigset_t = @import("std").mem.zeroes(sigset_t);
+pub export var directory_before_chdir: [*c]u8 = @import("std").mem.zeroes([*c]u8);
+pub export var make_sync: struct_output = @import("std").mem.zeroes(struct_output);
+pub export var fatal_signal_set: sigset_t = @import("std").mem.zeroes(sigset_t);
 const bsd_signal_ret_t = ?*const fn (c_int) callconv(.C) void;
 fn bsd_signal(arg_sig: c_int, arg_func: bsd_signal_ret_t) callconv(.C) bsd_signal_ret_t {
     var sig = arg_sig;

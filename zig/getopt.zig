@@ -1,3 +1,6 @@
+const std = @import("std");
+const root = @import("root.zig");
+
 const __off_t = c_long;
 const __off64_t = c_long;
 

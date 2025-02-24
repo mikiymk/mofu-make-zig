@@ -50,6 +50,12 @@ pub fn main() !void {
         av.* = try allocator.alloc(u8, as.len);
         @memcpy(av.*, as);
     }
+    defer {
+        for (argv) |as| {
+            allocator.free(as);
+        }
+        allocator.free(argv);
+    }
 
     const envp: [][]u8 = try allocator.alloc([]u8, env.count());
     var env_iter = env.iterator();
@@ -58,18 +64,14 @@ pub fn main() !void {
         envp[i] = try std.fmt.allocPrint(allocator, "{s}={s}", .{ kv.key_ptr, kv.value_ptr });
         i += 1;
     }
+    defer {
+        for (envp) |as| {
+            allocator.free(as);
+        }
+        allocator.free(envp);
+    }
 
     const result = main_.main(argc, argv, envp);
-
-    for (argv) |as| {
-        allocator.free(as);
-    }
-    allocator.free(argv);
-
-    for (envp) |as| {
-        allocator.free(as);
-    }
-    allocator.free(envp);
     if (result != 0) {
         return @errorFromInt(@as(std.meta.Int(.unsigned, @bitSizeOf(anyerror)), @intCast(result)));
     }

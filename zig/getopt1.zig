@@ -1,3 +1,6 @@
+const std = @import("std");
+const root = @import("root.zig");
+
 extern var optarg: [*c]u8;
 extern var optind: c_int;
 extern var opterr: c_int;
