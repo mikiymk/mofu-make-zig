@@ -1,5 +1,6 @@
-const std = @import("std");
 const root = @import("root.zig");
+const std = root.std;
+const cstd = root.cstd;
 
 const __uint16_t = c_ushort;
 
@@ -320,8 +321,8 @@ extern fn memcmp(__s1: ?*const anyopaque, __s2: ?*const anyopaque, __n: c_ulong)
 extern fn strcmp(__s1: [*c]const u8, __s2: [*c]const u8) c_int;
 extern fn strncmp(__s1: [*c]const u8, __s2: [*c]const u8, __n: c_ulong) c_int;
 
-extern fn strchr(__s: [*c]const u8, __c: c_int) [*c]u8;
-extern fn strrchr(__s: [*c]const u8, __c: c_int) [*c]u8;
+const strchr = root.cstd.strchr;
+const strrchr = root.cstd.strrchr;
 
 extern fn mempcpy(__dest: ?*anyopaque, __src: ?*const anyopaque, __n: c_ulong) ?*anyopaque;
 extern fn strlen(__s: [*c]const u8) c_ulong;
@@ -334,7 +335,7 @@ const uintmax_t = __uintmax_t;
 
 extern fn setlocale(__category: c_int, __locale: [*c]const u8) [*c]u8;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = cstd.gettext;
 
 extern fn textdomain(__domainname: [*c]const u8) [*c]u8;
 extern fn bindtextdomain(__domainname: [*c]const u8, __dirname: [*c]const u8) [*c]u8;
@@ -378,14 +379,8 @@ const struct_hash_table = extern struct {
     ht_lookups: c_ulong = @import("std").mem.zeroes(c_ulong),
     ht_rehashes: c_uint = @import("std").mem.zeroes(c_uint),
 };
-const struct_variable_set = extern struct {
-    table: struct_hash_table = @import("std").mem.zeroes(struct_hash_table),
-};
-const struct_variable_set_list = extern struct {
-    next: [*c]struct_variable_set_list = @import("std").mem.zeroes([*c]struct_variable_set_list),
-    set: [*c]struct_variable_set = @import("std").mem.zeroes([*c]struct_variable_set),
-    next_is_parent: c_int = @import("std").mem.zeroes(c_int),
-};
+const struct_variable_set = root.struct_def.struct_variable_set;
+const struct_variable_set_list = root.struct_def.struct_variable_set_list;
 const us_success: c_int = 0;
 const us_none: c_int = 1;
 
@@ -576,7 +571,7 @@ export fn define_makeflags(arg_makefile: c_int) [*c]struct_variable {
                         break;
                     },
                     @as(c_uint, 5) => {
-                        if ((cs.*.default_value != null) and (@as([*c]c_uint, @ptrCast(@alignCast(cs.*.value_ptr))).* == @as([*c]c_uint, @ptrCast(@volatileCast(@constCast(cs.*.default_value)))).*)) break;
+                        if ((cs.*.default_value != null) and (@as([*c]c_uint, @ptrCast(@alignCast(cs.*.value_ptr))).* == @as([*c]c_uint, @ptrCast(@alignCast(@volatileCast(@constCast(cs.*.default_value))))).*)) break;
                         if ((cs.*.noarg_value != null) and (@as([*c]c_uint, @ptrCast(@alignCast(cs.*.value_ptr))).* == @as([*c]c_uint, @ptrCast(@volatileCast(@constCast(cs.*.noarg_value)))).*)) {
                             while (true) {
                                 var new: [*c]struct_flag = @as([*c]struct_flag, @ptrCast(@alignCast(malloc(@sizeOf(struct_flag)))));
@@ -938,7 +933,7 @@ export fn die(arg_status: c_int) noreturn {
 }
 extern fn pfatal_with_name([*c]const u8) noreturn;
 extern fn perror_with_name([*c]const u8, [*c]const u8) void;
-extern fn make_toui([*c]const u8, [*c][*c]const u8) c_uint;
+const make_toui = root.misc.make_toui;
 
 extern fn xmalloc(usize) ?*anyopaque;
 extern fn xcalloc(usize) ?*anyopaque;
@@ -1005,7 +1000,7 @@ extern var no_intermediates: c_uint;
 extern var jobserver_auth: [*c]u8;
 extern var job_slots: c_uint;
 extern var max_load_average: f64;
-extern var program: [*c]const u8;
+var program: []const u8 = undefined;
 extern fn remote_setup() void;
 extern fn remote_cleanup() void;
 
@@ -1106,7 +1101,7 @@ extern fn hash_init_function_table() void;
 
 extern fn lookup_variable(name: [*c]const u8, length: usize) [*c]struct_variable;
 
-extern fn define_variable_in_set(name: [*c]const u8, length: usize, value: [*c]const u8, origin: enum_variable_origin, recursive: c_int, set: [*c]struct_variable_set, flocp: [*c]const floc) [*c]struct_variable;
+const define_variable_in_set = root.variable.define_variable_in_set;
 
 extern var export_all_variables: c_int;
 const struct_output = extern struct {
@@ -2573,22 +2568,20 @@ pub fn main(argc: usize, argv: [][]u8, envp: [][]u8) c_int {
     }
     _ = bsd_signal(@as(c_int, 17), @as(__sighandler_t, @ptrFromInt(0)));
     output_init(null);
-    if (argv[0] == null) {
-        argv[0] = "";
-    }
-    if (@as(c_int, @bitCast(@as(c_uint, argv[0][0]))) == @as(c_int, '\x00')) {
+
+    if (argv[0][0] == '\x00') {
         program = "make";
     } else {
-        program = strrchr(argv[0], @as(c_int, '/'));
-        if (program == null) {
-            program = argv[0];
+        const p = strrchr(argv[0], '/');
+        if (p) |pp| {
+            program = pp[1..];
         } else {
-            program += 1;
+            program = argv[0];
         }
     }
     initialize_global_hash_tables();
     _ = get_tmpdir();
-    if (getcwd(@as([*c]u8, @ptrCast(@alignCast(&current_directory))), @as(usize, @bitCast(@as(c_long, @as(c_int, 4096))))) == null) {
+    if (getcwd(@as([*c]u8, @ptrCast(@alignCast(&current_directory))), @as(usize, 4096)) == null) {
         perror_with_name("getcwd", "");
         current_directory[0] = '\x00';
         directory_before_chdir = null;
@@ -2605,52 +2598,41 @@ pub fn main(argc: usize, argv: [][]u8, envp: [][]u8) c_int {
         _ = define_variable_in_set(".FEATURES", @sizeOf([10]u8) -% @as(c_ulong, 1), features, @as(c_uint, @bitCast(o_default)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
     }
     _ = guile_gmake_setup(@as([*c]floc, @ptrFromInt(0)));
-    {
-        var i: c_uint = undefined;
-        _ = &i;
-        {
-            i = 0;
-            while (envp[i] != null) : (i +%= 1) {
-                var v: [*c]struct_variable = undefined;
-                _ = &v;
-                var ep: [*c]const u8 = envp[i];
-                _ = &ep;
-                var @"export": enum_variable_export = @as(c_uint, @bitCast(v_export));
-                _ = &@"export";
-                var len: usize = undefined;
-                _ = &len;
-                while (!((@as(c_int, @bitCast(@as(c_uint, stopchar_map[@as(u8, @bitCast(ep.*))]))) & (@as(c_int, 32) | 1)) != 0)) {
-                    ep += 1;
-                }
-                if (@as(c_int, @bitCast(@as(c_uint, ep.*))) == @as(c_int, '\x00')) continue;
-                len = @as(usize, @bitCast(@divExact(@as(c_long, @bitCast(@intFromPtr(blk: {
-                    const ref = &ep;
-                    const tmp = ref.*;
-                    ref.* += 1;
-                    break :blk tmp;
-                }) -% @intFromPtr(envp[i]))), @sizeOf(u8))));
-                if ((len == @as(usize, @bitCast(@as(c_long, @as(c_int, 13))))) and (memcmp(@as(?*const anyopaque, @ptrCast(envp[i])), @as(?*const anyopaque, @ptrCast("MAKE_RESTARTS")), @sizeOf([14]u8) -% @as(c_ulong, 1)) == 0)) {
-                    if (@as(c_int, @bitCast(@as(c_uint, ep.*))) == @as(c_int, '-')) {
-                        while (true) {
-                            stdio_traced = 1;
-                            if (!false) break;
-                        }
-                        ep += 1;
-                    }
-                    restarts = make_toui(ep, null);
-                    @"export" = @as(c_uint, @bitCast(v_noexport));
-                }
-                v = define_variable_in_set(envp[i], len, ep, @as(c_uint, @bitCast(o_env)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
-                if ((v.*.name == ("SHELL")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "SHELL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), "SHELL" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))) {
-                    @"export" = @as(c_uint, @bitCast(v_noexport));
-                    shell_var.name = xstrdup("SHELL");
-                    shell_var.length = 5;
-                    shell_var.value = xstrdup(ep);
-                }
-                v.*.@"export" = @"export";
-            }
+
+    for (envp) |envpi| {
+        var v: [*c]struct_variable = undefined;
+        var ep = envpi;
+        var @"export": enum_variable_export = @as(c_uint, @bitCast(v_export));
+        var len: usize = undefined;
+        while (!((stopchar_map[ep[0]] & (32 | 1)) != 0)) {
+            ep = ep[1..];
         }
+        if (@as(c_int, @bitCast(@as(c_uint, ep[0]))) == '\x00') continue;
+
+        len = envpi.len - ep.len;
+        ep = ep[1..];
+
+        if ((len == 13) and (memcmp(@as(?*const anyopaque, @ptrCast(envpi)), @as(?*const anyopaque, @ptrCast("MAKE_RESTARTS")), @sizeOf([14]u8) -% @as(c_ulong, 1)) == 0)) {
+            if (@as(c_int, @bitCast(@as(c_uint, ep[0]))) == @as(c_int, '-')) {
+                while (true) {
+                    stdio_traced = 1;
+                    if (!false) break;
+                }
+                ep = ep[1..];
+            }
+            restarts = make_toui(ep, null);
+            @"export" = @as(c_uint, @bitCast(v_noexport));
+        }
+        v = define_variable_in_set(envpi, len, ep, @as(c_uint, @bitCast(o_env)), 1, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));
+        if ((v.*.name == ("SHELL")) or ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, @bitCast(@as(c_uint, "SHELL".*)))) and ((@as(c_int, @bitCast(@as(c_uint, v.*.name.*))) == @as(c_int, '\x00')) or !(strcmp(v.*.name + @as(usize, @bitCast(@as(isize, @intCast(1)))), "SHELL" + @as(usize, @bitCast(@as(isize, @intCast(1))))) != 0)))) {
+            @"export" = @as(c_uint, @bitCast(v_noexport));
+            shell_var.name = xstrdup("SHELL");
+            shell_var.length = 5;
+            shell_var.value = xstrdup(ep);
+        }
+        v.*.@"export" = @"export";
     }
+
     if (lookup_variable("GNUMAKEFLAGS", @sizeOf([13]u8) -% @as(c_ulong, 1)) != null) {
         decode_env_switches("GNUMAKEFLAGS", @sizeOf([13]u8) -% @as(c_ulong, 1), @as(c_uint, @bitCast(o_command)));
         _ = define_variable_in_set("GNUMAKEFLAGS", @sizeOf([13]u8) -% @as(c_ulong, 1), "", @as(c_uint, @bitCast(o_env)), 0, current_variable_set_list.*.set, @as([*c]floc, @ptrFromInt(0)));

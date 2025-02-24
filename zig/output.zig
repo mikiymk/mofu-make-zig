@@ -198,7 +198,7 @@ extern fn strerror(__errnum: c_int) [*c]u8;
 
 const uintmax_t = __uintmax_t;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = root.cstd.gettext;
 
 const floc = extern struct {
     filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),

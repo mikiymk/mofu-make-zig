@@ -257,7 +257,7 @@ extern fn strerror(__errnum: c_int) [*c]u8;
 
 const uintmax_t = __uintmax_t;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = root.cstd.gettext;
 
 const __size_t = c_ulong;
 const struct_dirent_34 = opaque {};

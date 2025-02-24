@@ -182,7 +182,7 @@ extern fn memcpy(__dest: ?*anyopaque, __src: ?*const anyopaque, __n: c_ulong) ?*
 
 extern fn strlen(__s: [*c]const u8) c_ulong;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = root.cstd.gettext;
 
 const floc = extern struct {
     filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),

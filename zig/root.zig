@@ -34,7 +34,9 @@ pub const variable = @import("variable.zig");
 pub const version = @import("version.zig");
 pub const vpath = @import("vpath.zig");
 
-const std = @import("std");
+pub const std = @import("std");
+pub const cstd = @import("cstd.zig");
+pub const struct_def = @import("struct-def.zig");
 
 pub fn main() !void {
     const allocator = std.heap.page_allocator;
@@ -44,20 +46,20 @@ pub fn main() !void {
     var env = try std.process.getEnvMap(allocator);
     defer env.deinit();
 
-    const argc: usize = args.len;
-    const argv: [][]u8 = try allocator.alloc([]u8, args.len);
+    const argc = args.len;
+    const argv = try allocator.alloc([]u8, args.len);
     for (args, argv) |as, *av| {
         av.* = try allocator.alloc(u8, as.len);
         @memcpy(av.*, as);
     }
     defer {
-        for (argv) |as| {
-            allocator.free(as);
+        for (argv) |a| {
+            allocator.free(a);
         }
         allocator.free(argv);
     }
 
-    const envp: [][]u8 = try allocator.alloc([]u8, env.count());
+    const envp = try allocator.alloc([]u8, env.count());
     var env_iter = env.iterator();
     var i: usize = 0;
     while (env_iter.next()) |kv| {
@@ -65,8 +67,8 @@ pub fn main() !void {
         i += 1;
     }
     defer {
-        for (envp) |as| {
-            allocator.free(as);
+        for (envp) |a| {
+            allocator.free(a);
         }
         allocator.free(envp);
     }

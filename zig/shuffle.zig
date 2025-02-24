@@ -182,7 +182,7 @@ extern fn strcasecmp(__s1: [*c]const u8, __s2: [*c]const u8) c_int;
 
 const uintmax_t = __uintmax_t;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = root.cstd.gettext;
 
 const struct_dep = extern struct {
     next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),

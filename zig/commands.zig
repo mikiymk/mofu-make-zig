@@ -1,5 +1,6 @@
-const std = @import("std");
 const root = @import("root.zig");
+const std = root.std;
+const cstd = root.cstd;
 
 const __uint16_t = c_ushort;
 
@@ -245,7 +246,7 @@ extern fn strlen(__s: [*c]const u8) c_ulong;
 
 const uintmax_t = __uintmax_t;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = cstd.gettext;
 
 const struct_dep = extern struct {
     next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
@@ -627,7 +628,7 @@ export fn print_commands(arg_cmds: [*c]const struct_commands) void {
     if (cmds.*.fileinfo.filenm == null) {
         _ = puts(gettext(" (built-in):"));
     } else {
-        _ = printf(gettext(" (from '%s', line %lu):\n"), cmds.*.fileinfo.filenm, cmds.*.fileinfo.lineno);
+        cstd.print(gettext(" (from '{s}', line {d}):\n"), .{ cmds.*.fileinfo.filenm, cmds.*.fileinfo.lineno });
     }
     s = cmds.*.commands;
     while (@as(c_int, @bitCast(@as(c_uint, s.*))) != @as(c_int, '\x00')) {
@@ -649,7 +650,7 @@ export fn print_commands(arg_cmds: [*c]const struct_commands) void {
                 bs = if (@as(c_int, @bitCast(@as(c_uint, end.*))) == @as(c_int, '\\')) @intFromBool(!(bs != 0)) else 0;
             }
         }
-        _ = printf("%c%.*s\n", @as(c_int, @bitCast(@as(c_uint, cmd_prefix))), @as(c_int, @bitCast(@as(c_int, @truncate(@divExact(@as(c_long, @bitCast(@intFromPtr(end) -% @intFromPtr(s))), @sizeOf(u8)))))), s);
+        cstd.print("{c}{s}\n", .{ cmd_prefix, s[0..(@as(c_int, @truncate(@divExact(@intFromPtr(end) -% @intFromPtr(s), @sizeOf(u8)))))] });
         s = end + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, @bitCast(@as(c_uint, end[0]))) == @as(c_int, '\n')))));
     }
 }

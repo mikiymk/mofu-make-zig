@@ -263,7 +263,7 @@ extern fn stpcpy(__dest: [*c]u8, __src: [*c]const u8) [*c]u8;
 
 const uintmax_t = __uintmax_t;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = root.cstd.gettext;
 
 const struct_dep = extern struct {
     next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
@@ -342,7 +342,7 @@ const @"error" = @import("output.zig").@"error";
 const fatal = @import("output.zig").fatal;
 const out_of_memory = @import("output.zig").out_of_memory;
 
-export fn make_toui(arg_str: [*c]const u8, arg_error_1: [*c][*c]const u8) c_uint {
+pub fn make_toui(arg_str: []const u8, arg_error_1: [*c][*c]const u8) c_uint {
     var str = arg_str;
     _ = &str;
     var error_1 = arg_error_1;

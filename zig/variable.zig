@@ -1,5 +1,6 @@
-const std = @import("std");
 const root = @import("root.zig");
+const std = root.std;
+const cstd = root.cstd;
 
 const __uint16_t = c_ushort;
 
@@ -178,7 +179,7 @@ extern fn strlen(__s: [*c]const u8) c_ulong;
 
 const uintmax_t = __uintmax_t;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = cstd.gettext;
 
 const struct_dep = extern struct {
     next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
@@ -219,14 +220,8 @@ const struct_hash_table = extern struct {
     ht_lookups: c_ulong = @import("std").mem.zeroes(c_ulong),
     ht_rehashes: c_uint = @import("std").mem.zeroes(c_uint),
 };
-const struct_variable_set = extern struct {
-    table: struct_hash_table = @import("std").mem.zeroes(struct_hash_table),
-};
-const struct_variable_set_list = extern struct {
-    next: [*c]struct_variable_set_list = @import("std").mem.zeroes([*c]struct_variable_set_list),
-    set: [*c]struct_variable_set = @import("std").mem.zeroes([*c]struct_variable_set),
-    next_is_parent: c_int = @import("std").mem.zeroes(c_int),
-};
+const struct_variable_set = root.struct_def.struct_variable_set;
+const struct_variable_set_list = root.struct_def.struct_variable_set_list;
 
 const enum_update_status_36 = c_uint;
 
@@ -390,7 +385,7 @@ export fn print_variable_data_base() void {
             p = pattern_vars;
             while (p != null) : (p = p.*.next) {
                 rules +%= 1;
-                _ = printf("\n%s :\n", p.*.target);
+                cstd.print("\n%s :\n", .{p.*.target});
                 print_variable(@as(?*const anyopaque, @ptrCast(&p.*.variable)), @as(?*anyopaque, @ptrCast("# ")));
             }
         }
@@ -1076,7 +1071,7 @@ export fn lookup_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_
     var_key.length = @as(c_uint, @bitCast(@as(c_uint, @truncate(length))));
     return @as([*c]struct_variable, @ptrCast(@alignCast(hash_find_item(@as([*c]struct_hash_table, @ptrCast(@volatileCast(@constCast(&set.*.table)))), @as(?*const anyopaque, @ptrCast(&var_key))))));
 }
-export fn define_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_value: [*c]const u8, arg_origin: enum_variable_origin, arg_recursive: c_int, arg_set: [*c]struct_variable_set, arg_flocp: [*c]const floc) [*c]struct_variable {
+pub fn define_variable_in_set(arg_name: [*c]const u8, arg_length: usize, arg_value: [*c]const u8, arg_origin: enum_variable_origin, arg_recursive: c_int, arg_set: [*c]struct_variable_set, arg_flocp: [*c]const floc) [*c]struct_variable {
     var name = arg_name;
     const length = arg_length;
     const value = arg_value;
@@ -1746,18 +1741,18 @@ fn print_variable(arg_item: ?*const anyopaque, arg_arg: ?*anyopaque) callconv(.C
         _ = fputs(" private", stdout);
     }
     if (v.*.fileinfo.filenm != null) {
-        _ = printf(gettext(" (from '%s', line %lu)"), v.*.fileinfo.filenm, v.*.fileinfo.lineno +% v.*.fileinfo.offset);
+        cstd.print(gettext(" (from '%s', line %lu)"), .{ v.*.fileinfo.filenm, v.*.fileinfo.lineno +% v.*.fileinfo.offset });
     }
     _ = putchar(@as(c_int, '\n'));
     _ = fputs(prefix, stdout);
     if ((v.*.recursive != 0) and (strchr(v.*.value, @as(c_int, '\n')) != null)) {
-        _ = printf("define %s\n%s\nendef\n", v.*.name, v.*.value);
+        cstd.print("define %s\n%s\nendef\n", .{ v.*.name, v.*.value });
     } else {
         var p: [*c]u8 = undefined;
-        _ = printf("%s %s= ", v.*.name, if (v.*.recursive != 0) if (v.*.append != 0) "+" else "" else ":");
+        cstd.print("%s %s= ", v.*.name, if (v.*.recursive != 0) if (v.*.append != 0) "+" else "" else ":");
         p = next_token(v.*.value);
         if ((p != v.*.value) and (@as(c_int, @bitCast(@as(c_uint, p.*))) == @as(c_int, '\x00'))) {
-            _ = printf("$(subst ,,%s)", v.*.value);
+            cstd.print("$(subst ,,%s)", v.*.value);
         } else if (v.*.recursive != 0) {
             _ = fputs(v.*.value, stdout);
         } else {

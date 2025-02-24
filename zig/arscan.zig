@@ -1,5 +1,6 @@
-const std = @import("std");
 const root = @import("root.zig");
+const std = root.std;
+const cstd = root.cstd;
 
 const __uint16_t = c_ushort;
 
@@ -235,7 +236,7 @@ extern fn strlen(__s: [*c]const u8) c_ulong;
 const intmax_t = __intmax_t;
 const uintmax_t = __uintmax_t;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = cstd.gettext;
 
 const floc = extern struct {
     filenm: [*c]const u8 = @import("std").mem.zeroes([*c]const u8),

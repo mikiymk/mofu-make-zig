@@ -1,5 +1,6 @@
-const std = @import("std");
 const root = @import("root.zig");
+const std = root.std;
+const cstd = root.cstd;
 
 const ptrdiff_t = c_long;
 
@@ -278,7 +279,7 @@ extern fn strerror(__errnum: c_int) [*c]u8;
 
 const uintmax_t = __uintmax_t;
 
-extern fn gettext(__msgid: [*c]const u8) [*c]u8;
+const gettext = cstd.gettext;
 
 const struct_dep = extern struct {
     next: [*c]struct_dep = @import("std").mem.zeroes([*c]struct_dep),
